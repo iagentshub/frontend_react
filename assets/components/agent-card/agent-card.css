@@ -1,0 +1,277 @@
+/* ═══════════════════════════════════════════════
+   Agent Card
+   ═══════════════════════════════════════════════ */
+
+/* ── Grid ── */
+.agents-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 14px;
+}
+
+@media (max-width: 768px) {
+    .agents-grid {
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        gap: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .agents-grid {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+}
+
+/* ── Card ── */
+.agent-card {
+    display: flex;
+    flex-direction: column;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: box-shadow .15s ease, border-color .15s ease, transform .12s ease;
+}
+
+.agent-card:hover {
+    box-shadow: var(--shadow-lg);
+    border-color: var(--line-strong);
+    transform: translateY(-2px);
+}
+
+/* ── Body ── */
+.agent-card-body {
+    flex: 1;
+    padding: 16px 16px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* ── Top: avatar + info ── */
+.agent-card-top {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.agent-avatar {
+    flex-shrink: 0;
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: -.01em;
+}
+
+.agent-card-info {
+    min-width: 0;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+/* ── Name row ── */
+.agent-card-name-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+}
+
+.agent-card-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.25;
+}
+
+/* ── Scope badge ── */
+.agent-scope-badge {
+    flex-shrink: 0;
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 9.5px;
+    font-weight: 700;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+}
+
+.agent-scope-badge--public {
+    background: rgba(5, 150, 105, .10);
+    color: #059669;
+}
+
+.agent-scope-badge--private { display: none; }
+
+.agent-scope-badge--shared {
+    background: rgba(99, 102, 241, .12);
+    color: #6366f1;
+}
+
+.agent-scope-badge--social {
+    background: rgba(14, 165, 233, .12);
+    color: #0ea5e9;
+    font-size: 11px;
+    padding: 0 4px;
+}
+
+/* ── Meta row: provider pill + token badge ── */
+.agent-card-meta {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* ── Connection pill ── */
+.agent-conn-pill {
+    flex-shrink: 0;
+    padding: 2px 7px;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.agent-conn-pill--openai  { background: rgba(5, 150, 105, .10); color: #059669; }
+.agent-conn-pill--claude  { background: rgba(217, 119, 6, .10);  color: #b45309; }
+.agent-conn-pill--gemini  { background: rgba(37, 99, 235, .10);  color: #2563eb; }
+.agent-conn-pill--ollama  { background: rgba(107, 114, 128, .10); color: #4b5563; }
+.agent-conn-pill--default { background: var(--surface-2); color: var(--ink-3); }
+.agent-conn-pill--usatia  { background: transparent; color: var(--ink-3); border: 1px dashed var(--line-strong); }
+
+/* ── Token badge ── */
+.agent-tok-badge {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--ink-3);
+    letter-spacing: .02em;
+    font-variant-numeric: tabular-nums;
+}
+
+/* ── Description ── */
+.agent-card-desc {
+    font-size: 12px;
+    color: var(--ink-2);
+    line-height: 1.55;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+    min-height: 2.8em;
+}
+
+/* ── Footer ── */
+.agent-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 10px 10px;
+    border-top: 1px solid var(--line);
+    gap: 6px;
+}
+
+.agent-action-chat {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 14px;
+    border-radius: var(--radius);
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: var(--font);
+    transition: filter .12s, transform .1s;
+}
+
+.agent-action-chat:hover:not(:disabled) {
+    filter: brightness(0.88);
+    transform: translateY(-1px);
+}
+
+.agent-action-chat:disabled {
+    background: var(--surface-2);
+    color: var(--ink-3);
+    cursor: not-allowed;
+}
+
+.agent-card-actions-right {
+    display: flex;
+    align-items: center;
+    gap: 1px;
+}
+
+.agent-action-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border-radius: var(--radius);
+    border: none;
+    background: none;
+    color: var(--ink-3);
+    cursor: pointer;
+    transition: background .1s, color .1s;
+}
+
+.agent-action-icon:hover {
+    background: var(--surface-2);
+    color: var(--ink);
+}
+
+.agent-action-icon--danger:hover {
+    background: color-mix(in srgb, var(--danger) 7%, transparent);
+    color: var(--danger);
+}
+
+.agent-card--blocked {
+    opacity: 0.65;
+    border-color: var(--danger, #ef4444);
+    background: color-mix(in srgb, var(--danger, #ef4444) 4%, var(--surface));
+}
+.agent-card--blocked .agent-action-chat {
+    cursor: not-allowed;
+}
+
+.agent-scope-badge--linked {
+    background: #fff7ed;
+    color: #9a3412;
+    border: 1px solid #fed7aa;
+}
+
+.agent-scope-badge--link-broken {
+    background: #fef2f2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+}
+
+.agent-scope-badge--stars {
+    background: #fffbeb;
+    color: #92400e;
+    border: 1px solid #fde68a;
+}
+
+.agent-scope-badge--verified {
+    background: #eff6ff;
+    color: #1d4ed8;
+    border: 1px solid #bfdbfe;
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+}

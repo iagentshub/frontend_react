@@ -1,0 +1,127 @@
+.connections-react .conn-category-tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--border, var(--line));
+}
+
+.connections-react .conn-card[draggable="true"] {
+  cursor: grab;
+}
+.connections-react .conn-card[draggable="true"]:active {
+  cursor: grabbing;
+}
+
+.connections-react .fco-search-wrap {
+  max-width: 520px;
+}
+.connections-react .fco-chip {
+  line-height: 1.2;
+}
+
+.connections-react .conn-notice {
+  margin: 0 0 14px;
+  padding: 9px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface-2);
+  color: var(--ink-2);
+  font-size: 12px;
+}
+
+.connections-react .conn-notice--error {
+  border-color: color-mix(in srgb, var(--danger) 35%, var(--line));
+  color: var(--danger);
+}
+
+.connections-react .conn-label-filters {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+
+.connections-react .conn-label-filters .fco-lbl-select {
+  min-width: 126px;
+}
+
+.connections-react .conn-label-editor {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.connections-react .conn-label-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  color: var(--ink-2);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.connections-react .conn-label-option input {
+  accent-color: var(--accent);
+}
+
+.connections-react .conn-dynamic-textarea {
+  min-height: 96px;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  resize: vertical;
+}
+
+.connections-react .conn-card-name-row {
+  justify-content: flex-start;
+}
+.connections-react .conn-card-name {
+  margin-right: auto;
+}
+
+.connections-react .conn-owner-badge {
+  flex-shrink: 0;
+  border-radius: 4px;
+  padding: 1px 5px;
+  color: var(--accent);
+  background: var(--accent-dim);
+  font-size: 0.6rem;
+  font-weight: 700;
+}
+
+.connections-react .conn-group-drop-active {
+  background: var(--accent-dim) !important;
+  border-left-color: var(--accent) !important;
+}
+
+.connections-react .conn-modal-error {
+  margin: 0 0 12px;
+}
+
+.connections-react .gsd-group-row:has(input:checked) .gsd-badge {
+  display: inline-flex;
+}
+.connections-react .gsd-badge {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  .connections-react .page-header {
+    align-items: flex-start;
+  }
+  .connections-react .page-actions {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+  .connections-react .conn-category-tabs {
+    overflow-x: auto;
+  }
+  .connections-react .conn-cat-tab {
+    flex: 0 0 auto;
+  }
+  .connections-react .conn-label-editor {
+    grid-template-columns: 1fr;
+  }
+}

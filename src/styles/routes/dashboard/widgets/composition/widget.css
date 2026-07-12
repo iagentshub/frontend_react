@@ -1,0 +1,8 @@
+/* composition widget */
+.w-comp-list { display:flex; flex-direction:column; gap:10px; }
+.w-comp-row { display:flex; flex-direction:column; gap:5px; }
+.w-comp-row-head { display:flex; justify-content:space-between; align-items:center; }
+.w-comp-type-name { font-size:0.78rem; font-weight:600; color:var(--ink); }
+.w-comp-type-pct { font-size:0.72rem; color:var(--ink-3); }
+.w-comp-track { height:5px; border-radius:3px; background:var(--surface-3); overflow:hidden; }
+.w-comp-fill { height:100%; border-radius:3px; }

@@ -1,0 +1,171 @@
+/* ── Memory grid ── */
+.memory-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 12px;
+}
+
+@media (max-width: 768px) {
+    .memory-grid {
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .memory-grid {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+}
+
+/* ── Memory card ── */
+.mem-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    border-radius: 12px;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    overflow: hidden;
+    transition: box-shadow 140ms, border-color 140ms, transform 140ms;
+}
+
+.mem-card:hover {
+    box-shadow: var(--shadow-lg);
+    border-color: var(--line-strong);
+    transform: translateY(-1px);
+}
+
+.mem-card-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px 14px 10px;
+    cursor: pointer;
+}
+
+.mem-card-head {
+    display: flex;
+    align-items: flex-start;
+    gap: 9px;
+}
+
+.mem-card-icon {
+    flex-shrink: 0;
+    width: 30px;
+    height: 30px;
+    border-radius: 7px;
+    background: var(--accent-dim);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent);
+}
+
+.mem-card-icon svg {
+    width: 14px;
+    height: 14px;
+}
+
+.mem-card-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.mem-card-name {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1.25;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.mem-card-sub {
+    font-size: 0.71rem;
+    color: var(--ink-3);
+    font-family: var(--font-mono);
+    margin-top: 2px;
+}
+
+/* ── Footer actions ── */
+.mem-card-actions {
+    display: flex;
+    gap: 4px;
+    padding: 8px 14px 10px;
+    border-top: 1px solid var(--line);
+}
+
+.mem-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    border: none;
+    border-radius: var(--radius);
+    background: none;
+    color: var(--ink-3);
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background 0.1s, color 0.1s;
+}
+
+.mem-action:hover {
+    background: var(--surface-2);
+    color: var(--ink);
+}
+
+.mem-action--edit:hover {
+    background: var(--accent-dim);
+    color: var(--accent);
+}
+
+.mem-action--delete:hover {
+    background: color-mix(in srgb, var(--danger) 7%, transparent);
+    color: var(--danger);
+}
+
+/* ── Empty state ── */
+.mem-empty {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 56px 24px;
+    color: var(--ink-3);
+    font-size: 13px;
+}
+
+/* ── Modal editor ── */
+.mem-modal-box {
+    width: 660px;
+    max-width: 96vw;
+}
+
+.mem-textarea {
+    min-height: 320px;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    line-height: 1.55;
+    resize: vertical;
+}
+
+.mem-filename-wrap {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.mem-filename-wrap .input {
+    flex: 1;
+}
+
+.mem-filename-ext {
+    font-size: 13px;
+    color: var(--ink-3);
+    font-family: var(--font-mono);
+    white-space: nowrap;
+}

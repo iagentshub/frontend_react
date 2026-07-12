@@ -1,0 +1,43 @@
+/* summary — small mode */
+.w-summary-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.w-summary-row {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    padding: 5px 2px;
+    border-bottom: 1px solid var(--line);
+    text-decoration: none;
+    color: inherit;
+    transition: color 0.12s;
+}
+.w-summary-row:last-child { border-bottom: none; }
+.w-summary-row:hover { color: var(--accent); }
+
+.w-summary-row-val {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--ink);
+    line-height: 1;
+    min-width: 28px;
+    text-align: right;
+}
+.w-summary-row:hover .w-summary-row-val { color: var(--accent); }
+
+.w-summary-row-lbl {
+    font-size: 0.75rem;
+    color: var(--ink-3);
+    font-weight: 500;
+}
+
+/* summary — medium mode (cards without icon) */
+.dash-stat-card--compact {
+    padding: 10px 12px;
+    gap: 4px;
+}
+.dash-stat-card--compact .dash-stat-value { font-size: 1.2rem; }
+.dash-stat-card--compact .dash-stat-label { margin-top: 1px; }

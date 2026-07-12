@@ -1,0 +1,561 @@
+.explore-page {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 24px 16px 64px;
+    gap: 12px;
+}
+
+@media (max-width: 768px) {
+    .explore-page {
+        padding-top: 64px;
+    }
+}
+
+@media (max-width: 480px) {
+    .explore-page {
+        padding-top: 58px;
+    }
+}
+
+/* Filters */
+.explore-filters {
+    display: grid;
+    grid-template-columns: 1fr auto auto auto;
+    align-items: center;
+    gap: 8px;
+}
+
+.explore-type-select {
+    font-size: 13px;
+    padding: 7px 28px 7px 10px;
+    width: 130px;
+}
+
+.explore-search-wrap {
+    position: relative;
+    min-width: 0;
+}
+
+.explore-search-icon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--ink-muted);
+    pointer-events: none;
+}
+
+.explore-search {
+    width: 100%;
+    padding: 7px 10px 7px 30px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--surface);
+    color: var(--ink);
+    font-size: 13px;
+    outline: none;
+    box-sizing: border-box;
+}
+
+.explore-search:focus {
+    border-color: var(--accent);
+}
+
+.explore-search-btn {
+    flex-shrink: 0;
+    padding: 7px 18px;
+    font-size: 13px;
+}
+
+@media (max-width: 540px) {
+    .explore-filters {
+        grid-template-columns: 1fr auto;
+        grid-template-rows: auto auto;
+    }
+
+    /* Fila 1: búsqueda (crece) + botón */
+    .explore-search-wrap {
+        grid-column: 1;
+        grid-row: 1;
+    }
+
+    .explore-search-btn {
+        grid-column: 2;
+        grid-row: 1;
+    }
+
+    /* Fila 2: tipo + categoría, cada uno mitad */
+    #explore-type {
+        grid-column: 1;
+        grid-row: 2;
+        width: 100%;
+    }
+
+    #explore-category {
+        grid-column: 2;
+        grid-row: 2;
+        width: 100%;
+    }
+}
+
+/* States */
+.explore-loading {
+    display: flex;
+    justify-content: center;
+    padding: 40px 0;
+}
+
+.explore-empty {
+    display: flex;
+    justify-content: center;
+    padding: 6px 0;
+    color: var(--ink-muted);
+    font-size: 14px;
+}
+
+/* Grid */
+.explore-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 14px;
+}
+
+/* Cards */
+.explore-card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    transition: box-shadow .15s, border-color .15s, transform .12s;
+    text-decoration: none;
+    color: inherit;
+}
+
+.explore-card:hover {
+    box-shadow: var(--shadow-lg);
+    border-color: var(--line-strong);
+    transform: translateY(-2px);
+}
+
+.explore-card-top {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.explore-card-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+    color: #fff;
+    flex-shrink: 0;
+    letter-spacing: -0.01em;
+}
+
+.explore-card-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.explore-card-name {
+    font-size: 14px;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--ink);
+}
+
+.explore-card-meta {
+    font-size: 11px;
+    color: var(--ink-muted);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 2px;
+}
+
+.explore-card-type-badge {
+    font-size: 10px;
+    padding: 1px 6px;
+    border-radius: 10px;
+    background: var(--bg);
+    color: var(--ink-muted);
+    border: 1px solid var(--line);
+    text-transform: uppercase;
+    letter-spacing: .04em;
+}
+
+.explore-card-desc {
+    font-size: 12px;
+    color: var(--ink-muted);
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.explore-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: auto;
+    padding-top: 4px;
+}
+
+.explore-card-author {
+    font-size: 11px;
+    color: var(--ink-muted);
+    text-decoration: none;
+}
+
+.explore-card-author:hover {
+    color: var(--accent);
+}
+
+.explore-card-owner-avatar {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+    font-weight: 700;
+    color: #fff;
+    flex-shrink: 0;
+    text-decoration: none;
+    opacity: 0.85;
+    transition: opacity 0.15s, transform 0.15s;
+    align-self: flex-start;
+    margin-top: 2px;
+}
+
+.explore-card-owner-avatar:hover {
+    opacity: 1;
+    transform: scale(1.12);
+}
+
+.explore-card-star-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--ink-muted);
+    padding: 2px 6px;
+    border-radius: 6px;
+    font-size: 12px;
+    transition: color .12s, background .12s;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+.explore-card-star-btn:hover,
+.explore-card-star-btn.starred {
+    color: #f59e0b;
+}
+
+.explore-card-fork-badge {
+    font-size: 10px;
+    color: var(--ink-muted);
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 1px 6px;
+}
+
+/* Agrupación de acciones (fork + star) en el footer */
+.explore-card-actions {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+}
+
+/* Botón ojo (preview) */
+.explore-card-eye-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--ink-muted);
+    padding: 2px 6px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    line-height: 0;
+    transition: color .12s, background .12s;
+}
+
+.explore-card-eye-btn:hover {
+    color: var(--accent);
+    background: var(--accent-dim);
+}
+
+/* Botón de fork */
+.explore-card-fork-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--ink-muted);
+    padding: 2px 6px;
+    border-radius: 6px;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    transition: color .12s, background .12s;
+    line-height: 0;
+}
+
+.explore-card-fork-btn:hover {
+    color: var(--accent);
+    background: var(--accent-dim);
+}
+
+.explore-card-fork-btn.forked {
+    color: var(--accent);
+    opacity: .6;
+    cursor: default;
+}
+
+.explore-card-fork-btn:disabled {
+    cursor: default;
+}
+
+/* ── User cards ── */
+.explore-user-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    transition: border-color .15s;
+}
+
+.explore-user-card:hover {
+    border-color: var(--line-strong);
+}
+
+.explore-user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: 700;
+    color: #fff;
+    flex-shrink: 0;
+    text-decoration: none;
+}
+
+.explore-user-info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.explore-user-name {
+    font-size: .875rem;
+    font-weight: 600;
+    color: var(--ink);
+    text-decoration: none;
+}
+
+.explore-user-name:hover {
+    text-decoration: underline;
+}
+
+.explore-user-meta {
+    font-size: .78rem;
+    color: var(--ink-3);
+}
+
+.explore-user-actions {
+    display: flex;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+/* When in users mode, grid becomes a single-column list */
+.explore-grid:has(.explore-user-card) {
+    grid-template-columns: 1fr;
+}
+
+/* ── Preview modal: blueprint-style (abp-*) ─────────────────────────────── */
+.ep-box {
+    width: 620px;
+}
+
+.abp-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 4px;
+}
+
+.abp-agent-meta {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.abp-agent-name {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--ink);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.abp-agent-desc {
+    font-size: 12px;
+    color: var(--ink-2);
+    line-height: 1.45;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    overflow: hidden;
+}
+
+.abp-agent-badges {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 2px;
+}
+
+.abp-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.abp-section {
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 12px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-height: 76px;
+}
+
+.abp-section--full {
+    grid-column: 1 / -1;
+}
+
+.abp-section-label {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin-bottom: 2px;
+}
+
+.abp-item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 12.5px;
+    color: var(--ink-2);
+    line-height: 1.35;
+    min-width: 0;
+}
+
+.abp-item-bullet {
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: var(--ink-3);
+    flex-shrink: 0;
+}
+
+.abp-item span:not(.abp-item-bullet) {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex: 1;
+    min-width: 0;
+}
+
+.abp-empty {
+    font-size: 11.5px;
+    color: var(--ink-3);
+}
+
+.abp-cfg-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    font-size: 12px;
+    min-width: 0;
+}
+
+.abp-cfg-key {
+    color: var(--ink-3);
+    flex-shrink: 0;
+}
+
+.abp-cfg-val {
+    color: var(--ink);
+    font-weight: 600;
+    text-align: right;
+}
+
+.abp-cfg-val--on {
+    color: var(--success);
+}
+
+.abp-temp-bar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.abp-temp-track {
+    width: 48px;
+    height: 3px;
+    background: var(--surface-3);
+    border-radius: 2px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.abp-temp-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 2px;
+}
+
+.abp-prompt-pre {
+    font-size: 12px;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    word-break: break-word;
+    margin: 0;
+    max-height: 200px;
+    overflow-y: auto;
+    color: var(--ink-2);
+    font-family: inherit;
+}

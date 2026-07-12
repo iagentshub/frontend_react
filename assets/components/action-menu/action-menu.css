@@ -1,0 +1,89 @@
+/* ── Action Menu — panel de selección con pompas de paso ── */
+
+.action-menu {
+    position: fixed;
+    z-index: 1500;
+    background: var(--surface);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    width: 260px;
+    padding: 8px;
+    animation: fadein 0.12s ease;
+}
+
+.am-opts {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.am-opt {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: var(--radius);
+    border: 1px solid var(--line);
+    background: var(--surface);
+    cursor: pointer;
+    text-align: left;
+    transition: border-color 0.13s, background 0.13s;
+}
+
+.am-opt:hover {
+    border-color: var(--accent);
+    background: var(--accent-dim);
+}
+
+.am-opt-icon {
+    flex-shrink: 0;
+    color: var(--ink-2);
+    display: flex;
+    align-items: center;
+}
+
+.am-opt:hover .am-opt-icon {
+    color: var(--accent);
+}
+
+.am-opt-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.am-opt-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink);
+}
+
+.am-opt-sub {
+    font-size: 11px;
+    color: var(--ink-3);
+    line-height: 1.4;
+}
+
+.am-steps {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px 0 4px;
+}
+
+.am-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: transparent;
+    border: 1.5px solid var(--line-strong);
+    transition: background 0.2s, border-color 0.2s;
+}
+
+.am-dot--active {
+    background: var(--accent);
+    border-color: var(--accent);
+}

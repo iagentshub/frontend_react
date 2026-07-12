@@ -1,0 +1,123 @@
+.route-loading,
+.route-error {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 32px;
+  color: var(--ink);
+  background: var(--bg);
+}
+
+.route-loading .spinner {
+  width: 22px;
+  height: 22px;
+  border: 2px solid var(--line-strong);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Accessibility corrections over the legacy login palette. */
+.login-page .login-sub,
+.login-page .field label,
+.login-page .field input::placeholder,
+.login-page .login-register-link,
+.login-page .login-explore a,
+.login-page .login-lang-btn {
+  color: var(--ink-2);
+}
+
+.login-page .login-register-link a {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+[data-theme="dark-blue"] .login-page .btn-primary,
+[data-theme="dark-blue"] .login-page .login-card-logo span,
+[data-theme="dark-orange"] .login-page .btn-primary,
+[data-theme="dark-orange"] .login-page .login-card-logo span {
+  color: #050505;
+}
+
+[data-theme="dark-red"] .login-page .btn-primary,
+[data-theme="dark-red"] .login-page .login-card-logo span,
+[data-theme="dark-purple"] .login-page .btn-primary,
+[data-theme="dark-purple"] .login-page .login-card-logo span,
+[data-theme^="light-"] .login-page .btn-primary,
+[data-theme^="light-"] .login-page .login-card-logo span {
+  color: #fff;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .login-card {
+    animation: none;
+  }
+}
+
+body.dash-editing .main-nav,
+body.dash-editing .nav-hamburger,
+body.dash-editing .nav-backdrop {
+  display: none !important;
+}
+
+.dash-drag-handle {
+  border: 0;
+  background: transparent;
+  padding: 0;
+}
+
+.des-item {
+  width: 100%;
+  color: inherit;
+  text-align: left;
+}
+
+.agents-page .page-actions {
+  position: relative;
+}
+
+.agents-page .fa-bar {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: stretch;
+  gap: 8px;
+}
+
+.agents-page .fa-search-wrap {
+  width: 100%;
+  flex: none;
+}
+
+.agents-page .fa-filter-group {
+  width: 100%;
+}
+
+.agents-page .fa-option {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  font-family: var(--font);
+}
+
+.agents-page .fa-option--active {
+  background: var(--accent-dim);
+}
+.folder-resource-icon {
+  display: inline-flex;
+  width: 22px;
+  height: 22px;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink-muted, #94a3b8);
+}

@@ -1,0 +1,13 @@
+/* workspace-share-dialog.css — modal para compartir un recurso con un workspace */
+
+.wsd-hint {
+    font-size: 0.82rem;
+    color: var(--ink-3);
+}
+
+.wsd-empty,
+.wsd-loading {
+    font-size: 0.82rem;
+    color: var(--ink-3);
+    padding: 12px 4px;
+}

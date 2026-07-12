@@ -1,0 +1,289 @@
+/* ══════════════════════════════════════════════
+   LAYOUT — shell, topbar, page-content, page-header, empty-state
+══════════════════════════════════════════════ */
+
+/* ── App shell ── */
+.app-shell {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ── Topbar ── */
+.topbar {
+    height: 56px;
+    background: var(--topbar-bg);
+    border-bottom: 1px solid var(--line);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    display: flex;
+    align-items: center;
+    padding: 0 28px;
+    gap: 12px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.topbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    text-decoration: none;
+    margin-right: 8px;
+}
+
+.topbar-brand-mark {
+    width: 28px;
+    height: 28px;
+    border-radius: 7px;
+    background: var(--accent);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 800;
+}
+
+.topbar-sep {
+    width: 1px;
+    height: 22px;
+    background: var(--line-strong);
+    margin: 0 4px;
+    flex-shrink: 0;
+}
+
+.topbar-spacer {
+    flex: 1;
+}
+
+.topbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* ── Page content ── */
+.page-content {
+    flex: 1;
+    padding: 32px 36px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* ── Page header ── */
+.page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.page-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    color: var(--ink);
+}
+
+.page-subtitle {
+    font-size: 13px;
+    color: var(--ink-3);
+    margin-top: 3px;
+}
+
+.page-actions {
+    display: flex;
+    gap: 8px;
+}
+
+/* ── Folder panel toggle ── */
+.af-wrapper,
+.kf-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-top: -20px;
+    /* compensa el gap de page-content para pegar al filtro */
+}
+
+.folder-toggle-row {
+    width: 168px;
+    /* misma anchura que el panel */
+    display: flex;
+    align-items: center;
+}
+
+.folder-toggle-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border: none;
+    border-radius: 5px;
+    background: none;
+    color: var(--ink-muted, #94a3b8);
+    /* gris cuando está oculto */
+    cursor: pointer;
+    padding: 0;
+    flex-shrink: 0;
+    transition: color .15s;
+}
+
+.folder-toggle-btn--on {
+    color: var(--danger, #ef4444);
+    /* rojo cuando está visible */
+}
+
+.folder-toggle-btn:hover {
+    color: var(--accent);
+}
+
+/* ── Paneles laterales (carpetas y grupos) — base compartida ── */
+.af-layout {
+    display: flex;
+    gap: 0;
+    align-items: flex-start;
+}
+
+.af-groups-panel {
+    width: 168px;
+    flex-shrink: 0;
+    border-right: 1px solid var(--line);
+    padding-right: 12px;
+    transition: width 0.2s ease, min-width 0.2s ease, padding 0.2s ease, opacity 0.2s ease;
+}
+
+.af-content {
+    flex: 1;
+    min-width: 0;
+    padding-left: 20px;
+}
+
+@media (max-width: 768px) {
+    .af-layout {
+        flex-direction: column;
+    }
+
+    .af-groups-panel {
+        width: 100%;
+        border-right: none;
+        padding-right: 0;
+        border-bottom: 1px solid var(--line);
+        padding-bottom: 10px;
+        margin-bottom: 16px;
+    }
+
+    .af-content {
+        padding-left: 0;
+    }
+}
+
+/* Panel colapsado */
+.af-groups-panel.folder-panel--collapsed,
+.kf-panel.folder-panel--collapsed {
+    width: 0 !important;
+    min-width: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    overflow: hidden !important;
+    opacity: 0;
+}
+
+.af-groups-panel,
+.kf-panel {
+    transition: width 0.2s ease, min-width 0.2s ease, padding 0.2s ease, opacity 0.2s ease;
+}
+
+/* Fila de toggles — puede tener más de un botón */
+.folder-toggle-row {
+    gap: 4px;
+}
+
+/* ── Responsive ── */
+@media (max-width: 1024px) {
+    .page-content {
+        padding: 28px 28px;
+        gap: 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .page-content {
+        /* top padding extra para el botón hamburger */
+        padding: 64px 16px 28px;
+        gap: 18px;
+    }
+
+    .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .page-title {
+        font-size: 1.25rem;
+    }
+
+    .page-actions {
+        width: 100%;
+        flex-wrap: wrap;
+    }
+}
+
+@media (max-width: 480px) {
+    .page-content {
+        padding: 58px 12px 20px;
+        gap: 14px;
+    }
+
+    .page-title {
+        font-size: 1.1rem;
+    }
+
+    .page-actions {
+        gap: 6px;
+    }
+
+    .topbar {
+        padding: 0 12px 0 52px;
+        gap: 8px;
+    }
+
+    .topbar-brand {
+        font-size: 14px;
+    }
+
+    .empty-state {
+        padding: 40px 12px;
+    }
+}
+
+/* ── Empty state ── */
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 72px 20px;
+    color: var(--ink-3);
+    text-align: center;
+}
+
+.empty-state svg {
+    opacity: 0.2;
+}
+
+.empty-state p {
+    font-size: 14px;
+    line-height: 1.6;
+}

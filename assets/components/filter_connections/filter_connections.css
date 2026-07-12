@@ -1,0 +1,172 @@
+/* filter_connections */
+
+.fco-bar {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    padding-bottom: 18px;
+}
+
+.fco-top-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+}
+
+.fco-search-wrap {
+    flex: 1 1 200px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    background: var(--surface);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius);
+    padding: 0 10px;
+    transition: border-color .15s;
+}
+
+.fco-search-wrap:focus-within {
+    border-color: var(--accent);
+}
+
+.fco-search-wrap>svg {
+    flex-shrink: 0;
+    color: var(--ink-3);
+}
+
+.fco-search-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    background: none;
+    font-size: 13px;
+    color: var(--ink);
+    padding: 8px 0;
+    font-family: var(--font);
+    min-width: 0;
+}
+
+.fco-search-input::placeholder {
+    color: var(--ink-3);
+}
+
+.fco-search-clear {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    border: none;
+    background: none;
+    color: var(--ink-3);
+    cursor: pointer;
+    padding: 0;
+    border-radius: 50%;
+    flex-shrink: 0;
+    transition: color .1s, background .1s;
+}
+
+.fco-search-clear:hover {
+    color: var(--ink);
+    background: var(--surface-2);
+}
+
+.fco-chips-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+.fco-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: 20px;
+    border: 1px solid var(--line);
+    background: transparent;
+    color: var(--ink-3);
+    font-size: 12px;
+    font-weight: 500;
+    font-family: var(--font);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: border-color .12s, color .12s, background .12s;
+}
+
+.fco-chip:hover {
+    border-color: var(--line-strong);
+    color: var(--ink-2);
+}
+
+.fco-chip--active {
+    border-color: var(--accent);
+    background: var(--accent-dim);
+    color: var(--accent-2);
+}
+
+/* ── Select de etiquetas por grupo ── */
+.fco-lbl-sel-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.fco-lbl-sel-wrap--on::before {
+    content: '';
+    position: absolute;
+    left: 8px;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--lc, #64748b);
+    pointer-events: none;
+    z-index: 1;
+}
+
+.fco-lbl-select {
+    height: 34px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+    color: var(--ink-2);
+    font-size: 12px;
+    font-family: var(--font);
+    cursor: pointer;
+    padding: 0 10px;
+    transition: border-color .12s;
+    appearance: auto;
+}
+
+.fco-lbl-sel-wrap--on .fco-lbl-select {
+    padding-left: 22px;
+    border-color: var(--lc, var(--accent));
+    color: var(--ink);
+}
+
+.fco-lbl-select:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+.fco-clear-all {
+    padding: 6px 11px;
+    border: none;
+    border-radius: var(--radius);
+    background: none;
+    color: var(--ink-3);
+    font-size: 12px;
+    font-weight: 500;
+    font-family: var(--font);
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: color .1s;
+}
+
+.fco-clear-all:hover {
+    color: var(--danger);
+}

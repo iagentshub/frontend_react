@@ -1,0 +1,234 @@
+
+        /* Estilos propios de la landing React, autocontenidos. */
+        .landing-page {
+            display: none;
+        }
+
+        .landing-header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 0 28px;
+            height: 56px;
+            max-width: 1100px;
+            margin: 0 auto;
+            background: var(--topbar-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        /* Logo de marca: "iAgents" + "Hub" en píldora — idéntico al de
+           /login/ (.login-logo) y al del nav principal (.nav-logo-hub). */
+        .landing-logo {
+            display: inline-flex;
+            align-items: center;
+            font-size: 1rem;
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            color: var(--ink);
+            text-decoration: none;
+            flex-shrink: 0;
+        }
+
+        .landing-logo span {
+            color: #fff;
+            background: var(--accent);
+            border-radius: var(--radius-sm);
+            padding: 0.06em 0.3em 0.1em;
+            margin-left: 4px;
+            letter-spacing: -0.02em;
+        }
+
+        .landing-header-spacer {
+            flex: 1;
+        }
+
+        .landing-lang-btn {
+            background: var(--surface-2);
+            border: 1px solid var(--line);
+            color: var(--ink-2);
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            padding: 4px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.15s, color 0.15s;
+        }
+
+        .landing-lang-btn:hover {
+            background: var(--surface-3);
+            color: var(--ink);
+        }
+
+        .landing-hero {
+            max-width: 760px;
+            margin: 0 auto;
+            padding: 64px 32px 40px;
+            text-align: center;
+        }
+
+        .landing-hero-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 999px;
+            background: var(--accent-dim);
+            color: var(--accent);
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            margin-bottom: 20px;
+        }
+
+        .landing-hero-title {
+            font-size: 42px;
+            font-weight: 800;
+            line-height: 1.15;
+            margin-bottom: 16px;
+        }
+
+        .landing-hero-body {
+            font-size: 17px;
+            color: var(--ink-2);
+            line-height: 1.6;
+            margin-bottom: 32px;
+        }
+
+        /* Estadísticas del hero (copiadas de /login/: .login-stats) */
+        .landing-hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 0;
+        }
+
+        .landing-hero-stat {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            padding: 0 28px;
+            border-right: 1px solid var(--line);
+        }
+
+        .landing-hero-stat:last-child {
+            border-right: none;
+        }
+
+        .landing-hero-stat-num {
+            font-size: 1.6rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            color: var(--ink);
+        }
+
+        .landing-hero-stat-accent {
+            color: var(--accent);
+        }
+
+        .landing-hero-stat-label {
+            font-size: 10.5px;
+            color: var(--ink-3);
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+            font-weight: 600;
+        }
+
+        .landing-section {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 24px 32px;
+        }
+
+        .landing-install {
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            margin-top: 12px;
+        }
+
+        .landing-install-title {
+            font-weight: 700;
+            margin-bottom: 6px;
+            font-size: 14px;
+        }
+
+        .landing-install-toggles {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+
+        /* Botón de ciclo: un único control por dimensión (no una barra con todas
+           las opciones a la vista) — hace clic para pasar al siguiente valor. */
+        .landing-toggle {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--surface-2);
+            border: 1px solid var(--line);
+            color: var(--ink);
+            font-size: 12px;
+            font-weight: 600;
+            padding: 6px 14px;
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: background 0.15s, border-color 0.15s;
+        }
+
+        .landing-toggle:hover {
+            background: var(--surface-3);
+        }
+
+        .landing-toggle::after {
+            content: "⇄";
+            color: var(--ink-3);
+            font-size: 11px;
+        }
+
+        .landing-install-cmd {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--surface-2);
+            border-radius: var(--radius);
+            padding: 12px 14px;
+        }
+
+        .landing-install-code.is-undefined {
+            font-style: italic;
+            color: var(--ink-3);
+        }
+
+        .landing-install-code {
+            flex: 1;
+            font-family: var(--font-mono);
+            font-size: 13px;
+            color: var(--ink);
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
+        .landing-footer {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 32px 32px 48px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            color: var(--ink-2);
+            font-size: 13px;
+        }
+
+        .landing-footer a {
+            color: var(--ink-2);
+        }
+
+        .landing-footer a:hover {
+            color: var(--accent);
+        }
+    

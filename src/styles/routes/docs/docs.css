@@ -1,0 +1,400 @@
+/* docs.css — standalone, uses global CSS variable system */
+
+body.docs-page {
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--ink);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── Header ── */
+.docs-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    height: 54px;
+    padding: 0 32px;
+    background: var(--topbar-bg);
+    border-bottom: 1px solid var(--line);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+}
+
+.docs-logo {
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    text-decoration: none;
+    flex-shrink: 0;
+}
+
+.docs-logo span {
+    background: var(--accent);
+    border-radius: 5px;
+    padding: 0.06em 0.28em 0.1em;
+    margin-left: 3px;
+    color: #fff;
+}
+
+.docs-header-divider {
+    width: 1px;
+    height: 16px;
+    background: var(--line-strong);
+    flex-shrink: 0;
+}
+
+.docs-header-label {
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--ink-3);
+}
+
+.docs-header-spacer { flex: 1; }
+
+.docs-header-lang {
+    background: none;
+    border: none;
+    color: var(--ink-3);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-family: var(--font);
+    transition: color 0.15s, background 0.15s;
+}
+
+.docs-header-lang:hover {
+    color: var(--ink-2);
+    background: var(--surface-2);
+}
+
+.docs-header-action {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ink-3);
+    text-decoration: none;
+    padding: 6px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--line);
+    transition: color 0.15s, border-color 0.15s, background 0.15s;
+    white-space: nowrap;
+}
+
+.docs-header-action:hover {
+    color: var(--ink);
+    border-color: var(--line-strong);
+    background: var(--surface-2);
+}
+
+/* ── Shell layout ── */
+.docs-shell {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 52px 32px 96px;
+    display: grid;
+    grid-template-columns: 188px 1fr;
+    gap: 52px;
+    align-items: start;
+}
+
+/* ── Aside / section nav ── */
+.docs-aside {
+    position: sticky;
+    top: 78px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.docs-nav-link {
+    display: block;
+    padding: 7px 11px;
+    border-radius: 8px;
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--ink-3);
+    text-decoration: none;
+    transition: color 0.12s, background 0.12s;
+}
+
+.docs-nav-link:hover {
+    color: var(--ink-2);
+    background: var(--surface-2);
+}
+
+.docs-nav-link.active {
+    color: var(--ink);
+    background: var(--surface-3);
+}
+
+/* ── Hero ── */
+.docs-hero {
+    margin-bottom: 28px;
+}
+
+.docs-hero h1 {
+    font-size: clamp(1.75rem, 3vw, 2.25rem);
+    font-weight: 800;
+    letter-spacing: -0.045em;
+    line-height: 1.1;
+    margin-bottom: 8px;
+    color: var(--ink);
+}
+
+.docs-hero p {
+    font-size: 14px;
+    color: var(--ink-3);
+    line-height: 1.6;
+}
+
+/* ── Sections / accordions ── */
+.docs-content {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.docs-section {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    overflow: hidden;
+    transition: border-color 0.15s;
+}
+
+.docs-section:hover {
+    border-color: var(--line-strong);
+}
+
+.docs-section details { display: block; }
+
+.docs-section summary {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 20px;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--ink);
+    cursor: pointer;
+    user-select: none;
+    gap: 8px;
+    transition: background 0.12s;
+}
+
+.docs-section summary::-webkit-details-marker { display: none; }
+
+.docs-section summary::after {
+    content: '';
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    border-right: 1.5px solid var(--ink-3);
+    border-bottom: 1.5px solid var(--ink-3);
+    transform: rotate(45deg) translate(-1px, -1px);
+    flex-shrink: 0;
+    transition: transform 0.15s;
+}
+
+.docs-section details[open] summary::after {
+    transform: rotate(-135deg) translate(-2px, -2px);
+}
+
+.docs-section summary:hover {
+    background: var(--surface-2);
+}
+
+.docs-section-body {
+    padding: 0 20px 20px;
+    border-top: 1px solid var(--line);
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+/* ── Account types block ── */
+.docs-accounts {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+.docs-accounts-title {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin-bottom: 4px;
+}
+
+.docs-account {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--line);
+}
+
+.docs-account-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+    opacity: 0.7;
+}
+
+.docs-account strong {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 3px;
+}
+
+.docs-account p {
+    font-size: 12px;
+    line-height: 1.6;
+    color: var(--ink-2);
+    margin: 0;
+}
+
+.docs-intro {
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--ink-2);
+    padding-top: 16px;
+    padding-bottom: 4px;
+}
+
+/* ── Body items (title + paragraph) ── */
+.docs-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding-top: 14px;
+}
+
+.docs-item strong {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: var(--ink);
+}
+
+.docs-item p {
+    font-size: 13px;
+    line-height: 1.65;
+    color: var(--ink-3);
+    margin: 0;
+}
+
+/* ── Glossary (keywords) ── */
+.docs-glossary {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    padding-top: 14px;
+}
+
+.docs-term {
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 12px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.docs-term strong {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: 0.01em;
+}
+
+.docs-term p {
+    font-size: 12px;
+    line-height: 1.6;
+    color: var(--ink-3);
+    margin: 0;
+}
+
+@media (max-width: 600px) {
+    .docs-glossary { grid-template-columns: 1fr; }
+}
+
+/* ── Steps (getting started) ── */
+.docs-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-top: 14px;
+}
+
+.docs-step {
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 12px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.docs-step strong {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--ink);
+}
+
+.docs-step p {
+    font-size: 12.5px;
+    line-height: 1.65;
+    color: var(--ink-3);
+    margin: 0;
+}
+
+/* ── Mobile ── */
+@media (max-width: 820px) {
+    .docs-shell {
+        grid-template-columns: 1fr;
+        padding: 28px 20px 64px;
+        gap: 20px;
+    }
+
+    .docs-aside {
+        position: static;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 4px;
+    }
+
+    .docs-nav-link {
+        background: var(--surface-2);
+        font-size: 12px;
+        padding: 5px 10px;
+    }
+
+    .docs-header {
+        padding: 0 20px;
+        gap: 10px;
+    }
+
+    .docs-header-label { display: none; }
+    .docs-header-divider { display: none; }
+}

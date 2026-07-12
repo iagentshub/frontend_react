@@ -1,0 +1,56 @@
+/* filter_memory */
+
+.fmem-bar {
+    display: flex;
+    align-items: center;
+    padding-bottom: 18px;
+}
+
+.fmem-search-wrap {
+    flex: 1 1 200px;
+    max-width: 420px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    background: var(--surface);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius);
+    padding: 0 10px;
+    transition: border-color .15s;
+}
+
+.fmem-search-wrap:focus-within { border-color: var(--accent); }
+
+.fmem-search-wrap > svg { flex-shrink: 0; color: var(--ink-3); }
+
+.fmem-search-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    background: none;
+    font-size: 13px;
+    color: var(--ink);
+    padding: 8px 0;
+    font-family: var(--font);
+    min-width: 0;
+}
+
+.fmem-search-input::placeholder { color: var(--ink-3); }
+
+.fmem-search-clear {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    border: none;
+    background: none;
+    color: var(--ink-3);
+    cursor: pointer;
+    padding: 0;
+    border-radius: 50%;
+    flex-shrink: 0;
+    transition: color .1s, background .1s;
+}
+
+.fmem-search-clear:hover { color: var(--ink); background: var(--surface-2); }

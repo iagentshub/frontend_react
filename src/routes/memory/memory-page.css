@@ -1,0 +1,102 @@
+.memory-react .memory-notice {
+  margin: 0 0 14px;
+  padding: 9px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  color: var(--ink-2);
+  background: var(--surface-2);
+  font-size: 12px;
+}
+
+.memory-react .memory-notice--error {
+  color: var(--danger);
+  border-color: color-mix(in srgb, var(--danger) 35%, var(--line));
+}
+
+.memory-react .memory-new-wrap {
+  position: relative;
+}
+
+.memory-react .memory-action-menu {
+  position: absolute;
+  z-index: 40;
+  top: calc(100% + 7px);
+  right: 0;
+  width: min(310px, calc(100vw - 32px));
+  padding: 5px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface);
+  box-shadow: var(--shadow-lg);
+}
+
+.memory-react .memory-menu-item {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  column-gap: 8px;
+  padding: 9px 10px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--ink);
+  text-align: left;
+  cursor: pointer;
+  font-family: var(--font);
+}
+
+.memory-react .memory-menu-item:hover,
+.memory-react .memory-menu-item:focus-visible {
+  background: var(--surface-2);
+  outline: none;
+}
+.memory-react .memory-menu-icon {
+  grid-row: 1 / 3;
+  align-self: center;
+  color: var(--accent);
+}
+.memory-react .memory-menu-label {
+  font-size: 13px;
+  font-weight: 600;
+}
+.memory-react .memory-menu-sub {
+  margin-top: 2px;
+  color: var(--ink-3);
+  font-size: 11px;
+}
+.memory-react .mem-card-body {
+  border: 0;
+  background: transparent;
+  text-align: left;
+  font-family: inherit;
+}
+.memory-react .mem-card-actions {
+  justify-content: flex-start;
+}
+.memory-react .mem-card-updated {
+  margin-left: auto;
+  align-self: center;
+  color: var(--ink-3);
+  font-size: 10px;
+}
+.memory-react .mem-filename-wrap .input[readonly] {
+  color: var(--ink-2);
+  background: var(--surface-2);
+  cursor: default;
+}
+.memory-react .memory-modal-error {
+  margin-bottom: 12px;
+}
+
+@media (max-width: 560px) {
+  .memory-react .page-header {
+    align-items: flex-start;
+  }
+  .memory-react .mem-modal-box {
+    max-height: calc(100vh - 24px);
+    overflow-y: auto;
+  }
+  .memory-react .mem-textarea {
+    min-height: 230px;
+  }
+}

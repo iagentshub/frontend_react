@@ -1,0 +1,252 @@
+/* ── Label chips (solo lectura, para tarjetas y listas) ────────────────────── */
+
+.label-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: #fff;
+    background: var(--lc, #64748b);
+    white-space: nowrap;
+    line-height: 1.4;
+}
+
+.label-chip::before {
+    content: '';
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, .65);
+    flex-shrink: 0;
+}
+
+/* Chip clicable (enlazado → perfil del propietario) */
+.label-chip--link {
+    text-decoration: none;
+    cursor: pointer;
+    transition: filter 0.15s;
+}
+
+.label-chip--link:hover {
+    filter: brightness(0.85);
+}
+
+.label-chips-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-top: 6px;
+}
+
+/* ── Resource ownership badges (usado en agent-card, conn-card, knowledge cards) */
+.res-badge {
+    flex-shrink: 0;
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 9.5px;
+    font-weight: 700;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+/* "Tuyo" — aparece en modo grupo cuando eres el propietario */
+.res-badge--mine {
+    background: rgba(100, 116, 139, .10);
+    color: #64748b;
+}
+
+/* "Compartido" — recurso de otro miembro del grupo */
+.res-badge--shared {
+    background: rgba(99, 102, 241, .12);
+    color: #6366f1;
+}
+
+/* Icono de propietario: compacto, solo icono, tooltip con el nombre, click → perfil */
+.res-badge--owner-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3px 5px;
+    text-decoration: none;
+    line-height: 1;
+    transition: background 0.15s;
+    border-radius: 4px;
+}
+
+.res-badge--owner-icon:hover {
+    background: rgba(99, 102, 241, 0.25);
+}
+
+/* ── Picker (formularios) ───────────────────────────────────────────────────── */
+
+.lbl-picker {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px 12px;
+}
+
+.lbl-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.lbl-group-title {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--ink-muted);
+}
+
+.lbl-group-btns {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+/* ── Select wrapper con punto de color ── */
+.lbl-select-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.lbl-select-wrap::before {
+    content: '';
+    position: absolute;
+    left: 10px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--lc, transparent);
+    pointer-events: none;
+    z-index: 1;
+    transition: background 0.15s;
+}
+
+.lbl-select {
+    padding-left: 26px !important;
+}
+
+/* Botón de segmento — grupos exclusivos y ninguno */
+.lbl-seg-btn {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 4px 11px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--ink-muted);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    transition: background .12s, color .12s, border-color .12s;
+    line-height: 1.4;
+}
+
+.lbl-seg-btn::before {
+    content: '';
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--lc, var(--line-strong));
+    flex-shrink: 0;
+    transition: opacity .12s;
+    opacity: .45;
+}
+
+.lbl-seg-none::before {
+    display: none;
+}
+
+.lbl-seg-btn:hover {
+    border-color: var(--lc, var(--accent));
+    color: var(--ink);
+}
+
+.lbl-seg-btn.active {
+    background: var(--lc, var(--accent));
+    border-color: var(--lc, var(--accent));
+    color: #fff;
+}
+
+.lbl-seg-btn.active::before {
+    background: rgba(255, 255, 255, .75);
+    opacity: 1;
+}
+
+.lbl-seg-none.active {
+    background: var(--bg);
+    border-color: var(--line-strong);
+    color: var(--ink);
+}
+
+/* ── Filtro de etiquetas en barra de filtros ────────────────────────────────── */
+
+.lbl-filter-strip {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    align-items: center;
+}
+
+.lbl-filter-chip {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    padding: 3px 10px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--ink-muted);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: background .12s, color .12s, border-color .12s;
+    white-space: nowrap;
+}
+
+.lbl-filter-chip::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--lc, #94a3b8);
+    flex-shrink: 0;
+}
+
+.lbl-filter-chip:hover {
+    border-color: var(--lc, var(--accent));
+    color: var(--ink);
+}
+
+.lbl-filter-chip.active {
+    background: var(--lc, var(--accent));
+    border-color: var(--lc, var(--accent));
+    color: #fff;
+}
+
+.lbl-filter-chip.active::before {
+    background: rgba(255, 255, 255, .75);
+}
+
+.lbl-filter-chip--all {
+    background: var(--bg);
+}
+
+.lbl-filter-chip--all.active {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: var(--bg);
+}
+
+.lbl-filter-chip--all::before {
+    display: none;
+}

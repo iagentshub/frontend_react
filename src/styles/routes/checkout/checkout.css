@@ -1,0 +1,81 @@
+/* checkout.css */
+
+.co-main {
+    max-width: 480px;
+    padding-top: 56px;
+}
+
+.co-card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    padding: 28px;
+}
+
+.co-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 0 0 20px;
+    color: var(--ink);
+}
+
+.co-summary {
+    background: var(--surface-2);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    margin-bottom: 20px;
+}
+
+.co-summary-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    color: var(--ink-2);
+    margin-bottom: 6px;
+}
+
+.co-summary-total {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--ink);
+}
+
+.co-summary-total span:last-child {
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--ink-3);
+}
+
+#payment-element {
+    margin-bottom: 16px;
+}
+
+.co-error {
+    background: rgba(255, 59, 48, 0.1);
+    color: var(--accent);
+    border-radius: var(--radius);
+    padding: 10px 12px;
+    font-size: 13px;
+    margin-bottom: 16px;
+}
+
+.co-submit {
+    width: 100%;
+    background: var(--accent);
+    color: #fff;
+}
+
+.co-submit:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.co-success {
+    text-align: center;
+    color: var(--ink-2);
+    font-size: 14px;
+    padding: 12px 0;
+}

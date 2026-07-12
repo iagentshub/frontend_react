@@ -1,0 +1,167 @@
+/* filter_skills — barra de filtros minimalista para skills */
+
+.fsk-bar {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-bottom: 18px;
+}
+
+/* ── Fila superior ── */
+.fsk-top-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+/* ── Buscador ── */
+.fsk-search-wrap {
+    flex: 1 1 200px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    background: var(--surface);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius);
+    padding: 0 10px;
+    transition: border-color .15s;
+}
+
+.fsk-search-wrap:focus-within {
+    border-color: var(--accent);
+}
+
+.fsk-search-wrap > svg {
+    flex-shrink: 0;
+    color: var(--ink-3);
+}
+
+.fsk-search-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    background: none;
+    font-size: 13px;
+    color: var(--ink);
+    padding: 8px 0;
+    font-family: var(--font);
+    min-width: 0;
+}
+
+.fsk-search-input::placeholder {
+    color: var(--ink-3);
+}
+
+.fsk-search-clear {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    border: none;
+    background: none;
+    color: var(--ink-3);
+    cursor: pointer;
+    padding: 0;
+    border-radius: 50%;
+    flex-shrink: 0;
+    transition: color .1s, background .1s;
+}
+
+.fsk-search-clear:hover {
+    color: var(--ink);
+    background: var(--surface-2);
+}
+
+/* ── Control segmentado de scope ── */
+.fsk-segment {
+    display: inline-flex;
+    flex-shrink: 0;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius);
+    overflow: hidden;
+}
+
+.fsk-segment-btn {
+    padding: 6px 13px;
+    border: none;
+    border-right: 1px solid var(--line-strong);
+    background: transparent;
+    color: var(--ink-3);
+    font-size: 12px;
+    font-weight: 500;
+    font-family: var(--font);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: color .12s, background .12s;
+}
+
+.fsk-segment-btn:last-child {
+    border-right: none;
+}
+
+.fsk-segment-btn:hover {
+    color: var(--ink);
+    background: var(--surface-2);
+}
+
+.fsk-segment-btn--active {
+    color: var(--ink);
+    background: var(--surface-2);
+}
+
+/* ── Limpiar filtros ── */
+.fsk-clear-all {
+    padding: 6px 11px;
+    border: none;
+    border-radius: var(--radius);
+    background: none;
+    color: var(--ink-3);
+    font-size: 12px;
+    font-weight: 500;
+    font-family: var(--font);
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: color .1s;
+}
+
+.fsk-clear-all:hover {
+    color: var(--danger);
+}
+
+/* ── Fila de categorías ── */
+.fsk-cats-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+/* ── Chip de categoría ── */
+.fsk-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: 20px;
+    border: 1px solid var(--line);
+    background: transparent;
+    color: var(--ink-3);
+    font-size: 12px;
+    font-weight: 500;
+    font-family: var(--font);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: border-color .12s, color .12s, background .12s;
+}
+
+.fsk-chip:hover {
+    border-color: var(--line-strong);
+    color: var(--ink-2);
+}
+
+.fsk-chip--active {
+    border-color: var(--accent);
+    background: var(--accent-dim);
+    color: var(--accent-2);
+}

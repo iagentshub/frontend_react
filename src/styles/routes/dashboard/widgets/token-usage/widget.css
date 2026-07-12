@@ -1,0 +1,31 @@
+/* token-usage widget */
+.w-token-total-row { display:flex; align-items:baseline; gap:6px; }
+.w-token-total-value { font-size:1.4rem; font-weight:800; color:var(--ink); letter-spacing:-0.02em; }
+.w-token-total-label { font-size:0.72rem; color:var(--ink-3); }
+.w-token-spark { margin:4px 0 8px; opacity:0.9; }
+.w-token-list { flex:1; display:flex; flex-direction:column; justify-content:space-evenly; min-height:0; }
+.w-token-row { display:flex; flex-direction:column; gap:4px; }
+.w-token-row-head { display:flex; justify-content:space-between; align-items:center; }
+.w-token-name-wrap { display:flex; flex-direction:column; gap:1px; min-width:0; max-width:62%; overflow:hidden; }
+.w-token-name { font-size:0.78rem; font-weight:600; color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.w-token-sub  { font-size:0.65rem; color:var(--ink-3); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.w-token-amount { font-size:0.72rem; color:var(--ink-3); font-family:var(--font-mono); white-space:nowrap; }
+.w-token-track { height:5px; border-radius:3px; background:var(--surface-3); overflow:hidden; }
+.w-token-fill { height:100%; border-radius:3px; background:var(--accent); transition:width 0.4s ease; }
+.w-donut-wrap { flex:1; display:flex; align-items:center; justify-content:center; gap:18px; flex-wrap:wrap; min-height:0; }
+.w-donut-legend { display:flex; flex-direction:column; gap:8px; flex:1; min-width:0; }
+.w-donut-legend--rich { gap:0; justify-content:space-evenly; align-self:stretch; }
+.w-donut-legend-item { display:flex; align-items:center; gap:7px; min-width:0; }
+.w-donut-legend--rich .w-donut-legend-item { align-items:flex-start; padding:6px 0; border-bottom:1px solid var(--line); }
+.w-donut-legend--rich .w-donut-legend-item:last-child { border-bottom:none; }
+.w-donut-dot { width:9px; height:9px; border-radius:50%; flex-shrink:0; margin-top:3px; }
+.w-donut-legend-name { font-size:0.78rem; font-weight:600; color:var(--ink); flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.w-donut-legend-val { font-size:0.72rem; color:var(--ink-3); font-family:var(--font-mono); white-space:nowrap; }
+
+/* rich legend extras */
+.w-donut-legend-info { flex:1; min-width:0; display:flex; flex-direction:column; gap:5px; }
+.w-donut-legend-head { display:flex; align-items:baseline; gap:6px; min-width:0; }
+.w-donut-legend-sub  { font-size:0.67rem; color:var(--ink-3); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; flex:1; min-width:0; }
+.w-donut-legend-pct  { font-size:0.72rem; font-weight:700; color:var(--ink-3); white-space:nowrap; margin-left:auto; }
+.w-donut-legend-track { height:4px; border-radius:2px; background:var(--surface-3); overflow:hidden; }
+.w-donut-legend-fill  { height:100%; border-radius:2px; transition:width 0.4s ease; opacity:0.75; }

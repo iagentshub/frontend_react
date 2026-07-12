@@ -1,0 +1,168 @@
+/* Feed drawer widget */
+
+.feed-drawer-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.35);
+    z-index: 700;
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+}
+.feed-drawer-backdrop.visible { display: block; }
+
+.feed-drawer {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100vh;
+    width: 360px;
+    max-width: 100vw;
+    background: var(--surface);
+    border-left: 1px solid var(--line);
+    box-shadow: var(--shadow-lg);
+    z-index: 701;
+    display: flex;
+    flex-direction: column;
+    transform: translateX(100%);
+    transition: transform .22s ease;
+    overflow: hidden;
+}
+.feed-drawer.open { transform: translateX(0); }
+
+.feed-drawer-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 18px 14px;
+    border-bottom: 1px solid var(--line);
+    flex-shrink: 0;
+}
+.feed-drawer-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink);
+    flex: 1;
+}
+.feed-drawer-close {
+    background: none;
+    border: none;
+    color: var(--ink-muted);
+    cursor: pointer;
+    padding: 4px;
+    line-height: 0;
+    border-radius: var(--radius-sm);
+    transition: background .12s, color .12s;
+}
+.feed-drawer-close:hover { background: var(--surface-2); color: var(--ink); }
+
+.feed-drawer-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.feed-drawer-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 56px 16px;
+    text-align: center;
+    color: var(--ink-muted);
+    font-size: 13px;
+}
+.feed-drawer-empty svg { opacity: .35; }
+.feed-drawer-empty a { color: var(--accent); text-decoration: none; font-size: 13px; }
+.feed-drawer-empty a:hover { text-decoration: underline; }
+
+/* Mini card */
+.feed-mini-card {
+    display: block;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 12px 14px;
+    background: var(--surface-2);
+    text-decoration: none;
+    transition: border-color .13s, background .13s;
+}
+.feed-mini-card:hover { border-color: var(--line-strong); background: var(--surface); }
+
+.feed-mini-top {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 6px;
+}
+.feed-mini-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    color: #fff;
+    flex-shrink: 0;
+    letter-spacing: -0.01em;
+}
+.feed-mini-info { flex: 1; min-width: 0; }
+.feed-mini-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.feed-mini-meta {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: var(--ink-muted);
+    margin-top: 1px;
+}
+.feed-mini-type-badge {
+    background: var(--accent-dim);
+    color: var(--accent);
+    border-radius: 10px;
+    padding: 1px 6px;
+    font-size: 10px;
+    font-weight: 600;
+}
+.feed-mini-desc {
+    font-size: 12px;
+    color: var(--ink-2);
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+.feed-mini-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 8px;
+    font-size: 11px;
+    color: var(--ink-muted);
+}
+.feed-mini-author { text-decoration: none; color: var(--ink-muted); }
+.feed-mini-author:hover { color: var(--accent); }
+.feed-mini-star { cursor: pointer; background: none; border: none; color: var(--ink-muted); font-size: 11px; padding: 0; transition: color .12s; }
+.feed-mini-star:hover, .feed-mini-star.starred { color: var(--accent); }
+
+.feed-drawer-spinner {
+    display: flex;
+    justify-content: center;
+    padding: 40px 0;
+}
+
+@media (max-width: 480px) {
+    .feed-drawer { width: 100vw; }
+}

@@ -1,0 +1,19 @@
+/* activity widget */
+.w-activity-histo      { display:flex; align-items:flex-end; gap:2px; height:72px; }
+.w-activity-histo--md  { height:52px; }
+.w-activity-histo--mini{ height:32px; margin-top:8px; }
+.w-activity-bar { flex:1; background:var(--accent); border-radius:2px 2px 0 0; min-height:2px; opacity:0.8; transition:opacity 0.15s; }
+.w-activity-bar:hover { opacity:1; }
+.w-activity-foot { display:flex; justify-content:space-between; margin-top:4px; }
+.w-activity-foot-label { font-size:0.68rem; color:var(--ink-3); }
+
+/* activity — small hero */
+.w-activity-hero { display:flex; align-items:baseline; gap:8px; }
+.w-activity-hero-val {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--ink);
+    letter-spacing: -0.03em;
+    line-height: 1;
+}
+.w-activity-hero-lbl { font-size:0.75rem; color:var(--ink-3); }

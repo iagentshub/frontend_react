@@ -1,0 +1,589 @@
+/* knowledge.css — Conocimiento (Skills · Webs · Documentos) */
+
+/* ── Panel layout ──────────────────────────────────────────────────────────── */
+.knowledge-tab-layout {
+    display: flex;
+    gap: 0;
+    align-items: flex-start;
+    min-height: 0;
+}
+
+.knowledge-tab-content {
+    flex: 1;
+    min-width: 0;
+    padding-left: 20px;
+}
+
+.kf-panel {
+    width: 168px;
+    flex-shrink: 0;
+    border-right: 1px solid var(--line);
+    padding-right: 12px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+
+    /* Layout: stack vertically */
+    .knowledge-tab-layout {
+        flex-direction: column;
+    }
+
+    .knowledge-tab-content {
+        padding-left: 0;
+    }
+
+    /* Panel → horizontal chip strip */
+    .kf-panel {
+        width: 100%;
+        border-right: none;
+        padding-right: 0;
+        border-bottom: 1px solid var(--line);
+        padding-bottom: 10px;
+        margin-bottom: 16px;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 6px;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        flex-wrap: nowrap;
+        scrollbar-width: none;
+    }
+
+    .kf-panel::-webkit-scrollbar {
+        display: none;
+    }
+
+    .kf-panel:empty {
+        display: none;
+    }
+}
+
+.kf-item-stats {
+    display: none;
+}
+
+.kf-item-name {
+    max-width: none;
+    overflow: visible;
+    text-overflow: clip;
+    white-space: nowrap;
+}
+
+/* ── Tabs ─────────────────────────────────────────────────────────────────── */
+.knowledge-tabs {
+    display: flex;
+    align-items: flex-end;
+    gap: 2px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 0;
+}
+
+.ktab {
+    padding: 8px 18px;
+    border: none;
+    background: transparent;
+    color: var(--ink-3);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    transition: color 0.15s, border-color 0.15s;
+}
+
+.ktab:hover {
+    color: var(--ink);
+}
+
+.ktab.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+}
+
+/* ── Knowledge cards ──────────────────────────────────────────────────────── */
+.knowledge-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 14px;
+    margin-top: 4px;
+}
+
+.knowledge-card {
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    transition: border-color 0.15s;
+}
+
+.knowledge-card:hover {
+    border-color: var(--accent-dim);
+}
+
+.knowledge-card-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+}
+
+.knowledge-card-icon {
+    font-size: 16px;
+    flex-shrink: 0;
+}
+
+.knowledge-card-title {
+    flex: 1;
+    min-width: 0;
+    font-weight: 600;
+    font-size: 13px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.knowledge-warn {
+    flex-shrink: 0;
+    font-size: 13px;
+    color: var(--warning, #f59e0b);
+    cursor: help;
+}
+
+.knowledge-card-source {
+    font-size: 11px;
+    color: var(--accent);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-decoration: none;
+}
+
+a.knowledge-card-source:hover {
+    text-decoration: underline;
+}
+
+.knowledge-card-meta {
+    font-size: 11px;
+    color: var(--ink-3);
+    font-family: var(--font-mono);
+}
+
+.knowledge-empty {
+    color: var(--ink-3);
+    font-size: 13px;
+    padding: 24px 0;
+}
+
+/* ── Dropzone ─────────────────────────────────────────────────────────────── */
+.knowledge-dropzone {
+    border: 2px dashed var(--line);
+    border-radius: var(--radius);
+    padding: 32px 20px;
+    text-align: center;
+    color: var(--ink-3);
+    cursor: pointer;
+    margin-bottom: 20px;
+    transition: border-color 0.15s, background 0.15s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.knowledge-dropzone:hover,
+.knowledge-dropzone.drag-over {
+    border-color: var(--accent);
+    background: var(--accent-dim);
+    color: var(--ink);
+}
+
+.knowledge-dropzone svg {
+    opacity: 0.4;
+}
+
+.knowledge-dropzone p {
+    margin: 0;
+    font-size: 13px;
+}
+
+.knowledge-formats {
+    font-size: 11px !important;
+    opacity: 0.7;
+    font-family: var(--font-mono);
+}
+
+/* ── View toggle (grid / list) ────────────────────────────────────────────── */
+.kv-view-controls {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    margin-left: auto;
+    align-self: center;
+    padding-bottom: 1px;
+}
+
+.kv-toggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--ink-3);
+    padding: 4px 6px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    transition: color 0.12s, background 0.12s;
+}
+
+.kv-toggle:hover {
+    color: var(--ink);
+    background: var(--surface-2);
+}
+
+.kv-toggle--active {
+    color: var(--accent);
+    background: var(--accent-dim);
+}
+
+/* ── List view: URLs + docs ───────────────────────────────────────────────── */
+.knowledge-grid--list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin-top: 4px;
+}
+
+.knowledge-grid--list .knowledge-card {
+    flex-direction: row;
+    align-items: center;
+    padding: 7px 12px;
+    gap: 12px;
+    border-radius: 7px;
+}
+
+.knowledge-grid--list .knowledge-card-header {
+    flex: 1;
+    min-width: 0;
+}
+
+.knowledge-grid--list .knowledge-card-source {
+    flex-shrink: 0;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.knowledge-grid--list .knowledge-card-meta {
+    flex-shrink: 0;
+    min-width: 56px;
+    text-align: right;
+    white-space: nowrap;
+}
+
+/* ── List view: skills ────────────────────────────────────────────────────── */
+.skills-grid--list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.skills-grid--list .skill-card {
+    flex-direction: row;
+    align-items: center;
+    border-radius: 8px;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+.skills-grid--list .skill-card-body {
+    flex: 1;
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+    padding: 7px 12px;
+}
+
+.skills-grid--list .skill-card-icon {
+    width: 26px;
+    height: 26px;
+    flex-shrink: 0;
+}
+
+.skills-grid--list .skill-card-head {
+    flex-shrink: 0;
+    min-width: 160px;
+    max-width: 220px;
+}
+
+.skills-grid--list .skill-card-desc {
+    flex: 1;
+    -webkit-line-clamp: 1;
+    margin: 0;
+}
+
+.skills-grid--list .skill-card-preview {
+    display: none;
+}
+
+.skills-grid--list .skill-card-actions {
+    padding: 0 12px 0 0;
+    border-top: none;
+    flex-wrap: nowrap;
+}
+
+/* ── Upload progress dialog ─────────────────────────────────────────────── */
+.kup-dialog {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 288px;
+    background: var(--surface);
+    border: 1px solid var(--line-strong);
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+    z-index: 600;
+    overflow: hidden;
+    font-size: 13px;
+    animation: kup-in 0.18s ease;
+}
+
+@keyframes kup-in {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.kup-header {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 10px 12px;
+    background: var(--surface-2);
+    border-bottom: 1px solid var(--line);
+}
+
+.kup-folder-icon {
+    flex-shrink: 0;
+    font-size: 14px;
+}
+
+.kup-title {
+    flex: 1;
+    font-weight: 600;
+    font-size: 12px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--ink);
+}
+
+.kup-count {
+    flex-shrink: 0;
+    font-size: 11px;
+    font-family: var(--font-mono);
+    color: var(--ink-3);
+}
+
+.kup-list {
+    max-height: 220px;
+    overflow-y: auto;
+    padding: 4px 0;
+}
+
+.kup-item {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 5px 12px;
+    transition: background 0.1s;
+}
+
+.kup-item--active {
+    background: var(--surface-2);
+}
+
+.kup-item-name {
+    flex: 1;
+    font-size: 12px;
+    color: var(--ink-3);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.kup-item--active .kup-item-name {
+    color: var(--ink);
+}
+
+.kup-status {
+    flex-shrink: 0;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+
+.kup-status--pending {
+    background: var(--line-strong);
+}
+
+.kup-status--ok {
+    background: #16a34a;
+}
+
+.kup-status--fail {
+    background: var(--danger);
+}
+
+.kup-status--uploading {
+    border: 2px solid var(--accent);
+    border-top-color: transparent;
+    background: transparent;
+    animation: kup-spin 0.7s linear infinite;
+}
+
+@keyframes kup-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.kup-footer {
+    padding: 8px 12px;
+    border-top: 1px solid var(--line);
+    display: flex;
+    justify-content: flex-end;
+}
+
+.kup-close-btn {
+    background: none;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 4px 12px;
+    font-size: 12px;
+    font-family: var(--font);
+    color: var(--ink-2);
+    cursor: pointer;
+    transition: background 0.12s, color 0.12s;
+}
+
+.kup-close-btn:hover {
+    background: var(--surface-2);
+    color: var(--ink);
+}
+
+/* ── Drag and drop ────────────────────────────────────────────────────────── */
+.knowledge-card[draggable="true"],
+.skill-card[draggable="true"] {
+    cursor: grab;
+}
+
+.kd-dragging {
+    opacity: 0.35;
+    cursor: grabbing;
+}
+
+.kf-item.kd-drag-over {
+    background: var(--accent-dim) !important;
+    outline: 2px solid color-mix(in srgb, var(--accent) 40%, transparent);
+    outline-offset: -2px;
+}
+
+.kf-item.kd-drag-over .kf-item-name {
+    color: var(--accent);
+}
+
+.skill-content-pre {
+    background: var(--surface-3);
+    border-radius: var(--radius);
+    padding: 16px;
+    font-size: 12px;
+    font-family: var(--font-mono);
+    color: var(--ink-2);
+    white-space: pre-wrap;
+    word-break: break-word;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+/* ── Knowledge share button + badge ──────────────────────────────────────── */
+
+.knowledge-action-btn {
+    flex-shrink: 0;
+    border: none;
+    background: transparent;
+    color: var(--ink-3);
+    cursor: pointer;
+    padding: 3px 5px;
+    border-radius: 4px;
+    opacity: 0;
+    transition: opacity 0.1s, color 0.1s, background 0.1s;
+    display: flex;
+    align-items: center;
+}
+
+.knowledge-card:hover .knowledge-action-btn {
+    opacity: 1;
+}
+
+.knowledge-action-btn--share:hover {
+    color: #6366f1;
+    background: rgba(99, 102, 241, 0.08);
+}
+
+.knowledge-action-btn--danger:hover {
+    color: var(--danger);
+    background: color-mix(in srgb, var(--danger) 7%, transparent);
+}
+
+/* ── Responsive 480px ───────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+    .knowledge-grid {
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        gap: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .knowledge-grid {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+
+    .knowledge-tabs {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        flex-wrap: nowrap;
+        scrollbar-width: none;
+        margin-bottom: 16px;
+    }
+
+    .knowledge-tabs::-webkit-scrollbar {
+        display: none;
+    }
+
+    .ktab {
+        white-space: nowrap;
+        flex-shrink: 0;
+        padding: 8px 14px;
+        font-size: 12.5px;
+    }
+
+    .kup-dialog {
+        right: 10px;
+        bottom: 10px;
+        width: calc(100vw - 20px);
+        max-width: 288px;
+    }
+}

@@ -1,0 +1,49 @@
+{
+  "cancel": "Cancel",
+  "save": "Save",
+  "nav": {
+    "dashboard": "Dashboard",
+    "agents": "Agents",
+    "skills": "Skills",
+    "knowledge": "Knowledge",
+    "connections": "Connections",
+    "memory": "Memory",
+    "profile": "Profile",
+    "admin": "Admin",
+    "admin_users": "Panel",
+    "admin_logs": "Logs",
+    "admin_mail": "Mailbox",
+    "logout": "Log out",
+    "docs": "Documentation",
+    "about": "About",
+    "explore": "Explore",
+    "upgrade": "Upgrade plan"
+  },
+  "actions": {
+    "save": "Save",
+    "saving": "Saving…",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "delete": "Delete",
+    "export": "Export",
+    "close": "Close",
+    "clear": "Clear",
+    "clear_filters": "× Clear",
+    "send": "Send",
+    "test": "Test",
+    "view": "View",
+    "new_agent": "New agent",
+    "back": "← Back"
+  },
+  "search": {
+    "clear_aria": "Clear search"
+  },
+  "redirect": "Redirecting to {{target}}…",
+  "knowledge": {
+    "folder": {
+      "move_to": "Move to folder",
+      "no_folder": "No folder",
+      "loading": "Loading folders…"
+    }
+  }
+}

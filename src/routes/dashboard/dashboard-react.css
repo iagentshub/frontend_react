@@ -1,0 +1,58 @@
+.dashboard-save-error {
+  margin: 0 0 12px;
+  padding: 8px 11px;
+  border: 1px solid color-mix(in srgb, var(--danger) 35%, var(--line));
+  border-radius: var(--radius);
+  color: var(--danger);
+  background: color-mix(in srgb, var(--danger) 5%, var(--surface));
+  font-size: 12px;
+}
+
+.dash-donut {
+  width: 112px;
+  height: 112px;
+  flex: 0 0 112px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  position: relative;
+}
+
+.dash-donut::after {
+  content: "";
+  position: absolute;
+  inset: 22px;
+  border-radius: 50%;
+  background: var(--surface);
+}
+
+.dash-donut > span {
+  z-index: 1;
+  color: var(--ink);
+  font: 700 0.78rem var(--font-mono);
+}
+
+.dash-panel[data-flipped="true"] .wcfg-body {
+  min-height: 100%;
+}
+.dash-panel[data-flipped="true"] {
+  overflow: visible;
+}
+.dash-panel .wcfg-actions {
+  margin-top: auto;
+}
+.dash-editbar-actions {
+  display: flex;
+  gap: 4px;
+}
+
+@media (max-width: 640px) {
+  .dash-donut {
+    width: 86px;
+    height: 86px;
+    flex-basis: 86px;
+  }
+  .dash-donut::after {
+    inset: 18px;
+  }
+}

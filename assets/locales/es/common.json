@@ -1,0 +1,49 @@
+{
+  "cancel": "Cancelar",
+  "save": "Guardar",
+  "nav": {
+    "dashboard": "Dashboard",
+    "agents": "Agentes",
+    "skills": "Habilidades",
+    "knowledge": "Conocimiento",
+    "connections": "Conexiones",
+    "memory": "Memoria",
+    "profile": "Perfil",
+    "admin": "Admin",
+    "admin_users": "Panel",
+    "admin_logs": "Logs",
+    "admin_mail": "Correos",
+    "logout": "Cerrar sesion",
+    "docs": "Documentación",
+    "about": "Acerca de",
+    "explore": "Explorar",
+    "upgrade": "Mejorar plan"
+  },
+  "actions": {
+    "save": "Guardar",
+    "saving": "Guardando…",
+    "cancel": "Cancelar",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "export": "Exportar",
+    "close": "Cerrar",
+    "clear": "Limpiar",
+    "clear_filters": "× Limpiar",
+    "send": "Enviar",
+    "test": "Test",
+    "view": "Ver",
+    "new_agent": "Nuevo agente",
+    "back": "← Volver"
+  },
+  "search": {
+    "clear_aria": "Limpiar búsqueda"
+  },
+  "redirect": "Redirigiendo a {{target}}…",
+  "knowledge": {
+    "folder": {
+      "move_to": "Mover a carpeta",
+      "no_folder": "Sin carpeta",
+      "loading": "Cargando carpetas…"
+    }
+  }
+}

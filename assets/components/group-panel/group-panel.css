@@ -1,0 +1,138 @@
+/* group-panel.css — estilos del panel lateral de grupos de trabajo.
+ * Compartido por todas las páginas que usan group-panel.js.
+ * Las clases kf-* son compartidas con knowledge-folders para mantener
+ * coherencia visual entre paneles laterales. */
+
+/* ── Items del panel ──────────────────────────────────────────────────────── */
+.kf-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 6px;
+}
+
+.kf-section-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+}
+
+.kf-item {
+    width: 100%;
+    background: none;
+    border: none;
+    border-left: 2px solid transparent;
+    cursor: pointer;
+    text-align: left;
+    padding: 6px 10px;
+    border-radius: 0;
+    display: flex;
+    align-items: center;
+    gap: 0;
+    transition: background 0.12s, border-color 0.12s;
+    font-family: var(--font);
+}
+
+.kf-item:hover {
+    background: var(--surface-2);
+    border-left-color: var(--line-strong);
+}
+
+.kf-item--active {
+    background: var(--accent-dim) !important;
+    border-left-color: var(--accent) !important;
+}
+
+.kf-item--active .kf-item-name {
+    color: var(--accent);
+}
+
+.kf-item-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ── Botón añadir grupo (+) ───────────────────────────────────────────────── */
+.kf-add-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--ink-3);
+    padding: 2px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    transition: color 0.12s, background 0.12s;
+}
+
+.kf-add-btn:hover {
+    color: var(--accent);
+    background: var(--accent-dim);
+}
+
+/* ── Estado vacío ─────────────────────────────────────────────────────────── */
+.gp-empty {
+    font-size: 12px;
+    color: var(--ink-3);
+    padding: 6px 10px;
+    margin: 0;
+}
+
+/* ── Drag & drop ──────────────────────────────────────────────────────────── */
+.kf-item.kd-drag-over {
+    background: var(--accent-dim) !important;
+    border-left-color: var(--accent) !important;
+}
+
+.kf-item.kd-drag-over .kf-item-name {
+    color: var(--accent);
+}
+
+/* ── Responsive: en pantallas pequeñas los items van en horizontal ─────────── */
+@media (max-width: 768px) {
+
+    .af-groups-panel,
+    .kf-panel {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        gap: 0;
+        scrollbar-width: none;
+    }
+
+    .af-groups-panel::-webkit-scrollbar,
+    .kf-panel::-webkit-scrollbar {
+        display: none;
+    }
+
+    .kf-section-header {
+        display: none;
+    }
+
+    .kf-item {
+        width: auto;
+        flex-shrink: 0;
+        border-left: none;
+        border-bottom: 2px solid transparent;
+        border-top: none;
+        padding: 5px 12px;
+        font-size: 12px;
+    }
+
+    .kf-item:hover {
+        border-left-color: transparent;
+        border-bottom-color: var(--line-strong);
+    }
+
+    .kf-item--active {
+        border-left-color: transparent !important;
+        border-bottom-color: var(--accent) !important;
+    }
+}

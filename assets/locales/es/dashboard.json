@@ -1,0 +1,36 @@
+{
+  "page": {
+    "title": "Dashboard",
+    "subtitle": "Visión general de tu plataforma",
+    "new_btn": "Nuevo",
+    "new_agent_btn": "Nuevo agente",
+    "new_agent_sub": "Crear o importar un agente",
+    "catalog_btn": "Catálogo",
+    "new_conn_btn": "Nueva conexión",
+    "new_conn_sub": "Añadir proveedor de IA"
+  },
+  "stats": {
+    "agents": "Agentes",
+    "connections": "Conexiones",
+    "skills": "Skills",
+    "memory": "Memoria",
+    "knowledge": "Conocimiento"
+  },
+  "tokens": {
+    "title": "Uso de tokens",
+    "total": "Total consumido",
+    "no_activity": "Sin actividad registrada",
+    "unit_k": "k tokens"
+  },
+  "composition": {
+    "title": "Composición de agentes",
+    "with_memory": "Con memoria activa",
+    "with_knowledge": "Con conocimiento adjunto",
+    "no_agents": "Sin agentes todavía"
+  },
+  "recent": {
+    "title": "Agentes recientes",
+    "empty": "Aún no hay agentes.",
+    "chat_btn": "Chat"
+  }
+}
