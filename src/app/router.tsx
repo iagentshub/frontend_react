@@ -10,6 +10,7 @@ const HomePage = lazy(() => import("@/routes/public/home-page").then((module) =>
 const ForgotPasswordPage = lazy(() => import("@/routes/auth/forgot-password-page").then((module) => ({ default: module.ForgotPasswordPage })));
 const ResetPasswordPage = lazy(() => import("@/routes/auth/reset-password-page").then((module) => ({ default: module.ResetPasswordPage })));
 const VerifyPage = lazy(() => import("@/routes/auth/verify-page").then((module) => ({ default: module.VerifyPage })));
+const VsCodeAuthPage = lazy(() => import("@/routes/auth/vscode-auth-page").then((module) => ({ default: module.VsCodeAuthPage })));
 const AboutPage = lazy(() => import("@/routes/public/about-page").then((module) => ({ default: module.AboutPage })));
 const DocsPage = lazy(() => import("@/routes/public/docs-page").then((module) => ({ default: module.DocsPage })));
 const DashboardPage = lazy(() => import("@/routes/dashboard/dashboard-page").then((module) => ({ default: module.DashboardPage })));
@@ -37,6 +38,9 @@ export const router = createBrowserRouter([
   { path: "/", element: lazyRoute(<HomePage />), errorElement: <RouteErrorBoundary /> },
   { path: "/login", element: <Navigate to="/login/" replace /> },
   { path: "/login/", element: lazyRoute(<LoginPage />) },
+  // Sin AppShell: es una pantalla de consentimiento de paso, no una sección de la app.
+  // RequireAuth ya manda al login con ?redirect= y devuelve aquí al entrar.
+  { path: "/vscode-auth/", element: <RequireAuth>{lazyRoute(<VsCodeAuthPage />)}</RequireAuth> },
   {
     path: "/dashboard/",
     element: <RequireAuth><AppShell /></RequireAuth>,
