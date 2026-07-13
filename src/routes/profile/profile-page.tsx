@@ -5,13 +5,14 @@ import { api } from "@/api/client";
 import { AccountSection, PreferencesSection, ProvidersSection, SocialSection, StyleSection } from "./basic-sections";
 import { BillingSection, PrivacySection } from "./privacy-billing-sections";
 import type { BillingState, DeletionStatus, ProfileConnection, ProfileData, ProfileInvitation, ProfilePlatform, ProfileSession, ProfileSettings, ProfileWorkspace, SocialProfile } from "./types";
+import { TokensSection } from "./tokens-section";
 import { WorkspacesSection } from "./workspaces-section";
 import "@/styles/routes/profile/profile.css";
 import "@/styles/routes/admin/admin.css";
 import "@/styles/routes/manager/manager.css";
 
-type SectionId = "account" | "social" | "providers" | "preferences" | "style" | "workspaces" | "privacy" | "billing";
-const sectionIds: SectionId[] = ["account", "social", "providers", "preferences", "style", "workspaces", "privacy", "billing"];
+type SectionId = "account" | "social" | "providers" | "preferences" | "style" | "workspaces" | "tokens" | "privacy" | "billing";
+const sectionIds: SectionId[] = ["account", "social", "providers", "preferences", "style", "workspaces", "tokens", "privacy", "billing"];
 
 async function loadProfile(signal: AbortSignal): Promise<ProfileData> {
   const session = await api.get<ProfileSession>("/api/auth/me", signal);
@@ -33,6 +34,7 @@ function NavIcon({ section }: { section: SectionId }) {
   if (section === "account" || section === "social") return <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="5.5" r="2.5" stroke="currentColor" strokeWidth="1.4"/><path d="M2.5 13.5c0-3 2.5-4.5 5.5-4.5s5.5 1.5 5.5 4.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/></svg>;
   if (section === "providers") return <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><circle cx="4" cy="8" r="2" stroke="currentColor" strokeWidth="1.4"/><circle cx="12" cy="4" r="2" stroke="currentColor" strokeWidth="1.4"/><circle cx="12" cy="12" r="2" stroke="currentColor" strokeWidth="1.4"/><path d="M6 7.5l4-2.5M6 8.5l4 2.5" stroke="currentColor" strokeWidth="1.3"/></svg>;
   if (section === "workspaces") return <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><rect x="2" y="4" width="12" height="9" rx="2" stroke="currentColor" strokeWidth="1.4"/><path d="M2 7h12M5 2v2M11 2v2" stroke="currentColor" strokeWidth="1.3"/></svg>;
+  if (section === "tokens") return <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><circle cx="5.5" cy="8" r="3" stroke="currentColor" strokeWidth="1.4"/><path d="M8.5 8H14M12 8v2.5M10.5 8v2" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/></svg>;
   if (section === "privacy") return <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M8 2L3 4.5V8c0 2.8 2.1 5.4 5 6 2.9-.6 5-3.2 5-6V4.5L8 2z" stroke="currentColor" strokeWidth="1.4"/></svg>;
   if (section === "billing") return <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><rect x="1.5" y="3.5" width="13" height="9" rx="1.5" stroke="currentColor" strokeWidth="1.4"/><path d="M1.5 6.5h13" stroke="currentColor" strokeWidth="1.4"/></svg>;
   return <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="5.5" stroke="currentColor" strokeWidth="1.4"/><path d="M8 2.5v11M2.5 8h11" stroke="currentColor" strokeWidth="1.3"/></svg>;
@@ -44,7 +46,7 @@ export function ProfilePage() {
   const rawTab = params.get("tab")?.replace(/^section-/, "") ?? "account";
   const active: SectionId = sectionIds.includes(rawTab as SectionId) ? rawTab as SectionId : rawTab === "teams" ? "workspaces" : "account";
   const nav = useMemo(() => [
-    ["account", "Mi cuenta"], ["social", "Perfil público"], ["providers", "Proveedores"], ["preferences", "Preferencias"], ["style", "Estilo"], ["workspaces", "Grupos"], ["privacy", "Privacidad"],
+    ["account", "Mi cuenta"], ["social", "Perfil público"], ["providers", "Proveedores"], ["preferences", "Preferencias"], ["style", "Estilo"], ["workspaces", "Grupos"], ["tokens", "Tokens"], ["privacy", "Privacidad"],
     ...(query.data?.platform.billing_enabled ? [["billing", "Suscripción"]] : []),
   ] as Array<[SectionId, string]>, [query.data?.platform.billing_enabled]);
 
@@ -67,6 +69,7 @@ export function ProfilePage() {
         {active === "preferences" && <PreferencesSection settings={query.data.settings} />}
         {active === "style" && <StyleSection />}
         {active === "workspaces" && <WorkspacesSection session={session} workspaces={query.data.workspaces} invitations={query.data.invitations} onReload={() => void query.refetch()} />}
+        {active === "tokens" && <TokensSection />}
         {active === "privacy" && <PrivacySection deletion={query.data.deletion} onReload={() => void query.refetch()} />}
         {active === "billing" && <BillingSection initial={query.data.billing} onReload={() => void query.refetch()} />}
       </section></div>
