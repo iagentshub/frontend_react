@@ -128,7 +128,7 @@ export function PricingPage() {
             </span>
           </div>
           <a
-            href="https://github.com/iagentshub/iagentshub"
+            href="https://github.com/iagentshub/iAgents"
             target="_blank"
             rel="noreferrer"
             className="pr-oss-cta"

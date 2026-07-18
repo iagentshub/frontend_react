@@ -53,7 +53,7 @@ export function AboutPage() {
         </section>
         <section className="about-card about-card-contact"><span className="about-soon-badge">{t("about.contact.soon")}</span><h2 className="about-card-title">{t("about.contact.title")}</h2><p className="about-card-body">{t("about.contact.body")}</p><button className="about-contact-btn" disabled><span>{t("about.contact.btn")}</span></button></section>
         <div className="about-bottom-row">
-          <section className="about-card about-card-github"><h2 className="about-card-title">{t("about.github.title")}</h2><p className="about-card-body">{t("about.github.body")}</p><a href="https://github.com/iagentshub/iagentshub" target="_blank" rel="noopener noreferrer" className="about-github-btn"><GitHubIcon /><span>{t("about.github.label")}</span></a></section>
+          <section className="about-card about-card-github"><h2 className="about-card-title">{t("about.github.title")}</h2><p className="about-card-body">{t("about.github.body")}</p><a href="https://github.com/iagentshub/iAgents" target="_blank" rel="noopener noreferrer" className="about-github-btn"><GitHubIcon /><span>{t("about.github.label")}</span></a></section>
           <section className="about-card about-card-license"><h2 className="about-card-title">{t("about.license.title")}</h2><p className="about-card-body">{t("about.license.body")}</p></section>
         </div>
       </div>
