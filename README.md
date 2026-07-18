@@ -24,8 +24,8 @@ npm run test:e2e:chromium
 ## Production
 
 ```bash
-docker build -t iagentshub-frontend .
-docker run -p 80:80 iagentshub-frontend
+docker build -t frontend .
+docker run -p 80:80 frontend
 ```
 
 Nginx serves the Vite build with an HTML5-history fallback and proxies `/api/` to `backend:8765`.

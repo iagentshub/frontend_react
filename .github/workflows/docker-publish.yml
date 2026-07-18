@@ -43,7 +43,7 @@ jobs:
       - id: meta
         uses: docker/metadata-action@v5
         with:
-          images: iagenthub/iagentshub-frontend
+          images: iagenthub/frontend
           tags: |
             type=sha,prefix=sha-
             type=ref,event=tag
