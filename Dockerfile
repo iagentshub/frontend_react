@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/playwright:v1.61.1-noble AS build
+FROM --platform=$BUILDPLATFORM mcr.microsoft.com/playwright:v1.61.1-noble AS build
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci
