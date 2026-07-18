@@ -48,6 +48,7 @@ jobs:
             type=sha,prefix=sha-
             type=ref,event=tag
             type=raw,value=latest,enable={{is_default_branch}}
+            type=raw,value=react,enable={{is_default_branch}}
       - uses: docker/build-push-action@v6
         with:
           context: .
