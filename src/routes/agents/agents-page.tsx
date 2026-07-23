@@ -9,6 +9,7 @@ import {
   type AgentIconName,
 } from "@/components/resource-icons";
 import { ChatDialog } from "./chat-dialog";
+import { AgentBuilderDialog } from "./agent-builder-dialog";
 import "../../../assets/components/agent-card/agent-card.css";
 import "../../../assets/components/filter_agents/filter_agents.css";
 import "../../../assets/components/agent-catalog/agent-catalog.css";
@@ -77,6 +78,7 @@ interface Connection {
   id: string;
   name?: string;
   type?: string;
+  model?: string;
   _shared?: boolean;
 }
 interface SelectItem {
@@ -1058,6 +1060,7 @@ export function AgentsPage() {
     [labels, setLabels] = useState<string[]>([]),
     [openFilter, setOpenFilter] = useState<string | null>(null),
     [editor, setEditor] = useState<Agent | null | undefined>(undefined),
+    [builder, setBuilder] = useState(false),
     [chat, setChat] = useState<Agent | null>(null),
     [newMenu, setNewMenu] = useState(false),
     [catalog, setCatalog] = useState(false),
@@ -1265,6 +1268,32 @@ export function AgentsPage() {
                 <button
                   className="am-opt"
                   onClick={() => {
+                    setEditor(null);
+                    setNewMenu(false);
+                  }}
+                >
+                  <span className="am-opt-icon">＋</span>
+                  <span className="am-opt-text">
+                    <span className="am-opt-label">Crear Nuevo</span>
+                    <span className="am-opt-sub">Configura el agente manualmente</span>
+                  </span>
+                </button>
+                <button
+                  className="am-opt"
+                  onClick={() => {
+                    setBuilder(true);
+                    setNewMenu(false);
+                  }}
+                >
+                  <span className="am-opt-icon">✦</span>
+                  <span className="am-opt-text">
+                    <span className="am-opt-label">Crear con Asistente</span>
+                    <span className="am-opt-sub">Describe tu idea y deja que te guíe</span>
+                  </span>
+                </button>
+                <button
+                  className="am-opt"
+                  onClick={() => {
                     setCatalog(true);
                     setNewMenu(false);
                   }}
@@ -1287,19 +1316,6 @@ export function AgentsPage() {
                   <span className="am-opt-text">
                     <span className="am-opt-label">Escanear directorio</span>
                     <span className="am-opt-sub">Importa agentes Claude, Copilot y JSON</span>
-                  </span>
-                </button>
-                <button
-                  className="am-opt"
-                  onClick={() => {
-                    setEditor(null);
-                    setNewMenu(false);
-                  }}
-                >
-                  <span className="am-opt-icon">＋</span>
-                  <span className="am-opt-text">
-                    <span className="am-opt-label">Desde cero</span>
-                    <span className="am-opt-sub">Configura todos los campos</span>
                   </span>
                 </button>
               </div>
@@ -1569,6 +1585,18 @@ export function AgentsPage() {
                 onClose={() => setEditor(undefined)}
                 onSaved={() => {
                   setEditor(undefined);
+                  void query.refetch();
+                }}
+              />
+            )}
+            {builder && query.data && (
+              <AgentBuilderDialog
+                connections={query.data.connections}
+                skills={query.data.skills}
+                knowledge={query.data.knowledge}
+                onClose={() => setBuilder(false)}
+                onSaved={() => {
+                  setBuilder(false);
                   void query.refetch();
                 }}
               />
