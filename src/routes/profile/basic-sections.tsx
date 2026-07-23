@@ -5,6 +5,7 @@ import i18n from "@/i18n";
 import { api, ApiError } from "@/api/client";
 import { useTheme, type ThemeId } from "@/theme/theme-context";
 import type { ProfileSession, ProfileSettings, SocialProfile } from "./types";
+import { AvatarCrop } from "./avatar-crop";
 
 const languages = [
   ["es", "🇪🇸", "Español"], ["en", "🇬🇧", "English"], ["fr", "🇫🇷", "Français"],
@@ -22,6 +23,7 @@ export function AccountSection({ session, onAvatarSaved }: { session: ProfileSes
   const [next, setNext] = useState("");
   const [confirm, setConfirm] = useState("");
   const [notice, setNotice] = useState("");
+  const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const password = useMutation({
     mutationFn: () => api.post("/api/auth/change-password", { current_password: current, new_password: next }),
     onSuccess: () => { setCurrent(""); setNext(""); setConfirm(""); setNotice("Contraseña actualizada."); },
@@ -48,7 +50,8 @@ export function AccountSection({ session, onAvatarSaved }: { session: ProfileSes
     <div className="section-subtitle">Foto de perfil</div>
     <p className="section-desc">JPG, PNG o WebP, hasta 2 MB.</p>
     <button className="btn btn-ghost" disabled={avatar.isPending} onClick={() => fileRef.current?.click()}>{avatar.isPending ? "Subiendo…" : "Seleccionar imagen"}</button>
-    <input ref={fileRef} hidden type="file" accept="image/jpeg,image/png,image/webp" onChange={(event) => { const file = event.target.files?.[0]; if (file) avatar.mutate(file); event.target.value = ""; }} />
+    <input ref={fileRef} hidden type="file" accept="image/jpeg,image/png,image/webp" onChange={(event) => { const file = event.target.files?.[0]; if (file) setAvatarFile(file); event.target.value = ""; }} />
+    {avatarFile && <AvatarCrop file={avatarFile} onCancel={() => setAvatarFile(null)} onConfirm={(file) => { setAvatarFile(null); avatar.mutate(file); }} />}
     {(session.auth_method === "internal" || !session.auth_method) && <form onSubmit={submit} style={{ marginTop: 28 }}>
       <div className="section-subtitle">Cambiar contraseña</div>
       <div className="field"><label htmlFor="profile-current-password">Contraseña actual</label><input id="profile-current-password" className="input" type="password" autoComplete="current-password" value={current} onChange={(event) => setCurrent(event.target.value)} /></div>

@@ -3,10 +3,12 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { api, ApiError } from "@/api/client";
+import { AgentGlyph } from "@/components/resource-icons";
 import "../../../assets/components/dialog_chat/dialog_chat.css";
 interface ChatAgent {
   id: string;
   name?: string;
+  icon?: string;
   timeout?: number | null;
 }
 interface Conversation {
@@ -149,7 +151,9 @@ export function ChatDialog({ agent, onClose }: { agent: ChatAgent; onClose: () =
     <div className="chat-modal-bg" role="dialog" aria-modal="true">
       <div className="chat-box chat-box--with-history">
         <div className="chat-header">
-          <div className="chat-header-avatar">{agent.name?.charAt(0).toUpperCase() || "?"}</div>
+          <div className="chat-header-avatar">
+            <AgentGlyph icon={agent.icon} size={20} />
+          </div>
           <div className="chat-header-info">
             <div className="chat-header-name">{agent.name || "Agente"}</div>
             <div className="chat-header-sub">Chat</div>
@@ -190,7 +194,7 @@ export function ChatDialog({ agent, onClose }: { agent: ChatAgent; onClose: () =
             {messages.map((message, index) => (
               <div className={`msg-wrap ${message.role}`} key={index}>
                 <div className="msg-avatar">
-                  {message.role === "assistant" ? agent.name?.charAt(0).toUpperCase() : "Tú"}
+                  {message.role === "assistant" ? <AgentGlyph icon={agent.icon} size={17} /> : "Tú"}
                 </div>
                 <div className="msg-body">
                   <div className="msg-bubble" style={{ whiteSpace: "pre-wrap" }}>
@@ -206,7 +210,9 @@ export function ChatDialog({ agent, onClose }: { agent: ChatAgent; onClose: () =
             ))}
             {streaming && (
               <div className="msg-wrap assistant">
-                <div className="msg-avatar">{agent.name?.charAt(0).toUpperCase()}</div>
+                <div className="msg-avatar">
+                  <AgentGlyph icon={agent.icon} size={17} />
+                </div>
                 <div className="msg-bubble">
                   <div className="typing-indicator">
                     <span />

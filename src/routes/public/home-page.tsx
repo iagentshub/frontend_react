@@ -83,6 +83,7 @@ export function HomePage() {
         <footer className="landing-footer">
           <Link to="/about">{t("auth.about_link")}</Link>
           <Link to="/docs">{t("auth.docs_link")}</Link>
+          <Link to="/support">{t("nav.support")}</Link>
           <a href="https://github.com/iagentshub/iAgents" target="_blank" rel="noopener noreferrer">GitHub</a>
           <button className="landing-lang-btn" type="button" onClick={() => void i18n.changeLanguage(i18n.language === "es" ? "en" : "es")}>{i18n.language.toUpperCase()}</button>
         </footer>

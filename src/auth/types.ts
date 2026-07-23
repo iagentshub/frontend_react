@@ -4,6 +4,8 @@ export interface SessionUser {
   email?: string;
   display_name?: string;
   workspace?: string;
+  workspace_id?: string;
+  workspace_name?: string;
   [key: string]: unknown;
 }
 

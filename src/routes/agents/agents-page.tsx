@@ -2,7 +2,14 @@ import { useMemo, useRef, useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { api } from "@/api/client";
 import { queryClient, queryKeys } from "@/api/query-client";
+import {
+  AgentGlyph,
+  agentIconOptions,
+  normalizeAgentIcon,
+  type AgentIconName,
+} from "@/components/resource-icons";
 import { ChatDialog } from "./chat-dialog";
+import { AgentBuilderDialog } from "./agent-builder-dialog";
 import "../../../assets/components/agent-card/agent-card.css";
 import "../../../assets/components/filter_agents/filter_agents.css";
 import "../../../assets/components/agent-catalog/agent-catalog.css";
@@ -15,6 +22,7 @@ interface Agent {
   id: string;
   name?: string;
   description?: string;
+  icon?: string;
   model?: string;
   connection_id?: string;
   scope?: "private" | "public";
@@ -36,11 +44,41 @@ interface Agent {
   agent_type?: string;
   effort_level?: string | null;
   timeout?: number | null;
+  routines?: Routine[];
+  extended_thinking?: boolean;
+  thinking_budget_tokens?: number;
+  cache_control?: boolean;
+  response_format?: string;
+  tool_choice?: string;
+  frequency_penalty?: number;
+  presence_penalty?: number;
+  copilot_topic?: string;
+  include_repo_context?: boolean;
+  category?: string;
+  trial_missing_deps?: string;
+}
+interface Routine {
+  name: string;
+  trigger_type: "manual" | "scheduled" | "webhook";
+  schedule?: string;
+  prompt: string;
+}
+interface ScannedSkill {
+  path: string;
+  name: string;
+  description: string;
+  content: string;
+}
+interface ImportScan {
+  agents: Array<{ path: string; agent: Agent }>;
+  skills: ScannedSkill[];
+  warnings: string[];
 }
 interface Connection {
   id: string;
   name?: string;
   type?: string;
+  model?: string;
   _shared?: boolean;
 }
 interface SelectItem {
@@ -81,6 +119,68 @@ function tokens(n: number) {
     : n >= 1_000
       ? `${(n / 1_000).toFixed(1).replace(/\.0$/, "")}k`
       : String(n);
+}
+
+function parseAgentFile(filename: string, content: string): Agent {
+  if (filename.toLowerCase().endsWith(".json")) {
+    const value = JSON.parse(content) as Record<string, unknown>;
+    const source = (value.agent && typeof value.agent === "object" ? value.agent : value) as Record<string, unknown>;
+    const text = (field: string, fallback = "") =>
+      typeof source[field] === "string" ? source[field] : fallback;
+    return {
+      ...(source as unknown as Agent),
+      id: "",
+      name: text("name", text("title", filename.replace(/\.json$/i, ""))),
+      system_prompt: text("system_prompt", text("instructions", text("prompt"))),
+      agent_type: text("agent_type", source.instructions ? "openai" : "generic"),
+    };
+  }
+  const frontmatter = content.match(/^---\s*\r?\n([\s\S]*?)\r?\n---\s*\r?\n?/);
+  const meta: Record<string, string> = {};
+  if (frontmatter) {
+    for (const line of (frontmatter[1] ?? "").split(/\r?\n/)) {
+      const match = line.match(/^([\w-]+):\s*(.*)$/);
+      const key = match?.[1];
+      const value = match?.[2];
+      if (key && value !== undefined) meta[key] = value.replace(/^["']|["']$/g, "");
+    }
+  }
+  const body = frontmatter ? content.slice(frontmatter[0].length) : content;
+  const lower = filename.toLowerCase();
+  return {
+    id: "",
+    name: meta.name || filename.replace(/\.(agent\.)?md$/i, ""),
+    description: meta.description || "",
+    model: meta.model || "",
+    agent_type: lower.includes("github") || /\.github[\\/]/i.test(filename)
+      ? "github"
+      : lower.includes("claude") || /\.claude[\\/]/i.test(filename)
+        ? "claude"
+        : "generic",
+    system_prompt: body.trim(),
+    skills: meta.skills ? meta.skills.replaceAll("[", "").replaceAll("]", "").split(",").map((item) => item.trim()).filter(Boolean) : [],
+  };
+}
+
+function parseSkillFile(path: string, content: string): ScannedSkill {
+  const frontmatter = content.match(/^---\s*\r?\n([\s\S]*?)\r?\n---\s*\r?\n?/);
+  const meta: Record<string, string> = {};
+  if (frontmatter) {
+    for (const line of (frontmatter[1] ?? "").split(/\r?\n/)) {
+      const match = line.match(/^([\w-]+):\s*(.*)$/);
+      if (match?.[1] && match[2] !== undefined) {
+        meta[match[1]] = match[2].replace(/^["']|["']$/g, "");
+      }
+    }
+  }
+  const segments = path.replaceAll("\\", "/").split("/");
+  const fallback = segments.at(-2) || segments.at(-1)?.replace(/\.md$/i, "") || "Skill";
+  return {
+    path,
+    name: meta.name || fallback,
+    description: meta.description || "",
+    content: (frontmatter ? content.slice(frontmatter[0].length) : content).trim(),
+  };
 }
 
 async function loadAgents(signal: AbortSignal): Promise<AgentData> {
@@ -178,11 +278,24 @@ function AgentCard({
     ["draft", "quarantine", "archived", "delete"].includes(label),
   );
   return (
-    <article className={`agent-card${blocked ? " agent-card--blocked" : ""}`}>
+    <article
+      className={`agent-card${blocked ? " agent-card--blocked" : ""}`}
+      draggable={!agent._shared && agent.scope !== "public"}
+      onDragStart={(event) => {
+        event.dataTransfer.setData("application/x-iagents-resource", agent.id);
+        event.dataTransfer.effectAllowed = "move";
+      }}
+    >
       <div className="agent-card-body">
         <div className="agent-card-top">
-          <div className="agent-avatar" style={{ background: avatarColor(agent.name ?? "") }}>
-            {(agent.name ?? "?").charAt(0).toUpperCase()}
+          <div
+            className="agent-avatar"
+            style={{ background: avatarColor(agent.name ?? "") }}
+            title={
+              agentIconOptions.find(({ value }) => value === normalizeAgentIcon(agent.icon))?.label
+            }
+          >
+            <AgentGlyph icon={agent.icon} size={21} />
           </div>
           <div className="agent-card-info">
             <div className="agent-card-name-row">
@@ -297,6 +410,7 @@ function AgentEditor({
   const [tab, setTab] = useState(1),
     [name, setName] = useState(agent?.name ?? ""),
     [description, setDescription] = useState(agent?.description ?? ""),
+    [icon, setIcon] = useState<AgentIconName>(normalizeAgentIcon(agent?.icon)),
     [prompt, setPrompt] = useState(agent?.system_prompt ?? ""),
     [connectionId, setConnectionId] = useState(agent?.connection_id ?? ""),
     [scope, setScope] = useState(agent?.scope ?? "private"),
@@ -307,7 +421,20 @@ function AgentEditor({
     [memoryFile, setMemoryFile] = useState(agent?.memory_file ?? ""),
     [agentType, setAgentType] = useState(agent?.agent_type ?? "generic"),
     [effort, setEffort] = useState(agent?.effort_level ?? ""),
-    [timeout, setTimeoutValue] = useState(agent?.timeout?.toString() ?? "");
+    [timeout, setTimeoutValue] = useState(agent?.timeout?.toString() ?? ""),
+    [opConnections, setOpConnections] = useState(agent?.op_connections ?? []),
+    [routines, setRoutines] = useState<Routine[]>(agent?.routines ?? []),
+    [extendedThinking, setExtendedThinking] = useState(Boolean(agent?.extended_thinking)),
+    [thinkingBudget, setThinkingBudget] = useState(agent?.thinking_budget_tokens ?? 10000),
+    [cacheControl, setCacheControl] = useState(Boolean(agent?.cache_control)),
+    [responseFormat, setResponseFormat] = useState(agent?.response_format ?? "text"),
+    [toolChoice, setToolChoice] = useState(agent?.tool_choice ?? "auto"),
+    [frequencyPenalty, setFrequencyPenalty] = useState(agent?.frequency_penalty ?? 0),
+    [presencePenalty, setPresencePenalty] = useState(agent?.presence_penalty ?? 0),
+    [copilotTopic, setCopilotTopic] = useState(agent?.copilot_topic ?? ""),
+    [repoContext, setRepoContext] = useState(Boolean(agent?.include_repo_context)),
+    [category, setCategory] = useState(agent?.category ?? "Other"),
+    [trialMissingDeps, setTrialMissingDeps] = useState(agent?.trial_missing_deps ?? "warn");
   const toggle = (values: string[], id: string, set: (next: string[]) => void) =>
     set(values.includes(id) ? values.filter((value) => value !== id) : [...values, id]);
   const save = useMutation({
@@ -316,6 +443,7 @@ function AgentEditor({
         ...(agent?.id ? { id: agent.id } : {}),
         name: name.trim(),
         description: description.trim(),
+        icon,
         agent_type: agentType,
         connection_id: connectionId || null,
         system_prompt: prompt.trim(),
@@ -324,12 +452,26 @@ function AgentEditor({
         timeout: timeout === "" ? null : Number(timeout),
         skills: skillIds,
         knowledge: knowledgeIds,
-        op_connections: agent?.op_connections ?? [],
+        op_connections: opConnections,
         use_memory: useMemory,
         memory_file: useMemory ? memoryFile || null : null,
-        routines: [],
+        routines: routines.filter((routine) => routine.name.trim() && routine.prompt.trim()),
         scope,
-        labels: scope === "public" ? ["public"] : ["private"],
+        labels: [
+          scope === "public" ? "public" : "private",
+          ...(agent?.labels ?? []).filter((label) => !["public", "private"].includes(label)),
+        ],
+        category,
+        trial_missing_deps: trialMissingDeps,
+        extended_thinking: extendedThinking,
+        thinking_budget_tokens: thinkingBudget,
+        cache_control: cacheControl,
+        response_format: responseFormat,
+        tool_choice: toolChoice,
+        frequency_penalty: frequencyPenalty,
+        presence_penalty: presencePenalty,
+        copilot_topic: copilotTopic.trim(),
+        include_repo_context: repoContext,
       }),
     onSuccess: onSaved,
   });
@@ -386,6 +528,28 @@ function AgentEditor({
                     autoFocus
                   />
                 </div>
+                <fieldset className="field agent-icon-field">
+                  <legend>Identidad visual</legend>
+                  <span className="input-hint">
+                    Elige el símbolo que representará al agente en la aplicación.
+                  </span>
+                  <div className="agent-icon-picker">
+                    {agentIconOptions.map((option) => (
+                      <button
+                        type="button"
+                        className={`agent-icon-option${icon === option.value ? " agent-icon-option--active" : ""}`}
+                        aria-label={option.label}
+                        aria-pressed={icon === option.value}
+                        title={option.label}
+                        onClick={() => setIcon(option.value)}
+                        key={option.value}
+                      >
+                        <AgentGlyph icon={option.value} size={21} />
+                        <span>{option.label}</span>
+                      </button>
+                    ))}
+                  </div>
+                </fieldset>
                 <div className="field">
                   <label htmlFor="agent-desc-react">Descripción</label>
                   <input
@@ -478,7 +642,11 @@ function AgentEditor({
                       )
                       .map((c) => (
                         <label className="knowledge-picker-item" key={c.id}>
-                          <input type="checkbox" disabled />
+                          <input
+                            type="checkbox"
+                            checked={opConnections.includes(c.id)}
+                            onChange={() => toggle(opConnections, c.id, setOpConnections)}
+                          />
                           <span className="knowledge-picker-title">{c.name ?? c.type}</span>
                         </label>
                       ))}
@@ -609,12 +777,38 @@ function AgentEditor({
                 {agentType === "claude" && (
                   <div className="platform-section">
                     <div className="platform-section-title">Opciones Claude</div>
-                    <p className="input-hint">
-                      La configuración específica y las rutinas se incorporarán en el siguiente
-                      corte.
-                    </p>
+                    <label className="toggle-label"><input type="checkbox" checked={extendedThinking} onChange={(event) => setExtendedThinking(event.target.checked)} /><span className="toggle-track" />Razonamiento extendido</label>
+                    {extendedThinking && <div className="field"><label>Presupuesto de razonamiento</label><input className="input" type="number" min={1000} step={1000} value={thinkingBudget} onChange={(event) => setThinkingBudget(Number(event.target.value))} /></div>}
+                    <label className="toggle-label"><input type="checkbox" checked={cacheControl} onChange={(event) => setCacheControl(event.target.checked)} /><span className="toggle-track" />Cachear prompt</label>
                   </div>
                 )}
+                {agentType === "openai" && (
+                  <div className="platform-section">
+                    <div className="platform-section-title">Opciones OpenAI</div>
+                    <div className="form-row-2"><div className="field"><label>Formato de respuesta</label><select className="select" value={responseFormat} onChange={(event) => setResponseFormat(event.target.value)}><option value="text">Texto</option><option value="json_object">JSON</option></select></div><div className="field"><label>Uso de herramientas</label><select className="select" value={toolChoice} onChange={(event) => setToolChoice(event.target.value)}><option value="auto">Auto</option><option value="none">Ninguna</option><option value="required">Obligatorio</option></select></div></div>
+                    <div className="form-row-2"><div className="field"><label>Penalización frecuencia</label><input className="input" type="number" min={-2} max={2} step={0.1} value={frequencyPenalty} onChange={(event) => setFrequencyPenalty(Number(event.target.value))} /></div><div className="field"><label>Penalización presencia</label><input className="input" type="number" min={-2} max={2} step={0.1} value={presencePenalty} onChange={(event) => setPresencePenalty(Number(event.target.value))} /></div></div>
+                  </div>
+                )}
+                {agentType === "github" && (
+                  <div className="platform-section">
+                    <div className="platform-section-title">Opciones GitHub Copilot</div>
+                    <div className="field"><label>Tema</label><input className="input" value={copilotTopic} onChange={(event) => setCopilotTopic(event.target.value)} /></div>
+                    <label className="toggle-label"><input type="checkbox" checked={repoContext} onChange={(event) => setRepoContext(event.target.checked)} /><span className="toggle-track" />Incluir contexto del repositorio</label>
+                  </div>
+                )}
+                {scope === "public" && <div className="platform-section"><div className="platform-section-title">Publicación</div><div className="form-row-2"><div className="field"><label>Categoría</label><input className="input" value={category} onChange={(event) => setCategory(event.target.value)} /></div><div className="field"><label>Dependencias ausentes</label><select className="select" value={trialMissingDeps} onChange={(event) => setTrialMissingDeps(event.target.value)}><option value="warn">Avisar</option><option value="block">Bloquear prueba</option><option value="ignore">Ignorar</option></select></div></div></div>}
+                <div className="platform-section">
+                  <div className="platform-section-title">Rutinas</div>
+                  {routines.map((routine, index) => (
+                    <div className="routine-card" key={index}>
+                      <div className="form-row-2"><div className="field"><label>Nombre</label><input className="input" value={routine.name} onChange={(event) => setRoutines((items) => items.map((item, itemIndex) => itemIndex === index ? { ...item, name: event.target.value } : item))} /></div><div className="field"><label>Disparador</label><select className="select" value={routine.trigger_type} onChange={(event) => setRoutines((items) => items.map((item, itemIndex) => itemIndex === index ? { ...item, trigger_type: event.target.value as Routine["trigger_type"] } : item))}><option value="manual">Manual</option><option value="scheduled">Programada</option><option value="webhook">Webhook</option></select></div></div>
+                      {routine.trigger_type === "scheduled" && <div className="field"><label>Programación cron</label><input className="input" value={routine.schedule ?? ""} onChange={(event) => setRoutines((items) => items.map((item, itemIndex) => itemIndex === index ? { ...item, schedule: event.target.value } : item))} placeholder="0 9 * * 1-5" /></div>}
+                      <div className="field"><label>Prompt</label><textarea className="textarea" value={routine.prompt} onChange={(event) => setRoutines((items) => items.map((item, itemIndex) => itemIndex === index ? { ...item, prompt: event.target.value } : item))} /></div>
+                      <button type="button" className="btn btn-ghost btn-sm action-item--danger" onClick={() => setRoutines((items) => items.filter((_, itemIndex) => itemIndex !== index))}>Eliminar rutina</button>
+                    </div>
+                  ))}
+                  <button type="button" className="btn btn-ghost btn-sm" onClick={() => setRoutines((items) => [...items, { name: "", trigger_type: "manual", prompt: "" }])}>+ Añadir rutina</button>
+                </div>
               </>
             )}
             {save.isError && (
@@ -710,6 +904,7 @@ function ShareDialog({
 
 function ExportDialog({ agent, onClose }: { agent: Agent; onClose: () => void }) {
   const [error, setError] = useState<string | null>(null);
+  const [exported, setExported] = useState<string | null>(null);
   const download = async (format: string) => {
     setError(null);
     try {
@@ -726,6 +921,7 @@ function ExportDialog({ agent, onClose }: { agent: Agent; onClose: () => void })
       link.download = filename;
       link.click();
       URL.revokeObjectURL(url);
+      setExported(format);
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : "Error de exportación");
     }
@@ -761,6 +957,21 @@ function ExportDialog({ agent, onClose }: { agent: Agent; onClose: () => void })
               </button>
             ))}
           </div>
+          {exported && (
+            <div className="platform-section">
+              <div className="platform-section-title">Instalación</div>
+              <p className="input-hint">Copia el archivo descargado en la ubicación del cliente.</p>
+              <code className="export-install-path">
+                {exported === "claude"
+                  ? (navigator.platform.toLowerCase().includes("win") ? "%USERPROFILE%\\.claude\\agents\\" : "~/.claude/agents/")
+                  : exported === "github"
+                    ? ".github/agents/"
+                    : exported === "mcp"
+                      ? "~/.config/iagentshub/mcp/"
+                      : "OpenAI Dashboard → Assistants"}
+              </code>
+            </div>
+          )}
           {error && <div className="form-error">{error}</div>}
         </div>
       </div>
@@ -849,15 +1060,19 @@ export function AgentsPage() {
     [labels, setLabels] = useState<string[]>([]),
     [openFilter, setOpenFilter] = useState<string | null>(null),
     [editor, setEditor] = useState<Agent | null | undefined>(undefined),
+    [builder, setBuilder] = useState(false),
     [chat, setChat] = useState<Agent | null>(null),
     [newMenu, setNewMenu] = useState(false),
     [catalog, setCatalog] = useState(false),
     [catalogSearch, setCatalogSearch] = useState(""),
     [exportAgent, setExportAgent] = useState<Agent | null>(null),
     [shareAgent, setShareAgent] = useState<Agent | null>(null),
+    [importScan, setImportScan] = useState<ImportScan | null>(null),
+    [importingScan, setImportingScan] = useState(false),
     [groupsOpen, setGroupsOpen] = useState(true),
     [activeGroup, setActiveGroup] = useState<string | null>(null);
   const fileInput = useRef<HTMLInputElement>(null);
+  const directoryInput = useRef<HTMLInputElement>(null);
   const groupAgents = useQuery({
     queryKey: ["agents", "group", activeGroup],
     enabled: Boolean(activeGroup),
@@ -926,23 +1141,82 @@ export function AgentsPage() {
     if (!file) return;
     void file.text().then((content) => {
       try {
-        const parsed = file.name.toLowerCase().endsWith(".json")
-          ? (JSON.parse(content) as Agent)
-          : null;
-        setEditor(
-          parsed
-            ? { ...parsed, id: "" }
-            : {
-                id: "",
-                name: file.name.replace(/\.(md|json)$/i, ""),
-                description: "Importado desde archivo",
-                system_prompt: content,
-              },
-        );
+        setEditor(parseAgentFile(file.name, content));
       } catch {
         setEditor({ id: "", name: file.name.replace(/\.(md|json)$/i, ""), system_prompt: content });
       }
     });
+  };
+  const importDirectory = async (files: File[]) => {
+    const candidates = files.filter((file) => /\.(md|json)$/i.test(file.name));
+    const scan: ImportScan = { agents: [], skills: [], warnings: [] };
+    for (const file of candidates) {
+      const path = file.webkitRelativePath || file.name;
+      try {
+        const content = await file.text();
+        if (/[\\/]\.claude[\\/]skills[\\/].+[\\/]skill\.md$/i.test(path)) {
+          scan.skills.push(parseSkillFile(path, content));
+        } else if (
+          /\.(agent\.)?md$/i.test(path)
+          || /\.claude[\\/]agents[\\/].+\.(md|json)$/i.test(path)
+          || /\.github[\\/].+\.md$/i.test(path)
+          || path.toLowerCase().endsWith(".json")
+        ) {
+          scan.agents.push({ path, agent: parseAgentFile(path, content) });
+        }
+      } catch (cause) {
+        scan.warnings.push(
+          `${path}: ${cause instanceof Error ? cause.message : "formato no reconocido"}`,
+        );
+      }
+    }
+    if (!scan.agents.length && !scan.skills.length) {
+      scan.warnings.push("No se encontraron agentes o skills compatibles.");
+    }
+    setImportScan(scan);
+  };
+  const performScanImport = async (agentIndexes?: number[]) => {
+    if (!importScan) return;
+    setImportingScan(true);
+    try {
+      const existingSkills = new Map(
+        (query.data?.skills ?? [])
+          .filter((skill) => Boolean(skill.name))
+          .map((skill) => [(skill.name ?? "").toLowerCase(), skill.id]),
+      );
+      const importedSkillIds = new Map<string, string>();
+      for (const skill of importScan.skills) {
+        const known = existingSkills.get(skill.name.toLowerCase());
+        if (known) {
+          importedSkillIds.set(skill.name.toLowerCase(), known);
+          continue;
+        }
+        const created = await api.post<{ id: string }>("/api/skills/private", {
+          name: skill.name,
+          description: skill.description,
+          content: skill.content,
+        });
+        importedSkillIds.set(skill.name.toLowerCase(), created.id);
+      }
+      const selected = agentIndexes
+        ? importScan.agents.filter((_, index) => agentIndexes.includes(index))
+        : importScan.agents;
+      for (const item of selected) {
+        const requested = item.agent.skills ?? [];
+        const linked = requested
+          .map((name) => importedSkillIds.get(name.toLowerCase()) ?? existingSkills.get(name.toLowerCase()))
+          .filter((id): id is string => Boolean(id));
+        await api.post("/api/agents", {
+          ...item.agent,
+          skills: linked.length ? linked : [...importedSkillIds.values()],
+          scope: "private",
+        });
+      }
+      await queryClient.invalidateQueries();
+      setImportScan(null);
+    } finally {
+      setImportingScan(false);
+    }
   };
   return (
     <main className="page-content agents-page">
@@ -959,13 +1233,64 @@ export function AgentsPage() {
             onClick={() => setNewMenu((value) => !value)}
             aria-expanded={newMenu}
           >
-            <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true"><path d="M6.5 1v11M1 6.5h11" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" /></svg>
+            <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
+              <path
+                d="M6.5 1v11M1 6.5h11"
+                stroke="currentColor"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+              />
+            </svg>
             <span>Nuevo</span>
-            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" style={{ marginLeft: 2, opacity: .7 }} aria-hidden="true"><path d="M2 3.5l3 3 3-3" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" /></svg>
+            <svg
+              width="10"
+              height="10"
+              viewBox="0 0 10 10"
+              fill="none"
+              style={{ marginLeft: 2, opacity: 0.7 }}
+              aria-hidden="true"
+            >
+              <path
+                d="M2 3.5l3 3 3-3"
+                stroke="currentColor"
+                strokeWidth="1.6"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
           </button>
           {newMenu && (
-            <div className="action-menu" style={{ position: "absolute", right: 0, top: "calc(100% + 6px)" }}>
+            <div
+              className="action-menu"
+              style={{ position: "absolute", right: 0, top: "calc(100% + 6px)" }}
+            >
               <div className="am-opts">
+                <button
+                  className="am-opt"
+                  onClick={() => {
+                    setEditor(null);
+                    setNewMenu(false);
+                  }}
+                >
+                  <span className="am-opt-icon">＋</span>
+                  <span className="am-opt-text">
+                    <span className="am-opt-label">Crear Nuevo</span>
+                    <span className="am-opt-sub">Configura el agente manualmente</span>
+                  </span>
+                </button>
+                <button
+                  className="am-opt"
+                  onClick={() => {
+                    setBuilder(true);
+                    setNewMenu(false);
+                  }}
+                >
+                  <span className="am-opt-icon">✦</span>
+                  <span className="am-opt-text">
+                    <span className="am-opt-label">Crear con Asistente</span>
+                    <span className="am-opt-sub">Describe tu idea y deja que te guíe</span>
+                  </span>
+                </button>
                 <button
                   className="am-opt"
                   onClick={() => {
@@ -986,17 +1311,11 @@ export function AgentsPage() {
                     <span className="am-opt-sub">Importa .md o .json</span>
                   </span>
                 </button>
-                <button
-                  className="am-opt"
-                  onClick={() => {
-                    setEditor(null);
-                    setNewMenu(false);
-                  }}
-                >
-                  <span className="am-opt-icon">＋</span>
+                <button className="am-opt" onClick={() => directoryInput.current?.click()}>
+                  <span className="am-opt-icon">▤</span>
                   <span className="am-opt-text">
-                    <span className="am-opt-label">Desde cero</span>
-                    <span className="am-opt-sub">Configura todos los campos</span>
+                    <span className="am-opt-label">Escanear directorio</span>
+                    <span className="am-opt-sub">Importa agentes Claude, Copilot y JSON</span>
                   </span>
                 </button>
               </div>
@@ -1009,6 +1328,18 @@ export function AgentsPage() {
             hidden
             onChange={(event) => {
               importFile(event.target.files?.[0]);
+              event.currentTarget.value = "";
+              setNewMenu(false);
+            }}
+          />
+          <input
+            ref={directoryInput}
+            type="file"
+            hidden
+            multiple
+            {...({ webkitdirectory: "", directory: "" } as React.InputHTMLAttributes<HTMLInputElement>)}
+            onChange={(event) => {
+              void importDirectory([...(event.currentTarget.files ?? [])]);
               event.currentTarget.value = "";
               setNewMenu(false);
             }}
@@ -1107,22 +1438,24 @@ export function AgentsPage() {
             open={openFilter === "labels"}
             onToggle={() => setOpenFilter(openFilter === "labels" ? null : "labels")}
           >
-            {([
-              ["public", "Público", "#10b981"],
-              ["production", "Producción", "#0891b2"],
-              ["staging", "Staging", "#64748b"],
-              ["development", "Desarrollo", "#f59e0b"],
-              ["test", "Test", "#8b5cf6"],
-              ["fork", "fork", "#94a3b8"],
-              ["linked", "linked", "#94a3b8"],
-              ["favorite", "Favorito", "#f59e0b"],
-              ["draft", "Borrador", "#8b5cf6"],
-              ["review", "Revisión", "#f97316"],
-              ["deprecated", "Obsoleto", "#ca8a04"],
-              ["quarantine", "Cuarentena", "#ef4444"],
-              ["archived", "Archivado", "#94a3b8"],
-              ["delete", "Eliminar", "#dc2626"],
-            ] as const).map(([label, text, color]) => (
+            {(
+              [
+                ["public", "Público", "#10b981"],
+                ["production", "Producción", "#0891b2"],
+                ["staging", "Staging", "#64748b"],
+                ["development", "Desarrollo", "#f59e0b"],
+                ["test", "Test", "#8b5cf6"],
+                ["fork", "fork", "#94a3b8"],
+                ["linked", "linked", "#94a3b8"],
+                ["favorite", "Favorito", "#f59e0b"],
+                ["draft", "Borrador", "#8b5cf6"],
+                ["review", "Revisión", "#f97316"],
+                ["deprecated", "Obsoleto", "#ca8a04"],
+                ["quarantine", "Cuarentena", "#ef4444"],
+                ["archived", "Archivado", "#94a3b8"],
+                ["delete", "Eliminar", "#dc2626"],
+              ] as const
+            ).map(([label, text, color]) => (
               <FilterOption
                 key={label}
                 label={text}
@@ -1146,7 +1479,22 @@ export function AgentsPage() {
             title="Grupos de trabajo"
             onClick={() => setGroupsOpen((value) => !value)}
           >
-            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="5" cy="5" r="2" stroke="currentColor" strokeWidth="1.4"/><circle cx="11" cy="5" r="2" stroke="currentColor" strokeWidth="1.4"/><path d="M1.5 13v-.5A3.5 3.5 0 0 1 5 9a3.5 3.5 0 0 1 3.5 3.5V13" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/><path d="M9 9.2A3.5 3.5 0 0 1 14.5 12.5V13" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/></svg>
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <circle cx="5" cy="5" r="2" stroke="currentColor" strokeWidth="1.4" />
+              <circle cx="11" cy="5" r="2" stroke="currentColor" strokeWidth="1.4" />
+              <path
+                d="M1.5 13v-.5A3.5 3.5 0 0 1 5 9a3.5 3.5 0 0 1 3.5 3.5V13"
+                stroke="currentColor"
+                strokeWidth="1.4"
+                strokeLinecap="round"
+              />
+              <path
+                d="M9 9.2A3.5 3.5 0 0 1 14.5 12.5V13"
+                stroke="currentColor"
+                strokeWidth="1.4"
+                strokeLinecap="round"
+              />
+            </svg>
           </button>
         </div>
         <div className="af-layout">
@@ -1241,6 +1589,18 @@ export function AgentsPage() {
                 }}
               />
             )}
+            {builder && query.data && (
+              <AgentBuilderDialog
+                connections={query.data.connections}
+                skills={query.data.skills}
+                knowledge={query.data.knowledge}
+                onClose={() => setBuilder(false)}
+                onSaved={() => {
+                  setBuilder(false);
+                  void query.refetch();
+                }}
+              />
+            )}
             {chat && <ChatDialog agent={chat} onClose={() => setChat(null)} />}
             {catalog && (
               <div className="modal-bg" role="dialog" aria-modal="true">
@@ -1298,6 +1658,61 @@ export function AgentsPage() {
             {exportAgent && (
               <ExportDialog agent={exportAgent} onClose={() => setExportAgent(null)} />
             )}
+            {importScan && (
+              <div className="modal-bg" role="dialog" aria-modal="true" aria-label="Vista previa de importación">
+                <div className="modal-box">
+                  <div className="modal-header">
+                    <div>
+                      <h2 className="modal-title">Vista previa de importación</h2>
+                      <p className="input-hint">
+                        {importScan.agents.length} agentes · {importScan.skills.length} skills
+                      </p>
+                    </div>
+                    <button className="modal-close" onClick={() => setImportScan(null)}>×</button>
+                  </div>
+                  <div className="modal-body">
+                    {importScan.warnings.length > 0 && (
+                      <div className="form-error">
+                        {importScan.warnings.map((warning) => <div key={warning}>{warning}</div>)}
+                      </div>
+                    )}
+                    {importScan.skills.length > 0 && (
+                      <div className="platform-section">
+                        <div className="platform-section-title">Skills vinculadas</div>
+                        {importScan.skills.map((skill) => (
+                          <span className="chip" key={skill.path}>{skill.name}</span>
+                        ))}
+                      </div>
+                    )}
+                    <div className="platform-section">
+                      <div className="platform-section-title">Agentes encontrados</div>
+                      {importScan.agents.map((item, index) => (
+                        <div className="scan-preview-row" key={item.path}>
+                          <div><strong>{item.agent.name}</strong><div className="input-hint">{item.path}</div></div>
+                          <button
+                            className="btn btn-ghost btn-sm"
+                            disabled={importingScan}
+                            onClick={() => void performScanImport([index])}
+                          >
+                            Importar
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="modal-footer">
+                    <button className="btn btn-ghost" onClick={() => setImportScan(null)}>Cancelar</button>
+                    <button
+                      className="btn btn-primary"
+                      disabled={importingScan || (!importScan.agents.length && !importScan.skills.length)}
+                      onClick={() => void performScanImport()}
+                    >
+                      {importingScan ? "Importando…" : "Importar todo"}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
             {shareAgent && query.data && (
               <ShareDialog
                 agent={shareAgent}
@@ -1311,4 +1726,3 @@ export function AgentsPage() {
     </main>
   );
 }
-
