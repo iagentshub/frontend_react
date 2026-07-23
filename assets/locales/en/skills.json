@@ -12,17 +12,17 @@
     "new_from_scratch_sub": "Blank skill"
   },
   "categories": {
-    "ai": "🤖 AI",
-    "ai_agents": "🤖 AI & Agents",
-    "messaging": "🗣️ Messaging",
-    "notes": "📝 Notes",
-    "productivity": "✅ Productivity",
-    "dev": "💻 Dev",
-    "dev_full": "💻 Development",
-    "security": "🔒 Security",
-    "media": "🎬 Media",
-    "data": "🌐 Data",
-    "company": "🏢 Company"
+    "ai": "AI",
+    "ai_agents": "AI & Agents",
+    "messaging": "Messaging",
+    "notes": "Notes",
+    "productivity": "Productivity",
+    "dev": "Dev",
+    "dev_full": "Development",
+    "security": "Security",
+    "media": "Media",
+    "data": "Data",
+    "company": "Company"
   },
   "scope": {
     "all": "All",

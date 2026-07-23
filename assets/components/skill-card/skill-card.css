@@ -64,11 +64,19 @@
     width: 34px;
     height: 34px;
     border-radius: 8px;
-    background: var(--accent-dim);
+    background: linear-gradient(145deg, color-mix(in srgb, var(--accent) 17%, var(--surface)), var(--surface-2));
     display: flex;
     align-items: center;
     justify-content: center;
     color: var(--accent);
+    border: 1px solid color-mix(in srgb, var(--accent) 20%, var(--line));
+    box-shadow: 0 4px 12px rgb(15 23 42 / .08);
+}
+
+.skill-card-icon svg {
+    width: 20px;
+    height: 20px;
+    stroke-width: 1.8;
 }
 
 .skill-card-meta {

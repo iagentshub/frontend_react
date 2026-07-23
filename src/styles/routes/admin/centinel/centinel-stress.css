@@ -1,5 +1,19 @@
 /* centinel-stress.css — estilos del tab de prueba de rendimiento */
 
+html {
+    --chart-good: #0ca30c;
+    --chart-critical: #d03b3b;
+    --chart-p95: #3987e5;
+    --chart-users: #d55181;
+    --chart-rps: #9085e9;
+}
+
+html[data-theme^="light"] {
+    --chart-p95: #2a78d6;
+    --chart-users: #e87ba4;
+    --chart-rps: #4a3aa7;
+}
+
 /* ── Tabs de sección ─────────────────────────────────────────────────────── */
 .ctn-section-tabs {
     display: flex;
@@ -229,6 +243,174 @@
     background: rgba(99, 102, 241, .5);
     height: 8px;
     border-radius: 2px;
+}
+
+.stress-legend--users::before {
+    background: repeating-linear-gradient(90deg, var(--chart-users) 0 4px, transparent 4px 7px);
+    height: 2px;
+}
+
+.metric-line {
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 2.5;
+    vector-effect: non-scaling-stroke;
+}
+
+.metric-line--avg { stroke: var(--chart-good); }
+.metric-line--p95 { stroke: var(--chart-p95); }
+.metric-line--rps { stroke: var(--chart-rps); opacity: .75; }
+.metric-line--users { stroke: var(--chart-users); stroke-dasharray: 6 5; }
+.metric-error { fill: var(--chart-critical); vector-effect: non-scaling-stroke; }
+
+.stress-summary-header,
+.stress-percentiles {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.stress-percentiles {
+    margin-top: 14px;
+    color: var(--ink-3);
+    font-size: 12px;
+}
+
+.stress-summary-grid--compact {
+    grid-template-columns: repeat(4, 1fr);
+}
+
+@media (max-width: 640px) {
+    .stress-summary-grid--compact {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+.probe-card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 18px 20px 14px;
+    margin-bottom: 18px;
+}
+
+.probe-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+}
+
+.probe-card-title {
+    color: var(--ink-1);
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.probe-config-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: flex-end;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--line);
+}
+
+.probe-cfg-label {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    color: var(--ink-2);
+    font-size: 11px;
+    font-weight: 500;
+}
+
+.probe-num-input {
+    width: 72px;
+    padding: 4px 8px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    outline: none;
+    color: var(--ink-1);
+    background: var(--surface-2);
+}
+
+.probe-num-input--wide { width: 88px; }
+.probe-num-input:focus { border-color: var(--accent); }
+
+.probe-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+}
+
+.probe-table th,
+.probe-table td {
+    padding: 6px 10px;
+    border-bottom: 1px solid var(--line);
+    text-align: left;
+}
+
+.probe-table th { color: var(--ink-3); font-size: 11px; }
+.probe-row--fail td { background: rgba(239, 68, 68, .06); }
+.probe-row--running td { background: var(--accent-dim); }
+.probe-status { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 600; }
+.probe-status--ok { color: var(--success); }
+.probe-status--fail { color: var(--danger); }
+.probe-status--running { color: var(--accent); }
+
+.probe-verdict-banner {
+    padding: 12px 16px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    font-size: 13px;
+}
+
+.probe-verdict--ok { background: rgba(34, 197, 94, .12); border-color: rgba(34, 197, 94, .3); }
+.probe-verdict--warn { background: rgba(234, 179, 8, .12); border-color: rgba(234, 179, 8, .3); }
+.probe-verdict--fail { background: rgba(239, 68, 68, .10); border-color: rgba(239, 68, 68, .3); }
+.probe-verdict-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.probe-verdict-sep { color: var(--ink-3); font-size: 16px; }
+.probe-hint { margin: 10px 0 0; color: var(--ink-3); font-size: 12px; line-height: 1.5; }
+
+.stress-cap-notice {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    margin: 12px 0;
+    border: 1px solid rgba(234, 179, 8, .3);
+    border-radius: 8px;
+    color: var(--ink-1);
+    background: rgba(234, 179, 8, .12);
+    font-size: 13px;
+}
+
+@media (max-width: 760px) {
+    .centinel-page {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .centinel-page > .page-header {
+        grid-column: 1;
+        grid-row: 1;
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .ctn-section-tabs {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    .centinel-page > .ctn-header-actions {
+        grid-column: 1;
+        grid-row: 2;
+        justify-self: stretch;
+    }
 }
 
 .stress-chart-wrap {

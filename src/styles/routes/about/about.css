@@ -299,10 +299,9 @@ html body.about-page {
     background: var(--surface-3);
 }
 
-/* ── Contact card (coming soon) ── */
+/* ── Contact card ── */
 .about-card-contact {
     position: relative;
-    opacity: 0.55;
 }
 
 .about-soon-badge {
@@ -328,12 +327,18 @@ html body.about-page {
     background: var(--surface-2);
     border: 1px solid var(--line);
     border-radius: 8px;
-    color: var(--ink-3);
+    color: var(--ink);
     font-size: 13px;
     font-weight: 500;
     font-family: var(--font);
-    cursor: not-allowed;
-    pointer-events: none;
+    cursor: pointer;
+    text-decoration: none;
+    transition: border-color .15s, background .15s;
+}
+
+.about-contact-btn:hover {
+    border-color: var(--line-strong);
+    background: var(--surface-3);
 }
 
 /* ── Bottom row (GitHub + License side by side) ── */

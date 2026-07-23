@@ -135,7 +135,7 @@ function CategoryIcon({ category }: { category: ConnectionCategory }) {
   );
 }
 
-function ActionIcon({ action }: { action: "test" | "edit" | "share" | "delete" }) {
+function ActionIcon({ action }: { action: "test" | "edit" | "share" | "delete" | "sync" }) {
   if (action === "test")
     return (
       <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
@@ -170,6 +170,12 @@ function ActionIcon({ action }: { action: "test" | "edit" | "share" | "delete" }
           strokeWidth="1.3"
           strokeLinecap="round"
         />
+      </svg>
+    );
+  if (action === "sync")
+    return (
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+        <path d="M13 5V2l-1.5 1.5A5.5 5.5 0 1 0 13 10" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
     );
   return (
@@ -700,6 +706,8 @@ function ConnectionCard({
   onEdit,
   onShare,
   onDelete,
+  onImportModels,
+  onHubSync,
   onDragStart,
 }: {
   connection: Connection;
@@ -710,6 +718,8 @@ function ConnectionCard({
   onEdit: () => void;
   onShare: () => void;
   onDelete: () => void;
+  onImportModels: () => void;
+  onHubSync: () => void;
   onDragStart: (id: string) => void;
 }) {
   const t = useConnectionsT();
@@ -820,6 +830,12 @@ function ConnectionCard({
           <button className="cca-btn" type="button" onClick={onShare} title="Compartir con grupo">
             <ActionIcon action="share" />
           </button>
+        )}
+        {!connection._shared && (
+          <>
+            {connection.type === "ollama" && <button className="cca-btn" type="button" onClick={onImportModels} title="Importar modelos"><ActionIcon action="sync" /></button>}
+            {connection.type === "iagentshub" && <button className="cca-btn" type="button" onClick={onHubSync} title="Sincronizar Hub"><ActionIcon action="sync" /></button>}
+          </>
         )}
         {!connection._shared && (
           <button
@@ -973,6 +989,15 @@ export function ConnectionsPage() {
     onSuccess: async () => {
       setNotice({ kind: "ok", text: t("connections:deleted") });
       await queryClient.invalidateQueries({ queryKey: queryKeys.connections });
+      await connectionsQuery.refetch();
+    },
+    onError: (error) => setNotice({ kind: "error", text: error.message }),
+  });
+  const providerAction = useMutation({
+    mutationFn: ({ id, action }: { id: string; action: "import-models" | "hub-sync" }) =>
+      api.post(`/api/connections/${encodeURIComponent(id)}/${action}`, {}),
+    onSuccess: async (_, variables) => {
+      setNotice({ kind: "ok", text: variables.action === "hub-sync" ? "Hub sincronizado." : "Modelos importados." });
       await connectionsQuery.refetch();
     },
     onError: (error) => setNotice({ kind: "error", text: error.message }),
@@ -1303,6 +1328,8 @@ export function ConnectionsPage() {
                         onTest={() => runTests.mutate([connection.id])}
                         onEdit={() => void editConnection(connection)}
                         onShare={() => setShareTarget(connection)}
+                        onImportModels={() => providerAction.mutate({ id: connection.id, action: "import-models" })}
+                        onHubSync={() => providerAction.mutate({ id: connection.id, action: "hub-sync" })}
                         onDelete={() => {
                           if (window.confirm(t("connections:confirm_delete")))
                             remove.mutate(connection.id);

@@ -13,6 +13,7 @@ const VerifyPage = lazy(() => import("@/routes/auth/verify-page").then((module) 
 const VsCodeAuthPage = lazy(() => import("@/routes/auth/vscode-auth-page").then((module) => ({ default: module.VsCodeAuthPage })));
 const AboutPage = lazy(() => import("@/routes/public/about-page").then((module) => ({ default: module.AboutPage })));
 const DocsPage = lazy(() => import("@/routes/public/docs-page").then((module) => ({ default: module.DocsPage })));
+const SupportPage = lazy(() => import("@/routes/public/support-page").then((module) => ({ default: module.SupportPage })));
 const DashboardPage = lazy(() => import("@/routes/dashboard/dashboard-page").then((module) => ({ default: module.DashboardPage })));
 const AgentsPage = lazy(() => import("@/routes/agents/agents-page").then((module) => ({ default: module.AgentsPage })));
 const RegisterPage = lazy(() => import("@/routes/auth/register-page").then((module) => ({ default: module.RegisterPage })));
@@ -99,6 +100,7 @@ export const router = createBrowserRouter([
   { path: "/about", element: lazyRoute(<AboutPage />) },
   { path: "/pricing/", element: lazyRoute(<PricingPage />) },
   { path: "/docs", element: lazyRoute(<DocsPage />) },
+  { path: "/support", element: lazyRoute(<SupportPage />) },
   { path: "/register/", element: lazyRoute(<RegisterPage />) },
   { path: "/verify/", element: lazyRoute(<VerifyPage />) },
   { path: "/forgot-password/", element: lazyRoute(<ForgotPasswordPage />) },

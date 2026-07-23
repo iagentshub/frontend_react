@@ -52,6 +52,7 @@ await i18n.use(initReactI18next).init({
     "dashboard",
     "docs",
     "about",
+    "support",
     "teams",
     "manager",
     "social",

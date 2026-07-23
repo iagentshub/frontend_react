@@ -737,18 +737,27 @@
     white-space: nowrap;
 }
 
-/* React mantiene el mismo encabezado y geometría que la vista legacy. */
 .centinel-page {
-    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-content: start;
+    column-gap: 16px;
 }
 
-.centinel-page > .page-header .ctn-section-tabs {
-    display: none;
+.centinel-page > .page-header {
+    grid-column: 1;
+    grid-row: 1;
+    min-width: 0;
 }
 
 .centinel-page > .ctn-header-actions {
-    position: absolute;
-    top: 28px;
-    right: 28px;
+    grid-column: 2;
+    grid-row: 1;
+    align-self: center;
+    justify-self: end;
     margin: 0;
+}
+
+.centinel-page > :not(.page-header):not(.ctn-header-actions) {
+    grid-column: 1 / -1;
 }

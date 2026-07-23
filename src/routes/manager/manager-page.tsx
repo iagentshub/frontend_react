@@ -21,7 +21,14 @@ interface WorkspaceMember {
   display_name?: string | null;
   role: WorkspaceRole;
   joined_at?: string | null;
+  permissions?: PermissionMap;
 }
+type PermissionKind = "agents" | "connections" | "knowledge";
+type PermissionMap = Partial<Record<PermissionKind, {
+  default?: boolean;
+  items?: Record<string, Record<string, boolean>>;
+}>>;
+interface ManagedResource { id: string; name: string }
 
 interface WorkspaceInvitation {
   id: string;
@@ -36,6 +43,7 @@ interface ManagerData {
   workspace: Workspace;
   members: WorkspaceMember[];
   invitations: WorkspaceInvitation[];
+  resources: Record<PermissionKind, ManagedResource[]>;
 }
 
 function errorText(error: unknown): string {
@@ -53,11 +61,57 @@ async function loadManager(workspaceParam: string | null, signal: AbortSignal): 
   const manageable = workspaces.filter((item) => item.type === "team" && (item.role === "owner" || item.role === "admin"));
   const workspace = manageable.find((item) => item.id === workspaceParam) ?? manageable[0];
   if (!workspace) throw new ApiError(403, "No administras ningún grupo de trabajo.");
-  const [members, invitations] = await Promise.all([
+  const [members, invitations, agents, connections, knowledge] = await Promise.all([
     api.get<WorkspaceMember[]>(`/api/workspaces/${encodeURIComponent(workspace.id)}/members`, signal),
     api.get<WorkspaceInvitation[]>(`/api/workspaces/${encodeURIComponent(workspace.id)}/invitations`, signal),
+    api.get<Array<{ id: string; name?: string }>>("/api/agents?scope=private", signal),
+    api.get<Array<{ id: string; name?: string; label?: string }>>("/api/connections/raw", signal),
+    api.get<Array<{ id: string; title?: string }>>("/api/knowledge", signal),
   ]);
-  return { workspaces: manageable, workspace, members, invitations };
+  return {
+    workspaces: manageable, workspace, members, invitations,
+    resources: {
+      agents: agents.map((item) => ({ id: item.id, name: item.name || item.id })),
+      connections: connections.map((item) => ({ id: item.id, name: item.name || item.label || item.id })),
+      knowledge: knowledge.map((item) => ({ id: item.id, name: item.title || item.id })),
+    },
+  };
+}
+
+function PermissionsDialog({
+  member,
+  resources,
+  onClose,
+  onSaved,
+}: {
+  member: WorkspaceMember;
+  resources: ManagerData["resources"];
+  onClose: () => void;
+  onSaved: (permissions: PermissionMap) => void;
+}) {
+  const [tab, setTab] = useState<PermissionKind>("agents");
+  const [draft, setDraft] = useState<PermissionMap>(() => structuredClone(member.permissions ?? {}));
+  const section = draft[tab] ?? { default: true, items: {} };
+  const permissions = tab === "connections" ? ["direct", "via_agent"] : tab === "agents" ? ["use"] : ["view"];
+  const setDefault = (value: boolean) =>
+    setDraft((current) => ({ ...current, [tab]: { ...section, default: value } }));
+  const setItem = (id: string, permission: string, value: boolean) =>
+    setDraft((current) => ({
+      ...current,
+      [tab]: {
+        ...section,
+        items: { ...(section.items ?? {}), [id]: { ...(section.items?.[id] ?? {}), [permission]: value } },
+      },
+    }));
+  return <div className="modal-bg" role="dialog" aria-modal="true"><div className="modal-box" style={{ maxWidth: 720 }}>
+    <div className="modal-header"><h3 className="modal-title">Permisos — {member.display_name || member.email || member.username}</h3><button className="modal-close" onClick={onClose}>×</button></div>
+    <div className="admin-tabs">{(["agents", "connections", "knowledge"] as PermissionKind[]).map((kind) => <button className={`admin-tab${tab === kind ? " active" : ""}`} onClick={() => setTab(kind)} key={kind}>{{ agents: "Agentes", connections: "Conexiones", knowledge: "Conocimiento" }[kind]}</button>)}</div>
+    <div className="modal-body">
+      <label className="toggle-label"><input type="checkbox" checked={section.default ?? true} onChange={(event) => setDefault(event.target.checked)} /><span className="toggle-track" />Permitir por defecto</label>
+      <table className="admin-table"><thead><tr><th>Recurso</th>{permissions.map((permission) => <th key={permission}>{permission === "via_agent" ? "Vía agente" : permission === "direct" ? "Directo" : permission === "use" ? "Usar" : "Ver"}</th>)}</tr></thead><tbody>{resources[tab].map((resource) => <tr key={resource.id}><td>{resource.name}</td>{permissions.map((permission) => <td key={permission}><input type="checkbox" checked={section.items?.[resource.id]?.[permission] ?? section.default ?? true} onChange={(event) => setItem(resource.id, permission, event.target.checked)} /></td>)}</tr>)}</tbody></table>
+    </div>
+    <div className="modal-footer"><button className="btn btn-ghost" onClick={onClose}>Cancelar</button><button className="btn btn-primary" onClick={() => onSaved(draft)}>Guardar permisos</button></div>
+  </div></div>;
 }
 
 export function ManagerPage() {
@@ -65,6 +119,7 @@ export function ManagerPage() {
   const selectedId = params.get("team") ?? params.get("workspace");
   const [tab, setTab] = useState<"team" | "invitations">("team");
   const [invite, setInvite] = useState("");
+  const [permissionsMember, setPermissionsMember] = useState<WorkspaceMember | null>(null);
   const query = useQuery({
     queryKey: ["manager", selectedId],
     queryFn: ({ signal }) => loadManager(selectedId, signal),
@@ -90,6 +145,14 @@ export function ManagerPage() {
   const cancelMutation = useMutation({
     mutationFn: (id: string) => api.delete(`/api/workspaces/${encodeURIComponent(workspaceId ?? "")}/invitations/${encodeURIComponent(id)}`),
     onSuccess: () => query.refetch(),
+  });
+  const permissionsMutation = useMutation({
+    mutationFn: ({ username, permissions }: { username: string; permissions: PermissionMap }) =>
+      api.patch(`/api/workspaces/${encodeURIComponent(workspaceId ?? "")}/members/${encodeURIComponent(username)}`, { permissions }),
+    onSuccess: async () => {
+      setPermissionsMember(null);
+      await query.refetch();
+    },
   });
   const operationError = inviteMutation.error ?? roleMutation.error ?? removeMutation.error ?? cancelMutation.error;
   const busy = inviteMutation.isPending || roleMutation.isPending || removeMutation.isPending || cancelMutation.isPending;
@@ -152,6 +215,7 @@ export function ManagerPage() {
                           </select>
                         )}
                         {member.role !== "owner" && <button className="btn btn-ghost btn-sm action-item--danger" disabled={busy} onClick={() => { if (confirm(`¿Eliminar a ${member.username} del grupo?`)) removeMutation.mutate(member.username); }}>Eliminar</button>}
+                        {member.role !== "owner" && <button className="btn btn-ghost btn-sm" disabled={busy} onClick={() => setPermissionsMember(member)}>Permisos</button>}
                       </div>
                     </td>
                   </tr>
@@ -181,6 +245,7 @@ export function ManagerPage() {
           ) : <div className="admin-empty">No hay invitaciones pendientes.</div>}
         </>
       )}
+      {permissionsMember && query.data && <PermissionsDialog member={permissionsMember} resources={query.data.resources} onClose={() => setPermissionsMember(null)} onSaved={(permissions) => permissionsMutation.mutate({ username: permissionsMember.username, permissions })} />}
     </main>
   );
 }

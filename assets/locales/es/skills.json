@@ -12,17 +12,17 @@
     "new_from_scratch_sub": "Hoja en blanco"
   },
   "categories": {
-    "ai": "🤖 IA",
-    "ai_agents": "🤖 IA y Agentes",
-    "messaging": "🗣️ Mensajería",
-    "notes": "📝 Notas",
-    "productivity": "✅ Productividad",
-    "dev": "💻 Dev",
-    "dev_full": "💻 Desarrollo",
-    "security": "🔒 Seguridad",
-    "media": "🎬 Media",
-    "data": "🌐 Datos",
-    "company": "🏢 Empresa"
+    "ai": "IA",
+    "ai_agents": "IA y Agentes",
+    "messaging": "Mensajería",
+    "notes": "Notas",
+    "productivity": "Productividad",
+    "dev": "Dev",
+    "dev_full": "Desarrollo",
+    "security": "Seguridad",
+    "media": "Media",
+    "data": "Datos",
+    "company": "Empresa"
   },
   "scope": {
     "all": "Todas",

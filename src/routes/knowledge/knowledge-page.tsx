@@ -2,6 +2,7 @@ import { useMemo, useRef, useState, type ChangeEvent, type DragEvent } from "rea
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { api } from "@/api/client";
+import { SkillCategoryGlyph, type SkillCategory } from "@/components/resource-icons";
 import { FilterBar, Icon, LabelChips, LabelPicker, Modal } from "./knowledge-ui";
 import type {
   KnowledgeData,
@@ -24,7 +25,7 @@ import "@/styles/routes/knowledge/knowledge.css";
 import "@/styles/routes/memory/memory.css";
 import "./knowledge-page.css";
 
-const categories = [
+const categories: readonly SkillCategory[] = [
   "ai",
   "messaging",
   "notes",
@@ -34,7 +35,7 @@ const categories = [
   "media",
   "data",
   "company",
-] as const;
+];
 const blockedLabels = ["draft", "quarantine", "archived", "delete"];
 
 function pageSize() {
@@ -101,7 +102,7 @@ function skillDraft(skill?: Skill | null): SkillDraft {
     ...(skill?.id ? { id: skill.id } : {}),
     name: skill?.name ?? "",
     description: skill?.description ?? "",
-    icon: skill?.icon ?? "🔧",
+    icon: skill?.icon ?? skill?.category ?? "general",
     category: skill?.category ?? "",
     content: skill?.content ?? skill?.body ?? "",
     labels: skill?.labels?.length ? [...skill.labels] : ["private"],
@@ -127,6 +128,16 @@ function SkillEditor({
     key: keyof Pick<SkillDraft, "name" | "description" | "icon" | "category" | "content">,
     value: string,
   ) => setDraft((current) => ({ ...current, [key]: value }));
+  const selectCategory = (category: SkillCategory | "") =>
+    setDraft((current) => ({
+      ...current,
+      category,
+      icon: category || "general",
+    }));
+  const categoryLabel = (category: SkillCategory) =>
+    t(
+      `skills.categories.${category === "ai" ? "ai_agents" : category === "dev" ? "dev_full" : category}`,
+    );
   return (
     <Modal
       title={draft.id ? t("skills.dialog.title_edit") : t("skills.dialog.title_new")}
@@ -140,33 +151,19 @@ function SkillEditor({
         }}
       >
         <div className="modal-body knowledge-modal-body">
-          <div className="dsk-row">
-            <div className="dsk-field" style={{ flex: "0 0 auto" }}>
-              <label className="dsk-label" htmlFor="knowledge-skill-icon">
-                {t("skills.dialog.field_icon")}
-              </label>
-              <input
-                id="knowledge-skill-icon"
-                className="dsk-input dsk-input--icon"
-                maxLength={4}
-                value={draft.icon}
-                onChange={(event) => field("icon", event.target.value)}
-              />
-            </div>
-            <div className="dsk-field">
-              <label className="dsk-label" htmlFor="knowledge-skill-name">
-                {t("skills.dialog.field_name")} *
-              </label>
-              <input
-                id="knowledge-skill-name"
-                className="dsk-input"
-                autoFocus
-                required
-                value={draft.name}
-                onChange={(event) => field("name", event.target.value)}
-                placeholder={t("skills.dialog.placeholder_name")}
-              />
-            </div>
+          <div className="dsk-field">
+            <label className="dsk-label" htmlFor="knowledge-skill-name">
+              {t("skills.dialog.field_name")} *
+            </label>
+            <input
+              id="knowledge-skill-name"
+              className="dsk-input"
+              autoFocus
+              required
+              value={draft.name}
+              onChange={(event) => field("name", event.target.value)}
+              placeholder={t("skills.dialog.placeholder_name")}
+            />
           </div>
           <div className="dsk-field">
             <label className="dsk-label" htmlFor="knowledge-skill-description">
@@ -180,26 +177,44 @@ function SkillEditor({
               placeholder={t("skills.dialog.placeholder_desc")}
             />
           </div>
-          <div className="dsk-field">
-            <label className="dsk-label" htmlFor="knowledge-skill-category">
+          <fieldset className="dsk-field skill-category-field">
+            <legend className="dsk-label" id="knowledge-skill-category-label">
               {t("skills.dialog.field_category")}
-            </label>
-            <select
-              id="knowledge-skill-category"
-              className="dsk-select"
-              value={draft.category}
-              onChange={(event) => field("category", event.target.value)}
+            </legend>
+            <div
+              className="skill-category-picker"
+              role="radiogroup"
+              aria-labelledby="knowledge-skill-category-label"
             >
-              <option value="">{t("skills.dialog.no_category")}</option>
+              <button
+                type="button"
+                className={`skill-category-option${draft.category === "" ? " skill-category-option--active" : ""}`}
+                role="radio"
+                aria-checked={draft.category === ""}
+                onClick={() => selectCategory("")}
+              >
+                <span className="skill-category-option-icon">
+                  <SkillCategoryGlyph size={20} />
+                </span>
+                <span>{t("skills.dialog.no_category")}</span>
+              </button>
               {categories.map((category) => (
-                <option value={category} key={category}>
-                  {t(
-                    `skills.categories.${category === "ai" ? "ai_agents" : category === "dev" ? "dev_full" : category}`,
-                  )}
-                </option>
+                <button
+                  type="button"
+                  className={`skill-category-option${draft.category === category ? " skill-category-option--active" : ""}`}
+                  role="radio"
+                  aria-checked={draft.category === category}
+                  onClick={() => selectCategory(category)}
+                  key={category}
+                >
+                  <span className="skill-category-option-icon">
+                    <SkillCategoryGlyph category={category} size={20} />
+                  </span>
+                  <span>{categoryLabel(category)}</span>
+                </button>
               ))}
-            </select>
-          </div>
+            </div>
+          </fieldset>
           <LabelPicker
             value={draft.labels}
             onChange={(labels) => setDraft((current) => ({ ...current, labels }))}
@@ -429,10 +444,16 @@ function SkillCard({
   return (
     <article
       className={`skill-card${blocked ? " skill-card--blocked" : ""}${viewMode === "list" ? " skill-card--list" : ""}`}
+      draggable={canEdit}
+      onDragStart={(event) =>
+        event.dataTransfer.setData("application/x-iagents-resource", skill.id)
+      }
     >
       <div className="skill-card-body">
         <div className="skill-card-top">
-          <div className="skill-card-icon">{skill.icon || <Icon kind="file" />}</div>
+          <div className="skill-card-icon">
+            <SkillCategoryGlyph category={skill.category} size={20} />
+          </div>
           <div className="skill-card-meta">
             <div className="skill-card-name-row">
               <span className="skill-card-name" title={skill.name}>
@@ -530,7 +551,13 @@ function ResourceCard({
   const { t } = useTranslation();
   const document = item.type === "document";
   return (
-    <article className="knowledge-card">
+    <article
+      className="knowledge-card"
+      draggable={!item._shared}
+      onDragStart={(event) =>
+        event.dataTransfer.setData("application/x-iagents-resource", item.id)
+      }
+    >
       <div className="knowledge-card-header">
         <span className="knowledge-card-icon">
           {document ? (item.source.toLowerCase().endsWith(".pdf") ? "📄" : "📝") : "🔗"}
@@ -599,7 +626,13 @@ function MemoryCard({
 }) {
   const { t } = useTranslation();
   return (
-    <article className="mem-card">
+    <article
+      className="mem-card"
+      draggable
+      onDragStart={(event) =>
+        event.dataTransfer.setData("application/x-iagents-resource", item.filename)
+      }
+    >
       <button
         className="mem-card-body"
         onClick={onEdit}
@@ -1041,13 +1074,15 @@ export function KnowledgePage() {
     const source = tab === "urls" ? (data?.urls ?? []) : (data?.documents ?? []);
     const lower = query.toLowerCase();
     return source.filter(
-      (item) => !lower || `${item.title} ${item.source}`.toLowerCase().includes(lower),
+      (item) =>
+        !lower || `${item.title} ${item.source}`.toLowerCase().includes(lower),
     );
   }, [data?.documents, data?.urls, query, tab]);
   const memories = useMemo(() => {
     const lower = query.toLowerCase();
     return (data?.memories ?? []).filter(
-      (item) => !lower || item.filename.toLowerCase().includes(lower),
+      (item) =>
+        !lower || item.filename.toLowerCase().includes(lower),
     );
   }, [data?.memories, query]);
 
@@ -1289,20 +1324,19 @@ export function KnowledgePage() {
         {status}
       </div>
       <FilterBar
-          query={query}
-          onQuery={(value) => {
-            setQuery(value);
-            setShown(pageSize());
-          }}
-          labels={filterLabels}
-          onLabels={(value) => {
-            setFilterLabels(value);
-            setShown(pageSize());
-          }}
-          showLabels={tab === "skills"}
+        query={query}
+        onQuery={(value) => {
+          setQuery(value);
+          setShown(pageSize());
+        }}
+        labels={filterLabels}
+        onLabels={(value) => {
+          setFilterLabels(value);
+          setShown(pageSize());
+        }}
+        showLabels={tab === "skills"}
       />
       <div className="folder-toggle-row">
-        <span className="folder-resource-icon" title="Carpetas" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M1.5 4.5h5l1.5 2h6.5v7H1.5z" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round"/><path d="M1.5 4.5V3h4l1.5 1.5" stroke="currentColor" strokeWidth="1.4"/></svg></span>
         <button
           className={`folder-toggle-btn kg-toggle-btn${groupsOpen ? " folder-toggle-btn--on" : ""}`}
           onClick={() => setGroupsOpen((value) => !value)}
@@ -1312,33 +1346,33 @@ export function KnowledgePage() {
         </button>
       </div>
       <div className="knowledge-tab-layout">
-          <aside className={`kf-panel${groupsOpen ? "" : " folder-panel--collapsed"}`}>
-            <div className="kf-section-header">
-              <span className="kf-section-label">Grupos</span>
-            </div>
+        <aside className={`kf-panel${groupsOpen ? "" : " folder-panel--collapsed"}`}>
+          <div className="kf-section-header">
+            <span className="kf-section-label">Grupos</span>
+          </div>
+          <button
+            className={`kf-item${!groupId ? " kf-item--active" : ""}`}
+            onClick={() => {
+              setGroupId("");
+              setShown(pageSize());
+            }}
+          >
+            <span className="kf-item-name">Todos</span>
+          </button>
+          {teams.map((team) => (
             <button
-              className={`kf-item${!groupId ? " kf-item--active" : ""}`}
+              className={`kf-item${groupId === team.id ? " kf-item--active" : ""}`}
               onClick={() => {
-                setGroupId("");
+                setGroupId(team.id);
                 setShown(pageSize());
               }}
+              key={team.id}
             >
-              <span className="kf-item-name">Todos</span>
+              <span className="kf-item-name">{team.name}</span>
             </button>
-            {teams.map((team) => (
-              <button
-                className={`kf-item${groupId === team.id ? " kf-item--active" : ""}`}
-                onClick={() => {
-                  setGroupId(team.id);
-                  setShown(pageSize());
-                }}
-                key={team.id}
-              >
-                <span className="kf-item-name">{team.name}</span>
-              </button>
-            ))}
-            {!teams.length && <p className="gp-empty">Sin grupos</p>}
-          </aside>
+          ))}
+          {!teams.length && <p className="gp-empty">Sin grupos</p>}
+        </aside>
         <div className="knowledge-tab-content">
           {queryResult.isPending ? (
             <div className="empty-state">Cargando conocimiento…</div>
@@ -1557,4 +1591,3 @@ function LoadMore({ total, shown, onMore }: { total: number; shown: number; onMo
     </div>
   );
 }
-
