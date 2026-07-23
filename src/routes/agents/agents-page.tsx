@@ -1141,7 +1141,6 @@ export function AgentsPage() {
       </div>
       <div className="af-wrapper">
         <div className="folder-toggle-row">
-          <span className="folder-resource-icon" title="Carpetas" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M1.5 4.5h5l1.5 2h6.5v7H1.5z" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round"/><path d="M1.5 4.5V3h4l1.5 1.5" stroke="currentColor" strokeWidth="1.4"/></svg></span>
           <button
             className={`folder-toggle-btn${groupsOpen ? " folder-toggle-btn--on" : ""}`}
             title="Grupos de trabajo"

@@ -24,6 +24,22 @@ import "@/styles/routes/knowledge/knowledge.css";
 import "@/styles/routes/memory/memory.css";
 import "./knowledge-page.css";
 
+function parseSkillFrontmatter(text: string): { meta: Record<string, string>; body: string } {
+  if (!text.startsWith("---")) return { meta: {}, body: text.trim() };
+  const end = text.indexOf("\n---", 3);
+  if (end === -1) return { meta: {}, body: text.trim() };
+  const meta: Record<string, string> = {};
+  text
+    .slice(4, end)
+    .split("\n")
+    .forEach((line) => {
+      const m = line.match(/^([\w-]+):\s*(.+)/);
+      const [, key, value] = m ?? [];
+      if (key && value) meta[key.trim()] = value.trim();
+    });
+  return { meta, body: text.slice(end + 4).trim() };
+}
+
 const categories = [
   "ai",
   "messaging",
@@ -1082,17 +1098,17 @@ export function KnowledgePage() {
     file
       .text()
       .then((text) => {
-        const parsed = JSON.parse(text) as Partial<Skill>;
-        if (!parsed.name) throw new Error("Missing required field: name");
+        const { meta, body } = parseSkillFrontmatter(text);
+        const name = meta.name || file.name.replace(/\.md$/i, "");
+        if (!name) throw new Error("Missing required field: name");
         setSkillEditor(
           skillDraft({
             id: "",
-            name: parsed.name,
-            description: parsed.description ?? "",
-            icon: parsed.icon ?? "",
-            category: parsed.category ?? "",
-            content: parsed.content ?? "",
-            labels: parsed.labels ?? ["private"],
+            name,
+            description: meta.description ?? "",
+            icon: meta.icon ?? "",
+            category: meta.category ?? "",
+            content: body,
           }),
         );
       })
@@ -1223,7 +1239,7 @@ export function KnowledgePage() {
       <input
         ref={skillFile}
         type="file"
-        accept=".json,application/json"
+        accept=".md"
         hidden
         onChange={importSkillFile}
       />
@@ -1302,7 +1318,6 @@ export function KnowledgePage() {
           showLabels={tab === "skills"}
       />
       <div className="folder-toggle-row">
-        <span className="folder-resource-icon" title="Carpetas" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M1.5 4.5h5l1.5 2h6.5v7H1.5z" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round"/><path d="M1.5 4.5V3h4l1.5 1.5" stroke="currentColor" strokeWidth="1.4"/></svg></span>
         <button
           className={`folder-toggle-btn kg-toggle-btn${groupsOpen ? " folder-toggle-btn--on" : ""}`}
           onClick={() => setGroupsOpen((value) => !value)}

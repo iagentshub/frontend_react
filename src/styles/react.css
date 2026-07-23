@@ -113,11 +113,3 @@ body.dash-editing .nav-backdrop {
 .agents-page .fa-option--active {
   background: var(--accent-dim);
 }
-.folder-resource-icon {
-  display: inline-flex;
-  width: 22px;
-  height: 22px;
-  align-items: center;
-  justify-content: center;
-  color: var(--ink-muted, #94a3b8);
-}
