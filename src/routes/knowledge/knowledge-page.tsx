@@ -3,6 +3,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { api } from "@/api/client";
 import { SkillCategoryGlyph, type SkillCategory } from "@/components/resource-icons";
+import { ResourceHistoryButton } from "@/components/resource-history-dialog";
 import { FilterBar, Icon, LabelChips, LabelPicker, Modal } from "./knowledge-ui";
 import { SkillBuilderDialog } from "./skill-builder-dialog";
 import type {
@@ -168,6 +169,18 @@ function SkillEditor({
         }}
       >
         <div className="modal-body knowledge-modal-body">
+          {draft.id && (
+            <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 12 }}>
+              <ResourceHistoryButton
+                type="skill"
+                resourceId={draft.id}
+                onRestored={() => {
+                  onSaved("Versión restaurada");
+                  onClose();
+                }}
+              />
+            </div>
+          )}
           <div className="dsk-field">
             <label className="dsk-label" htmlFor="knowledge-skill-name">
               {t("skills.dialog.field_name")} *

@@ -4,6 +4,7 @@
   "nav": {
     "dashboard": "Dashboard",
     "agents": "Agentes",
+    "workflows": "Orquestación",
     "skills": "Habilidades",
     "knowledge": "Conocimiento",
     "connections": "Conexiones",

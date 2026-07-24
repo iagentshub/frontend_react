@@ -8,6 +8,7 @@ import {
   normalizeAgentIcon,
   type AgentIconName,
 } from "@/components/resource-icons";
+import { ResourceHistoryButton } from "@/components/resource-history-dialog";
 import { ChatDialog } from "./chat-dialog";
 import { AgentBuilderDialog } from "./agent-builder-dialog";
 import "../../../assets/components/agent-card/agent-card.css";
@@ -491,6 +492,16 @@ function AgentEditor({
           <span className="modal-title" id="agent-editor-title">
             {agent ? "Editar agente" : "Nuevo agente"}
           </span>
+          {agent?.id && (
+            <ResourceHistoryButton
+              type="agent"
+              resourceId={agent.id}
+              onRestored={() => {
+                void queryClient.invalidateQueries({ queryKey: ["agents"] });
+                onClose();
+              }}
+            />
+          )}
           <button type="button" className="modal-close" onClick={onClose} aria-label="Cerrar">
             ×
           </button>

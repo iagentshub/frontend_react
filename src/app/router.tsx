@@ -30,6 +30,7 @@ const ProfilePage = lazy(() => import("@/routes/profile/profile-page").then((mod
 const AdminPage = lazy(() => import("@/routes/admin/admin-page").then((module) => ({ default: module.AdminPage })));
 const MetadataPage = lazy(() => import("@/routes/admin/metadata-page").then((module) => ({ default: module.MetadataPage })));
 const CentinelPage = lazy(() => import("@/routes/admin/centinel-page").then((module) => ({ default: module.CentinelPage })));
+const WorkflowsPage = lazy(() => import("@/routes/workflows/workflows-page").then((module) => ({ default: module.WorkflowsPage })));
 
 function lazyRoute(element: ReactNode) {
   return <Suspense fallback={<RouteLoading />}>{element}</Suspense>;
@@ -52,6 +53,12 @@ export const router = createBrowserRouter([
     element: <RequireAuth><AppShell /></RequireAuth>,
     children: [{ index: true, element: lazyRoute(<AgentsPage />) }],
   },
+  {
+    path: "/orchestrations/",
+    element: <RequireAuth><AppShell /></RequireAuth>,
+    children: [{ index: true, element: lazyRoute(<WorkflowsPage />) }],
+  },
+  { path: "/workflows/", element: <Navigate to="/orchestrations/" replace /> },
   {
     path: "/connections/",
     element: <RequireAuth><AppShell /></RequireAuth>,

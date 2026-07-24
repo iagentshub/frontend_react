@@ -18,6 +18,7 @@ const primaryLinks = [
   ["/dashboard/", "dashboard", "nav.dashboard"],
   ["/explore/", "explore", "nav.explore"],
   ["/agents/", "agents", "nav.agents"],
+  ["/orchestrations/", "workflows", "nav.workflows"],
   ["/knowledge/", "knowledge", "nav.knowledge"],
   ["/connections/", "connections", "nav.connections"],
 ] as const;

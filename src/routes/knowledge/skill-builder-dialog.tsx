@@ -76,6 +76,7 @@ export function SkillBuilderDialog({
   });
   const connections = connectionsQuery.data ?? [];
   const [connectionId, setConnectionId] = useState("");
+  const effectiveConnectionId = connectionId || preferredConnection(connections);
   const [mode, setMode] = useState<BuilderMode | null>(null);
   const [messages, setMessages] = useState<BuilderMessage[]>([]);
   const [text, setText] = useState("");
@@ -85,14 +86,8 @@ export function SkillBuilderDialog({
   const [error, setError] = useState("");
   const abortRef = useRef<AbortController | null>(null);
   const selectedConnection = connections.find(
-    (connection) => connection.id === connectionId,
+    (connection) => connection.id === effectiveConnectionId,
   );
-
-  useEffect(() => {
-    if (!connectionId && connections.length) {
-      setConnectionId(preferredConnection(connections));
-    }
-  }, [connectionId, connections]);
 
   useEffect(() => {
     if (!working) return;
@@ -123,7 +118,7 @@ export function SkillBuilderDialog({
   const send = async (event: FormEvent) => {
     event.preventDefault();
     const value = text.trim();
-    if (!value || !mode || !connectionId || working) return;
+    if (!value || !mode || !effectiveConnectionId || working) return;
     const next = [...messages, { role: "user" as const, content: value }];
     setMessages(next);
     setText("");
@@ -137,7 +132,7 @@ export function SkillBuilderDialog({
       for await (const item of streamEvents<BuilderEvent>("/api/skill-builder/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ connection_id: connectionId, messages: next, mode }),
+        body: JSON.stringify({ connection_id: effectiveConnectionId, messages: next, mode }),
         signal: controller.signal,
       })) {
         const payload = item.data;
@@ -204,7 +199,7 @@ export function SkillBuilderDialog({
                   <select
                     id="skill-builder-connection"
                     className="input"
-                    value={connectionId}
+                    value={effectiveConnectionId}
                     onChange={(event) => setConnectionId(event.target.value)}
                     disabled={working}
                   >
@@ -336,7 +331,7 @@ export function SkillBuilderDialog({
                   />
                   <button
                     className="btn btn-primary"
-                    disabled={!text.trim() || working || !connectionId}
+                    disabled={!text.trim() || working || !effectiveConnectionId}
                   >
                     {working ? "Esperando…" : "Enviar"}
                   </button>
