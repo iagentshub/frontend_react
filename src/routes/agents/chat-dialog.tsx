@@ -2,6 +2,7 @@
 /* eslint-disable react-hooks/exhaustive-deps -- query result methods are stable; dependencies use their data snapshots. */
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { ThinkingOrb } from "thinking-orbs";
 import { api, ApiError } from "@/api/client";
 import { AgentGlyph } from "@/components/resource-icons";
 import "../../../assets/components/dialog_chat/dialog_chat.css";
@@ -31,6 +32,7 @@ export function ChatDialog({ agent, onClose }: { agent: ChatAgent; onClose: () =
     [messages, setMessages] = useState<Message[]>([]),
     [text, setText] = useState(""),
     [streaming, setStreaming] = useState(false),
+    [thinking, setThinking] = useState(false),
     [error, setError] = useState<string | null>(null);
   const abort = useRef<AbortController | null>(null),
     messagesEnd = useRef<HTMLDivElement | null>(null);
@@ -88,6 +90,7 @@ export function ChatDialog({ agent, onClose }: { agent: ChatAgent; onClose: () =
     const next = [...messages, { role: "user" as const, content: value }];
     setMessages(next);
     setStreaming(true);
+    setThinking(true);
     const controller = new AbortController();
     abort.current = controller;
     try {
@@ -125,16 +128,22 @@ export function ChatDialog({ agent, onClose }: { agent: ChatAgent; onClose: () =
             message?: string;
             tokens?: Message["tokens"];
           };
-          if (payload.type === "token") reply += payload.token ?? "";
+          if (payload.type === "token") {
+            reply += payload.token ?? "";
+            if (reply) setThinking(false);
+          }
           if (payload.type === "done") {
             reply = payload.reply ?? reply;
             tokens = payload.tokens;
+            setThinking(false);
           }
           if (payload.type === "error") throw new Error(payload.message ?? "Error del agente");
-          setMessages([
-            ...next,
-            { role: "assistant", content: reply, ...(tokens ? { tokens } : {}) },
-          ]);
+          if (reply) {
+            setMessages([
+              ...next,
+              { role: "assistant", content: reply, ...(tokens ? { tokens } : {}) },
+            ]);
+          }
         }
       }
       if (!reply) setMessages(next);
@@ -142,6 +151,7 @@ export function ChatDialog({ agent, onClose }: { agent: ChatAgent; onClose: () =
       if (!controller.signal.aborted)
         setError(cause instanceof Error ? cause.message : "Error de chat");
     } finally {
+      setThinking(false);
       setStreaming(false);
       abort.current = null;
       void list.refetch();
@@ -208,16 +218,20 @@ export function ChatDialog({ agent, onClose }: { agent: ChatAgent; onClose: () =
                 </div>
               </div>
             ))}
-            {streaming && (
+            {thinking && (
               <div className="msg-wrap assistant">
                 <div className="msg-avatar">
                   <AgentGlyph icon={agent.icon} size={17} />
                 </div>
-                <div className="msg-bubble">
-                  <div className="typing-indicator">
-                    <span />
-                    <span />
-                    <span />
+                <div className="msg-bubble msg-bubble--thinking">
+                  <div className="agent-thinking-orb">
+                    <ThinkingOrb
+                      state="working"
+                      size={20}
+                      theme="auto"
+                      aria-label={`${agent.name || "El agente"} está pensando`}
+                    />
+                    <span aria-hidden="true">Pensando…</span>
                   </div>
                 </div>
               </div>
