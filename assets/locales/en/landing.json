@@ -29,12 +29,13 @@
   },
   "install": {
     "title": "Installation",
+    "frontend_vanilla": "Frontend: Vanilla",
+    "frontend_react": "Frontend: React",
     "mode_docker": "With Docker",
     "mode_nodocker": "Without Docker",
     "os_linux": "Linux",
     "os_mac": "macOS",
     "os_windows": "Windows",
-    "undefined": "Undefined",
     "copy": "Copy",
     "copied": "Copied!"
   }
