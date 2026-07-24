@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { api } from "@/api/client";
 import { SkillCategoryGlyph, type SkillCategory } from "@/components/resource-icons";
 import { FilterBar, Icon, LabelChips, LabelPicker, Modal } from "./knowledge-ui";
+import { SkillBuilderDialog } from "./skill-builder-dialog";
 import type {
   KnowledgeData,
   KnowledgeItem,
@@ -1022,6 +1023,7 @@ export function KnowledgePage() {
     [statusError, setStatusError] = useState(false),
     [busy, setBusy] = useState("");
   const [skillEditor, setSkillEditor] = useState<SkillDraft | null>(null),
+    [skillBuilderOpen, setSkillBuilderOpen] = useState(false),
     [skillView, setSkillView] = useState<Skill | null>(null),
     [skillExport, setSkillExport] = useState<Skill | null>(null),
     [catalogOpen, setCatalogOpen] = useState(false),
@@ -1053,6 +1055,7 @@ export function KnowledgePage() {
     setStatusError(false);
     setMenuOpen(false);
     setSkillEditor(null);
+    setSkillBuilderOpen(false);
     setSkillView(null);
     setSkillExport(null);
     setCatalogOpen(false);
@@ -1223,6 +1226,24 @@ export function KnowledgePage() {
           {tab === "skills" ? (
             <>
               <CreateOption
+                icon="plus"
+                title="Crear nueva"
+                subtitle="Configurar la skill manualmente"
+                onClick={() => {
+                  setMenuOpen(false);
+                  setSkillEditor(skillDraft());
+                }}
+              />
+              <CreateOption
+                icon="catalog"
+                title="Crear con Asistente"
+                subtitle="Describe una capacidad y deja que la IA prepare el borrador"
+                onClick={() => {
+                  setMenuOpen(false);
+                  setSkillBuilderOpen(true);
+                }}
+              />
+              <CreateOption
                 icon="catalog"
                 title={t("skills.page.new_from_catalog")}
                 subtitle={t("skills.page.new_from_catalog_sub")}
@@ -1236,12 +1257,6 @@ export function KnowledgePage() {
                 title={t("skills.page.new_from_file")}
                 subtitle={t("skills.page.new_from_file_sub")}
                 onClick={() => skillFile.current?.click()}
-              />
-              <CreateOption
-                icon="plus"
-                title={t("skills.page.new_from_scratch")}
-                subtitle={t("skills.page.new_from_scratch_sub")}
-                onClick={() => setSkillEditor(skillDraft())}
               />
             </>
           ) : (
@@ -1521,6 +1536,15 @@ export function KnowledgePage() {
       )}
       {skillEditor && (
         <SkillEditor source={skillEditor} onClose={() => setSkillEditor(null)} onSaved={done} />
+      )}{" "}
+      {skillBuilderOpen && (
+        <SkillBuilderDialog
+          onClose={() => setSkillBuilderOpen(false)}
+          onReady={(draft) => {
+            setSkillBuilderOpen(false);
+            setSkillEditor(draft);
+          }}
+        />
       )}{" "}
       {skillView && (
         <SkillView skill={skillView} onClose={() => setSkillView(null)} onSaved={done} />
