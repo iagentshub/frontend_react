@@ -1,3 +1,4 @@
+import i18n from "@/i18n";
 import { runtimeConfig } from "@/config/runtime";
 
 export type ApiErrorDetail = string | Array<{ msg?: string; [key: string]: unknown }> | Record<string, unknown>;
@@ -5,12 +6,16 @@ export type ApiErrorDetail = string | Array<{ msg?: string; [key: string]: unkno
 export class ApiError extends Error {
   readonly status: number;
   readonly detail?: ApiErrorDetail;
+  readonly code?: string;
 
   constructor(status: number, detail?: ApiErrorDetail) {
     super(formatError(status, detail));
     this.name = "ApiError";
     this.status = status;
     if (detail !== undefined) this.detail = detail;
+    if (detail && typeof detail === "object" && !Array.isArray(detail) && typeof detail.code === "string") {
+      this.code = detail.code;
+    }
   }
 }
 
@@ -20,10 +25,29 @@ type RequestOptions = Omit<RequestInit, "body" | "signal"> & {
   signal?: AbortSignal | null | undefined;
 };
 
+function translateApiErrorCode(detail: Record<string, unknown>): string | undefined {
+  const code = detail.code;
+  if (typeof code !== "string") return undefined;
+  const extra: Record<string, unknown> = {};
+  for (const [k, v] of Object.entries(detail)) {
+    if (k !== "code" && k !== "message") extra[k] = v;
+  }
+  if (typeof extra.resource === "string") {
+    extra.resource = i18n.t(`errors.resources.${extra.resource}`, { defaultValue: extra.resource });
+  }
+  if (typeof extra.field === "string") {
+    extra.field = i18n.t(`errors.fields.${extra.field}`, { defaultValue: extra.field });
+  }
+  const message = typeof detail.message === "string" ? detail.message : undefined;
+  return i18n.t(`errors.${code}`, { ...extra, defaultValue: message });
+}
+
 function formatError(status: number, detail?: ApiErrorDetail): string {
   if (!detail) return `Error ${status}`;
   if (typeof detail === "string") return detail;
   if (Array.isArray(detail)) return detail.map((entry) => entry.msg ?? JSON.stringify(entry)).join("; ");
+  const translated = translateApiErrorCode(detail);
+  if (typeof translated === "string") return translated;
   const message = detail.message;
   return typeof message === "string" ? message : JSON.stringify(detail);
 }

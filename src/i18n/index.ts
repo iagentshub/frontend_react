@@ -60,6 +60,7 @@ await i18n.use(initReactI18next).init({
     "labels",
     "pricing",
     "landing",
+    "errors",
   ],
   interpolation: { escapeValue: false },
   react: { useSuspense: false },
