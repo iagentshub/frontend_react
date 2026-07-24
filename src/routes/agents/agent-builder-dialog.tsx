@@ -272,7 +272,10 @@ export function AgentBuilderDialog({
                       </option>
                     ))}
                   </select>
-                  <span>Conviene usar un modelo rápido como Llama 3B u 8B.</span>
+                  <span>
+                    En NVIDIA NIM se usa automáticamente Llama 3.1 8B para
+                    diseñar rápido; no cambia el modelo del agente final.
+                  </span>
                 </div>
                 <div className="agent-builder-connection-field">
                   <label htmlFor="agent-connection">Modelo del agente final</label>
