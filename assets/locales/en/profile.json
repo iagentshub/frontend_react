@@ -9,7 +9,10 @@
     "providers": "Providers",
     "preferences": "Preferences",
     "style": "Style",
-    "privacy": "Privacy"
+    "privacy": "Privacy",
+    "workspaces": "Groups",
+    "tokens": "Tokens",
+    "billing": "Subscription"
   },
   "social": {
     "desc": "This information will appear on your public profile.",
@@ -31,6 +34,7 @@
     "current_label": "Current photo",
     "new_label": "New photo",
     "select_btn": "Select image",
+    "uploading": "Uploading…",
     "crop_hint": "Drag to adjust · Scroll to zoom",
     "invalid_format": "Format not allowed. Use jpg, png or webp.",
     "too_large": "Image cannot exceed 2 MB.",
@@ -138,6 +142,26 @@
     "transfer_ok": "Ownership transferred successfully",
     "transfer_error": "Error transferring ownership",
     "transfer_user_required": "Enter the new owner's username"
+  },
+  "billing": {
+    "plan_free_price": "Free",
+    "plan_dev_monthly": "€9/month",
+    "plan_dev_annual": "€90/year",
+    "plan_business_monthly": "from €7.50/license/month",
+    "plan_business_annual": "from €75/license/year",
+    "select_plan": "Select a plan to subscribe to the managed service.",
+    "expiry_30": "30 days",
+    "expiry_90": "90 days",
+    "expiry_180": "180 days",
+    "expiry_never": "No expiration",
+    "status_active": "Active",
+    "status_revoked": "Revoked",
+    "status_expired": "Expired",
+    "never": "Never",
+    "licensed": "Licensed",
+    "unlicensed": "Unlicensed"
+    ,"processing": "Processing…",
+    "update_to": "Change to {{plan}}"
   },
   "password": {
     "field_current": "Current password",

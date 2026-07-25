@@ -1,3 +1,5 @@
+import i18n from "@/i18n";
+import { useTranslation } from "react-i18next";
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { api, streamEvents } from "@/api/client";
 
@@ -62,12 +64,9 @@ function preferredBuilderConnection(connections: BuilderConnection[]): string {
 }
 
 function connectionLabel(connection?: BuilderConnection): string {
-  if (!connection) return "Sin conexión";
-  return `${connection.name ?? "Conexión"} · ${
-    connection.model ??
-    providerNames[connection.type ?? ""] ??
-    connection.type ??
-    "IA"
+  if (!connection) return i18n.t("agents.modal.no_connection");
+  return `${connection.name ?? i18n.t("common.resource_type.connection")} · ${
+    connection.model ?? providerNames[connection.type ?? ""] ?? connection.type ?? "IA"
   }`;
 }
 
@@ -84,6 +83,7 @@ export function AgentBuilderDialog({
   onClose: () => void;
   onSaved: () => void;
 }) {
+  const { t } = useTranslation();
   const [builderConnectionId, setBuilderConnectionId] = useState(
     preferredBuilderConnection(connections),
   );
@@ -131,8 +131,8 @@ export function AgentBuilderDialog({
         role: "assistant",
         content:
           nextMode === "guided"
-            ? "Cuéntame con tus palabras qué te gustaría que hiciera el agente. No necesitas usar términos técnicos."
-            : "Pega tus instrucciones o especificación. Crearé el borrador directamente, sin preguntas innecesarias.",
+            ? i18n.t("dynamic.text_f58396675938")
+            : i18n.t("dynamic.text_cc5a50b3275f"),
       },
     ]);
     setText("");
@@ -176,19 +176,17 @@ export function AgentBuilderDialog({
         signal: controller.signal,
       })) {
         const payload = eventItem.data;
-        if (payload.type === "error") throw new Error(payload.message ?? "Error del constructor");
+        if (payload.type === "error")
+          throw new Error(payload.message ?? i18n.t("common.errors.agent_builder"));
         if (payload.type !== "builder_done") continue;
         if (payload.assistant_message) {
-          setMessages([
-            ...next,
-            { role: "assistant", content: payload.assistant_message },
-          ]);
+          setMessages([...next, { role: "assistant", content: payload.assistant_message }]);
         }
         if (payload.status === "ready" && payload.draft) setDraft(payload.draft);
       }
     } catch (cause) {
       if (!controller.signal.aborted) {
-        setError(cause instanceof Error ? cause.message : "No se pudo generar el agente");
+        setError(cause instanceof Error ? cause.message : i18n.t("common.errors.generate_agent"));
       }
     } finally {
       setWorking(false);
@@ -210,7 +208,7 @@ export function AgentBuilderDialog({
       });
       onSaved();
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : "No se pudo guardar el agente");
+      setError(cause instanceof Error ? cause.message : i18n.t("common.errors.save_agent"));
     } finally {
       setSaving(false);
     }
@@ -222,10 +220,12 @@ export function AgentBuilderDialog({
         <div className="modal-header">
           <div>
             <span className="modal-title" id="builder-title">
-              Crear con Asistente
+              {t("legacy.text_52d884f096f6")}
             </span>
-            <p className="agent-builder-subtitle">Diseña y revisa el agente antes de guardarlo</p>
+
+            <p className="agent-builder-subtitle">{t("legacy.text_acda56908346")}</p>
           </div>
+
           <button
             type="button"
             className="modal-close"
@@ -233,7 +233,7 @@ export function AgentBuilderDialog({
               abortRef.current?.abort();
               onClose();
             }}
-            aria-label="Cerrar"
+            aria-label={t("agents.chat.close")}
           >
             ×
           </button>
@@ -241,24 +241,28 @@ export function AgentBuilderDialog({
 
         {!connections.length ? (
           <div className="modal-body agent-builder-empty">
-            <p>Necesitas configurar una conexión de IA antes de usar el constructor.</p>
+            <p>{t("legacy.text_950f503197b8")}</p>
+
             <a className="btn btn-primary" href="/connections/">
-              Configurar conexión
+              {t("legacy.text_d90380433b02")}
             </a>
           </div>
         ) : (
           <>
             <details className="agent-builder-connections">
               <summary>
-                <span>Configuración de modelos</span>
+                <span>{t("legacy.text_3c4ee739fc8a")}</span>
+
                 <small>
-                  {connectionLabel(selectedBuilderConnection)} crea ·{" "}
-                  {connectionLabel(selectedAgentConnection)} ejecuta
+                  {connectionLabel(selectedBuilderConnection)} {t("legacy.text_1ec88a291db8")}{" "}
+                  {connectionLabel(selectedAgentConnection)} {t("legacy.text_3693968d863b")}
                 </small>
               </summary>
+
               <div className="agent-builder-toolbar">
                 <div className="agent-builder-connection-field">
-                  <label htmlFor="builder-connection">Modelo del asistente</label>
+                  <label htmlFor="builder-connection">{t("legacy.text_d99c313c4f66")}</label>
+
                   <select
                     id="builder-connection"
                     className="input"
@@ -272,13 +276,13 @@ export function AgentBuilderDialog({
                       </option>
                     ))}
                   </select>
-                  <span>
-                    En NVIDIA NIM se usa automáticamente Llama 3.1 8B para
-                    diseñar rápido; no cambia el modelo del agente final.
-                  </span>
+
+                  <span>{t("legacy.text_693f07cc33ea")}</span>
                 </div>
+
                 <div className="agent-builder-connection-field">
-                  <label htmlFor="agent-connection">Modelo del agente final</label>
+                  <label htmlFor="agent-connection">{t("legacy.text_ebd6846e90c9")}</label>
+
                   <select
                     id="agent-connection"
                     className="input"
@@ -291,39 +295,62 @@ export function AgentBuilderDialog({
                       </option>
                     ))}
                   </select>
-                  <span>Será el modelo que utilizará el agente cuando chatees con él.</span>
+
+                  <span>{t("legacy.text_df999b5643a3")}</span>
                 </div>
               </div>
             </details>
 
             {mode === null ? (
-              <section className="agent-builder-mode-picker" aria-label="Forma de creación">
+              <section
+                className="agent-builder-mode-picker"
+                aria-label={t("legacy.text_b4e7ccb00be0")}
+              >
                 <div className="agent-builder-mode-heading">
-                  <span>Elige cómo quieres empezar</span>
-                  <p>En ambos casos podrás revisar y editar el resultado antes de guardarlo.</p>
+                  <span>{t("legacy.text_63ef9928fa12")}</span>
+
+                  <p>{t("legacy.text_1c9080c4acb6")}</p>
                 </div>
+
                 <div className="agent-builder-mode-options">
                   <button
                     type="button"
                     className="agent-builder-mode-card"
                     onClick={() => chooseMode("guided")}
                   >
-                    <span className="agent-builder-mode-icon" aria-hidden="true">◇</span>
-                    <strong>Guiarme paso a paso</strong>
-                    <small>No necesitas conocimientos técnicos</small>
-                    <p>Cuéntanos tu idea y el asistente te hará como máximo dos preguntas sencillas.</p>
-                    <span className="agent-builder-mode-action">Empezar guiado →</span>
+                    <span className="agent-builder-mode-icon" aria-hidden="true">
+                      ◇
+                    </span>
+
+                    <strong>{t("legacy.text_8843efac3a00")}</strong>
+
+                    <small>{t("legacy.text_859d0182b1c4")}</small>
+
+                    <p>{t("legacy.text_3733f6407810")}</p>
+
+                    <span className="agent-builder-mode-action">
+                      {t("legacy.text_6347709866fd")}
+                    </span>
                   </button>
+
                   <button
                     type="button"
                     className="agent-builder-mode-card"
                     onClick={() => chooseMode("expert")}
                   >
-                    <span className="agent-builder-mode-icon" aria-hidden="true">⌘</span>
-                    <strong>Ya tengo instrucciones</strong>
-                    <small>Para prompts o especificaciones completas</small>
-                    <p>Pega todos tus requisitos y generaremos el borrador directamente.</p>
-                    <span className="agent-builder-mode-action">Pegar instrucciones →</span>
+                    <span className="agent-builder-mode-icon" aria-hidden="true">
+                      ⌘
+                    </span>
+
+                    <strong>{t("legacy.text_115929d2d2d0")}</strong>
+
+                    <small>{t("legacy.text_c102f4be455f")}</small>
+
+                    <p>{t("legacy.text_a02bc2293aec")}</p>
+
+                    <span className="agent-builder-mode-action">
+                      {t("legacy.text_f0f67c8b384f")}
+                    </span>
                   </button>
                 </div>
               </section>
@@ -333,132 +360,159 @@ export function AgentBuilderDialog({
                   <span>
                     {mode === "guided" ? "Guiado paso a paso" : "Instrucciones completas"}
                   </span>
+
                   <button type="button" onClick={resetMode} disabled={working}>
-                    Cambiar modo
+                    {t("legacy.text_c4c6f301b364")}
                   </button>
                 </div>
+
                 <div className={`agent-builder-body${draft ? " has-draft" : ""}`}>
-              <section className="agent-builder-chat" aria-label="Conversación">
-                <div className="agent-builder-messages">
-                  {messages.map((message, index) => (
-                    <div
-                      className={`agent-builder-message agent-builder-message--${message.role}`}
-                      key={`${message.role}-${index}`}
+                  <section
+                    className="agent-builder-chat"
+                    aria-label={t("errors.resources.conversation")}
+                  >
+                    <div className="agent-builder-messages">
+                      {messages.map((message, index) => (
+                        <div
+                          className={`agent-builder-message agent-builder-message--${message.role}`}
+                          key={`${message.role}-${index}`}
+                        >
+                          {message.content}
+                        </div>
+                      ))}
+
+                      {working && (
+                        <div className="agent-builder-message agent-builder-message--assistant">
+                          <span className="agent-builder-thinking">
+                            {elapsed < 60
+                              ? i18n.t("dynamic.agent_builder_designing", {
+                                  seconds: elapsed,
+                                })
+                              : `NVIDIA sigue procesando… ${Math.floor(elapsed / 60)}m ${elapsed % 60}s`}
+                          </span>
+                        </div>
+                      )}
+
+                      {mode === "guided" && messages.length === 1 && !working && (
+                        <div
+                          className="agent-builder-examples"
+                          aria-label={t("legacy.text_7b1787ff203e")}
+                        >
+                          {[
+                            "Responder dudas de clientes",
+                            "Crear contenido para redes",
+                            "Analizar documentos",
+                            i18n.t("dynamic.text_47a2b6d6d24d"),
+                          ].map((example) => (
+                            <button
+                              type="button"
+                              key={example}
+                              onClick={() =>
+                                setText(`Quiero un agente para ${example.toLowerCase()}`)
+                              }
+                            >
+                              {example}
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+
+                    <form className="agent-builder-input" onSubmit={(event) => void send(event)}>
+                      <textarea
+                        className="input"
+                        rows={mode === "expert" ? 6 : 3}
+                        value={text}
+                        onChange={(event) => setText(event.target.value)}
+                        placeholder={
+                          mode === "expert"
+                            ? i18n.t("dynamic.text_67ebb88dcc61")
+                            : "Ej.: quiero que ayude a mis clientes a elegir el producto adecuado…"
+                        }
+                        disabled={working}
+                        onKeyDown={(event) => {
+                          if (event.key === "Enter" && !event.shiftKey) {
+                            event.preventDefault();
+                            event.currentTarget.form?.requestSubmit();
+                          }
+                        }}
+                      />
+
+                      <button
+                        className="btn btn-primary"
+                        disabled={!text.trim() || !builderConnectionId || !mode || working}
+                      >
+                        {working ? "Esperando…" : "Enviar"}
+                      </button>
+                    </form>
+                  </section>
+
+                  {draft && (
+                    <section
+                      className="agent-builder-preview"
+                      aria-label={t("legacy.text_f9f2dc5839fc")}
                     >
-                      {message.content}
-                    </div>
-                  ))}
-                  {working && (
-                    <div className="agent-builder-message agent-builder-message--assistant">
-                      <span className="agent-builder-thinking">
-                        {elapsed < 60
-                          ? `Diseñando el agente… ${elapsed}s`
-                          : `NVIDIA sigue procesando… ${Math.floor(elapsed / 60)}m ${elapsed % 60}s`}
-                      </span>
-                    </div>
-                  )}
-                  {mode === "guided" && messages.length === 1 && !working && (
-                    <div className="agent-builder-examples" aria-label="Ejemplos">
-                      {[
-                        "Responder dudas de clientes",
-                        "Crear contenido para redes",
-                        "Analizar documentos",
-                        "Ayudarme con programación",
-                      ].map((example) => (
+                      <div className="agent-builder-preview-header">
+                        <div>
+                          <span className="agent-builder-ready">
+                            {t("legacy.text_0137207e8dec")}
+                          </span>
+
+                          <h3>{t("legacy.text_1f454d04e835")}</h3>
+                        </div>
+                      </div>
+
+                      <label>
+                        {t("agents.modal.field_name")}
+                        <input
+                          className="input"
+                          value={draft.name}
+                          onChange={(event) => setDraft({ ...draft, name: event.target.value })}
+                        />
+                      </label>
+
+                      <label>
+                        {t("agents.modal.field_description")}
+                        <textarea
+                          className="input"
+                          rows={3}
+                          value={draft.description}
+                          onChange={(event) =>
+                            setDraft({ ...draft, description: event.target.value })
+                          }
+                        />
+                      </label>
+
+                      <label>
+                        {t("legacy.text_b838b37e8b1c")}
+                        <textarea
+                          className="input agent-builder-prompt"
+                          rows={12}
+                          value={draft.system_prompt}
+                          onChange={(event) =>
+                            setDraft({ ...draft, system_prompt: event.target.value })
+                          }
+                        />
+                      </label>
+
+                      <div className="agent-builder-preview-actions">
                         <button
                           type="button"
-                          key={example}
-                          onClick={() => setText(`Quiero un agente para ${example.toLowerCase()}`)}
+                          className="btn btn-primary"
+                          onClick={() => void save()}
+                          disabled={saving || !draft.name.trim() || !draft.system_prompt.trim()}
                         >
-                          {example}
+                          {t(
+                            saving
+                              ? "agents.builder_actions.saving"
+                              : "agents.builder_actions.create_agent",
+                          )}
                         </button>
-                      ))}
-                    </div>
+                      </div>
+                    </section>
                   )}
                 </div>
-                <form className="agent-builder-input" onSubmit={(event) => void send(event)}>
-                  <textarea
-                    className="input"
-                    rows={mode === "expert" ? 6 : 3}
-                    value={text}
-                    onChange={(event) => setText(event.target.value)}
-                    placeholder={
-                      mode === "expert"
-                        ? "Pega aquí todas las instrucciones, reglas y formato de respuesta…"
-                        : "Ej.: quiero que ayude a mis clientes a elegir el producto adecuado…"
-                    }
-                    disabled={working}
-                    onKeyDown={(event) => {
-                      if (event.key === "Enter" && !event.shiftKey) {
-                        event.preventDefault();
-                        event.currentTarget.form?.requestSubmit();
-                      }
-                    }}
-                  />
-                  <button
-                    className="btn btn-primary"
-                    disabled={!text.trim() || !builderConnectionId || !mode || working}
-                  >
-                    {working ? "Esperando…" : "Enviar"}
-                  </button>
-                </form>
-              </section>
 
-              {draft && (
-                <section className="agent-builder-preview" aria-label="Borrador del agente">
-                  <div className="agent-builder-preview-header">
-                    <div>
-                      <span className="agent-builder-ready">Borrador listo</span>
-                      <h3>Revisa los detalles</h3>
-                    </div>
-                  </div>
-                  <label>
-                    Nombre
-                    <input
-                      className="input"
-                      value={draft.name}
-                      onChange={(event) =>
-                        setDraft({ ...draft, name: event.target.value })
-                      }
-                    />
-                  </label>
-                  <label>
-                    Descripción
-                    <textarea
-                      className="input"
-                      rows={3}
-                      value={draft.description}
-                      onChange={(event) =>
-                        setDraft({ ...draft, description: event.target.value })
-                      }
-                    />
-                  </label>
-                  <label>
-                    Instrucciones
-                    <textarea
-                      className="input agent-builder-prompt"
-                      rows={12}
-                      value={draft.system_prompt}
-                      onChange={(event) =>
-                        setDraft({ ...draft, system_prompt: event.target.value })
-                      }
-                    />
-                  </label>
-                  <div className="agent-builder-preview-actions">
-                    <button
-                      type="button"
-                      className="btn btn-primary"
-                      onClick={() => void save()}
-                      disabled={
-                        saving || !draft.name.trim() || !draft.system_prompt.trim()
-                      }
-                    >
-                      {saving ? "Guardando…" : "Crear agente"}
-                    </button>
-                  </div>
-                </section>
-              )}
-                </div>
                 {error && <div className="agent-builder-error">{error}</div>}
               </>
             )}

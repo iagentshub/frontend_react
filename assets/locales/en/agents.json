@@ -48,7 +48,18 @@
     "linked": "Linked",
     "fork": "Fork"
   },
+  "icons": {
+    "assistant": "Assistant",
+    "spark": "Specialist",
+    "code": "Development",
+    "research": "Research",
+    "analytics": "Analytics",
+    "writer": "Content",
+    "support": "Support",
+    "automation": "Automation"
+  },
   "card": {
+    "fallback_name": "Agent",
     "no_description": "No description",
     "no_ai": "No AI",
     "use_your_ai": "USE YOUR AI",
@@ -77,7 +88,8 @@
     "search_skill": "Search skill…",
     "search_connection": "Search connection…",
     "search_knowledge": "Search knowledge…",
-    "knowledge_label": "Knowledge"
+    "knowledge_label": "Knowledge",
+    "no_results": "No agents match the filters."
   },
   "empty": "No agents yet.<br>Create the first one with <strong>+ New agent</strong>.",
   "confirm_delete": "Delete this agent?",
@@ -253,10 +265,15 @@
     "cat_docs": "Documents"
   },
   "chat": {
+    "agent_fallback": "The agent",
     "placeholder": "Type a message…",
     "close": "Close",
     "new_conversation": "New conversation",
     "timeout_msg": "Timed out — the agent did not respond in time."
+  },
+  "builder_actions": {
+    "saving": "Saving…",
+    "create_agent": "Create agent"
   },
   "catalog": {
     "open_btn": "Catalog",

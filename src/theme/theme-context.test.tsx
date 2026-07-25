@@ -11,7 +11,11 @@ function ThemeProbe() {
 describe("ThemeProvider", () => {
   it("conserva las claves legacy y aplica el tema al documento", async () => {
     localStorage.setItem("ga-theme", "ocean");
-    render(<ThemeProvider><ThemeProbe /></ThemeProvider>);
+    render(
+      <ThemeProvider>
+        <ThemeProbe />
+      </ThemeProvider>,
+    );
     const button = screen.getByRole("button", { name: "dark-blue" });
     await userEvent.click(button);
     expect(document.documentElement.dataset.theme).toBe("light-blue");

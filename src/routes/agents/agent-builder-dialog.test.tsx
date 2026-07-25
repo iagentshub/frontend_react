@@ -36,12 +36,8 @@ describe("AgentBuilderDialog", () => {
   it("ofrece caminos claros para usuarios guiados y técnicos", () => {
     renderBuilder();
 
-    expect(
-      screen.getByRole("button", { name: /Guiarme paso a paso/i }),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole("button", { name: /Ya tengo instrucciones/i }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /Guiarme paso a paso/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /Ya tengo instrucciones/i })).toBeInTheDocument();
   });
 
   it("preselecciona Llama 3B para construir y conserva DeepSeek como agente final", () => {
@@ -55,13 +51,9 @@ describe("AgentBuilderDialog", () => {
   it("el modo guiado usa lenguaje sencillo y ejemplos seleccionables", async () => {
     renderBuilder();
 
-    await userEvent.click(
-      screen.getByRole("button", { name: /Guiarme paso a paso/i }),
-    );
+    await userEvent.click(screen.getByRole("button", { name: /Guiarme paso a paso/i }));
 
-    expect(
-      screen.getByText(/No necesitas usar términos técnicos/i),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/No necesitas usar términos técnicos/i)).toBeInTheDocument();
     const example = screen.getByRole("button", {
       name: "Responder dudas de clientes",
     });
@@ -74,13 +66,9 @@ describe("AgentBuilderDialog", () => {
   it("el modo técnico invita a pegar la especificación completa", async () => {
     renderBuilder();
 
-    await userEvent.click(
-      screen.getByRole("button", { name: /Ya tengo instrucciones/i }),
-    );
+    await userEvent.click(screen.getByRole("button", { name: /Ya tengo instrucciones/i }));
 
-    expect(
-      screen.getByPlaceholderText(/Pega aquí todas las instrucciones/i),
-    ).toBeInTheDocument();
+    expect(screen.getByPlaceholderText(/Pega aquí todas las instrucciones/i)).toBeInTheDocument();
     expect(screen.queryByText("Responder dudas de clientes")).not.toBeInTheDocument();
   });
 });

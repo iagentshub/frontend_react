@@ -1,50 +1,61 @@
+import i18n from "@/i18n";
+import { useTranslation } from "react-i18next";
 import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { api, ApiError } from "@/api/client";
+import { Seo } from "@/components/seo";
 import { useBodyClass } from "./use-body-class";
 import "@/styles/routes/pricing/pricing.css";
 
 const plans = [
   {
-    name: "Free",
-    target: "Para explorar sin compromiso",
+    id: "free",
+    nameKey: "pricing.plan_free",
+    targetKey: "pricing.target_free",
     monthly: 0,
     annual: 0,
-    seats: "Sin tarjeta · sin compromiso",
-    description: "Accede a la plataforma en nuestro cloud. Todas las funciones disponibles.",
-    features: ["Infraestructura gestionada", "Actualizaciones automáticas", "Soporte de comunidad"],
+    seatsKey: "pricing.seats_free",
+    descriptionKey: "pricing.service_desc_free",
+    featureKeys: ["pricing.svc_managed", "pricing.svc_updates", "pricing.svc_community"],
   },
   {
-    name: "Starter",
-    target: "Cuenta gratuita · acceso a grupos",
+    id: "starter",
+    nameKey: "pricing.plan_starter",
+    targetKey: "pricing.target_starter",
     monthly: 0,
     annual: 0,
-    seats: "1 cuenta gratuita",
-    description: "Crea una cuenta gratuita y colabora mediante grupos.",
-    features: ["Todo lo del plan Anónimo", "Acceso a grupos", "Formación básica"],
+    seatsKey: "pricing.seats_starter",
+    descriptionKey: "pricing.service_desc_starter",
+    featureKeys: ["pricing.svc_prev_anon", "pricing.svc_groups", "pricing.svc_training_basic"],
   },
   {
-    name: "Individual",
-    target: "Uso personal · licencia única",
+    id: "developer",
+    nameKey: "pricing.plan_dev",
+    targetKey: "pricing.target_dev",
     monthly: 9,
     annual: 90,
-    seats: "1 licencia personal",
-    description: "Infraestructura gestionada para un único usuario.",
-    features: ["Todo lo de Starter", "Backups diarios", "Contacto directo"],
+    seatsKey: "pricing.seats_dev",
+    descriptionKey: "pricing.service_desc_dev",
+    featureKeys: ["pricing.svc_prev_starter", "pricing.svc_backups", "pricing.svc_support_direct"],
   },
   {
-    name: "Business",
-    target: "Equipos de 5 a 100 usuarios",
+    id: "business",
+    nameKey: "pricing.plan_biz",
+    targetKey: "pricing.target_biz",
     monthly: 6,
     annual: 60,
-    seats: "1 admin + hasta 99 licencias",
-    description: "El administrador gestiona el equipo y asigna licencias.",
-    features: ["Panel de administración", "Onboarding asistido", "Descuentos por volumen"],
+    seatsKey: "pricing.seats_biz",
+    descriptionKey: "pricing.service_desc_biz",
+    featureKeys: [
+      "pricing.svc_admin_panel",
+      "pricing.svc_onboarding",
+      "pricing.svc_discounts_training",
+    ],
   },
 ];
 function euro(value: number) {
-  return new Intl.NumberFormat("es-ES", {
+  return new Intl.NumberFormat(i18n.resolvedLanguage === "en" ? "en-IE" : "es-ES", {
     style: "currency",
     currency: "EUR",
     maximumFractionDigits: 0,
@@ -52,6 +63,7 @@ function euro(value: number) {
 }
 
 export function PricingPage() {
+  const { t } = useTranslation();
   useBodyClass("pricing-page");
   const navigate = useNavigate(),
     [annual, setAnnual] = useState(false),
@@ -74,105 +86,135 @@ export function PricingPage() {
     );
   return (
     <>
+      <Seo
+        title={t("seo.pricing.title")}
+        description={t("seo.pricing.description")}
+        path="/pricing/"
+      />
+
       <header className="pr-header">
         <Link className="pr-logo" to="/">
-          iAgents<span>Hub</span>
+          {t("legacy.text_1fda9fc57a04")}
+          <span>{t("legacy.text_a38df5fc50fb")}</span>
         </Link>
+
         <div className="pr-header-divider" />
-        <span className="pr-header-label">Precios</span>
+
+        <span className="pr-header-label">{t("auth.pricing_link")}</span>
+
         <div className="pr-header-spacer" />
+
         <Link to="/about" className="pr-header-link">
-          Acerca de
+          {t("about.page.title")}
         </Link>
+
         <Link to="/login/" className="pr-header-link">
-          Iniciar sesión
+          {t("about.header.login")}
         </Link>
+
         <Link to="/register/" className="pr-header-cta">
-          Empezar gratis
+          {t("pricing.nav_cta")}
         </Link>
       </header>
+
       <main className="pr-main">
         <div className="pr-hero">
-          <div className="pr-hero-badge">Precios</div>
+          <div className="pr-hero-badge">{t("auth.pricing_link")}</div>
+
           <h1 className="pr-hero-title">
-            Pagas el servicio,
+            {t("legacy.text_71a3e5837ac1")}
             <br />
-            no el software.
+            {t("legacy.text_3b982774e2a2")}
           </h1>
-          <p className="pr-hero-subtitle">
-            El código es open source. Despliégalo tú mismo gratis, o deja que lo gestionemos
-            nosotros.
-          </p>
+
+          <p className="pr-hero-subtitle">{t("pricing.subtitle")}</p>
+
           <div className="pr-toggle">
             <button
               className={`pr-toggle-btn${!annual ? " active" : ""}`}
               onClick={() => setAnnual(false)}
             >
-              Mensual
+              {t("pricing.toggle_monthly")}
             </button>
+
             <button
               className={`pr-toggle-btn${annual ? " active" : ""}`}
               onClick={() => setAnnual(true)}
             >
-              Anual <span className="pr-toggle-badge">2 meses gratis</span>
+              {t("pricing.toggle_annual")}
+              <span className="pr-toggle-badge">{t("pricing.toggle_badge")}</span>
             </button>
           </div>
         </div>
+
         <div className="pr-oss">
           <span aria-hidden="true">◉</span>
+
           <div className="pr-oss-body">
-            <strong>El código es tuyo</strong>
-            <span>
-              iAgentsHub es open source. Descárgalo, despliégalo en tu servidor y úsalo sin coste de
-              plataforma.
-            </span>
+            <strong>{t("pricing.oss_title")}</strong>
+
+            <span>{t("legacy.text_68a4ca602c78")}</span>
           </div>
+
           <a
             href="https://github.com/iagentshub/iAgents"
             target="_blank"
             rel="noreferrer"
             className="pr-oss-cta"
           >
-            Ver repositorio →
+            {t("pricing.oss_cta")}
           </a>
         </div>
+
         <div className="pr-grid">
           {plans.map((plan) => (
-            <article className="pr-card" key={plan.name}>
+            <article className="pr-card" key={plan.id}>
               <div className="pr-card-head">
-                <div className="pr-plan-name">{plan.name}</div>
-                <div className="pr-plan-target">{plan.target}</div>
+                <div className="pr-plan-name">{t(plan.nameKey)}</div>
+
+                <div className="pr-plan-target">{t(plan.targetKey)}</div>
+
                 <div className="pr-price-wrap">
                   <span className="pr-price">
                     {plan.monthly === 0 ? "Gratis" : euro(annual ? plan.annual : plan.monthly)}
                   </span>
+
                   {plan.monthly > 0 && (
-                    <span className="pr-price-period">/ {annual ? "año" : "mes"}</span>
+                    <span className="pr-price-period">
+                      / {annual ? i18n.t("dynamic.text_8470d9e5f751") : "mes"}
+                    </span>
                   )}
                 </div>
-                <div className="pr-seats">{plan.seats}</div>
+
+                <div className="pr-seats">{t(plan.seatsKey)}</div>
               </div>
-              <p className="pr-service-desc">{plan.description}</p>
+
+              <p className="pr-service-desc">{t(plan.descriptionKey)}</p>
+
               <div className="pr-service">
-                <div className="pr-service-label">Lo que gestionamos por ti</div>
+                <div className="pr-service-label">{t("pricing.service_label")}</div>
+
                 <ul className="pr-service-list">
-                  {plan.features.map((feature) => (
-                    <li key={feature}>{feature}</li>
+                  {plan.featureKeys.map((featureKey) => (
+                    <li key={featureKey}>{t(featureKey)}</li>
                   ))}
                 </ul>
               </div>
             </article>
           ))}
         </div>
+
         <div className="pr-actions">
           <button id="open-plan-modal" className="pr-btn" onClick={() => setCalculator(true)}>
-            Configurar un plan
+            {t("legacy.text_291f5aca36d6")}
           </button>
+
           <button className="pr-btn pr-btn--ghost" onClick={() => setContact(true)}>
-            Formación y consultoría
+            {t("legacy.text_08d6afdadab2")}
           </button>
         </div>
       </main>
+
       {calculator && (
         <div
           className="modal-bg"
@@ -184,29 +226,37 @@ export function PricingPage() {
         >
           <div className="modal-box pr-plan-modal">
             <div className="modal-header">
-              <span className="modal-title">Configura tu plan</span>
+              <span className="modal-title">{t("legacy.text_b2063e988212")}</span>
+
               <button className="modal-close" onClick={() => setCalculator(false)}>
                 ×
               </button>
             </div>
+
             <div className="modal-body">
               <div className="pr-toggle">
                 <button
                   className={`pr-toggle-btn${tier === "developer" ? " active" : ""}`}
                   onClick={() => setTier("developer")}
                 >
-                  Individual
+                  {t("legacy.text_a7abed83ed9e")}
                 </button>
+
                 <button
                   className={`pr-toggle-btn${tier === "business" ? " active" : ""}`}
                   onClick={() => setTier("business")}
                 >
-                  Business
+                  {t("legacy.text_d6663dda5fe9")}
                 </button>
               </div>
+
               {tier === "business" && (
                 <div className="field">
-                  <label htmlFor="plan-seats">Licencias: {seats}</label>
+                  <label htmlFor="plan-seats">
+                    {t("legacy.text_411771b2f5da")}
+                    {seats}
+                  </label>
+
                   <input
                     id="plan-seats"
                     type="range"
@@ -217,6 +267,7 @@ export function PricingPage() {
                   />
                 </div>
               )}
+
               <label className="toggle-label">
                 <input
                   type="checkbox"
@@ -224,30 +275,36 @@ export function PricingPage() {
                   onChange={(event) => setSelfHosted(event.target.checked)}
                 />
                 <span className="toggle-track" />
-                Despliegue self-hosted
+                {t("legacy.text_5b5c27b7d963")}
               </label>
+
               <div className="co-summary-total">
                 <span>{euro(amount)}</span>
-                <span>/ {annual ? "año" : "mes"}</span>
+
+                <span>/ {annual ? i18n.t("dynamic.text_8470d9e5f751") : "mes"}</span>
               </div>
             </div>
+
             <div className="modal-footer">
               <button className="btn btn-ghost" onClick={() => setCalculator(false)}>
-                Cancelar
+                {t("agents.scan.folder_cancel_btn")}
               </button>
+
               <button className="btn btn-primary" onClick={checkout}>
-                Continuar al pago
+                {t("legacy.text_4da14ab3af4d")}
               </button>
             </div>
           </div>
         </div>
       )}
+
       {contact && <ContactModal onClose={() => setContact(false)} />}
     </>
   );
 }
 
 function ContactModal({ onClose }: { onClose: () => void }) {
+  const { t } = useTranslation();
   const [name, setName] = useState(""),
     [email, setEmail] = useState(""),
     [message, setMessage] = useState("");
@@ -270,19 +327,24 @@ function ContactModal({ onClose }: { onClose: () => void }) {
     <div className="modal-bg" role="dialog" aria-modal="true">
       <div className="modal-box">
         <div className="modal-header">
-          <span className="modal-title">Solicitar información</span>
+          <span className="modal-title">{t("legacy.text_6cc23a3bdeed")}</span>
+
           <button className="modal-close" onClick={onClose}>
             ×
           </button>
         </div>
+
         <form onSubmit={submit}>
           <div className="modal-body">
             <div className="field">
-              <label>Nombre</label>
+              <label>{t("agents.modal.field_name")}</label>
+
               <input required value={name} onChange={(event) => setName(event.target.value)} />
             </div>
+
             <div className="field">
-              <label>Email</label>
+              <label>{t("admin.table.email")}</label>
+
               <input
                 type="email"
                 required
@@ -290,26 +352,31 @@ function ContactModal({ onClose }: { onClose: () => void }) {
                 onChange={(event) => setEmail(event.target.value)}
               />
             </div>
+
             <div className="field">
-              <label>Mensaje</label>
+              <label>{t("admin.logs.col_message")}</label>
+
               <textarea
                 required
                 value={message}
                 onChange={(event) => setMessage(event.target.value)}
               />
             </div>
+
             {send.error && (
               <div className="form-error">
-                {send.error instanceof ApiError ? send.error.message : "No se pudo enviar"}
+                {send.error instanceof ApiError ? send.error.message : t("common.errors.send")}
               </div>
             )}
           </div>
+
           <div className="modal-footer">
             <button type="button" className="btn btn-ghost" onClick={onClose}>
-              Cancelar
+              {t("agents.scan.folder_cancel_btn")}
             </button>
+
             <button className="btn btn-primary" disabled={send.isPending}>
-              Enviar
+              {t("common.actions.send")}
             </button>
           </div>
         </form>
@@ -317,4 +384,3 @@ function ContactModal({ onClose }: { onClose: () => void }) {
     </div>
   );
 }
-

@@ -49,6 +49,7 @@
       "none": "No pending invitations.",
       "success": "Invitation sent",
       "already_member": "This user is already a member of the team."
-    }
+    },
+    "no_managed_workspace": "You do not manage any work groups."
   }
 }

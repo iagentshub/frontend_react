@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { streamEvents } from "@/api/client";
 import type { WorkflowProgress, WorkflowRunEvent, WorkflowStageStatus } from "./types";
 
@@ -17,6 +18,7 @@ export function WorkflowRunner({
   disabledReason?: string | undefined;
   onProgress: (progress: WorkflowProgress) => void;
 }) {
+  const { t } = useTranslation("workflows");
   const [input, setInput] = useState("");
   const [entries, setEntries] = useState<RunEntry[]>([]);
   const [finalOutput, setFinalOutput] = useState("");
@@ -49,7 +51,7 @@ export function WorkflowRunner({
       )) {
         const event = item.data;
         if (event.type === "error") {
-          throw new Error(event.message || "No se pudo ejecutar la orquestación");
+          throw new Error(event.message || t("runner.run_error"));
         }
         if (event.type === "stage_started" && event.node_id) {
           activeNodeId = event.node_id;
@@ -63,7 +65,7 @@ export function WorkflowRunner({
             ...current,
             {
               nodeId: event.node_id!,
-              agentName: event.agent_name || "Agente",
+              agentName: event.agent_name || t("runner.agent"),
               output: event.output || "",
             },
           ]);
@@ -74,9 +76,9 @@ export function WorkflowRunner({
       }
     } catch (caught) {
       if (abortController.signal.aborted) {
-        setError("Ejecución cancelada");
+        setError(t("runner.cancelled"));
       } else {
-        setError(caught instanceof Error ? caught.message : "Error inesperado");
+        setError(caught instanceof Error ? caught.message : t("runner.unexpected_error"));
         if (activeNodeId) completed[activeNodeId] = "error";
       }
     } finally {
@@ -92,11 +94,14 @@ export function WorkflowRunner({
     <section className="workflow-runner">
       <header>
         <div>
-          <span className="workflow-section-label">Prueba controlada</span>
-          <h2>Ejecutar orquestación</h2>
-          <p>La salida de cada paso se convierte en la entrada del siguiente.</p>
+          <span className="workflow-section-label">{t("runner.eyebrow")}</span>
+
+          <h2>{t("runner.title")}</h2>
+
+          <p>{t("runner.description")}</p>
         </div>
-        {running && <span className="workflow-live-badge">En ejecución</span>}
+
+        {running && <span className="workflow-live-badge">{t("runner.running")}</span>}
       </header>
 
       <div className="workflow-run-controls">
@@ -105,13 +110,14 @@ export function WorkflowRunner({
           rows={4}
           value={input}
           onChange={(event) => setInput(event.target.value)}
-          placeholder="Describe la tarea que iniciará la orquestación…"
+          placeholder={t("runner.placeholder")}
           disabled={running}
         />
+
         <div>
           {running ? (
             <button className="btn btn-ghost" onClick={cancel}>
-              Cancelar
+              {t("runner.cancel")}
             </button>
           ) : (
             <button
@@ -119,9 +125,10 @@ export function WorkflowRunner({
               disabled={!input.trim() || Boolean(disabledReason)}
               onClick={() => void run()}
             >
-              Ejecutar orquestación
+              {t("runner.run")}
             </button>
           )}
+
           {disabledReason && <small>{disabledReason}</small>}
         </div>
       </div>
@@ -132,18 +139,24 @@ export function WorkflowRunner({
             <details key={entry.nodeId} open={index === entries.length - 1 && !finalOutput}>
               <summary>
                 <span>{index + 1}</span>
+
                 {entry.agentName}
-                <small>Completado</small>
+
+                <small>{t("runner.completed")}</small>
               </summary>
+
               <pre>{entry.output}</pre>
             </details>
           ))}
+
           {finalOutput && (
             <section className="workflow-final-output">
-              <strong>Resultado final</strong>
+              <strong>{t("runner.final_result")}</strong>
+
               <pre>{finalOutput}</pre>
             </section>
           )}
+
           {error && <p className="form-error">{error}</p>}
         </div>
       )}

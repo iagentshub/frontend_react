@@ -5,6 +5,7 @@ export function AppShell() {
   return (
     <div className="app-shell">
       <MainNav />
+
       <Outlet />
     </div>
   );

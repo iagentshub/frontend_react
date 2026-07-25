@@ -32,5 +32,27 @@
     "title": "Recent agents",
     "empty": "No agents yet.",
     "chat_btn": "Chat"
+  },
+  "widgets": {
+    "summary": "Summary",
+    "token_usage": "Token usage",
+    "connection_status": "Connection status",
+    "recent": "Recent agents",
+    "activity": "Activity",
+    "composition": "Composition",
+    "feed": "Feed"
+  },
+  "editor": {
+    "move_widget": "Move {{name}}",
+    "configure_widget": "Configure {{name}}",
+    "remove_widget": "Remove {{name}}"
+  },
+  "config": {
+    "group_by": "Group by",
+    "connections": "Connections",
+    "all": "All",
+    "personal": "Personal",
+    "agent": "Agent",
+    "quantity": "Quantity"
   }
 }

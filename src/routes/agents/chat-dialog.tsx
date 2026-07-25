@@ -1,3 +1,5 @@
+import i18n from "@/i18n";
+import { useTranslation } from "react-i18next";
 /* eslint-disable react-hooks/set-state-in-effect -- chat state mirrors server-selected conversations and history. */
 /* eslint-disable react-hooks/exhaustive-deps -- query result methods are stable; dependencies use their data snapshots. */
 import { useEffect, useRef, useState, type FormEvent } from "react";
@@ -23,6 +25,7 @@ interface Message {
   tokens?: { in?: number; out?: number };
 }
 export function ChatDialog({ agent, onClose }: { agent: ChatAgent; onClose: () => void }) {
+  const { t } = useTranslation();
   const list = useQuery({
       queryKey: ["chats", agent.id],
       queryFn: ({ signal }) =>
@@ -137,7 +140,8 @@ export function ChatDialog({ agent, onClose }: { agent: ChatAgent; onClose: () =
             tokens = payload.tokens;
             setThinking(false);
           }
-          if (payload.type === "error") throw new Error(payload.message ?? "Error del agente");
+          if (payload.type === "error")
+            throw new Error(payload.message ?? i18n.t("common.errors.agent_response"));
           if (reply) {
             setMessages([
               ...next,
@@ -149,7 +153,7 @@ export function ChatDialog({ agent, onClose }: { agent: ChatAgent; onClose: () =
       if (!reply) setMessages(next);
     } catch (cause) {
       if (!controller.signal.aborted)
-        setError(cause instanceof Error ? cause.message : "Error de chat");
+        setError(cause instanceof Error ? cause.message : i18n.t("common.errors.agent_chat"));
     } finally {
       setThinking(false);
       setStreaming(false);
@@ -164,21 +168,26 @@ export function ChatDialog({ agent, onClose }: { agent: ChatAgent; onClose: () =
           <div className="chat-header-avatar">
             <AgentGlyph icon={agent.icon} size={20} />
           </div>
+
           <div className="chat-header-info">
             <div className="chat-header-name">{agent.name || "Agente"}</div>
-            <div className="chat-header-sub">Chat</div>
+
+            <div className="chat-header-sub">{t("agents.card.chat")}</div>
           </div>
+
           <div className="chat-header-actions">
-            <button className="modal-close" onClick={onClose} aria-label="Cerrar">
+            <button className="modal-close" onClick={onClose} aria-label={t("agents.chat.close")}>
               ×
             </button>
           </div>
         </div>
+
         <div className="chat-body">
           <aside className="chat-history-sidebar">
             <button className="history-new-btn" onClick={() => create.mutate()}>
-              ＋ Nueva conversación
+              {t("legacy.text_1279dd7d1331")}
             </button>
+
             <ul className="chat-history-list">
               {list.data?.map((item) => (
                 <li
@@ -186,7 +195,10 @@ export function ChatDialog({ agent, onClose }: { agent: ChatAgent; onClose: () =
                   key={item.id}
                   onClick={() => setConversation(item.id)}
                 >
-                  <span className="history-item-title">{item.title || "Nueva conversación"}</span>
+                  <span className="history-item-title">
+                    {item.title || i18n.t("dynamic.text_84014a5426ce")}
+                  </span>
+
                   <button
                     className="history-del-btn"
                     onClick={(event) => {
@@ -200,54 +212,70 @@ export function ChatDialog({ agent, onClose }: { agent: ChatAgent; onClose: () =
               ))}
             </ul>
           </aside>
+
           <div className="chat-messages">
             {messages.map((message, index) => (
               <div className={`msg-wrap ${message.role}`} key={index}>
                 <div className="msg-avatar">
-                  {message.role === "assistant" ? <AgentGlyph icon={agent.icon} size={17} /> : "Tú"}
+                  {message.role === "assistant" ? (
+                    <AgentGlyph icon={agent.icon} size={17} />
+                  ) : (
+                    i18n.t("dynamic.text_e0b8ada702a2")
+                  )}
                 </div>
+
                 <div className="msg-body">
                   <div className="msg-bubble" style={{ whiteSpace: "pre-wrap" }}>
                     {message.content}
                   </div>
+
                   {message.tokens && (
                     <div className="msg-tok">
-                      ↑ {message.tokens.in ?? 0} ↓ {message.tokens.out ?? 0} tok
+                      ↑ {message.tokens.in ?? 0} ↓ {message.tokens.out ?? 0}{" "}
+                      {t("legacy.text_79bead8e6d65")}
                     </div>
                   )}
                 </div>
               </div>
             ))}
+
             {thinking && (
               <div className="msg-wrap assistant">
                 <div className="msg-avatar">
                   <AgentGlyph icon={agent.icon} size={17} />
                 </div>
+
                 <div className="msg-bubble msg-bubble--thinking">
                   <div className="agent-thinking-orb">
                     <ThinkingOrb
                       state="working"
                       size={20}
                       theme="auto"
-                      aria-label={`${agent.name || "El agente"} está pensando`}
+                      aria-label={i18n.t("dynamic.agent_thinking", {
+                        name: agent.name || t("agents.chat.agent_fallback"),
+                      })}
                     />
-                    <span aria-hidden="true">Pensando…</span>
+
+                    <span aria-hidden="true">{t("legacy.text_8e7017c8a01c")}</span>
                   </div>
                 </div>
               </div>
             )}
+
             <div ref={messagesEnd} />
           </div>
         </div>
+
         {error && (
           <div className="form-error" role="alert">
             {error}
           </div>
         )}
+
         <form className="chat-input-bar" onSubmit={(event) => void send(event)}>
           <textarea
             className="chat-input"
-            placeholder="Escribe un mensaje…"
+            placeholder={t("agents.chat.placeholder")}
             rows={1}
             value={text}
             onChange={(event) => setText(event.target.value)}
@@ -258,9 +286,11 @@ export function ChatDialog({ agent, onClose }: { agent: ChatAgent; onClose: () =
               }
             }}
           />
+
           <button className="chat-send-btn" disabled={!text.trim() || streaming}>
             {streaming ? "…" : "➤"}
           </button>
+
           {streaming && (
             <button type="button" className="chat-send-btn" onClick={() => abort.current?.abort()}>
               ■

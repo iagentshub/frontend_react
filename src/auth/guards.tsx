@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useEffect, type ReactNode } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Navigate, useLocation } from "react-router-dom";
@@ -7,10 +8,12 @@ import { useTheme, themes, type ThemeId } from "@/theme/theme-context";
 import i18n from "@/i18n";
 
 function LoadingSession() {
+  const { t } = useTranslation();
   return (
     <main className="route-loading" aria-live="polite" aria-busy="true">
       <span className="spinner" aria-hidden="true" />
-      <span>Comprobando sesión…</span>
+
+      <span>{t("legacy.text_92cb854c5279")}</span>
     </main>
   );
 }
@@ -45,6 +48,7 @@ export function RequireAuth({ children, role }: { children: ReactNode; role?: "a
   return (
     <>
       {session.data.role !== "guest" && <SettingsSync />}
+
       {children}
     </>
   );

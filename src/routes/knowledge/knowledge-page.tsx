@@ -1,3 +1,4 @@
+import i18n from "@/i18n";
 import { useMemo, useRef, useState, type ChangeEvent, type DragEvent } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
@@ -175,16 +176,18 @@ function SkillEditor({
                 type="skill"
                 resourceId={draft.id}
                 onRestored={() => {
-                  onSaved("Versión restaurada");
+                  onSaved(i18n.t("dynamic.text_e6e723fb6894"));
                   onClose();
                 }}
               />
             </div>
           )}
+
           <div className="dsk-field">
             <label className="dsk-label" htmlFor="knowledge-skill-name">
               {t("skills.dialog.field_name")} *
             </label>
+
             <input
               id="knowledge-skill-name"
               className="dsk-input"
@@ -195,10 +198,12 @@ function SkillEditor({
               placeholder={t("skills.dialog.placeholder_name")}
             />
           </div>
+
           <div className="dsk-field">
             <label className="dsk-label" htmlFor="knowledge-skill-description">
               {t("skills.dialog.field_description")}
             </label>
+
             <input
               id="knowledge-skill-description"
               className="dsk-input"
@@ -207,10 +212,12 @@ function SkillEditor({
               placeholder={t("skills.dialog.placeholder_desc")}
             />
           </div>
+
           <fieldset className="dsk-field skill-category-field">
             <legend className="dsk-label" id="knowledge-skill-category-label">
               {t("skills.dialog.field_category")}
             </legend>
+
             <div
               className="skill-category-picker"
               role="radiogroup"
@@ -226,8 +233,10 @@ function SkillEditor({
                 <span className="skill-category-option-icon">
                   <SkillCategoryGlyph size={20} />
                 </span>
+
                 <span>{t("skills.dialog.no_category")}</span>
               </button>
+
               {categories.map((category) => (
                 <button
                   type="button"
@@ -240,19 +249,23 @@ function SkillEditor({
                   <span className="skill-category-option-icon">
                     <SkillCategoryGlyph category={category} size={20} />
                   </span>
+
                   <span>{categoryLabel(category)}</span>
                 </button>
               ))}
             </div>
           </fieldset>
+
           <LabelPicker
             value={draft.labels}
             onChange={(labels) => setDraft((current) => ({ ...current, labels }))}
           />
+
           <div className="dsk-field">
             <label className="dsk-label" htmlFor="knowledge-skill-content">
               {t("skills.dialog.field_content")}
             </label>
+
             <textarea
               id="knowledge-skill-content"
               className="dsk-textarea"
@@ -261,16 +274,19 @@ function SkillEditor({
               placeholder={t("skills.dialog.placeholder_content")}
             />
           </div>
+
           {save.isError && (
             <div className="form-error" role="alert">
               {save.error.message}
             </div>
           )}
         </div>
+
         <div className="modal-footer">
           <button type="button" className="btn btn-ghost" onClick={onClose}>
             {t("actions.cancel")}
           </button>
+
           <button className="btn btn-primary" disabled={save.isPending || !draft.name.trim()}>
             {save.isPending ? t("actions.saving") : t("actions.save")}
           </button>
@@ -314,10 +330,13 @@ function SkillView({
         <pre className="skill-content-pre">
           {skill.content || skill.body || t("skills.no_content")}
         </pre>
+
         <LabelChips labels={labels} hidePrivate={false} />
+
         {canEdit && (
           <div className="skill-visibility-section">
             <div className="platform-section-title">{t("social.visibility.title")}</div>
+
             <LabelPicker
               value={labels}
               onChange={(next) => {
@@ -325,6 +344,7 @@ function SkillView({
                 setPublished(next.includes("public"));
               }}
             />
+
             <label className="toggle-label">
               <input
                 type="checkbox"
@@ -332,9 +352,12 @@ function SkillView({
                 checked={published}
                 onChange={(event) => setPublished(event.target.checked)}
               />
+
               <span className="toggle-track" />
+
               {t("social.visibility.make_public")}
             </label>
+
             {published && (
               <select
                 className="select"
@@ -358,6 +381,7 @@ function SkillView({
                 ))}
               </select>
             )}
+
             {save.isError && (
               <div className="form-error" role="alert">
                 {save.error.message}
@@ -366,6 +390,7 @@ function SkillView({
           </div>
         )}
       </div>
+
       {canEdit && (
         <div className="modal-footer">
           <button
@@ -425,6 +450,7 @@ function ExportSkill({
     <Modal title={t("skills.export.title")} width={420} onClose={onClose}>
       <div className="modal-body">
         <p>{t("skills.export.choose_format")}</p>
+
         <div className="export-options">
           {options.map((option) => (
             <button
@@ -433,9 +459,12 @@ function ExportSkill({
               onClick={() => exportSkill(option.format)}
             >
               <span className="export-opt-icon">●</span>
+
               <span>
                 <span className="export-opt-label">{t(`skills.export.${option.label}`)}</span>
+
                 <span className="export-opt-sub">{t(`skills.export.${option.sub}`)}</span>
+
                 <span className="export-opt-path">{t(`skills.export.${option.path}`)}</span>
               </span>
             </button>
@@ -484,25 +513,32 @@ function SkillCard({
           <div className="skill-card-icon">
             <SkillCategoryGlyph category={skill.category} size={20} />
           </div>
+
           <div className="skill-card-meta">
             <div className="skill-card-name-row">
               <span className="skill-card-name" title={skill.name}>
                 {skill.name}
               </span>
+
               {shared && (
                 <span className="res-badge res-badge--shared">
                   @{skill.owner_id || t("teams.sharing.shared_badge")}
                 </span>
               )}
+
               {Boolean(skill._social_stars) && (
                 <span className="skill-scope-badge skill-scope-badge--stars">
                   ★ {skill._social_stars}
                 </span>
               )}
+
               {skill._social_verified && (
-                <span className="skill-scope-badge skill-scope-badge--verified">✓ Verificado</span>
+                <span className="skill-scope-badge skill-scope-badge--verified">
+                  {t("legacy.text_af51b215f9a2")}
+                </span>
               )}
             </div>
+
             {skill.category && (
               <div className="skill-card-sub">
                 <span className="skill-category-badge">
@@ -512,20 +548,29 @@ function SkillCard({
             )}
           </div>
         </div>
+
         <p className={`skill-card-desc${skill.description ? "" : " skill-card-desc--empty"}`}>
-          {skill.description || "Sin descripción"}
+          {skill.description || i18n.t("dynamic.text_3f8d6232f5be")}
         </p>
+
         <LabelChips labels={skill.labels ?? []} hidePrivate={false} />
       </div>
+
       <footer className="skill-card-footer">
-        <button className="skill-action-icon" onClick={onView} title="Vista previa">
+        <button
+          className="skill-action-icon"
+          onClick={onView}
+          title={t("legacy.text_4329325ffc83")}
+        >
           <Icon kind="view" />
         </button>
+
         {canEdit && (
           <button className="skill-action-icon" onClick={onEdit} title={t("skills.actions.edit")}>
             <Icon kind="edit" />
           </button>
         )}
+
         <div className="skill-card-actions-right">
           {canEdit && (
             <button
@@ -536,6 +581,7 @@ function SkillCard({
               <Icon kind="share" />
             </button>
           )}
+
           <button
             className="skill-action-icon"
             onClick={onExport}
@@ -543,6 +589,7 @@ function SkillCard({
           >
             <Icon kind="export" />
           </button>
+
           {canEdit && skill.labels?.includes("linked") && (
             <button
               className="skill-action-icon"
@@ -553,6 +600,7 @@ function SkillCard({
               <Icon kind="sync" />
             </button>
           )}
+
           {canEdit && (
             <button
               className="skill-action-icon skill-action-icon--danger"
@@ -584,22 +632,23 @@ function ResourceCard({
     <article
       className="knowledge-card"
       draggable={!item._shared}
-      onDragStart={(event) =>
-        event.dataTransfer.setData("application/x-iagents-resource", item.id)
-      }
+      onDragStart={(event) => event.dataTransfer.setData("application/x-iagents-resource", item.id)}
     >
       <div className="knowledge-card-header">
         <span className="knowledge-card-icon">
           {document ? (item.source.toLowerCase().endsWith(".pdf") ? "📄" : "📝") : "🔗"}
         </span>
+
         <span className="knowledge-card-title" title={item.title}>
           {item.title}
         </span>
+
         {(item.char_count ?? 0) > 8000 && (
           <span className="knowledge-warn" title={t("skills.knowledge.char_warning")}>
             ⚠
           </span>
         )}
+
         {item._shared ? (
           <span className="res-badge res-badge--shared">
             @{item.owner_id || t("teams.sharing.shared_badge")}
@@ -609,6 +658,7 @@ function ResourceCard({
             {t("agents.origin.owner")}
           </span>
         )}
+
         {!item._shared && (
           <button
             className="knowledge-action-btn knowledge-action-btn--share"
@@ -618,6 +668,7 @@ function ResourceCard({
             <Icon kind="share" />
           </button>
         )}
+
         {!item._shared && (
           <button
             className="knowledge-action-btn knowledge-action-btn--danger"
@@ -628,6 +679,7 @@ function ResourceCard({
           </button>
         )}
       </div>
+
       {document ? (
         <div className="knowledge-card-source">{item.source}</div>
       ) : (
@@ -640,6 +692,7 @@ function ResourceCard({
           {item.source}
         </a>
       )}
+
       <div className="knowledge-card-meta">{formatChars(item.char_count)}</div>
     </article>
   );
@@ -672,12 +725,15 @@ function MemoryCard({
           <span className="mem-card-icon">
             <Icon kind="file" />
           </span>
+
           <span className="mem-card-info">
             <span className="mem-card-name">{item.filename}</span>
+
             <span className="mem-card-sub">{sizeLabel(item.size)}</span>
           </span>
         </span>
       </button>
+
       <footer className="mem-card-actions">
         <button
           className="mem-action mem-action--edit"
@@ -686,6 +742,7 @@ function MemoryCard({
         >
           <Icon kind="edit" />
         </button>
+
         <button
           className="mem-action mem-action--delete"
           onClick={onDelete}
@@ -726,7 +783,8 @@ function UrlEditor({
       >
         <div className="modal-body">
           <div className="field">
-            <label htmlFor="knowledge-url">URL</label>
+            <label htmlFor="knowledge-url">{t("connections.modal.field_url")}</label>
+
             <input
               id="knowledge-url"
               className="input"
@@ -738,8 +796,10 @@ function UrlEditor({
               placeholder={t("skills.knowledge.url_placeholder")}
             />
           </div>
+
           <div className="field">
-            <label htmlFor="knowledge-url-title">Título</label>
+            <label htmlFor="knowledge-url-title">{t("errors.fields.title")}</label>
+
             <input
               id="knowledge-url-title"
               className="input"
@@ -748,16 +808,19 @@ function UrlEditor({
               placeholder={t("skills.knowledge.title_placeholder")}
             />
           </div>
+
           {save.isError && (
             <div className="form-error" role="alert">
               {save.error.message}
             </div>
           )}
         </div>
+
         <div className="modal-footer">
           <button type="button" className="btn btn-ghost" onClick={onClose}>
             {t("actions.cancel")}
           </button>
+
           <button className="btn btn-primary" disabled={save.isPending || !url.trim()}>
             {save.isPending ? t("skills.knowledge.fetching") : t("skills.knowledge.add_url_btn")}
           </button>
@@ -802,6 +865,7 @@ function MemoryEditor({
         <div className="modal-body">
           <div className="field">
             <label htmlFor="knowledge-memory-filename">{t("memory.modal.field_name")}</label>
+
             <div className="mem-filename-wrap">
               <input
                 id="knowledge-memory-filename"
@@ -812,11 +876,14 @@ function MemoryEditor({
                 value={filename}
                 onChange={(event) => setFilename(event.target.value)}
               />
-              <span className="mem-filename-ext">.md</span>
+
+              <span className="mem-filename-ext">{t("legacy.text_a2c73572c9a4")}</span>
             </div>
           </div>
+
           <div className="field">
             <label htmlFor="knowledge-memory-content">{t("memory.modal.field_content")}</label>
+
             <textarea
               id="knowledge-memory-content"
               className="textarea mem-textarea"
@@ -825,16 +892,19 @@ function MemoryEditor({
               onChange={(event) => setContent(event.target.value)}
             />
           </div>
+
           {save.isError && (
             <div className="form-error" role="alert">
               {save.error.message}
             </div>
           )}
         </div>
+
         <div className="modal-footer">
           <button type="button" className="btn btn-ghost" onClick={onClose}>
             {t("actions.cancel")}
           </button>
+
           <button className="btn btn-primary" disabled={save.isPending || !filename.trim()}>
             {save.isPending ? t("memory.modal.saving") : t("memory.modal.save_btn")}
           </button>
@@ -859,6 +929,7 @@ function ShareDialog({
   onClose: () => void;
   onSaved: (message: string) => void;
 }) {
+  const { t } = useTranslation();
   const [changes, setChanges] = useState<Record<string, boolean>>({});
   const groups = useQuery({
     queryKey: ["knowledge", "sharing", resourceType, resourceId],
@@ -902,9 +973,10 @@ function ShareDialog({
   return (
     <Modal title={`Compartir “${resourceName}”`} width={480} onClose={onClose}>
       <div className="modal-body">
-        <p className="input-hint">Selecciona los grupos que podrán usar este recurso.</p>
+        <p className="input-hint">{t("legacy.text_bd44333d66b3")}</p>
+
         {groups.isPending ? (
-          <div className="empty-state">Cargando grupos…</div>
+          <div className="empty-state">{t("workflows.share.loading")}</div>
         ) : teamGroups.length ? (
           <div className="knowledge-share-list">
             {teamGroups.map((workspace) => {
@@ -922,26 +994,30 @@ function ShareDialog({
                       }))
                     }
                   />
+
                   <span>{workspace.name}</span>
                 </label>
               );
             })}
           </div>
         ) : (
-          <div className="empty-state">No perteneces a ningún grupo.</div>
+          <div className="empty-state">{t("legacy.text_ecc7c091db60")}</div>
         )}
+
         {save.isError && <div className="form-error">{save.error.message}</div>}
       </div>
+
       <div className="modal-footer">
         <button className="btn btn-ghost" onClick={onClose}>
-          Cancelar
+          {t("agents.scan.folder_cancel_btn")}
         </button>
+
         <button
           className="btn btn-primary"
           disabled={save.isPending || groups.isPending}
           onClick={() => save.mutate()}
         >
-          {save.isPending ? "Guardando…" : "Guardar"}
+          {save.isPending ? t("common.actions.saving") : t("common.actions.save")}
         </button>
       </div>
     </Modal>
@@ -980,19 +1056,25 @@ function Catalog({
           placeholder={t("skills.catalog.search_placeholder")}
         />
       </div>
+
       <div className="knowledge-catalog-grid">
         {visible.length ? (
           visible.map((skill) => (
             <article className="knowledge-catalog-card" key={skill.id}>
               <h3>
-                {skill.icon} {skill.name}
+                {skill.icon}
+                {skill.name}
               </h3>
-              <p>{skill.description || "Sin descripción"}</p>
+
+              <p>{skill.description || i18n.t("dynamic.text_3f8d6232f5be")}</p>
+
               <LabelChips labels={skill.labels ?? []} />
+
               <div className="knowledge-skill-actions">
                 <button className="btn btn-primary btn-sm" onClick={() => onImport(skill)}>
                   {t("skills.catalog.import_btn")}
                 </button>
+
                 <button
                   className="skill-action-icon"
                   onClick={() => onSocialAction("fork", skill)}
@@ -1000,6 +1082,7 @@ function Catalog({
                 >
                   <Icon kind="fork" />
                 </button>
+
                 <button
                   className="skill-action-icon"
                   onClick={() => onSocialAction("link", skill)}
@@ -1078,7 +1161,7 @@ export function KnowledgePage() {
     void queryResult.refetch();
   };
   const fail = (error: unknown) => {
-    setStatus(error instanceof Error ? error.message : "No se pudo completar la acción");
+    setStatus(error instanceof Error ? error.message : i18n.t("dynamic.text_5ed5994ab986"));
     setStatusError(true);
   };
   const run = async (key: string, action: () => Promise<unknown>, message: string) => {
@@ -1106,15 +1189,13 @@ export function KnowledgePage() {
     const source = tab === "urls" ? (data?.urls ?? []) : (data?.documents ?? []);
     const lower = query.toLowerCase();
     return source.filter(
-      (item) =>
-        !lower || `${item.title} ${item.source}`.toLowerCase().includes(lower),
+      (item) => !lower || `${item.title} ${item.source}`.toLowerCase().includes(lower),
     );
   }, [data?.documents, data?.urls, query, tab]);
   const memories = useMemo(() => {
     const lower = query.toLowerCase();
     return (data?.memories ?? []).filter(
-      (item) =>
-        !lower || item.filename.toLowerCase().includes(lower),
+      (item) => !lower || item.filename.toLowerCase().includes(lower),
     );
   }, [data?.memories, query]);
 
@@ -1223,6 +1304,7 @@ export function KnowledgePage() {
         }}
       >
         {tab === "documents" ? <Icon kind="upload" /> : <Icon kind="plus" />}
+
         <span>
           {tab === "skills"
             ? t("skills.page.new_btn")
@@ -1232,30 +1314,34 @@ export function KnowledgePage() {
                 ? t("skills.knowledge.upload_btn")
                 : t("memory.page.new_btn")}
         </span>
+
         {(tab === "skills" || tab === "memory") && <span>⌄</span>}
       </button>
+
       {menuOpen && (
         <div className="knowledge-create-menu">
           {tab === "skills" ? (
             <>
               <CreateOption
                 icon="plus"
-                title="Crear nueva"
+                title={t("legacy.text_6dfd1d78d826")}
                 subtitle="Configurar la skill manualmente"
                 onClick={() => {
                   setMenuOpen(false);
                   setSkillEditor(skillDraft());
                 }}
               />
+
               <CreateOption
                 icon="catalog"
-                title="Crear con Asistente"
+                title={t("legacy.text_52d884f096f6")}
                 subtitle="Describe una capacidad y deja que la IA prepare el borrador"
                 onClick={() => {
                   setMenuOpen(false);
                   setSkillBuilderOpen(true);
                 }}
               />
+
               <CreateOption
                 icon="catalog"
                 title={t("skills.page.new_from_catalog")}
@@ -1265,6 +1351,7 @@ export function KnowledgePage() {
                   setCatalogOpen(true);
                 }}
               />
+
               <CreateOption
                 icon="upload"
                 title={t("skills.page.new_from_file")}
@@ -1280,6 +1367,7 @@ export function KnowledgePage() {
                 subtitle={t("memory.page.new_from_file_sub")}
                 onClick={() => memoryFile.current?.click()}
               />
+
               <CreateOption
                 icon="plus"
                 title={t("memory.page.new_from_scratch")}
@@ -1297,15 +1385,10 @@ export function KnowledgePage() {
     <main className="page-content knowledge-page">
       <div className="page-header">
         <h1 className="page-title">{t("skills.knowledge.page_title")}</h1>
+
         {actionButton}
       </div>
-      <input
-        ref={skillFile}
-        type="file"
-        accept=".md"
-        hidden
-        onChange={importSkillFile}
-      />
+      <input ref={skillFile} type="file" accept=".md" hidden onChange={importSkillFile} />
       <input
         ref={docFile}
         type="file"
@@ -1326,36 +1409,41 @@ export function KnowledgePage() {
         >
           {t("skills.knowledge.tab_skills")}
         </button>
+
         <button
           className={`ktab${tab === "urls" ? " active" : ""}`}
           onClick={() => selectTab("urls")}
         >
           {t("skills.knowledge.tab_urls")}
         </button>
+
         <button
           className={`ktab${tab === "documents" ? " active" : ""}`}
           onClick={() => selectTab("documents")}
         >
           {t("skills.knowledge.tab_documents")}
         </button>
+
         <button
           className={`ktab${tab === "memory" ? " active" : ""}`}
           onClick={() => selectTab("memory")}
         >
           {t("memory.page.title")}
         </button>
+
         <div className="kv-view-controls">
           <button
             className={`kv-toggle${view === "grid" ? " kv-toggle--active" : ""}`}
             onClick={() => selectView("grid")}
-            title="Vista cuadrícula"
+            title={t("legacy.text_2b43b06009c4")}
           >
             <Icon kind="grid" />
           </button>
+
           <button
             className={`kv-toggle${view === "list" ? " kv-toggle--active" : ""}`}
             onClick={() => selectView("list")}
-            title="Vista lista"
+            title={t("legacy.text_00e25f2ced5a")}
           >
             <Icon kind="list" />
           </button>
@@ -1384,7 +1472,7 @@ export function KnowledgePage() {
         <button
           className={`folder-toggle-btn kg-toggle-btn${groupsOpen ? " folder-toggle-btn--on" : ""}`}
           onClick={() => setGroupsOpen((value) => !value)}
-          title={groupsOpen ? "Ocultar grupos" : "Grupos de trabajo"}
+          title={t(groupsOpen ? "common.workspace.hide_groups" : "common.workspace.groups")}
         >
           <Icon kind="groups" />
         </button>
@@ -1392,8 +1480,9 @@ export function KnowledgePage() {
       <div className="knowledge-tab-layout">
         <aside className={`kf-panel${groupsOpen ? "" : " folder-panel--collapsed"}`}>
           <div className="kf-section-header">
-            <span className="kf-section-label">Grupos</span>
+            <span className="kf-section-label">{t("workflows.groups.title")}</span>
           </div>
+
           <button
             className={`kf-item${!groupId ? " kf-item--active" : ""}`}
             onClick={() => {
@@ -1401,8 +1490,9 @@ export function KnowledgePage() {
               setShown(pageSize());
             }}
           >
-            <span className="kf-item-name">Todos</span>
+            <span className="kf-item-name">{t("admin.logs.filter_all")}</span>
           </button>
+
           {teams.map((team) => (
             <button
               className={`kf-item${groupId === team.id ? " kf-item--active" : ""}`}
@@ -1415,16 +1505,19 @@ export function KnowledgePage() {
               <span className="kf-item-name">{team.name}</span>
             </button>
           ))}
-          {!teams.length && <p className="gp-empty">Sin grupos</p>}
+
+          {!teams.length && <p className="gp-empty">{t("workflows.groups.empty")}</p>}
         </aside>
+
         <div className="knowledge-tab-content">
           {queryResult.isPending ? (
-            <div className="empty-state">Cargando conocimiento…</div>
+            <div className="empty-state">{t("legacy.text_f754ace16f5f")}</div>
           ) : queryResult.isError ? (
             <div className="empty-state">
               <p>{queryResult.error.message}</p>
+
               <button className="btn btn-primary" onClick={() => void queryResult.refetch()}>
-                Reintentar
+                {t("legacy.text_adec7b4f2351")}
               </button>
             </div>
           ) : tab === "skills" ? (
@@ -1459,7 +1552,9 @@ export function KnowledgePage() {
                   />
                 ))}
               </div>
+
               {!skills.length && <p className="skills-empty">{t("skills.empty.no_match")}</p>}
+
               <LoadMore
                 total={skills.length}
                 shown={shown}
@@ -1476,10 +1571,13 @@ export function KnowledgePage() {
                   onDrop={dropDocs}
                 >
                   <Icon kind="upload" />
+
                   <p>{t("skills.knowledge.drop_hint")}</p>
+
                   <p className="knowledge-formats">{t("skills.knowledge.formats_hint")}</p>
                 </div>
               )}
+
               <div className={`knowledge-grid${view === "list" ? " knowledge-grid--list" : ""}`}>
                 {resources.slice(0, shown).map((item) => (
                   <ResourceCard
@@ -1497,6 +1595,7 @@ export function KnowledgePage() {
                   />
                 ))}
               </div>
+
               {!resources.length && (
                 <p className="knowledge-empty">
                   {t(
@@ -1504,6 +1603,7 @@ export function KnowledgePage() {
                   )}
                 </p>
               )}
+
               <LoadMore
                 total={resources.length}
                 shown={shown}
@@ -1534,7 +1634,9 @@ export function KnowledgePage() {
                   />
                 ))}
               </div>
+
               {!memories.length && <div className="mem-empty">{t("memory.empty")}</div>}
+
               <LoadMore
                 total={memories.length}
                 shown={shown}
@@ -1545,7 +1647,10 @@ export function KnowledgePage() {
         </div>
       </div>
       {uploadStatus && (
-        <div className="knowledge-upload-summary">Subiendo documentos… {uploadStatus}</div>
+        <div className="knowledge-upload-summary">
+          {t("legacy.text_52b1166df0af")}
+          {uploadStatus}
+        </div>
       )}
       {skillEditor && (
         <SkillEditor source={skillEditor} onClose={() => setSkillEditor(null)} onSaved={done} />
@@ -1627,19 +1732,22 @@ function CreateOption({
       <span className="knowledge-create-option-icon">
         <Icon kind={icon} />
       </span>
+
       <span className="knowledge-create-option-copy">
         {title}
+
         <small>{subtitle}</small>
       </span>
     </button>
   );
 }
 function LoadMore({ total, shown, onMore }: { total: number; shown: number; onMore: () => void }) {
+  const { t } = useTranslation();
   if (shown >= total) return null;
   return (
     <div className="load-more-row">
       <button className="btn btn-ghost" onClick={onMore}>
-        Cargar más
+        {t("explore.load_more")}
       </button>
     </div>
   );

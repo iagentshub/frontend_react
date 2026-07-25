@@ -1,3 +1,5 @@
+import i18n from "@/i18n";
+import { useTranslation } from "react-i18next";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { api, streamEvents } from "@/api/client";
@@ -47,7 +49,9 @@ const categories = [
 
 function connectionLabel(connection: BuilderConnection) {
   const provider = connection.type === "nvidia" ? "NVIDIA NIM" : connection.type;
-  return `${connection.name ?? "Conexión"} · ${connection.model ?? provider ?? "IA"}`;
+  return `${connection.name ?? i18n.t("common.resource_type.connection")} · ${
+    connection.model ?? provider ?? "IA"
+  }`;
 }
 
 function preferredConnection(connections: BuilderConnection[]) {
@@ -69,6 +73,7 @@ export function SkillBuilderDialog({
   onClose: () => void;
   onReady: (draft: SkillDraft) => void;
 }) {
+  const { t } = useTranslation();
   const connectionsQuery = useQuery({
     queryKey: ["connections", "skill-builder"],
     queryFn: ({ signal }) => api.get<BuilderConnection[]>("/api/connections", signal),
@@ -106,8 +111,8 @@ export function SkillBuilderDialog({
         role: "assistant",
         content:
           nextMode === "guided"
-            ? "Cuéntame qué capacidad quieres añadir. Por ejemplo: revisar código Java con buenas prácticas."
-            : "Pega las instrucciones completas de la skill. Prepararé el borrador directamente.",
+            ? i18n.t("dynamic.text_a072c511d8b2")
+            : i18n.t("dynamic.text_9886005a5350"),
       },
     ]);
     setDraft(null);
@@ -137,7 +142,7 @@ export function SkillBuilderDialog({
       })) {
         const payload = item.data;
         if (payload.type === "error") {
-          throw new Error(payload.message ?? "No se pudo diseñar la skill");
+          throw new Error(payload.message ?? i18n.t("dynamic.text_06476bebc849"));
         }
         if (payload.type !== "builder_done") continue;
         if (payload.assistant_message) {
@@ -147,7 +152,7 @@ export function SkillBuilderDialog({
       }
     } catch (cause) {
       if (!controller.signal.aborted) {
-        setError(cause instanceof Error ? cause.message : "No se pudo diseñar la skill");
+        setError(cause instanceof Error ? cause.message : i18n.t("dynamic.text_06476bebc849"));
       }
     } finally {
       setWorking(false);
@@ -166,36 +171,48 @@ export function SkillBuilderDialog({
         <div className="modal-header">
           <div>
             <span className="modal-title" id="skill-builder-title">
-              Crear skill con Asistente
+              {t("legacy.text_fc67ff3265d9")}
             </span>
-            <p className="skill-builder-subtitle">
-              Diseña la capacidad y revísala en el editor antes de guardarla
-            </p>
+
+            <p className="skill-builder-subtitle">{t("legacy.text_373f74443d5f")}</p>
           </div>
-          <button type="button" className="modal-close" onClick={close} aria-label="Cerrar">
+
+          <button
+            type="button"
+            className="modal-close"
+            onClick={close}
+            aria-label={t("agents.chat.close")}
+          >
             ×
           </button>
         </div>
 
         {connectionsQuery.isLoading ? (
-          <div className="skill-builder-empty">Cargando conexiones…</div>
+          <div className="skill-builder-empty">{t("legacy.text_cbf986c6f653")}</div>
         ) : !connections.length ? (
           <div className="skill-builder-empty">
-            <p>Necesitas configurar una conexión de IA para usar el asistente.</p>
+            <p>{t("legacy.text_b59396fbd04d")}</p>
+
             <a className="btn btn-primary" href="/connections/">
-              Configurar conexión
+              {t("legacy.text_d90380433b02")}
             </a>
           </div>
         ) : (
           <>
             <details className="skill-builder-connections">
               <summary>
-                <span>Configuración de modelos</span>
-                <small>{selectedConnection ? connectionLabel(selectedConnection) : ""} crea</small>
+                <span>{t("legacy.text_3c4ee739fc8a")}</span>
+
+                <small>
+                  {selectedConnection ? connectionLabel(selectedConnection) : ""}{" "}
+                  {t("legacy.text_2c33bd540bd7")}
+                </small>
               </summary>
+
               <div className="skill-builder-toolbar">
                 <div className="skill-builder-connection-field">
-                  <label htmlFor="skill-builder-connection">Modelo del asistente</label>
+                  <label htmlFor="skill-builder-connection">{t("legacy.text_d99c313c4f66")}</label>
+
                   <select
                     id="skill-builder-connection"
                     className="input"
@@ -209,47 +226,62 @@ export function SkillBuilderDialog({
                       </option>
                     ))}
                   </select>
-                  <span>
-                    En NVIDIA NIM se usa automáticamente Llama 3.1 8B para diseñar
-                    rápidamente; la skill no queda vinculada a ningún modelo.
-                  </span>
+
+                  <span>{t("legacy.text_e39055439a5c")}</span>
                 </div>
               </div>
             </details>
 
             {mode === null ? (
-              <section className="skill-builder-mode-picker" aria-label="Forma de creación">
+              <section
+                className="skill-builder-mode-picker"
+                aria-label={t("legacy.text_b4e7ccb00be0")}
+              >
                 <div className="skill-builder-mode-heading">
-                  <span>Elige cómo quieres empezar</span>
-                  <p>En ambos casos podrás revisar y editar el resultado antes de guardarlo.</p>
+                  <span>{t("legacy.text_63ef9928fa12")}</span>
+
+                  <p>{t("legacy.text_1c9080c4acb6")}</p>
                 </div>
+
                 <div className="skill-builder-mode-options">
                   <button
                     type="button"
                     className="skill-builder-mode-card"
                     onClick={() => chooseMode("guided")}
                   >
-                    <span className="skill-builder-mode-icon" aria-hidden="true">◇</span>
-                    <strong>Guiarme paso a paso</strong>
-                    <small>No necesitas conocimientos técnicos</small>
-                    <p>
-                      Describe la capacidad con tus palabras y el asistente completará
-                      el procedimiento y las comprobaciones.
-                    </p>
-                    <span className="skill-builder-mode-action">Empezar guiado →</span>
+                    <span className="skill-builder-mode-icon" aria-hidden="true">
+                      ◇
+                    </span>
+
+                    <strong>{t("legacy.text_8843efac3a00")}</strong>
+
+                    <small>{t("legacy.text_859d0182b1c4")}</small>
+
+                    <p>{t("legacy.text_25a7cb68fa9f")}</p>
+
+                    <span className="skill-builder-mode-action">
+                      {t("legacy.text_6347709866fd")}
+                    </span>
                   </button>
+
                   <button
                     type="button"
                     className="skill-builder-mode-card"
                     onClick={() => chooseMode("expert")}
                   >
-                    <span className="skill-builder-mode-icon" aria-hidden="true">⌘</span>
-                    <strong>Ya tengo instrucciones</strong>
-                    <small>Para procedimientos o especificaciones completas</small>
-                    <p>
-                      Pega todos tus requisitos y generaremos el borrador directamente.
-                    </p>
-                    <span className="skill-builder-mode-action">Pegar instrucciones →</span>
+                    <span className="skill-builder-mode-icon" aria-hidden="true">
+                      ⌘
+                    </span>
+
+                    <strong>{t("legacy.text_115929d2d2d0")}</strong>
+
+                    <small>{t("legacy.text_043018691967")}</small>
+
+                    <p>{t("legacy.text_a02bc2293aec")}</p>
+
+                    <span className="skill-builder-mode-action">
+                      {t("legacy.text_f0f67c8b384f")}
+                    </span>
                   </button>
                 </div>
               </section>
@@ -259,6 +291,7 @@ export function SkillBuilderDialog({
                   <span>
                     {mode === "guided" ? "Guiado paso a paso" : "Instrucciones completas"}
                   </span>
+
                   <button
                     type="button"
                     disabled={working}
@@ -270,146 +303,165 @@ export function SkillBuilderDialog({
                       setWorking(false);
                     }}
                   >
-                    Cambiar modo
+                    {t("legacy.text_c4c6f301b364")}
                   </button>
                 </div>
+
                 <div className={`skill-builder-body${draft ? " has-draft" : ""}`}>
-              <section className="skill-builder-chat">
-                <div className="skill-builder-messages">
-                  {messages.map((message, index) => (
-                    <div
-                      className={`skill-builder-message skill-builder-message--${message.role}`}
-                      key={`${message.role}-${index}`}
-                    >
-                      {message.content}
+                  <section className="skill-builder-chat">
+                    <div className="skill-builder-messages">
+                      {messages.map((message, index) => (
+                        <div
+                          className={`skill-builder-message skill-builder-message--${message.role}`}
+                          key={`${message.role}-${index}`}
+                        >
+                          {message.content}
+                        </div>
+                      ))}
+
+                      {working && (
+                        <div className="skill-builder-message skill-builder-message--assistant">
+                          <span className="skill-builder-thinking">
+                            {t("legacy.text_d4d57e72f034")}
+                            {elapsed}
+                            {t("legacy.text_a0f1490a20d0")}
+                          </span>
+                        </div>
+                      )}
+
+                      {mode === "guided" && messages.length === 1 && !working && (
+                        <div
+                          className="skill-builder-examples"
+                          aria-label={t("legacy.text_7b1787ff203e")}
+                        >
+                          {[
+                            i18n.t("dynamic.text_8fede4ae3d7b"),
+                            "Crear pruebas para APIs",
+                            "Analizar documentos",
+                            "Redactar contenido SEO",
+                          ].map((example) => (
+                            <button
+                              type="button"
+                              key={example}
+                              onClick={() =>
+                                setText(`Quiero una skill para ${example.toLowerCase()}`)
+                              }
+                            >
+                              {example}
+                            </button>
+                          ))}
+                        </div>
+                      )}
                     </div>
-                  ))}
-                  {working && (
-                    <div className="skill-builder-message skill-builder-message--assistant">
-                      <span className="skill-builder-thinking">
-                        Diseñando la skill… {elapsed}s
-                      </span>
-                    </div>
-                  )}
-                  {mode === "guided" && messages.length === 1 && !working && (
-                    <div className="skill-builder-examples" aria-label="Ejemplos">
-                      {[
-                        "Revisar código Java",
-                        "Crear pruebas para APIs",
-                        "Analizar documentos",
-                        "Redactar contenido SEO",
-                      ].map((example) => (
+
+                    <form className="skill-builder-input" onSubmit={(event) => void send(event)}>
+                      <textarea
+                        className="input"
+                        rows={mode === "expert" ? 7 : 3}
+                        value={text}
+                        onChange={(event) => setText(event.target.value)}
+                        placeholder={
+                          mode === "expert"
+                            ? i18n.t("dynamic.text_9fa44a2a5453")
+                            : i18n.t("dynamic.text_240054f628cd")
+                        }
+                        disabled={working}
+                        onKeyDown={(event) => {
+                          if (event.key === "Enter" && !event.shiftKey) {
+                            event.preventDefault();
+                            event.currentTarget.form?.requestSubmit();
+                          }
+                        }}
+                      />
+
+                      <button
+                        className="btn btn-primary"
+                        disabled={!text.trim() || working || !effectiveConnectionId}
+                      >
+                        {working ? "Esperando…" : "Enviar"}
+                      </button>
+                    </form>
+                  </section>
+
+                  {draft && (
+                    <section className="skill-builder-preview">
+                      <div className="skill-builder-preview-header">
+                        <span className="skill-builder-ready">{t("legacy.text_0137207e8dec")}</span>
+
+                        <h3>{t("legacy.text_1f454d04e835")}</h3>
+                      </div>
+
+                      <label>
+                        {t("agents.modal.field_name")}
+                        <input
+                          className="input"
+                          value={draft.name}
+                          onChange={(event) => setDraft({ ...draft, name: event.target.value })}
+                        />
+                      </label>
+
+                      <label>
+                        {t("agents.modal.field_description")}
+                        <textarea
+                          className="input"
+                          rows={3}
+                          value={draft.description}
+                          onChange={(event) =>
+                            setDraft({ ...draft, description: event.target.value })
+                          }
+                        />
+                      </label>
+
+                      <label>
+                        {t("errors.fields.category")}
+                        <select
+                          className="input"
+                          value={draft.category}
+                          onChange={(event) =>
+                            setDraft({
+                              ...draft,
+                              category: event.target.value,
+                              icon: event.target.value,
+                            })
+                          }
+                        >
+                          {categories.map((category) => (
+                            <option value={category} key={category}>
+                              {category}
+                            </option>
+                          ))}
+                        </select>
+                      </label>
+
+                      <label>
+                        {t("legacy.text_b838b37e8b1c")}
+                        <textarea
+                          className="input skill-builder-content skill-builder-prompt"
+                          rows={14}
+                          value={draft.content}
+                          onChange={(event) => setDraft({ ...draft, content: event.target.value })}
+                        />
+                      </label>
+
+                      <div className="skill-builder-preview-actions">
                         <button
                           type="button"
-                          key={example}
-                          onClick={() => setText(`Quiero una skill para ${example.toLowerCase()}`)}
+                          className="btn btn-primary"
+                          disabled={!draft.name.trim() || !draft.content.trim()}
+                          onClick={() =>
+                            onReady({
+                              ...draft,
+                              labels: ["private"],
+                            })
+                          }
                         >
-                          {example}
+                          {t("legacy.text_1837530debe5")}
                         </button>
-                      ))}
-                    </div>
+                      </div>
+                    </section>
                   )}
                 </div>
-                <form className="skill-builder-input" onSubmit={(event) => void send(event)}>
-                  <textarea
-                    className="input"
-                    rows={mode === "expert" ? 7 : 3}
-                    value={text}
-                    onChange={(event) => setText(event.target.value)}
-                    placeholder={
-                      mode === "expert"
-                        ? "Pega aquí objetivos, proceso, reglas y formato de salida…"
-                        : "Ej.: una skill para revisar código Java con buenas prácticas…"
-                    }
-                    disabled={working}
-                    onKeyDown={(event) => {
-                      if (event.key === "Enter" && !event.shiftKey) {
-                        event.preventDefault();
-                        event.currentTarget.form?.requestSubmit();
-                      }
-                    }}
-                  />
-                  <button
-                    className="btn btn-primary"
-                    disabled={!text.trim() || working || !effectiveConnectionId}
-                  >
-                    {working ? "Esperando…" : "Enviar"}
-                  </button>
-                </form>
-              </section>
 
-              {draft && (
-                <section className="skill-builder-preview">
-                  <div className="skill-builder-preview-header">
-                    <span className="skill-builder-ready">Borrador listo</span>
-                    <h3>Revisa los detalles</h3>
-                  </div>
-                  <label>
-                    Nombre
-                    <input
-                      className="input"
-                      value={draft.name}
-                      onChange={(event) => setDraft({ ...draft, name: event.target.value })}
-                    />
-                  </label>
-                  <label>
-                    Descripción
-                    <textarea
-                      className="input"
-                      rows={3}
-                      value={draft.description}
-                      onChange={(event) =>
-                        setDraft({ ...draft, description: event.target.value })
-                      }
-                    />
-                  </label>
-                  <label>
-                    Categoría
-                    <select
-                      className="input"
-                      value={draft.category}
-                      onChange={(event) =>
-                        setDraft({
-                          ...draft,
-                          category: event.target.value,
-                          icon: event.target.value,
-                        })
-                      }
-                    >
-                      {categories.map((category) => (
-                        <option value={category} key={category}>
-                          {category}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                  <label>
-                    Instrucciones
-                    <textarea
-                      className="input skill-builder-content skill-builder-prompt"
-                      rows={14}
-                      value={draft.content}
-                      onChange={(event) => setDraft({ ...draft, content: event.target.value })}
-                    />
-                  </label>
-                  <div className="skill-builder-preview-actions">
-                    <button
-                      type="button"
-                      className="btn btn-primary"
-                      disabled={!draft.name.trim() || !draft.content.trim()}
-                      onClick={() =>
-                        onReady({
-                          ...draft,
-                          labels: ["private"],
-                        })
-                      }
-                    >
-                      Continuar en el editor
-                    </button>
-                  </div>
-                </section>
-              )}
-                </div>
                 {error && <div className="skill-builder-error">{error}</div>}
               </>
             )}

@@ -1,3 +1,4 @@
+import i18n from "@/i18n";
 import { useEffect, useMemo, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
@@ -23,9 +24,9 @@ import "@/styles/routes/connections/connections.css";
 import "./connections-page.css";
 
 const categoryLabels: Record<ConnectionCategory, string> = {
-  llm: "APIs LLM",
-  machine: "Máquinas",
-  database: "Bases de datos",
+  llm: "connections.categories.llm",
+  machine: "connections.categories.machine",
+  database: "connections.categories.database",
 };
 
 interface LabelOption {
@@ -65,8 +66,7 @@ const labelGroups: readonly LabelGroup[] = [
 function useConnectionsT() {
   const { t } = useTranslation(["connections", "common", "labels"]);
   const translate = t as unknown as (key: string, ...args: unknown[]) => string;
-  return (key: string, ...args: unknown[]) =>
-    translate(key.replace(":", "."), ...args);
+  return (key: string, ...args: unknown[]) => translate(key.replace(":", "."), ...args);
 }
 
 type Notice = { kind: "ok" | "error"; text: string } | null;
@@ -103,6 +103,7 @@ function SearchIcon() {
   return (
     <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true">
       <circle cx="6.5" cy="6.5" r="4" stroke="currentColor" strokeWidth="1.6" />
+
       <path d="m11 11 3 3" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
     </svg>
   );
@@ -113,6 +114,7 @@ function CategoryIcon({ category }: { category: ConnectionCategory }) {
     return (
       <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true">
         <rect x="2" y="3" width="12" height="8" rx="1.5" stroke="currentColor" strokeWidth="1.4" />
+
         <path d="M5 14h6M8 11v3" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
       </svg>
     );
@@ -120,6 +122,7 @@ function CategoryIcon({ category }: { category: ConnectionCategory }) {
     return (
       <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true">
         <ellipse cx="8" cy="4" rx="5" ry="2" stroke="currentColor" strokeWidth="1.4" />
+
         <path
           d="M3 4v4c0 1.1 2.24 2 5 2s5-.9 5-2V4M3 8v4c0 1.1 2.24 2 5 2s5-.9 5-2V8"
           stroke="currentColor"
@@ -130,6 +133,7 @@ function CategoryIcon({ category }: { category: ConnectionCategory }) {
   return (
     <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true">
       <circle cx="8" cy="8" r="6" stroke="currentColor" strokeWidth="1.5" />
+
       <path d="M5 8h6M8 5v6" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
     </svg>
   );
@@ -162,8 +166,11 @@ function ActionIcon({ action }: { action: "test" | "edit" | "share" | "delete" |
     return (
       <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
         <circle cx="12" cy="3" r="1.5" stroke="currentColor" strokeWidth="1.4" />
+
         <circle cx="12" cy="13" r="1.5" stroke="currentColor" strokeWidth="1.4" />
+
         <circle cx="4" cy="8" r="1.5" stroke="currentColor" strokeWidth="1.4" />
+
         <path
           d="m10.5 3.8-5 3.4m5 5-5-3.4"
           stroke="currentColor"
@@ -175,7 +182,13 @@ function ActionIcon({ action }: { action: "test" | "edit" | "share" | "delete" |
   if (action === "sync")
     return (
       <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-        <path d="M13 5V2l-1.5 1.5A5.5 5.5 0 1 0 13 10" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+        <path
+          d="M13 5V2l-1.5 1.5A5.5 5.5 0 1 0 13 10"
+          stroke="currentColor"
+          strokeWidth="1.4"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
       </svg>
     );
   return (
@@ -235,6 +248,7 @@ function DynamicField({
   editing: boolean;
   onChange: (value: DynamicFieldValue) => void;
 }) {
+  const { t } = useTranslation();
   if (field.depends_on) {
     const actual = String(values[field.depends_on] ?? "");
     if (actual !== (field.depends_value ?? "")) return null;
@@ -249,7 +263,9 @@ function DynamicField({
             checked={Boolean(value)}
             onChange={(event) => onChange(event.target.checked)}
           />
+
           <span className="toggle-track" />
+
           <span className="toggle-label">{field.label}</span>
         </label>
       </div>
@@ -258,6 +274,7 @@ function DynamicField({
   const label = (
     <label htmlFor={`conn-field-${field.key}`}>
       {field.label}
+
       {field.required && <span className="field-required"> *</span>}
     </label>
   );
@@ -265,6 +282,7 @@ function DynamicField({
     return (
       <div className="field">
         {label}
+
         <select
           id={`conn-field-${field.key}`}
           className="select"
@@ -285,6 +303,7 @@ function DynamicField({
     return (
       <div className="field">
         {label}
+
         <textarea
           id={`conn-field-${field.key}`}
           className="input conn-dynamic-textarea"
@@ -300,6 +319,7 @@ function DynamicField({
   return (
     <div className="field">
       {label}
+
       <input
         id={`conn-field-${field.key}`}
         className="input"
@@ -310,11 +330,13 @@ function DynamicField({
         autoComplete={field.type === "password" ? "new-password" : undefined}
         onChange={(event) => onChange(event.target.value)}
       />
+
       {editing && field.type === "password" && (
-        <span className="input-hint">Déjalo vacío para conservar el valor actual.</span>
+        <span className="input-hint">{t("legacy.text_bedcdcd7faae")}</span>
       )}
+
       {field.key === "url" && field.default && (
-        <span className="input-hint">Cámbiala si usas un proxy o una URL personalizada.</span>
+        <span className="input-hint">{t("legacy.text_8502f2932cd6")}</span>
       )}
     </div>
   );
@@ -401,6 +423,7 @@ function ConnectionEditor({
           <span className="modal-title" id="conn-modal-title-react">
             {connection ? t("connections:modal.title_edit") : t("connections:modal.title_new")}
           </span>
+
           <button
             className="modal-close"
             type="button"
@@ -417,14 +440,17 @@ function ConnectionEditor({
             </svg>
           </button>
         </div>
+
         <div className="modal-body">
           {save.isError && (
             <div className="form-error conn-modal-error" role="alert">
               {save.error.message}
             </div>
           )}
+
           <div className="field">
             <label htmlFor="conn-name-react">{t("connections:modal.field_name")} *</label>
+
             <input
               ref={nameRef}
               id="conn-name-react"
@@ -436,8 +462,10 @@ function ConnectionEditor({
               maxLength={120}
             />
           </div>
+
           <div className="field">
             <label htmlFor="conn-type-react">{t("connections:modal.field_provider")}</label>
+
             <select
               id="conn-type-react"
               className="select"
@@ -452,9 +480,11 @@ function ConnectionEditor({
               ))}
             </select>
           </div>
+
           {!workspacePersonal && (
             <div className="field">
               <label htmlFor="conn-scope-react">{t("connections:modal.field_scope")}</label>
+
               <select
                 id="conn-scope-react"
                 className="select"
@@ -462,8 +492,10 @@ function ConnectionEditor({
                 onChange={(event) => setScope(event.target.value)}
               >
                 <option value="workspace">{t("connections:modal.scope_workspace")}</option>
+
                 <option value="personal">{t("connections:modal.scope_personal")}</option>
               </select>
+
               <span className="input-hint">
                 {scope === "personal"
                   ? t("connections:modal.scope_hint_personal")
@@ -471,6 +503,7 @@ function ConnectionEditor({
               </span>
             </div>
           )}
+
           {(selectedProvider?.fields ?? []).map((field) => (
             <DynamicField
               key={field.key}
@@ -481,10 +514,12 @@ function ConnectionEditor({
               onChange={(value) => setValues((current) => ({ ...current, [field.key]: value }))}
             />
           ))}
+
           <div className="field">
             <label>
               {t("labels:group.environment", "Entorno")} / {t("labels:group.status", "Estado")}
             </label>
+
             <div className="conn-label-editor">
               {labelGroups
                 .flatMap((group) => group.labels)
@@ -495,6 +530,7 @@ function ConnectionEditor({
                       checked={labels.includes(label.key)}
                       onChange={() => toggleLabel(label.key)}
                     />
+
                     <span
                       className="label-chip"
                       style={{ "--lc": label.color } as React.CSSProperties}
@@ -506,10 +542,12 @@ function ConnectionEditor({
             </div>
           </div>
         </div>
+
         <div className="modal-footer">
           <button type="button" className="btn btn-ghost" onClick={onClose}>
             {t("common:actions.cancel", "Cancelar")}
           </button>
+
           <button
             type="submit"
             className="btn btn-primary"
@@ -536,6 +574,7 @@ function ShareDialog({
   onClose: () => void;
   onSaved: (text: string) => void;
 }) {
+  const { t } = useTranslation();
   const groups = workspaces.filter((workspace) => workspace.type === "team");
   const shared = useQuery({
     queryKey: ["connections", connection.id, "shared-groups"],
@@ -580,19 +619,24 @@ function ShareDialog({
     <Modal onClose={onClose} labelledBy="conn-share-title">
       <div className="modal-header">
         <h2 className="modal-title" id="conn-share-title">
-          Compartir — {connection.name}
+          {t("legacy.text_e6153e8a4176")}
+          {connection.name}
         </h2>
-        <button className="modal-close" onClick={onClose} aria-label="Cerrar">
+
+        <button className="modal-close" onClick={onClose} aria-label={t("agents.chat.close")}>
           ×
         </button>
       </div>
+
       <div className="modal-body">
-        <p className="gsd-subtitle">Selecciona los grupos de trabajo</p>
+        <p className="gsd-subtitle">{t("legacy.text_ddc00780d597")}</p>
+
         {save.isError && (
           <div className="form-error" role="alert">
             {save.error.message}
           </div>
         )}
+
         <div className="gsd-groups">
           {groups.length ? (
             groups.map((group) => (
@@ -608,25 +652,29 @@ function ShareDialog({
                     }))
                   }
                 />
+
                 <span className="gsd-group-name">{group.name}</span>
-                <span className="gsd-badge">Compartido</span>
+
+                <span className="gsd-badge">{t("teams.sharing.shared_badge")}</span>
               </label>
             ))
           ) : (
-            <p className="gsd-empty">No tienes grupos de trabajo.</p>
+            <p className="gsd-empty">{t("teams.sharing.no_groups")}</p>
           )}
         </div>
       </div>
+
       <div className="modal-footer">
         <button className="btn btn-ghost" onClick={onClose}>
-          Cancelar
+          {t("agents.scan.folder_cancel_btn")}
         </button>
+
         <button
           className="btn btn-primary"
           disabled={save.isPending || shared.isPending}
           onClick={() => save.mutate()}
         >
-          {save.isPending ? "Guardando…" : "Guardar"}
+          {save.isPending ? t("common.actions.saving") : t("common.actions.save")}
         </button>
       </div>
     </Modal>
@@ -640,6 +688,7 @@ function CreateGroupDialog({
   onClose: () => void;
   onSaved: (workspace: Workspace) => void;
 }) {
+  const { t } = useTranslation();
   const [name, setName] = useState("");
   const mutation = useMutation({
     mutationFn: () => api.post<Workspace>("/api/workspaces", { name: name.trim() }),
@@ -655,20 +704,29 @@ function CreateGroupDialog({
       >
         <div className="modal-header">
           <h2 className="modal-title" id="create-group-title">
-            Nuevo grupo de trabajo
+            {t("legacy.text_9b2d48d0d227")}
           </h2>
-          <button className="modal-close" type="button" onClick={onClose} aria-label="Cerrar">
+
+          <button
+            className="modal-close"
+            type="button"
+            onClick={onClose}
+            aria-label={t("agents.chat.close")}
+          >
             ×
           </button>
         </div>
+
         <div className="modal-body">
           {mutation.isError && (
             <div className="form-error" role="alert">
               {mutation.error.message}
             </div>
           )}
+
           <div className="field">
-            <label htmlFor="new-group-name">Nombre *</label>
+            <label htmlFor="new-group-name">{t("legacy.text_209ebdec998e")}</label>
+
             <input
               id="new-group-name"
               className="input"
@@ -680,10 +738,12 @@ function CreateGroupDialog({
             />
           </div>
         </div>
+
         <div className="modal-footer">
           <button type="button" className="btn btn-ghost" onClick={onClose}>
-            Cancelar
+            {t("agents.scan.folder_cancel_btn")}
           </button>
+
           <button
             type="submit"
             className="btn btn-primary"
@@ -740,14 +800,16 @@ function ConnectionCard({
           <div className="conn-card-name" title={connection.name}>
             {connection.name}
           </div>
+
           {total > 0 && (
             <span
               className="conn-token-badge"
               title={`${formatTokens(connection.tokens_in ?? 0)} in / ${formatTokens(connection.tokens_out ?? 0)} out`}
             >
-              {formatTokens(total)} tok
+              {formatTokens(total)} {t("legacy.text_79bead8e6d65")}
             </span>
           )}
+
           {groupMode && (
             <span className="conn-owner-badge">
               {connection._shared
@@ -757,13 +819,16 @@ function ConnectionCard({
                 : "Tuyo"}
             </span>
           )}
+
           {connection._personal_key && (
             <span className="conn-scope-badge">{t("connections:card.scope_personal")}</span>
           )}
         </div>
+
         {(sub || customUrl) && (
           <div className="conn-card-sub" title={sub}>
             {sub}
+
             {customUrl && (
               <>
                 {" "}
@@ -774,6 +839,7 @@ function ConnectionCard({
             )}
           </div>
         )}
+
         {Boolean(connection.labels?.filter((label) => label !== "private").length) && (
           <div className="label-chips-row conn-label-chips">
             {connection.labels
@@ -794,6 +860,7 @@ function ConnectionCard({
               })}
           </div>
         )}
+
         <div
           className="conn-card-status"
           data-ok={state === "ok" ? "true" : state === "error" ? "false" : undefined}
@@ -808,6 +875,7 @@ function ConnectionCard({
                 : ""}
         </div>
       </div>
+
       <footer className="conn-card-footer">
         <button
           className="cca-btn cca-btn--test"
@@ -818,6 +886,7 @@ function ConnectionCard({
         >
           <ActionIcon action="test" />
         </button>
+
         <button
           className="cca-btn"
           type="button"
@@ -826,17 +895,44 @@ function ConnectionCard({
         >
           <ActionIcon action="edit" />
         </button>
+
         {!connection._shared && (
-          <button className="cca-btn" type="button" onClick={onShare} title="Compartir con grupo">
+          <button
+            className="cca-btn"
+            type="button"
+            onClick={onShare}
+            title={t("teams.sharing.share_with")}
+          >
             <ActionIcon action="share" />
           </button>
         )}
+
         {!connection._shared && (
           <>
-            {connection.type === "ollama" && <button className="cca-btn" type="button" onClick={onImportModels} title="Importar modelos"><ActionIcon action="sync" /></button>}
-            {connection.type === "iagentshub" && <button className="cca-btn" type="button" onClick={onHubSync} title="Sincronizar Hub"><ActionIcon action="sync" /></button>}
+            {connection.type === "ollama" && (
+              <button
+                className="cca-btn"
+                type="button"
+                onClick={onImportModels}
+                title={t("profile.accounts.sync_btn")}
+              >
+                <ActionIcon action="sync" />
+              </button>
+            )}
+
+            {connection.type === "iagentshub" && (
+              <button
+                className="cca-btn"
+                type="button"
+                onClick={onHubSync}
+                title={t("legacy.text_e694c15039d4")}
+              >
+                <ActionIcon action="sync" />
+              </button>
+            )}
           </>
         )}
+
         {!connection._shared && (
           <button
             className="cca-btn cca-btn--delete"
@@ -969,7 +1065,7 @@ export function ConnectionsPage() {
                     ...(result.detail ? { detail: result.detail } : {}),
                   } satisfies ConnectionStatus,
                 ]
-              : [id, { state: "error", message: "La conexión ya no está disponible" }];
+              : [id, { state: "error", message: i18n.t("dynamic.text_ee5ed03e7a28") }];
           }),
         ),
       })),
@@ -997,7 +1093,10 @@ export function ConnectionsPage() {
     mutationFn: ({ id, action }: { id: string; action: "import-models" | "hub-sync" }) =>
       api.post(`/api/connections/${encodeURIComponent(id)}/${action}`, {}),
     onSuccess: async (_, variables) => {
-      setNotice({ kind: "ok", text: variables.action === "hub-sync" ? "Hub sincronizado." : "Modelos importados." });
+      setNotice({
+        kind: "ok",
+        text: variables.action === "hub-sync" ? "Hub sincronizado." : "Modelos importados.",
+      });
       await connectionsQuery.refetch();
     },
     onError: (error) => setNotice({ kind: "error", text: error.message }),
@@ -1010,7 +1109,7 @@ export function ConnectionsPage() {
     } catch (error) {
       setNotice({
         kind: "error",
-        text: error instanceof Error ? error.message : "No se pudo cargar la conexión",
+        text: error instanceof Error ? error.message : i18n.t("dynamic.text_78f760871bd0"),
       });
     }
   };
@@ -1042,11 +1141,11 @@ export function ConnectionsPage() {
       await api.post(`/api/sharing/connection/${encodeURIComponent(id)}`, {
         group_id: targetGroupId,
       });
-      setNotice({ kind: "ok", text: "Conexión compartida con el grupo" });
+      setNotice({ kind: "ok", text: i18n.t("dynamic.text_66b5fe8f8969") });
     } catch (error) {
       setNotice({
         kind: "error",
-        text: error instanceof Error ? error.message : "No se pudo compartir",
+        text: error instanceof Error ? error.message : i18n.t("common.errors.share"),
       });
     }
   };
@@ -1054,14 +1153,15 @@ export function ConnectionsPage() {
   if (providersQuery.isPending || connectionsQuery.isPending)
     return (
       <main className="page-content connections-react">
-        <div className="conn-empty">Cargando conexiones…</div>
+        <div className="conn-empty">{t("legacy.text_cbf986c6f653")}</div>
       </main>
     );
   if (providersQuery.isError || connectionsQuery.isError)
     return (
       <main className="page-content connections-react">
         <div className="empty-state">
-          <p>No se pudieron cargar las conexiones.</p>
+          <p>{t("legacy.text_68c5a7e619d1")}</p>
+
           <button
             className="btn btn-primary"
             onClick={() => {
@@ -1069,7 +1169,7 @@ export function ConnectionsPage() {
               void connectionsQuery.refetch();
             }}
           >
-            Reintentar
+            {t("legacy.text_adec7b4f2351")}
           </button>
         </div>
       </main>
@@ -1080,8 +1180,10 @@ export function ConnectionsPage() {
       <div className="page-header">
         <div>
           <h1 className="page-title">{t("connections:page.title")}</h1>
+
           <p className="page-subtitle">{t("connections:page.subtitle")}</p>
         </div>
+
         <div className="page-actions">
           <button
             className="btn btn-ghost"
@@ -1090,8 +1192,10 @@ export function ConnectionsPage() {
             onClick={() => runTests.mutate(filtered.map((connection) => connection.id))}
           >
             <ActionIcon action="test" />
+
             <span>{t("connections:page.test_all")}</span>
           </button>
+
           <button
             className="btn btn-primary"
             type="button"
@@ -1106,6 +1210,7 @@ export function ConnectionsPage() {
                 strokeLinecap="round"
               />
             </svg>
+
             <span>{t("connections:page.new_btn")}</span>
           </button>
         </div>
@@ -1118,7 +1223,7 @@ export function ConnectionsPage() {
           {notice.text}
         </div>
       )}
-      <div className="conn-category-tabs" role="tablist" aria-label="Categoría de conexión">
+      <div className="conn-category-tabs" role="tablist" aria-label={t("legacy.text_1e9276169ae0")}>
         {(["llm", "machine", "database"] as const).map((item) => (
           <button
             className={`conn-cat-tab${category === item ? " active" : ""}`}
@@ -1129,7 +1234,8 @@ export function ConnectionsPage() {
             onClick={() => chooseCategory(item)}
           >
             <CategoryIcon category={item} />
-            {categoryLabels[item]}
+
+            {t(categoryLabels[item])}
           </button>
         ))}
       </div>
@@ -1137,6 +1243,7 @@ export function ConnectionsPage() {
         <div className="fco-top-row">
           <div className="fco-search-wrap">
             <SearchIcon />
+
             <input
               className="fco-search-input"
               value={queryText}
@@ -1144,17 +1251,19 @@ export function ConnectionsPage() {
               placeholder={t("connections:filter.search_placeholder")}
               aria-label={t("connections:filter.search_placeholder")}
             />
+
             {queryText && (
               <button
                 className="fco-search-clear"
                 type="button"
                 onClick={() => setQueryText("")}
-                aria-label="Limpiar búsqueda"
+                aria-label={t("common.search.clear_aria")}
               >
                 ×
               </button>
             )}
           </div>
+
           <div className="conn-label-filters">
             {labelGroups.map((group) => (
               <div
@@ -1176,6 +1285,7 @@ export function ConnectionsPage() {
                   }
                 >
                   <option value="">{t(`labels:group.${group.id}`, group.id)}…</option>
+
                   {group.labels.map((label) => (
                     <option value={label.key} key={label.key}>
                       {t(`labels:${label.key}`, label.key)}
@@ -1185,12 +1295,14 @@ export function ConnectionsPage() {
               </div>
             ))}
           </div>
+
           {hasFilters && (
             <button type="button" className="fco-clear-all" onClick={clearFilters}>
-              Limpiar
+              {t("admin.metadata.log_clear")}
             </button>
           )}
         </div>
+
         <div className="fco-chips-row">
           {(groupId ? providers : categoryProviders).map((provider) => (
             <button
@@ -1215,12 +1327,14 @@ export function ConnectionsPage() {
           <button
             className={`folder-toggle-btn${groupsVisible ? " folder-toggle-btn--on" : ""}`}
             type="button"
-            title={groupsVisible ? "Ocultar grupos" : "Grupos de trabajo"}
+            title={t(groupsVisible ? "common.workspace.hide_groups" : "common.workspace.groups")}
             onClick={() => setGroupsVisible((visible) => !visible)}
           >
             <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
               <circle cx="5" cy="5" r="2" stroke="currentColor" strokeWidth="1.4" />
+
               <circle cx="11" cy="5" r="2" stroke="currentColor" strokeWidth="1.4" />
+
               <path
                 d="M1.5 13v-.5A3.5 3.5 0 0 1 5 9a3.5 3.5 0 0 1 3.5 3.5V13M9 9.2a3.5 3.5 0 0 1 5.5 3.3v.5"
                 stroke="currentColor"
@@ -1230,14 +1344,16 @@ export function ConnectionsPage() {
             </svg>
           </button>
         </div>
+
         <div className="af-layout">
           <div className={`af-groups-panel${groupsVisible ? "" : " folder-panel--collapsed"}`}>
             <div className="kf-section-header">
-              <span className="kf-section-label">Grupos</span>
+              <span className="kf-section-label">{t("workflows.groups.title")}</span>
+
               {session.data?.role !== "guest" && (
                 <button
                   className="kf-add-btn"
-                  title="Nuevo grupo"
+                  title={t("legacy.text_646cd2c77fdb")}
                   onClick={() => setCreateGroup(true)}
                 >
                   <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
@@ -1251,6 +1367,7 @@ export function ConnectionsPage() {
                 </button>
               )}
             </div>
+
             <button
               className={`kf-item${groupId === null ? " kf-item--active" : ""}`}
               type="button"
@@ -1259,8 +1376,9 @@ export function ConnectionsPage() {
                 setSelectedTypes([]);
               }}
             >
-              <span className="kf-item-name">Todos</span>
+              <span className="kf-item-name">{t("admin.logs.filter_all")}</span>
             </button>
+
             {(workspaces.data ?? [])
               .filter((workspace) => workspace.type === "team")
               .map((workspace) => (
@@ -1268,7 +1386,7 @@ export function ConnectionsPage() {
                   className={`kf-item gp-item${groupId === workspace.id ? " kf-item--active" : ""}${dropGroupId === workspace.id ? " conn-group-drop-active" : ""}`}
                   type="button"
                   key={workspace.id}
-                  title={`Arrastra aquí para compartir con ${workspace.name}`}
+                  title={i18n.t("dynamic.connection_share_drag", { name: workspace.name })}
                   onClick={() => {
                     setGroupId(workspace.id);
                     setSelectedTypes([]);
@@ -1288,10 +1406,12 @@ export function ConnectionsPage() {
                   <span className="kf-item-name">{workspace.name}</span>
                 </button>
               ))}
+
             {!(workspaces.data ?? []).some((workspace) => workspace.type === "team") && (
-              <p className="gp-empty">No perteneces a ningún grupo.</p>
+              <p className="gp-empty">{t("legacy.text_ecc7c091db60")}</p>
             )}
           </div>
+
           <div className="af-content">
             {orderedGroups.length ? (
               orderedGroups.map((group) => (
@@ -1300,11 +1420,13 @@ export function ConnectionsPage() {
                     <span className={`conn-group-label conn-group-label--${group.type}`}>
                       {providerByType.get(group.type)?.label ?? group.type}
                     </span>
+
                     <span className="conn-group-count">
                       {group.items.length === 1
                         ? t("connections:count_one", { n: group.items.length })
                         : t("connections:count_many", { n: group.items.length })}
                     </span>
+
                     <button
                       className="conn-group-test"
                       type="button"
@@ -1314,9 +1436,11 @@ export function ConnectionsPage() {
                       }
                     >
                       <ActionIcon action="test" />
+
                       {t("connections:test_group")}
                     </button>
                   </div>
+
                   <div className="conn-group-grid">
                     {group.items.map((connection) => (
                       <ConnectionCard
@@ -1328,8 +1452,12 @@ export function ConnectionsPage() {
                         onTest={() => runTests.mutate([connection.id])}
                         onEdit={() => void editConnection(connection)}
                         onShare={() => setShareTarget(connection)}
-                        onImportModels={() => providerAction.mutate({ id: connection.id, action: "import-models" })}
-                        onHubSync={() => providerAction.mutate({ id: connection.id, action: "hub-sync" })}
+                        onImportModels={() =>
+                          providerAction.mutate({ id: connection.id, action: "import-models" })
+                        }
+                        onHubSync={() =>
+                          providerAction.mutate({ id: connection.id, action: "hub-sync" })
+                        }
                         onDelete={() => {
                           if (window.confirm(t("connections:confirm_delete")))
                             remove.mutate(connection.id);
@@ -1386,4 +1514,3 @@ export function ConnectionsPage() {
     </main>
   );
 }
-

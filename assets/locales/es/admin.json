@@ -2,6 +2,38 @@
   "page": {
     "title": "Administración"
   },
+  "tabs": {
+    "general": "General",
+    "users": "Usuarios",
+    "workspaces": "Grupos",
+    "agents": "Agentes",
+    "connections": "Conexiones",
+    "knowledge": "Conocimiento",
+    "config": "Configuración"
+  },
+  "updated": "Actualizado {{time}}",
+  "not_updated": "Sin actualizar",
+  "user_editor": {
+    "verified": "Verificado",
+    "unverified": "Sin verificar",
+    "new": "Nuevo usuario",
+    "edit": "Editar usuario",
+    "create": "Crear usuario"
+  },
+  "overview": {
+    "active_verified": "{{active}} activos · {{verified}} verificados",
+    "total_tokens": "{{tokens}} tokens totales",
+    "tokens_consumed": "Tokens consumidos"
+  },
+  "centinel": {
+    "filter_all": "Todos",
+    "filter_failed": "Fallidos",
+    "filter_passed": "Pasados",
+    "filter_skipped": "Omitidos",
+    "running": "Ejecutando…",
+    "run_empty": "Ejecuta los tests para ver los resultados",
+    "none": "Ninguno"
+  },
   "open_webmail": "Ver correos",
   "error_load": "Error al cargar usuarios.",
   "empty": "No hay usuarios registrados.",

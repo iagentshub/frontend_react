@@ -48,7 +48,18 @@
     "linked": "Enlazado",
     "fork": "Fork"
   },
+  "icons": {
+    "assistant": "Asistente",
+    "spark": "Especialista",
+    "code": "Desarrollo",
+    "research": "Investigación",
+    "analytics": "Análisis",
+    "writer": "Contenido",
+    "support": "Soporte",
+    "automation": "Automatización"
+  },
   "card": {
+    "fallback_name": "Agente",
     "no_description": "Sin descripción",
     "no_ai": "Sin IA",
     "use_your_ai": "USA TU IA",
@@ -77,7 +88,8 @@
     "search_skill": "Buscar skill…",
     "search_connection": "Buscar conexión…",
     "search_knowledge": "Buscar conocimiento…",
-    "knowledge_label": "Conocimiento"
+    "knowledge_label": "Conocimiento",
+    "no_results": "No hay agentes que coincidan con los filtros."
   },
   "empty": "No hay agentes todavia.<br>Crea el primero con <strong>+ Nuevo agente</strong>.",
   "confirm_delete": "¿Eliminar este agente?",
@@ -253,10 +265,15 @@
     "cat_docs": "Documentos"
   },
   "chat": {
+    "agent_fallback": "El agente",
     "placeholder": "Escribe un mensaje…",
     "close": "Cerrar",
     "new_conversation": "Nueva conversación",
     "timeout_msg": "Tiempo agotado — el agente no respondió en el tiempo configurado."
+  },
+  "builder_actions": {
+    "saving": "Guardando…",
+    "create_agent": "Crear agente"
   },
   "catalog": {
     "open_btn": "Catálogo",

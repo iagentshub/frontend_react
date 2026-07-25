@@ -1,7 +1,8 @@
 import i18n from "@/i18n";
 import { runtimeConfig } from "@/config/runtime";
 
-export type ApiErrorDetail = string | Array<{ msg?: string; [key: string]: unknown }> | Record<string, unknown>;
+export type ApiErrorDetail =
+  string | Array<{ msg?: string; [key: string]: unknown }> | Record<string, unknown>;
 
 export class ApiError extends Error {
   readonly status: number;
@@ -13,7 +14,12 @@ export class ApiError extends Error {
     this.name = "ApiError";
     this.status = status;
     if (detail !== undefined) this.detail = detail;
-    if (detail && typeof detail === "object" && !Array.isArray(detail) && typeof detail.code === "string") {
+    if (
+      detail &&
+      typeof detail === "object" &&
+      !Array.isArray(detail) &&
+      typeof detail.code === "string"
+    ) {
       this.code = detail.code;
     }
   }
@@ -45,7 +51,8 @@ function translateApiErrorCode(detail: Record<string, unknown>): string | undefi
 function formatError(status: number, detail?: ApiErrorDetail): string {
   if (!detail) return `Error ${status}`;
   if (typeof detail === "string") return detail;
-  if (Array.isArray(detail)) return detail.map((entry) => entry.msg ?? JSON.stringify(entry)).join("; ");
+  if (Array.isArray(detail))
+    return detail.map((entry) => entry.msg ?? JSON.stringify(entry)).join("; ");
   const translated = translateApiErrorCode(detail);
   if (typeof translated === "string") return translated;
   const message = detail.message;
@@ -73,7 +80,11 @@ async function request<T>(url: string, options: RequestOptions = {}): Promise<T>
   headers.set("Accept-Language", currentLanguage());
 
   let body: BodyInit | undefined;
-  if (sourceBody instanceof FormData || sourceBody instanceof Blob || typeof sourceBody === "string") {
+  if (
+    sourceBody instanceof FormData ||
+    sourceBody instanceof Blob ||
+    typeof sourceBody === "string"
+  ) {
     body = sourceBody;
   } else if (sourceBody !== undefined) {
     headers.set("Content-Type", "application/json");

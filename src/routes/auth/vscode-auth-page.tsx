@@ -1,3 +1,5 @@
+import i18n from "@/i18n";
+import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "react-router-dom";
@@ -27,6 +29,7 @@ function safeCallback(value: string | null): string | null {
 }
 
 export function VsCodeAuthPage() {
+  const { t } = useTranslation();
   const [params] = useSearchParams();
   const [done, setDone] = useState(false);
   const session = useQuery(sessionQuery);
@@ -47,19 +50,16 @@ export function VsCodeAuthPage() {
 
   if (!callback || !state) {
     return (
-      <Card title="Petición inválida">
-        <p className="login-sub">
-          Faltan datos de la petición o el destino no es un editor reconocido. Vuelve a
-          iniciar sesión desde VS Code.
-        </p>
+      <Card title={t("legacy.text_958737fc4c80")}>
+        <p className="login-sub">{t("legacy.text_2521701d27cd")}</p>
       </Card>
     );
   }
 
   if (done) {
     return (
-      <Card title="Listo">
-        <p className="login-sub">Ya puedes volver a VS Code. Puedes cerrar esta pestaña.</p>
+      <Card title={t("agents.export.done")}>
+        <p className="login-sub">{t("legacy.text_d992b114a1e6")}</p>
       </Card>
     );
   }
@@ -68,21 +68,22 @@ export function VsCodeAuthPage() {
     authorize.error instanceof ApiError
       ? authorize.error.message
       : authorize.error
-        ? "No se pudo completar la autorización."
+        ? i18n.t("dynamic.text_5433662a4430")
         : null;
 
   return (
-    <Card title="Conectar con VS Code">
+    <Card title={t("legacy.text_72c2c2796c16")}>
       <p className="login-sub">
-        VS Code quiere acceder a tu cuenta <strong>{session.data?.username}</strong> para
-        chatear con tus agentes. Se creará un token que podrás revocar cuando quieras
-        desde Perfil → Tokens.
+        {t("legacy.text_dad210951386")}
+        <strong>{session.data?.username}</strong> {t("legacy.text_19a5d8494f83")}
       </p>
+
       {error && (
         <div className="form-error" role="alert">
           {error}
         </div>
       )}
+
       <button
         type="button"
         className="btn btn-primary btn-full"
@@ -91,12 +92,9 @@ export function VsCodeAuthPage() {
       >
         {authorize.isPending ? "Autorizando…" : "Autorizar"}
       </button>
-      <button
-        type="button"
-        className="btn btn-ghost btn-full"
-        onClick={() => window.close()}
-      >
-        Cancelar
+
+      <button type="button" className="btn btn-ghost btn-full" onClick={() => window.close()}>
+        {t("agents.scan.folder_cancel_btn")}
       </button>
     </Card>
   );
@@ -107,6 +105,7 @@ function Card({ title, children }: { title: string; children: React.ReactNode })
     <main className="login-wrap login-wrap--narrow">
       <section className="login-card" aria-labelledby="vscode-auth-title">
         <h2 id="vscode-auth-title">{title}</h2>
+
         {children}
       </section>
     </main>

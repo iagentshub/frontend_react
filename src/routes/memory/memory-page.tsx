@@ -1,3 +1,4 @@
+import i18n from "@/i18n";
 import {
   useEffect,
   useMemo,
@@ -23,6 +24,7 @@ function SearchIcon() {
   return (
     <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true">
       <circle cx="6.5" cy="6.5" r="4" stroke="currentColor" strokeWidth="1.6" />
+
       <path d="m11 11 3 3" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
     </svg>
   );
@@ -37,6 +39,7 @@ function FileIcon() {
         strokeWidth="1.8"
         strokeLinejoin="round"
       />
+
       <path
         d="M14 2v6h6M16 13H8M16 17H8M10 9H8"
         stroke="currentColor"
@@ -207,6 +210,7 @@ function MemoryEditor({
           <span className="modal-title" id="memory-modal-title-react">
             {editing ? t("memory:modal.title_edit") : t("memory:modal.title_new")}
           </span>
+
           <button
             className="modal-close"
             type="button"
@@ -223,14 +227,17 @@ function MemoryEditor({
             </svg>
           </button>
         </div>
+
         <div className="modal-body">
           {save.isError && (
             <div className="form-error memory-modal-error" role="alert">
               {save.error.message}
             </div>
           )}
+
           <div className="field">
             <label htmlFor="memory-filename-react">{t("memory:modal.field_name")}</label>
+
             <div className="mem-filename-wrap">
               <input
                 ref={inputRef}
@@ -239,43 +246,53 @@ function MemoryEditor({
                 value={filename}
                 readOnly={editing}
                 onChange={(event) => setFilename(event.target.value)}
-                placeholder="mi-agente"
+                placeholder={t("legacy.text_c8c79fa5ae1c")}
                 autoComplete="off"
                 required
               />
-              <span className="mem-filename-ext">.md</span>
+
+              <span className="mem-filename-ext">{t("legacy.text_a2c73572c9a4")}</span>
             </div>
+
             {!editing && (
               <span className={`input-hint${filename && !validName ? " form-error" : ""}`}>
                 {filename && !validName ? (
-                  "Usa solo letras, números, guiones y guiones bajos."
+                  i18n.t("dynamic.text_1aff77036531")
                 ) : (
                   <>
-                    Se guardará como <code>{filename || "nombre"}.md</code>
+                    {t("legacy.text_d5d84b274a8b")}
+                    <code>
+                      {filename || "nombre"}
+                      {t("legacy.text_a2c73572c9a4")}
+                    </code>
                   </>
                 )}
               </span>
             )}
           </div>
+
           <div className="field">
             <label htmlFor="memory-content-react">
-              {t("memory:modal.field_content")} (Markdown)
+              {t("memory:modal.field_content")} {t("legacy.text_f9c6701fd4c1")}
             </label>
+
             <textarea
               ref={contentRef}
               id="memory-content-react"
               className="textarea mem-textarea"
               value={content}
               onChange={(event) => setContent(event.target.value)}
-              placeholder="# Contexto del agente&#10;&#10;Escribe aquí el contexto…"
+              placeholder={t("legacy.text_79334fbec76a")}
               spellCheck
             />
           </div>
         </div>
+
         <div className="modal-footer">
           <button type="button" className="btn btn-ghost" onClick={onClose}>
             {t("common:actions.cancel", "Cancelar")}
           </button>
+
           <button type="submit" className="btn btn-primary" disabled={!validName || save.isPending}>
             {save.isPending ? t("memory:modal.saving") : t("memory:modal.save_btn")}
           </button>
@@ -307,16 +324,19 @@ function MemoryCard({
           <div className="mem-card-icon">
             <FileIcon />
           </div>
+
           <div className="mem-card-info">
             <div className="mem-card-name" title={memory.filename}>
               {memory.filename}
             </div>
+
             {displaySize(memory.size) && (
               <div className="mem-card-sub">{displaySize(memory.size)}</div>
             )}
           </div>
         </div>
       </button>
+
       <footer className="mem-card-actions">
         <button
           className="mem-action mem-action--edit"
@@ -327,6 +347,7 @@ function MemoryCard({
         >
           <EditIcon />
         </button>
+
         <button
           className="mem-action mem-action--delete"
           type="button"
@@ -336,6 +357,7 @@ function MemoryCard({
         >
           <TrashIcon />
         </button>
+
         {displayDate(memory.updated_at) && (
           <time className="mem-card-updated" dateTime={memory.updated_at ?? undefined}>
             {displayDate(memory.updated_at)}
@@ -404,7 +426,7 @@ export function MemoryPage() {
     } catch (error) {
       setNotice({
         kind: "error",
-        text: error instanceof Error ? error.message : "No se pudo cargar la memoria",
+        text: error instanceof Error ? error.message : i18n.t("common.errors.load_memory"),
       });
     }
   };
@@ -423,7 +445,7 @@ export function MemoryPage() {
         setNotice({
           kind: "error",
           text: t("page.load_error", {
-            msg: error instanceof Error ? error.message : "Formato no válido",
+            msg: error instanceof Error ? error.message : i18n.t("dynamic.text_4661a994941a"),
           }),
         });
       }
@@ -448,8 +470,10 @@ export function MemoryPage() {
       <div className="page-header">
         <div>
           <h1 className="page-title">{t("page.title")}</h1>
+
           <p className="page-subtitle">{t("page.subtitle")}</p>
         </div>
+
         <div className="page-actions">
           <div className="memory-new-wrap" ref={menuWrap}>
             <button
@@ -460,7 +484,9 @@ export function MemoryPage() {
               onClick={() => setMenuOpen((open) => !open)}
             >
               <PlusIcon />
+
               <span>{t("page.new_btn")}</span>
+
               <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
                 <path
                   d="m2 3.5 3 3 3-3"
@@ -471,6 +497,7 @@ export function MemoryPage() {
                 />
               </svg>
             </button>
+
             {menuOpen && (
               <div className="memory-action-menu" role="menu">
                 <button
@@ -482,9 +509,12 @@ export function MemoryPage() {
                   <span className="memory-menu-icon">
                     <UploadIcon />
                   </span>
+
                   <span className="memory-menu-label">{t("page.new_from_file")}</span>
+
                   <span className="memory-menu-sub">{t("page.new_from_file_sub")}</span>
                 </button>
+
                 <button
                   className="memory-menu-item"
                   role="menuitem"
@@ -497,12 +527,15 @@ export function MemoryPage() {
                   <span className="memory-menu-icon">
                     <PlusIcon />
                   </span>
+
                   <span className="memory-menu-label">{t("page.new_from_scratch")}</span>
+
                   <span className="memory-menu-sub">{t("page.new_from_scratch_sub")}</span>
                 </button>
               </div>
             )}
           </div>
+
           <input
             ref={fileInput}
             type="file"
@@ -512,6 +545,7 @@ export function MemoryPage() {
           />
         </div>
       </div>
+
       {notice && (
         <div
           className={`memory-notice${notice.kind === "error" ? " memory-notice--error" : ""}`}
@@ -520,9 +554,11 @@ export function MemoryPage() {
           {notice.text}
         </div>
       )}
+
       <div className="fmem-bar">
         <div className="fmem-search-wrap">
           <SearchIcon />
+
           <input
             className="fmem-search-input"
             value={queryText}
@@ -530,6 +566,7 @@ export function MemoryPage() {
             placeholder={t("filter.search_placeholder")}
             aria-label={t("filter.search_placeholder")}
           />
+
           {queryText && (
             <button
               className="fmem-search-clear"
@@ -542,13 +579,15 @@ export function MemoryPage() {
           )}
         </div>
       </div>
+
       {memories.isPending ? (
-        <div className="mem-empty">Cargando memorias…</div>
+        <div className="mem-empty">{t("legacy.text_b59288d93251")}</div>
       ) : memories.isError ? (
         <div className="mem-empty">
-          <p>No se pudieron cargar las memorias.</p>
+          <p>{t("legacy.text_4d310a7f41b0")}</p>
+
           <button className="btn btn-primary" onClick={() => void memories.refetch()}>
-            Reintentar
+            {t("legacy.text_adec7b4f2351")}
           </button>
         </div>
       ) : filtered.length ? (
@@ -570,6 +609,7 @@ export function MemoryPage() {
           <div className="mem-empty">{t("empty")}</div>
         </div>
       )}
+
       {editor && (
         <MemoryEditor
           draft={editor}
@@ -580,4 +620,3 @@ export function MemoryPage() {
     </main>
   );
 }
-

@@ -1,3 +1,4 @@
+import i18n from "@/i18n";
 import { useEffect, useMemo, useState, type FormEvent, type ReactNode } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
@@ -62,6 +63,7 @@ function EyeIcon() {
         strokeWidth="1.4"
         strokeLinejoin="round"
       />
+
       <circle cx="8" cy="8" r="2" stroke="currentColor" strokeWidth="1.4" />
     </svg>
   );
@@ -71,8 +73,11 @@ function ForkIcon() {
   return (
     <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true">
       <circle cx="8" cy="2.5" r="1.7" stroke="currentColor" strokeWidth="1.4" />
+
       <circle cx="3" cy="13.5" r="1.7" stroke="currentColor" strokeWidth="1.4" />
+
       <circle cx="13" cy="13.5" r="1.7" stroke="currentColor" strokeWidth="1.4" />
+
       <path
         d="M8 4.2v3.5m0 0L3 11.8m5-4.1 5 4.1"
         stroke="currentColor"
@@ -127,6 +132,7 @@ function Modal({
   onClose: () => void;
   className?: string;
 }) {
+  const { t } = useTranslation();
   useEffect(() => {
     const close = (event: KeyboardEvent) => {
       if (event.key === "Escape") onClose();
@@ -151,10 +157,17 @@ function Modal({
       >
         <div className="modal-header">
           <span className="modal-title">{title}</span>
-          <button type="button" className="modal-close" onClick={onClose} aria-label="Cerrar">
+
+          <button
+            type="button"
+            className="modal-close"
+            onClick={onClose}
+            aria-label={t("agents.chat.close")}
+          >
             ×
           </button>
         </div>
+
         {children}
       </div>
     </div>
@@ -176,7 +189,7 @@ function UserCard({
   const avatar = (
     <>
       {user.avatar_url ? (
-        <img src={user.avatar_url} alt="" />
+        <img src={user.avatar_url} alt={t("manager.manager.members.table_actions")} />
       ) : (
         user.username.charAt(0).toUpperCase()
       )}
@@ -189,17 +202,22 @@ function UserCard({
           <div className="explore-card-avatar" style={{ background: avatarColor(user.username) }}>
             {avatar}
           </div>
+
           <div className="explore-card-info">
             <div className="explore-card-name">@{user.username}</div>
+
             <div className="explore-card-meta">
-              <span className="explore-card-type-badge">Usuario</span>
+              <span className="explore-card-type-badge">{t("admin.table.user")}</span>
             </div>
           </div>
         </div>
+
         <p className="explore-card-desc">
-          <strong>{user.followers_count ?? 0}</strong> {t("social.follow.followers")} ·{" "}
-          <strong>{user.public_resources_count ?? 0}</strong> {t("explore.users.resources")}
+          <strong>{user.followers_count ?? 0}</strong>
+          {t("social.follow.followers")} ·<strong>{user.public_resources_count ?? 0}</strong>{" "}
+          {t("explore.users.resources")}
         </p>
+
         <div className="explore-card-footer">
           <div className="explore-card-actions">
             <Link to={`/u/${encodeURIComponent(user.username)}`} className="btn btn-ghost btn-sm">
@@ -219,19 +237,24 @@ function UserCard({
       >
         {avatar}
       </Link>
+
       <div className="explore-user-info">
         <Link to={`/u/${encodeURIComponent(user.username)}`} className="explore-user-name">
           @{user.username}
         </Link>
+
         <span className="explore-user-meta">
-          <strong>{user.followers_count ?? 0}</strong> {t("social.follow.followers")} ·{" "}
-          <strong>{user.public_resources_count ?? 0}</strong> {t("explore.users.resources")}
+          <strong>{user.followers_count ?? 0}</strong>
+          {t("social.follow.followers")} ·<strong>{user.public_resources_count ?? 0}</strong>{" "}
+          {t("explore.users.resources")}
         </span>
       </div>
+
       <div className="explore-user-actions">
         <Link to={`/u/${encodeURIComponent(user.username)}`} className="btn btn-ghost btn-sm">
           {t("explore.users.view_profile")}
         </Link>
+
         {canInvite && (
           <button className="btn btn-ghost btn-sm" onClick={() => onInvite(user.username)}>
             {t("explore.users.invite")}
@@ -243,6 +266,7 @@ function UserCard({
 }
 
 function PreviewContent({ preview }: { preview: ExplorePreview }) {
+  const { t } = useTranslation();
   const temperature = typeof preview.temperature === "number" ? preview.temperature : 0.7;
   if (preview.resource_type === "agent") {
     return (
@@ -260,24 +284,33 @@ function PreviewContent({ preview }: { preview: ExplorePreview }) {
           >
             {preview.name.charAt(0).toUpperCase()}
           </div>
+
           <div className="abp-agent-meta">
             <div className="abp-agent-name">{preview.name}</div>
+
             {preview.description && <div className="abp-agent-desc">{preview.description}</div>}
+
             <div className="abp-agent-badges">
               {preview.category && (
                 <span className="explore-card-type-badge">{preview.category}</span>
               )}
+
               <LabelChips labels={preview.labels} />
             </div>
           </div>
         </div>
+
         <div className="abp-grid-2">
-          <PreviewList title="Skills" values={preview.skills} />
-          <PreviewList title="Conocimiento" values={preview.knowledge} />
+          <PreviewList title={t("agents.modal.tab_skills")} values={preview.skills} />
+
+          <PreviewList title={t("agents.filter.knowledge_label")} values={preview.knowledge} />
+
           <div className="abp-section">
-            <div className="abp-section-label">Config</div>
+            <div className="abp-section-label">{t("legacy.text_8851142da56f")}</div>
+
             <div className="abp-cfg-row">
-              <span className="abp-cfg-key">Temperatura</span>
+              <span className="abp-cfg-key">{t("agents.modal.field_temp")}</span>
+
               <span className="abp-temp-bar">
                 <span className="abp-temp-track">
                   <span
@@ -285,20 +318,25 @@ function PreviewContent({ preview }: { preview: ExplorePreview }) {
                     style={{ width: `${Math.round(temperature * 100)}%` }}
                   />
                 </span>
+
                 <span className="abp-cfg-val">{temperature.toFixed(1)}</span>
               </span>
             </div>
+
             {preview.use_memory && (
               <div className="abp-cfg-row">
-                <span className="abp-cfg-key">Memoria</span>
-                <span className="abp-cfg-val abp-cfg-val--on">On</span>
+                <span className="abp-cfg-key">{t("agents.filter.memory_label")}</span>
+
+                <span className="abp-cfg-val abp-cfg-val--on">{t("legacy.text_e0049a66519c")}</span>
               </div>
             )}
           </div>
         </div>
+
         {preview.system_prompt && (
           <div className="abp-section abp-section--full">
-            <div className="abp-section-label">Prompt de sistema</div>
+            <div className="abp-section-label">{t("legacy.text_4e0ec3d7181a")}</div>
+
             <pre className="abp-prompt-pre">{preview.system_prompt}</pre>
           </div>
         )}
@@ -309,18 +347,23 @@ function PreviewContent({ preview }: { preview: ExplorePreview }) {
     return (
       <>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <span className="explore-card-type-badge">Skill</span>
+          <span className="explore-card-type-badge">{t("agents.scan.type_skill")}</span>
+
           {preview.category && (
             <span style={{ fontSize: 12, color: "var(--ink-2)" }}>{preview.category}</span>
           )}
+
           <LabelChips labels={preview.labels} />
         </div>
+
         {preview.description && (
           <p style={{ fontSize: 13, color: "var(--ink-2)", margin: 0 }}>{preview.description}</p>
         )}
+
         {preview.parameters?.length ? (
           <div className="abp-section">
-            <div className="abp-section-label">Parámetros</div>
+            <div className="abp-section-label">{t("legacy.text_9e0ccec7205a")}</div>
+
             {preview.parameters.map((parameter, index) => {
               const name = typeof parameter === "string" ? parameter : (parameter.name ?? "");
               const description =
@@ -328,16 +371,20 @@ function PreviewContent({ preview }: { preview: ExplorePreview }) {
               return (
                 <div className="abp-item" key={`${name}-${index}`}>
                   <span className="abp-item-bullet" />
+
                   <code>{name}</code>
+
                   {description && <span>{description}</span>}
                 </div>
               );
             })}
           </div>
         ) : null}
+
         {preview.body && (
           <div className="abp-section">
-            <div className="abp-section-label">Instrucciones</div>
+            <div className="abp-section-label">{t("legacy.text_b838b37e8b1c")}</div>
+
             <pre className="abp-prompt-pre" style={{ maxHeight: 280 }}>
               {preview.body}
             </pre>
@@ -349,19 +396,29 @@ function PreviewContent({ preview }: { preview: ExplorePreview }) {
   return (
     <>
       <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-        <span className="explore-card-type-badge">Knowledge</span>
+        <span className="explore-card-type-badge">{t("legacy.text_dec1fccaba73")}</span>
+
         <LabelChips labels={preview.labels} />
       </div>
+
       {preview.source && (
         <div className="abp-section" style={{ minHeight: 0 }}>
-          <div className="abp-section-label">Fuente</div>
+          <div className="abp-section-label">{t("admin.metadata.log_filter_source")}</div>
+
           <span>{preview.source}</span>
-          {Boolean(preview.char_count) && <span>{formatChars(preview.char_count ?? 0)} chars</span>}
+
+          {Boolean(preview.char_count) && (
+            <span>
+              {formatChars(preview.char_count ?? 0)} {t("legacy.text_76a91d6ce24f")}
+            </span>
+          )}
         </div>
       )}
+
       {preview.content && (
         <div className="abp-section">
-          <div className="abp-section-label">Contenido</div>
+          <div className="abp-section-label">{t("errors.fields.content")}</div>
+
           <pre className="abp-prompt-pre" style={{ maxHeight: 300 }}>
             {preview.content}
           </pre>
@@ -375,10 +432,12 @@ function PreviewList({ title, values }: { title: string; values: string[] | unde
   return (
     <div className="abp-section">
       <div className="abp-section-label">{title}</div>
+
       {values?.length ? (
         values.map((value) => (
           <div className="abp-item" key={value}>
             <span className="abp-item-bullet" />
+
             <span>{value}</span>
           </div>
         ))
@@ -426,24 +485,33 @@ function ResourceCard({
         <div className="explore-card-avatar" style={{ background: avatarColor(resource.name) }}>
           {resource.name.charAt(0).toUpperCase()}
         </div>
+
         <div className="explore-card-info">
           <div className="explore-card-name" title={resource.name}>
             {resource.name}
           </div>
+
           <div className="explore-card-meta">
             <span className="explore-card-type-badge">
               {resourceLabels[resource.resource_type]}
             </span>
+
             {resource.category}
+
             {resource.fork_of_id && (
               <span className="explore-card-fork-badge">{t("labels.fork")}</span>
             )}
+
             {resource.linked_to_id && (
               <span className="explore-card-fork-badge">{t("labels.linked")}</span>
             )}
-            {resource.verified && <span className="explore-card-verified-badge">✓ Verificado</span>}
+
+            {resource.verified && (
+              <span className="explore-card-verified-badge">{t("legacy.text_af51b215f9a2")}</span>
+            )}
           </div>
         </div>
+
         <Link
           to={`/u/${encodeURIComponent(resource.owner)}`}
           className="explore-card-owner-avatar"
@@ -453,18 +521,22 @@ function ResourceCard({
           {resource.owner.charAt(0).toUpperCase()}
         </Link>
       </div>
+
       <p className="explore-card-desc">{resource.description ?? ""}</p>
+
       <LabelChips labels={resource.labels} />
+
       <div className="explore-card-footer">
         <div className={`explore-card-actions${busy ? " explore-card-action-busy" : ""}`}>
           <button
             className="explore-card-eye-btn"
             onClick={() => onPreview(resource)}
-            title="Vista previa"
+            title={t("legacy.text_4329325ffc83")}
             aria-label={`Vista previa de ${resource.name}`}
           >
             <EyeIcon />
           </button>
+
           {forkable && (
             <>
               <button
@@ -476,6 +548,7 @@ function ResourceCard({
               >
                 <ForkIcon />
               </button>
+
               <button
                 disabled={linked || busy}
                 className={`explore-card-fork-btn${linked ? " forked" : ""}`}
@@ -487,11 +560,13 @@ function ResourceCard({
               </button>
             </>
           )}
+
           {!isOwn && resource.resource_type === "agent" && (
             <button className="explore-card-try-btn" onClick={() => onTry(resource)}>
-              Probar
+              {t("legacy.text_121b1ea93d3f")}
             </button>
           )}
+
           <button
             className={`explore-card-star-btn${starred ? " starred" : ""}`}
             disabled={busy}
@@ -572,7 +647,7 @@ export function ExplorePage() {
       setHasMoreUsers(wantsUsers && userData.length > 20);
     },
     onError: (error) => {
-      setStatus(error instanceof Error ? error.message : "No se pudo realizar la búsqueda");
+      setStatus(error instanceof Error ? error.message : i18n.t("dynamic.text_b759e81ad6e2"));
       setStatusError(true);
     },
   });
@@ -624,7 +699,7 @@ export function ExplorePage() {
         );
       }
     } catch (error) {
-      setStatus(error instanceof Error ? error.message : "No se pudo completar la acción");
+      setStatus(error instanceof Error ? error.message : i18n.t("dynamic.text_5ed5994ab986"));
       setStatusError(true);
     } finally {
       setBusyKey("");
@@ -640,7 +715,7 @@ export function ExplorePage() {
         ),
       );
     } catch (error) {
-      setStatus(error instanceof Error ? error.message : "No se pudo cargar la vista previa");
+      setStatus(error instanceof Error ? error.message : i18n.t("common.errors.load_preview"));
       setStatusError(true);
     } finally {
       setPreviewLoading(false);
@@ -681,9 +756,11 @@ export function ExplorePage() {
       <div className="page-header">
         <div className="page-header-left">
           <h1 className="page-title">{t("explore.title")}</h1>
+
           <p className="page-subtitle">{t("explore.subtitle")}</p>
         </div>
       </div>
+
       <form
         className="explore-filters"
         onSubmit={(event) => {
@@ -701,6 +778,7 @@ export function ExplorePage() {
             aria-hidden="true"
           >
             <circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" strokeWidth="1.5" />
+
             <path
               d="m10 10 3.5 3.5"
               stroke="currentColor"
@@ -708,6 +786,7 @@ export function ExplorePage() {
               strokeLinecap="round"
             />
           </svg>
+
           <input
             className="explore-search"
             type="search"
@@ -716,6 +795,7 @@ export function ExplorePage() {
             placeholder={t("explore.search_placeholder")}
           />
         </div>
+
         <select
           id="explore-type"
           className="select explore-type-select"
@@ -727,21 +807,33 @@ export function ExplorePage() {
           }}
         >
           <option value="all">{t("explore.type_all")}</option>
+
           <option value="agent">{t("explore.type_agents")}</option>
+
           <option value="skill">{t("explore.type_skills")}</option>
+
           <option value="knowledge">{t("explore.type_knowledge")}</option>
+
           <option value="users">{t("explore.type_users")}</option>
         </select>
-        <button id="explore-search-btn" type="submit" className="btn btn-primary explore-search-btn" disabled={searchMutation.isPending}>
+
+        <button
+          id="explore-search-btn"
+          type="submit"
+          className="btn btn-primary explore-search-btn"
+          disabled={searchMutation.isPending}
+        >
           {t("explore.btn_search")}
         </button>
       </form>
+
       <div
         className={`explore-inline-status${statusError ? " explore-inline-status--error" : ""}`}
         role="status"
       >
         {status}
       </div>
+
       {searchMutation.isPending && !visibleCount ? (
         <div className="explore-loading">
           <div className="spinner" />
@@ -769,6 +861,7 @@ export function ExplorePage() {
               />
             );
           })}
+
           {users.map((user) => (
             <UserCard
               key={user.username}
@@ -782,6 +875,7 @@ export function ExplorePage() {
           ))}
         </div>
       )}
+
       {searched && hasMore && (
         <div style={{ textAlign: "center", padding: "24px 0" }}>
           <button
@@ -793,11 +887,13 @@ export function ExplorePage() {
           </button>
         </div>
       )}
+
       {previewLoading && (
-        <div className="explore-loading" aria-label="Cargando vista previa">
+        <div className="explore-loading" aria-label={t("legacy.text_e5ac4e857aeb")}>
           <div className="spinner" />
         </div>
       )}
+
       {preview && (
         <Modal title={preview.name} className="ep-box" onClose={() => setPreview(null)}>
           <div className="modal-body explore-modal-body">
@@ -805,12 +901,14 @@ export function ExplorePage() {
           </div>
         </Modal>
       )}
+
       {tryResource && <TryAgentModal resource={tryResource} onClose={() => setTryResource(null)} />}
     </main>
   );
 }
 
 function TryAgentModal({ resource, onClose }: { resource: ExploreResource; onClose: () => void }) {
+  const { t } = useTranslation();
   const [connectionId, setConnectionId] = useState("");
   const [message, setMessage] = useState("");
   const [result, setResult] = useState<AgentTryResult | null>(null);
@@ -836,7 +934,8 @@ function TryAgentModal({ resource, onClose }: { resource: ExploreResource; onClo
     <Modal title={`Probar agente de @${resource.owner}`} onClose={onClose}>
       <form className="modal-body explore-try-form" onSubmit={submit}>
         <div className="explore-try-field">
-          <label htmlFor="explore-try-connection">Conexión</label>
+          <label htmlFor="explore-try-connection">{t("agents.filter.connection_label")}</label>
+
           <select
             id="explore-try-connection"
             value={effectiveConnectionId}
@@ -845,11 +944,12 @@ function TryAgentModal({ resource, onClose }: { resource: ExploreResource; onClo
           >
             <option value="">
               {connections.isPending
-                ? "Cargando…"
+                ? t("common.actions.loading", { defaultValue: "Loading…" })
                 : available.length
-                  ? "Selecciona…"
-                  : "Sin conexiones disponibles"}
+                  ? t("common.ui.select")
+                  : t("agents.filter.no_connections")}
             </option>
+
             {available.map((connection) => (
               <option value={connection.id} key={connection.id}>
                 {connection.name ?? connection.id}
@@ -857,27 +957,34 @@ function TryAgentModal({ resource, onClose }: { resource: ExploreResource; onClo
             ))}
           </select>
         </div>
+
         <div className="explore-try-field">
-          <label htmlFor="explore-try-message">Mensaje</label>
+          <label htmlFor="explore-try-message">{t("admin.logs.col_message")}</label>
+
           <textarea
             id="explore-try-message"
             rows={3}
             value={message}
             onChange={(event) => setMessage(event.target.value)}
-            placeholder="Escribe tu mensaje…"
+            placeholder={t("legacy.text_00232237e580")}
           />
         </div>
+
         {result?.warnings?.length ? (
           <div className="explore-try-warning">
-            <strong>Skills no disponibles:</strong> {result.warnings.join(", ")}
+            <strong>{t("legacy.text_54e35ec64bd6")}</strong>
+            {result.warnings.join(", ")}
           </div>
         ) : null}
+
         {result && <div className="explore-try-result">{result.reply || "(sin respuesta)"}</div>}
+
         {send.isError && (
           <div className="form-error" role="alert">
             {send.error.message}
           </div>
         )}
+
         <button
           className="btn btn-primary"
           disabled={send.isPending || !effectiveConnectionId || !message.trim()}
@@ -889,4 +996,3 @@ function TryAgentModal({ resource, onClose }: { resource: ExploreResource; onClo
     </Modal>
   );
 }
-

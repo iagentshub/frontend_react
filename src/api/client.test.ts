@@ -31,7 +31,9 @@ describe("api client", () => {
       ),
     );
 
-    const error = await api.get("/api/example", undefined, false).catch((reason: unknown) => reason);
+    const error = await api
+      .get("/api/example", undefined, false)
+      .catch((reason: unknown) => reason);
     expect(error).toBeInstanceOf(ApiError);
     expect(error).toMatchObject({ status: 422, message: "Campo obligatorio" });
   });

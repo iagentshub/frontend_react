@@ -12,7 +12,8 @@ export const sessionQuery = queryOptions({
 
 export const platformQuery = queryOptions({
   queryKey: queryKeys.platform,
-  queryFn: ({ signal }) => api.get<PlatformSettings>("/api/settings/platform/public", signal, false),
+  queryFn: ({ signal }) =>
+    api.get<PlatformSettings>("/api/settings/platform/public", signal, false),
   staleTime: 5 * 60_000,
   retry: 1,
 });

@@ -23,9 +23,9 @@ function buildResources(): Resource {
     const language = match[1] as SupportedLanguage;
     const namespace = match[2];
     if (!namespace) continue;
-    resources[language]![namespace] = ("default" in localeModule
-      ? localeModule.default
-      : localeModule) as ResourceKey;
+    resources[language]![namespace] = (
+      "default" in localeModule ? localeModule.default : localeModule
+    ) as ResourceKey;
   }
   return resources;
 }
@@ -60,7 +60,11 @@ await i18n.use(initReactI18next).init({
     "labels",
     "pricing",
     "landing",
+    "seo",
     "errors",
+    "workflows",
+    "legacy",
+    "dynamic",
   ],
   interpolation: { escapeValue: false },
   react: { useSuspense: false },

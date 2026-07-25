@@ -19,6 +19,16 @@ export interface Workflow {
     edges: WorkflowEdge[];
   };
   updated_at?: string;
+  owner_id?: string;
+  _shared?: boolean;
+  _group_id?: string;
+  _group_ids?: string[];
+}
+
+export interface WorkflowWorkspace {
+  id: string;
+  name: string;
+  type?: string;
 }
 
 export interface AgentOption {

@@ -9,7 +9,10 @@
     "providers": "Proveedores",
     "preferences": "Preferencias",
     "style": "Estilo",
-    "privacy": "Privacidad"
+    "privacy": "Privacidad",
+    "workspaces": "Grupos",
+    "tokens": "Tokens",
+    "billing": "Suscripción"
   },
   "social": {
     "desc": "Esta información aparecerá en tu perfil público.",
@@ -31,6 +34,7 @@
     "current_label": "Foto actual",
     "new_label": "Nueva foto",
     "select_btn": "Seleccionar imagen",
+    "uploading": "Subiendo…",
     "crop_hint": "Arrastra para ajustar · Scroll para hacer zoom",
     "invalid_format": "Formato no permitido. Usa jpg, png o webp.",
     "too_large": "La imagen no puede superar 2 MB.",
@@ -138,6 +142,26 @@
     "transfer_ok": "Propiedad transferida correctamente",
     "transfer_error": "Error al transferir la propiedad",
     "transfer_user_required": "Introduce el nombre de usuario del nuevo propietario"
+  },
+  "billing": {
+    "plan_free_price": "Gratis",
+    "plan_dev_monthly": "9 €/mes",
+    "plan_dev_annual": "90 €/año",
+    "plan_business_monthly": "desde 7,50 €/licencia/mes",
+    "plan_business_annual": "desde 75 €/licencia/año",
+    "select_plan": "Selecciona un plan para contratar el servicio gestionado.",
+    "expiry_30": "30 días",
+    "expiry_90": "90 días",
+    "expiry_180": "180 días",
+    "expiry_never": "Sin caducidad",
+    "status_active": "Activo",
+    "status_revoked": "Revocado",
+    "status_expired": "Caducado",
+    "never": "Nunca",
+    "licensed": "Con licencia",
+    "unlicensed": "Sin licencia"
+    ,"processing": "Procesando…",
+    "update_to": "Actualizar a {{plan}}"
   },
   "password": {
     "field_current": "Contraseña actual",

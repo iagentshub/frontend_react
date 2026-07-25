@@ -1,3 +1,5 @@
+import i18n from "@/i18n";
+import { useTranslation } from "react-i18next";
 import { useEffect, useState, type FormEvent } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Link, useNavigate } from "react-router-dom";
@@ -21,6 +23,7 @@ interface ProfileFields {
 }
 
 export function RegisterPage() {
+  const { t } = useTranslation();
   const navigate = useNavigate(),
     settings = useQuery({
       queryKey: queryKeys.platform,
@@ -52,9 +55,10 @@ export function RegisterPage() {
   });
   const credentials = (event: FormEvent) => {
     event.preventDefault();
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) setValidation("Email inválido");
-    else if (password.length < 8) setValidation("La contraseña debe tener al menos 8 caracteres");
-    else if (password !== confirm) setValidation("Las contraseñas no coinciden");
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim()))
+      setValidation(i18n.t("dynamic.text_7fb34a6b37ee"));
+    else if (password.length < 8) setValidation(i18n.t("dynamic.text_6dfc197e19bc"));
+    else if (password !== confirm) setValidation(i18n.t("dynamic.text_d4c5cdf17c6b"));
     else {
       setValidation(null);
       setStep(2);
@@ -64,22 +68,25 @@ export function RegisterPage() {
     return (
       <AuthCard>
         <div role="status">
-          <h2 style={{ marginBottom: 8 }}>Revisa tu correo</h2>
+          <h2 style={{ marginBottom: 8 }}>{t("legacy.text_c4c0d317797e")}</h2>
+
           <p className="login-sub" style={{ marginBottom: 24 }}>
-            Hemos enviado un enlace de verificación a{" "}
+            {t("legacy.text_a915202c31b2")}
             <strong>{register.data.email ?? email}</strong>
           </p>
+
           <p style={{ fontSize: 13, color: "var(--ink-2)", lineHeight: 1.6 }}>
-            Haz clic en el enlace del correo para activar tu cuenta.
+            {t("legacy.text_21da3ad6bb4d")}
             <br />
-            Revisa también la carpeta de spam si no lo ves.
+            {t("legacy.text_91a801ca191e")}
           </p>
+
           <Link
             to="/login/"
             className="btn btn-ghost btn-full"
             style={{ marginTop: 24, display: "block", textAlign: "center" }}
           >
-            Volver al login
+            {t("legacy.text_b80454b64a34")}
           </Link>
         </div>
       </AuthCard>
@@ -93,77 +100,97 @@ export function RegisterPage() {
         : null);
   return (
     <AuthCard>
-      <h2>Crear cuenta</h2>
-      <p className="login-sub">Paso {step} de 2</p>
+      <h2>{t("auth.register_action")}</h2>
+
+      <p className="login-sub">
+        {t("legacy.text_e0724fa76790")}
+        {step} {t("legacy.text_47fef7ea2970")}
+      </p>
+
       {step === 1 ? (
         <form noValidate onSubmit={credentials}>
           <div className="field">
-            <label htmlFor="reg-email">Email *</label>
+            <label htmlFor="reg-email">{t("legacy.text_604e4bff227b")}</label>
+
             <input
               id="reg-email"
               type="email"
-              placeholder="tu@email.com"
+              placeholder={t("legacy.text_fd714d2efcca")}
               required
               value={email}
               onChange={(event) => setEmail(event.target.value)}
             />
           </div>
+
           <div className="field">
-            <label htmlFor="reg-pw">Contraseña *</label>
+            <label htmlFor="reg-pw">{t("legacy.text_9d96caf3527a")}</label>
+
             <div className="field-pw">
               <input
                 id="reg-pw"
                 type={show ? "text" : "password"}
-                placeholder="Mínimo 8 caracteres"
+                placeholder={t("legacy.text_53cf13bdf1c2")}
                 required
                 value={password}
                 onChange={(event) => setPassword(event.target.value)}
               />
+
               <button
                 type="button"
                 className="pw-toggle"
                 tabIndex={-1}
                 onClick={() => setShow((value) => !value)}
-                aria-label={show ? "Ocultar contraseña" : "Mostrar contraseña"}
+                aria-label={
+                  show ? i18n.t("dynamic.text_a0e898048bbe") : i18n.t("dynamic.text_3d04be8b9cef")
+                }
               >
                 <Eye closed={show} />
               </button>
             </div>
           </div>
+
           <div className="field">
-            <label htmlFor="reg-pw2">Confirmar contraseña *</label>
+            <label htmlFor="reg-pw2">{t("legacy.text_15b5f18926c8")}</label>
+
             <div className="field-pw">
               <input
                 id="reg-pw2"
                 type={show2 ? "text" : "password"}
-                placeholder="Repite la contraseña"
+                placeholder={t("legacy.text_3fa21df26ea6")}
                 required
                 value={confirm}
                 onChange={(event) => setConfirm(event.target.value)}
               />
+
               <button
                 type="button"
                 className="pw-toggle"
                 tabIndex={-1}
                 onClick={() => setShow2((value) => !value)}
-                aria-label={show2 ? "Ocultar contraseña" : "Mostrar contraseña"}
+                aria-label={
+                  show2 ? i18n.t("dynamic.text_a0e898048bbe") : i18n.t("dynamic.text_3d04be8b9cef")
+                }
               >
                 <Eye closed={show2} />
               </button>
             </div>
           </div>
+
           {error && (
             <div className="form-error" role="alert">
               {error}
             </div>
           )}
-          <button className="btn btn-primary btn-full">Continuar →</button>
+
+          <button className="btn btn-primary btn-full">{t("legacy.text_4ad2b3125908")}</button>
         </form>
       ) : (
         <>
-          <p className="step2-hint">Completa tu perfil (opcional)</p>
+          <p className="step2-hint">{t("legacy.text_3fc62c75b2ba")}</p>
+
           <div className="field">
-            <label htmlFor="reg-birth">Fecha de nacimiento</label>
+            <label htmlFor="reg-birth">{t("legacy.text_b55ce5e53737")}</label>
+
             <input
               id="reg-birth"
               type="date"
@@ -171,47 +198,46 @@ export function RegisterPage() {
               onChange={(event) => setProfile({ ...profile, birth_date: event.target.value })}
             />
           </div>
+
           <div className="field">
-            <label htmlFor="reg-gender">Género</label>
+            <label htmlFor="reg-gender">{t("legacy.text_713541536b12")}</label>
+
             <select
               id="reg-gender"
               value={profile.gender ?? ""}
               onChange={(event) => setProfile({ ...profile, gender: event.target.value })}
             >
-              <option value="">Prefiero no decir</option>
-              <option value="male">Hombre</option>
-              <option value="female">Mujer</option>
-              <option value="other">Otro</option>
+              <option value="">{t("legacy.text_dda625e9805e")}</option>
+
+              <option value="male">{t("legacy.text_c37df0ae71b9")}</option>
+
+              <option value="female">{t("legacy.text_c1bd5fd999bd")}</option>
+
+              <option value="other">{t("legacy.text_ada1c1ef4a9e")}</option>
             </select>
           </div>
+
           <div className="field">
-            <label htmlFor="reg-country">País</label>
+            <label htmlFor="reg-country">{t("legacy.text_0c664fca6df0")}</label>
+
             <select
               id="reg-country"
               value={profile.country ?? ""}
               onChange={(event) => setProfile({ ...profile, country: event.target.value })}
             >
-              <option value="">Selecciona tu país</option>
-              {[
-                ["ES", "España"],
-                ["MX", "México"],
-                ["AR", "Argentina"],
-                ["CO", "Colombia"],
-                ["CL", "Chile"],
-                ["PE", "Perú"],
-                ["US", "Estados Unidos"],
-                ["GB", "Reino Unido"],
-                ["DE", "Alemania"],
-                ["FR", "Francia"],
-              ].map(([value, label]) => (
+              <option value="">{t("legacy.text_6df195fb23ef")}</option>
+
+              {["ES", "MX", "AR", "CO", "CL", "PE", "US", "GB", "DE", "FR"].map((value) => (
                 <option value={value} key={value}>
-                  {label}
+                  {t(`auth.countries.${value}`)}
                 </option>
               ))}
             </select>
           </div>
+
           <div className="field">
-            <label htmlFor="reg-phone">Teléfono</label>
+            <label htmlFor="reg-phone">{t("legacy.text_99af3763e03b")}</label>
+
             <input
               id="reg-phone"
               type="tel"
@@ -220,19 +246,22 @@ export function RegisterPage() {
               onChange={(event) => setProfile({ ...profile, phone: event.target.value })}
             />
           </div>
+
           {error && (
             <div className="form-error" role="alert">
               {error}
             </div>
           )}
+
           <div className="reg-step2-btns">
             <button
               className="btn btn-ghost"
               onClick={() => register.mutate()}
               disabled={register.isPending}
             >
-              Omitir
+              {t("legacy.text_7d1f35bef5b5")}
             </button>
+
             <button
               className="btn btn-primary"
               onClick={() => register.mutate()}
@@ -243,13 +272,18 @@ export function RegisterPage() {
           </div>
         </>
       )}
+
       <p className="login-register-link">
-        ¿Ya tienes cuenta? <Link to="/login/">Iniciar sesión</Link>
+        {t("legacy.text_65b418702401")}
+        <Link to="/login/">{t("about.header.login")}</Link>
       </p>
+
       <div className="login-explore">
-        <Link to="/pricing/">Precios</Link>
+        <Link to="/pricing/">{t("auth.pricing_link")}</Link>
+
         <span className="login-explore-sep" />
-        <Link to="/about">¿Qué es esto?</Link>
+
+        <Link to="/about">{t("auth.about_link")}</Link>
       </div>
     </AuthCard>
   );
@@ -263,7 +297,9 @@ function Eye({ closed }: { closed: boolean }) {
         strokeWidth="1.5"
         strokeLinejoin="round"
       />
+
       <circle cx="9" cy="9" r="2.5" stroke="currentColor" strokeWidth="1.5" />
+
       {closed && (
         <line
           x1="3"
@@ -278,4 +314,3 @@ function Eye({ closed }: { closed: boolean }) {
     </svg>
   );
 }
-

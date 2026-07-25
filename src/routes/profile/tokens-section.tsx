@@ -1,3 +1,5 @@
+import i18n from "@/i18n";
+import { useTranslation } from "react-i18next";
 import { useState, type FormEvent } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { api, ApiError } from "@/api/client";
@@ -16,29 +18,32 @@ export interface PersonalToken {
 type Expiry = "30" | "90" | "180" | "never";
 
 const EXPIRY_OPTIONS: Array<[Expiry, string]> = [
-  ["30", "30 días"],
-  ["90", "90 días"],
-  ["180", "180 días"],
-  ["never", "Sin caducidad"],
+  ["30", "profile.billing.expiry_30"],
+  ["90", "profile.billing.expiry_90"],
+  ["180", "profile.billing.expiry_180"],
+  ["never", "profile.billing.expiry_never"],
 ];
 
 const STATUS_LABEL: Record<PersonalToken["status"], string> = {
-  active: "Activo",
-  revoked: "Revocado",
-  expired: "Caducado",
+  active: "profile.billing.status_active",
+  revoked: "profile.billing.status_revoked",
+  expired: "profile.billing.status_expired",
 };
 
 function errorText(error: unknown) {
-  return error instanceof ApiError ? error.message : "No se pudo completar la operación.";
+  return error instanceof ApiError ? error.message : i18n.t("common.errors.operation");
 }
 
 function date(value?: string | null) {
   if (!value) return "—";
   const parsed = new Date(value);
-  return Number.isNaN(parsed.valueOf()) ? "—" : parsed.toLocaleDateString("es-ES");
+  return Number.isNaN(parsed.valueOf())
+    ? "—"
+    : parsed.toLocaleDateString(i18n.resolvedLanguage === "en" ? "en-GB" : "es-ES");
 }
 
 export function TokensSection() {
+  const { t } = useTranslation();
   const [name, setName] = useState("");
   const [expiry, setExpiry] = useState<Expiry>("90");
   // El token en claro solo existe en esta variable, y solo hasta que se recargue
@@ -88,12 +93,13 @@ export function TokensSection() {
   return (
     <>
       <div className="section-title-row">
-        <div className="section-title">Tokens personales</div>
+        <div className="section-title">{t("legacy.text_9be6d58c83b5")}</div>
       </div>
+
       <p className="profile-empty-msg" style={{ marginTop: 0 }}>
-        Un token te permite conectar clientes que no son un navegador —como la extensión de
-        VS Code— con tu cuenta. Concede <strong>acceso completo a la API con tus mismos
-        permisos</strong>: trátalo como una contraseña y revócalo si lo expones.
+        {t("legacy.text_73ed4f81fe52")}
+        <strong>{t("legacy.text_7521ce7e1832")}</strong>
+        {t("legacy.text_6d1e3b676e00")}
       </p>
 
       <form className="admin-toolbar" onSubmit={submit}>
@@ -102,8 +108,9 @@ export function TokensSection() {
           value={name}
           maxLength={100}
           onChange={(event) => setName(event.target.value)}
-          placeholder="Para qué es (p. ej. VS Code del portátil)"
+          placeholder={t("legacy.text_a6ad2a13fb11")}
         />
+
         <select
           className="admin-select"
           value={expiry}
@@ -111,20 +118,25 @@ export function TokensSection() {
         >
           {EXPIRY_OPTIONS.map(([value, label]) => (
             <option key={value} value={value}>
-              {label}
+              {t(label)}
             </option>
           ))}
         </select>
+
         <button className="btn btn-primary btn-sm" disabled={!name.trim() || create.isPending}>
-          + Crear token
+          {t("legacy.text_fedaf223469e")}
         </button>
       </form>
 
       {justCreated && (
-        <div className="profile-ws-card" style={{ flexDirection: "column", alignItems: "stretch", gap: 10 }}>
+        <div
+          className="profile-ws-card"
+          style={{ flexDirection: "column", alignItems: "stretch", gap: 10 }}
+        >
           <div className="section-subtitle" style={{ margin: 0 }}>
-            Cópialo ahora — no volverá a mostrarse
+            {t("legacy.text_c9298667d2b7")}
           </div>
+
           <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
             <code
               style={{
@@ -138,11 +150,17 @@ export function TokensSection() {
             >
               {justCreated}
             </code>
+
             <button type="button" className="btn btn-primary btn-sm" onClick={() => void copy()}>
               {copied ? "Copiado" : "Copiar"}
             </button>
-            <button type="button" className="btn btn-ghost btn-sm" onClick={() => setJustCreated(null)}>
-              Ocultar
+
+            <button
+              type="button"
+              className="btn btn-ghost btn-sm"
+              onClick={() => setJustCreated(null)}
+            >
+              {t("legacy.text_4f58415a4d62")}
             </button>
           </div>
         </div>
@@ -152,7 +170,8 @@ export function TokensSection() {
         <p className="form-error">{errorText(create.error ?? revoke.error)}</p>
       )}
 
-      {list.isPending && <div className="admin-empty">Cargando tokens…</div>}
+      {list.isPending && <div className="admin-empty">{t("legacy.text_119975eaaec7")}</div>}
+
       {list.error && <p className="form-error">{errorText(list.error)}</p>}
 
       {list.data &&
@@ -160,41 +179,62 @@ export function TokensSection() {
           <table className="admin-table">
             <thead>
               <tr>
-                <th>Nombre</th>
-                <th>Token</th>
-                <th>Creado</th>
-                <th>Último uso</th>
-                <th>Caduca</th>
-                <th>Estado</th>
+                <th>{t("agents.modal.field_name")}</th>
+
+                <th>{t("docs.keywords.token_title")}</th>
+
+                <th>{t("teams.table.col_date")}</th>
+
+                <th>{t("legacy.text_1d6e00bdcb2f")}</th>
+
+                <th>{t("legacy.text_851c08f2c851")}</th>
+
+                <th>{t("agents.blueprint.status")}</th>
+
                 <th />
               </tr>
             </thead>
+
             <tbody>
               {list.data.map((token) => (
                 <tr key={token.id}>
                   <td>{token.name}</td>
+
                   <td>
                     <code>{token.prefix}…</code>
                   </td>
+
                   <td className="td-date">{date(token.created_at)}</td>
+
                   <td className="td-date">{date(token.last_used_at)}</td>
-                  <td className="td-date">{token.expires_at ? date(token.expires_at) : "Nunca"}</td>
+
+                  <td className="td-date">
+                    {token.expires_at ? date(token.expires_at) : t("profile.billing.never")}
+                  </td>
+
                   <td>
                     <span className={`badge badge--${token.status === "active" ? "std" : "warn"}`}>
-                      {STATUS_LABEL[token.status]}
+                      {t(STATUS_LABEL[token.status])}
                     </span>
                   </td>
+
                   <td className="td-actions">
                     {token.status === "active" && (
                       <button
                         className="btn btn-ghost btn-sm action-item--danger"
                         disabled={revoke.isPending}
                         onClick={() => {
-                          if (confirm(`¿Revocar "${token.name}"? Dejará de funcionar de inmediato.`))
+                          if (
+                            confirm(
+                              i18n.t("dynamic.token_revoke_confirm", {
+                                name: token.name,
+                              }),
+                            )
+                          )
                             revoke.mutate(token.id);
                         }}
                       >
-                        Revocar
+                        {t("legacy.text_9179b17f05e3")}
                       </button>
                     )}
                   </td>
@@ -203,7 +243,7 @@ export function TokensSection() {
             </tbody>
           </table>
         ) : (
-          <p className="profile-empty-msg">Todavía no has creado ningún token.</p>
+          <p className="profile-empty-msg">{t("legacy.text_fd9340e4e3ec")}</p>
         ))}
     </>
   );

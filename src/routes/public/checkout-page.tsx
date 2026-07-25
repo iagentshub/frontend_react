@@ -1,3 +1,5 @@
+import i18n from "@/i18n";
+import { useTranslation } from "react-i18next";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { Link, Navigate, useSearchParams } from "react-router-dom";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -52,6 +54,7 @@ const loadStripe = () =>
   });
 
 export function CheckoutPage() {
+  const { t } = useTranslation();
   useBodyClass("pricing-page");
   const [params] = useSearchParams(),
     tier = params.get("tier") ?? "",
@@ -101,7 +104,7 @@ export function CheckoutPage() {
         elements.current.create("payment").mount("#payment-element");
         setReady(true);
       } catch (cause) {
-        setError(cause instanceof Error ? cause.message : "No se pudo iniciar la suscripción");
+        setError(cause instanceof Error ? cause.message : i18n.t("dynamic.text_5a8f909a10b9"));
       }
     })();
     return () => {
@@ -110,7 +113,8 @@ export function CheckoutPage() {
   }, [quote.data, tier, seats, interval, selfHosted]);
   const confirm = useMutation({
     mutationFn: async () => {
-      if (!stripe.current || !elements.current) throw new Error("El pago aún no está listo");
+      if (!stripe.current || !elements.current)
+        throw new Error(i18n.t("dynamic.text_ef8ff3e16db1"));
       const result = await stripe.current.confirmPayment({
         elements: elements.current,
         confirmParams: {
@@ -146,52 +150,71 @@ export function CheckoutPage() {
     <>
       <header className="pr-header">
         <Link className="pr-logo" to="/">
-          iAgents<span>Hub</span>
+          {t("legacy.text_1fda9fc57a04")}
+          <span>{t("legacy.text_a38df5fc50fb")}</span>
         </Link>
+
         <div className="pr-header-divider" />
-        <span className="pr-header-label">Checkout</span>
+
+        <span className="pr-header-label">{t("legacy.text_3ac8e9e58c5a")}</span>
+
         <div className="pr-header-spacer" />
+
         <Link to="/pricing/" className="pr-header-link">
-          ← Volver a precios
+          {t("legacy.text_36a9c00480fc")}
         </Link>
       </header>
+
       <main className="pr-main co-main">
         <div className="co-card">
-          <h1 className="co-title">Confirma tu suscripción</h1>
+          <h1 className="co-title">{t("legacy.text_be97a424ab91")}</h1>
+
           <div className="co-summary">
             <div className="co-summary-row">
               <span>{tier === "developer" ? "Individual" : "Business"}</span>
+
               <span>{tier === "business" ? `${seats} licencias` : "1 licencia"}</span>
             </div>
+
             <div className="co-summary-total">
               <span>
                 {quote.data
-                  ? new Intl.NumberFormat("es-ES", { style: "currency", currency: "EUR" }).format(
-                      quote.data.amount_cents / 100,
-                    )
+                  ? new Intl.NumberFormat(i18n.resolvedLanguage === "en" ? "en-IE" : "es-ES", {
+                      style: "currency",
+                      currency: "EUR",
+                    }).format(quote.data.amount_cents / 100)
                   : "—"}
               </span>
-              <span>/ {interval === "year" ? "año" : "mes"}</span>
+
+              <span>/ {interval === "year" ? i18n.t("dynamic.text_8470d9e5f751") : "mes"}</span>
             </div>
           </div>
+
           {success ? (
             <div className="co-success">
-              <p>Suscripción activada. Redirigiendo…</p>
+              <p>{t("legacy.text_e98129ad206c")}</p>
             </div>
           ) : (
             <form onSubmit={submit}>
               <div id="payment-element" />
+
               {shownError && (
                 <div className="co-error" role="alert">
                   {shownError}
                 </div>
               )}
+
               <button className="pr-btn co-submit" disabled={!ready || confirm.isPending}>
                 {confirm.isPending
-                  ? "Procesando…"
+                  ? t("pricing.checkout_processing")
                   : quote.data
-                    ? `Suscribirse por ${new Intl.NumberFormat("es-ES", { style: "currency", currency: "EUR" }).format(quote.data.amount_cents / 100)}`
-                    : "Cargando…"}
+                    ? t("pricing.checkout_amount", {
+                        amount: new Intl.NumberFormat(
+                          i18n.resolvedLanguage === "en" ? "en-IE" : "es-ES",
+                          { style: "currency", currency: "EUR" },
+                        ).format(quote.data.amount_cents / 100),
+                      })
+                    : t("pricing.checkout_loading")}
               </button>
             </form>
           )}
@@ -200,4 +223,3 @@ export function CheckoutPage() {
     </>
   );
 }
-

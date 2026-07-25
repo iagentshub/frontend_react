@@ -11,6 +11,11 @@
     "gemini": "Gemini",
     "ollama": "Ollama"
   },
+  "categories": {
+    "llm": "APIs LLM",
+    "machine": "Máquinas",
+    "database": "Bases de datos"
+  },
   "filter": {
     "search_placeholder": "Buscar conexión…"
   },

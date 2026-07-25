@@ -23,7 +23,9 @@ createRoot(root).render(
   <StrictMode>
     <I18nextProvider i18n={i18n}>
       <QueryClientProvider client={queryClient}>
-        <ThemeProvider><App /></ThemeProvider>
+        <ThemeProvider>
+          <App />
+        </ThemeProvider>
       </QueryClientProvider>
     </I18nextProvider>
   </StrictMode>,

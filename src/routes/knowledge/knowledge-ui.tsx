@@ -52,6 +52,7 @@ export function Modal({
   width?: number;
   className?: string;
 }) {
+  const { t } = useTranslation();
   useEffect(() => {
     const listener = (event: KeyboardEvent) => {
       if (event.key === "Escape") onClose();
@@ -82,10 +83,17 @@ export function Modal({
       >
         <div className="modal-header">
           <span className="modal-title">{title}</span>
-          <button type="button" className="modal-close" onClick={onClose} aria-label="Cerrar">
+
+          <button
+            type="button"
+            className="modal-close"
+            onClick={onClose}
+            aria-label={t("agents.chat.close")}
+          >
             ×
           </button>
         </div>
+
         {children}
       </div>
     </div>
@@ -142,6 +150,7 @@ export function LabelPicker({
         return (
           <label key={group.id}>
             {t(`labels.group.${group.id}`)}
+
             <span
               className="lbl-select-wrap"
               style={{ "--lc": labelColor[active] ?? "transparent" } as CSSProperties}
@@ -152,6 +161,7 @@ export function LabelPicker({
                 onChange={(event) => select(group.id, event.target.value)}
               >
                 {!group.required && <option value="">— {t("labels.none")} —</option>}
+
                 {group.labels.map((label) => (
                   <option value={label.key} key={label.key}>
                     {t(`labels.${label.key}`)}
@@ -213,6 +223,7 @@ export function Icon({
     return (
       <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true">
         <rect x="1" y="1" width="5.5" height="5.5" rx="1" stroke="currentColor" strokeWidth="1.4" />
+
         <rect
           x="8.5"
           y="1"
@@ -222,6 +233,7 @@ export function Icon({
           stroke="currentColor"
           strokeWidth="1.4"
         />
+
         <rect
           x="1"
           y="8.5"
@@ -231,6 +243,7 @@ export function Icon({
           stroke="currentColor"
           strokeWidth="1.4"
         />
+
         <rect
           x="8.5"
           y="8.5"
@@ -251,8 +264,11 @@ export function Icon({
           strokeWidth="1.4"
           strokeLinecap="round"
         />
+
         <circle cx="2.5" cy="4" r="1" fill="currentColor" />
+
         <circle cx="2.5" cy="8" r="1" fill="currentColor" />
+
         <circle cx="2.5" cy="12" r="1" fill="currentColor" />
       </svg>
     );
@@ -264,6 +280,7 @@ export function Icon({
           stroke="currentColor"
           strokeWidth="1.4"
         />
+
         <circle cx="8" cy="8" r="2" stroke="currentColor" strokeWidth="1.4" />
       </svg>
     );
@@ -294,8 +311,11 @@ export function Icon({
     return (
       <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
         <circle cx="12" cy="3" r="1.5" stroke="currentColor" strokeWidth="1.4" />
+
         <circle cx="12" cy="13" r="1.5" stroke="currentColor" strokeWidth="1.4" />
+
         <circle cx="4" cy="8" r="1.5" stroke="currentColor" strokeWidth="1.4" />
+
         <path
           d="m10.5 3.8-5 3.4m5 5-5-3.4"
           stroke="currentColor"
@@ -319,8 +339,11 @@ export function Icon({
     return (
       <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true">
         <circle cx="8" cy="2.5" r="1.5" stroke="currentColor" strokeWidth="1.3" />
+
         <circle cx="3" cy="13.5" r="1.5" stroke="currentColor" strokeWidth="1.3" />
+
         <circle cx="13" cy="13.5" r="1.5" stroke="currentColor" strokeWidth="1.3" />
+
         <path
           d="M8 4v3l-5 5m5-5 5 5"
           stroke="currentColor"
@@ -356,7 +379,9 @@ export function Icon({
     return (
       <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
         <circle cx="5" cy="5" r="2" stroke="currentColor" strokeWidth="1.4" />
+
         <circle cx="11" cy="5" r="2" stroke="currentColor" strokeWidth="1.4" />
+
         <path
           d="M1.5 13v-.5A3.5 3.5 0 0 1 5 9a3.5 3.5 0 0 1 3.5 3.5V13M9 9.2a3.5 3.5 0 0 1 5.5 3.3v.5"
           stroke="currentColor"
@@ -421,20 +446,28 @@ export function FilterBar({
       <div className="fa-search-wrap">
         <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true">
           <circle cx="6.5" cy="6.5" r="4" stroke="currentColor" strokeWidth="1.6" />
+
           <path d="m11 11 3 3" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
         </svg>
+
         <input
           className="fa-search-input"
           value={query}
           onChange={(event) => onQuery(event.target.value)}
           placeholder={t("agents.filter.search_placeholder")}
         />
+
         {query && (
-          <button className="fa-search-clear" onClick={() => onQuery("")} aria-label="Limpiar">
+          <button
+            className="fa-search-clear"
+            onClick={() => onQuery("")}
+            aria-label={t("admin.metadata.log_clear")}
+          >
             ×
           </button>
         )}
       </div>
+
       {showLabels && (
         <div className="fa-filter-group">
           <div className="fa-dropdown-wrap" ref={wrap}>
@@ -445,6 +478,7 @@ export function FilterBar({
               {t("labels.catalog.title")}
               {labels.length > 0 && <span className="fa-filter-count">{labels.length}</span>}⌄
             </button>
+
             {open && (
               <div className="fa-panel fa-panel--labels">
                 <div className="fa-panel-list">
@@ -461,7 +495,9 @@ export function FilterBar({
                         }
                       >
                         <span className="fa-option-check">{checked ? "✓" : ""}</span>
+
                         <span className="fa-lbl-dot" style={{ background: labelColor[label] }} />
+
                         <span className="fa-option-label">{t(`labels.${label}`)}</span>
                       </button>
                     );
@@ -472,6 +508,7 @@ export function FilterBar({
           </div>
         </div>
       )}
+
       {active && (
         <button
           className="fa-clear-all"

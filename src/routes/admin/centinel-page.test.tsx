@@ -39,12 +39,25 @@ describe("CentinelPage", () => {
       if (url.endsWith("/stress/status")) {
         return Promise.resolve({
           status: "done",
-          ticks: [{ tick: 1, count: 4, errors: 0, avg_s: 0.12, p95_s: 0.2, min_s: 0.1, max_s: 0.2, rps: 4, active_users: 2 }],
+          ticks: [
+            {
+              tick: 1,
+              count: 4,
+              errors: 0,
+              avg_s: 0.12,
+              p95_s: 0.2,
+              min_s: 0.1,
+              max_s: 0.2,
+              rps: 4,
+              active_users: 2,
+            },
+          ],
           errors: [],
           result: { total: 4, errors: 0, avg_s: 0.12, avg_per_user_s: 0.13, rps: 4 },
         });
       }
-      if (url.endsWith("/stress/probe")) return Promise.resolve({ status: "idle", steps: [], ticks: [] });
+      if (url.endsWith("/stress/probe"))
+        return Promise.resolve({ status: "idle", steps: [], ticks: [] });
       if (url.endsWith("/settings/platform")) return Promise.resolve({ stress_max_concurrency: 0 });
       return Promise.resolve({ status: "idle", summary: {}, failed_ids: [] });
     });

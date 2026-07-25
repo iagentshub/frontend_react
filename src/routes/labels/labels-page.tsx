@@ -60,6 +60,7 @@ function BehaviorIcon({ kind }: { kind: "block" | "warning" | "automatic" }) {
     return (
       <svg width="9" height="9" viewBox="0 0 16 16" fill="none" aria-hidden="true">
         <rect x="3" y="7" width="10" height="8" rx="1.5" stroke="currentColor" strokeWidth="1.5" />
+
         <path
           d="M5 7V5a3 3 0 0 1 6 0v2"
           stroke="currentColor"
@@ -78,6 +79,7 @@ function BehaviorIcon({ kind }: { kind: "block" | "warning" | "automatic" }) {
           strokeWidth="1.5"
           strokeLinecap="round"
         />
+
         <path
           d="M8 1l3 2-3 2"
           stroke="currentColor"
@@ -107,28 +109,38 @@ export function LabelsPage() {
       <div className="page-header">
         <h1 className="page-title">{t("labels.catalog.title")}</h1>
       </div>
+
       <p className="labels-intro">{t("labels.catalog.intro")}</p>
+
       {labelGroups.map((group) => (
         <section className="lcat-group" key={group.id}>
           <div className="lcat-group-header">
             <span className="lcat-group-title">{t(`labels.group.${group.id}`)}</span>
+
             <span className="lcat-group-meta">
               {t(group.exclusive ? "labels.group.exclusive_hint" : "labels.group.multi_hint")}
             </span>
           </div>
+
           <div className="lcat-labels-grid">
             {group.labels.map((label) => (
               <article className="lcat-label-card" key={label.key}>
                 <span className="lcat-label-dot" style={{ background: label.color }} />
+
                 <div className="lcat-label-info">
                   <div className="lcat-label-name">{t(`labels.${label.key}`)}</div>
+
                   <div className="lcat-label-key">{label.key}</div>
+
                   <div className="lcat-label-desc">{t(`labels.desc.${label.key}`)}</div>
+
                   {blocked.has(label.key) && (
                     <span className="lcat-label-behavior">
-                      <BehaviorIcon kind="block" /> {t("labels.catalog.blocks")}
+                      <BehaviorIcon kind="block" />
+                      {t("labels.catalog.blocks")}
                     </span>
                   )}
+
                   {label.key === "deprecated" && (
                     <span
                       className="lcat-label-behavior"
@@ -137,12 +149,15 @@ export function LabelsPage() {
                         background: "color-mix(in srgb, #ca8a04 10%, transparent)",
                       }}
                     >
-                      <BehaviorIcon kind="warning" /> {t("labels.catalog.warns")}
+                      <BehaviorIcon kind="warning" />
+                      {t("labels.catalog.warns")}
                     </span>
                   )}
+
                   {label.key === "private" && (
                     <span className="lcat-label-default">
-                      <BehaviorIcon kind="warning" /> {t("labels.catalog.default")}
+                      <BehaviorIcon kind="warning" />
+                      {t("labels.catalog.default")}
                     </span>
                   )}
                 </div>
@@ -151,15 +166,19 @@ export function LabelsPage() {
           </div>
         </section>
       ))}
+
       <section className="lcat-group">
         <div className="lcat-group-header">
           <span className="lcat-group-title">{t("agents.origin.label")}</span>
+
           <span className="lcat-group-meta">{t("labels.catalog.origin_computed")}</span>
         </div>
+
         <div className="lcat-labels-grid">
           {originTypes.map((origin) => (
             <article className="lcat-label-card" key={origin.key}>
               <span className="lcat-label-dot" style={{ background: origin.color }} />
+
               <div className="lcat-label-info">
                 <span
                   className={`origin-badge ${origin.className}`}
@@ -167,8 +186,11 @@ export function LabelsPage() {
                 >
                   {t(`agents.origin.${origin.key}`)}
                 </span>
+
                 <div className="lcat-label-key">{origin.key}</div>
+
                 <div className="lcat-label-desc">{t(`labels.desc.origin_${origin.key}`)}</div>
+
                 <span
                   className="lcat-label-behavior"
                   style={{
@@ -176,7 +198,8 @@ export function LabelsPage() {
                     background: "color-mix(in srgb, #6366f1 10%, transparent)",
                   }}
                 >
-                  <BehaviorIcon kind="automatic" /> {t("labels.catalog.origin_computed")}
+                  <BehaviorIcon kind="automatic" />
+                  {t("labels.catalog.origin_computed")}
                 </span>
               </div>
             </article>
@@ -186,4 +209,3 @@ export function LabelsPage() {
     </main>
   );
 }
-

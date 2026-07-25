@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useMemo, useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Link, useParams } from "react-router-dom";
@@ -33,6 +34,7 @@ function color(name: string) {
   return colors[[...name].reduce((n, c) => n + c.charCodeAt(0), 0) % colors.length];
 }
 export function PublicProfilePage() {
+  const { t } = useTranslation();
   const { username: raw = "" } = useParams(),
     username = decodeURIComponent(raw),
     [tab, setTab] = useState<Resource["resource_type"]>("agent"),
@@ -83,9 +85,10 @@ export function PublicProfilePage() {
     return (
       <main className="page-content prof-page">
         <div className="pub-error">
-          <p>Usuario no encontrado.</p>
+          <p>{t("legacy.text_000b8e97744d")}</p>
+
           <Link to="/" className="btn btn-ghost btn-sm">
-            ← Volver
+            {t("common.actions.back")}
           </Link>
         </div>
       </main>
@@ -108,6 +111,7 @@ export function PublicProfilePage() {
               background: `linear-gradient(135deg,${color(username)},${color([...username].reverse().join(""))})`,
             }}
           />
+
           <div className="prof-hero-body">
             <div className="prof-avatar-outer">
               <div className="prof-avatar" style={{ background: color(username) }}>
@@ -118,15 +122,22 @@ export function PublicProfilePage() {
                 )}
               </div>
             </div>
+
             <div className="prof-hero-info">
               <h1 className="prof-name">@{username}</h1>
+
               {data.bio && <p className="prof-tagline">{data.bio.split("\n")[0]}</p>}
+
               {joined && (
                 <div className="prof-hero-chips">
-                  <span className="prof-chip">Miembro desde {joined}</span>
+                  <span className="prof-chip">
+                    {t("legacy.text_765a0509b497")}
+                    {joined}
+                  </span>
                 </div>
               )}
             </div>
+
             <div className="prof-hero-right">
               <button
                 className={`btn ${follow.data?.following ? "btn-ghost" : "btn-primary"} prof-follow-btn`}
@@ -137,34 +148,45 @@ export function PublicProfilePage() {
               </button>
             </div>
           </div>
+
           <div className="prof-stats-bar">
             <div className="prof-stat">
               <strong>{follow.data?.followers_count ?? 0}</strong>
-              <span>seguidores</span>
+
+              <span>{t("social.follow.followers")}</span>
             </div>
+
             <div className="prof-stat-sep" />
+
             <div className="prof-stat">
               <strong>{follow.data?.following_count ?? 0}</strong>
-              <span>siguiendo</span>
+
+              <span>{t("social.follow.following")}</span>
             </div>
+
             <div className="prof-stat-sep" />
+
             <div className="prof-stat">
               <strong>{resources.data?.length ?? 0}</strong>
-              <span>recursos</span>
+
+              <span>{t("explore.users.resources")}</span>
             </div>
           </div>
         </div>
+
         <div className="prof-body">
           <aside className="prof-sidebar">
             {(data.email_public || data.github) && (
               <div className="prof-card">
-                <h3 className="prof-card-title">Contacto</h3>
+                <h3 className="prof-card-title">{t("about.contact.title")}</h3>
+
                 <div className="prof-contact-list">
                   {data.email_public && (
                     <a href={`mailto:${data.email_public}`} className="prof-contact-link">
                       ✉ {data.email_public}
                     </a>
                   )}
+
                   {data.github && (
                     <a
                       href={`https://github.com/${encodeURIComponent(data.github)}`}
@@ -172,15 +194,18 @@ export function PublicProfilePage() {
                       rel="noreferrer"
                       className="prof-contact-link"
                     >
-                      GitHub · {data.github}
+                      {t("legacy.text_9c360d653689")}
+                      {data.github}
                     </a>
                   )}
                 </div>
               </div>
             )}
+
             {data.languages?.length && (
               <div className="prof-card">
-                <h3 className="prof-card-title">Idiomas</h3>
+                <h3 className="prof-card-title">{t("profile.social.field_languages")}</h3>
+
                 <div className="prof-langs-list">
                   {data.languages.map((language) => (
                     <div className="prof-lang-item" key={language}>
@@ -190,30 +215,38 @@ export function PublicProfilePage() {
                 </div>
               </div>
             )}
+
             {joined && (
               <div className="prof-card prof-card--slim">
-                <h3 className="prof-card-title">Miembro desde</h3>
+                <h3 className="prof-card-title">{t("legacy.text_765a0509b497")}</h3>
+
                 <span className="prof-joined-date">{joined}</span>
               </div>
             )}
           </aside>
+
           <div className="prof-main">
             {data.bio && (
               <div className="prof-card">
-                <h3 className="prof-card-title">Sobre mí</h3>
+                <h3 className="prof-card-title">{t("legacy.text_415280f0613e")}</h3>
+
                 <p className="prof-bio-text">{data.bio}</p>
               </div>
             )}
+
             {data.cv && (
               <div className="prof-card">
-                <h3 className="prof-card-title">Experiencia y trayectoria</h3>
+                <h3 className="prof-card-title">{t("legacy.text_1f19208afdaf")}</h3>
+
                 <div className="prof-cv-body" style={{ whiteSpace: "pre-wrap" }}>
                   {data.cv}
                 </div>
               </div>
             )}
+
             <div className="prof-card">
-              <h3 className="prof-card-title">Recursos públicos</h3>
+              <h3 className="prof-card-title">{t("legacy.text_cca77a07dc4a")}</h3>
+
               <div className="pub-tabs">
                 {(["agent", "skill", "knowledge"] as const).map((type) => (
                   <button
@@ -221,10 +254,11 @@ export function PublicProfilePage() {
                     onClick={() => setTab(type)}
                     key={type}
                   >
-                    {type === "agent" ? "Agentes" : type === "skill" ? "Skills" : "Knowledge"}
+                    {t(`common.resource_type_plural.${type}`)}
                   </button>
                 ))}
               </div>
+
               <div className="pub-resources-list">
                 {visible.length ? (
                   visible.map((resource) => {
@@ -238,19 +272,24 @@ export function PublicProfilePage() {
                         >
                           {resource.name.charAt(0).toUpperCase()}
                         </div>
+
                         <div className="pub-resource-info">
                           <span className="pub-resource-name">{resource.name}</span>
+
                           {resource.description && (
                             <p className="pub-resource-desc">{resource.description}</p>
                           )}
+
                           <div className="pub-resource-badges">
                             {resource.category && (
                               <span className="pub-resource-cat">{resource.category}</span>
                             )}
                           </div>
                         </div>
+
                         <div className="pub-resource-actions">
                           <span className="pub-resource-stars">★ {resource.stars_count ?? 0}</span>
+
                           {resource.resource_type !== "knowledge" && (
                             <button
                               className={`pub-resource-fork${copied ? " forked" : ""}`}
@@ -265,7 +304,7 @@ export function PublicProfilePage() {
                     );
                   })
                 ) : (
-                  <p className="pub-empty">Este usuario no tiene recursos públicos todavía.</p>
+                  <p className="pub-empty">{t("legacy.text_cf0341c8c5b2")}</p>
                 )}
               </div>
             </div>
@@ -275,4 +314,3 @@ export function PublicProfilePage() {
     </main>
   );
 }
-

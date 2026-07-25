@@ -2,6 +2,38 @@
   "page": {
     "title": "Administration"
   },
+  "tabs": {
+    "general": "General",
+    "users": "Users",
+    "workspaces": "Groups",
+    "agents": "Agents",
+    "connections": "Connections",
+    "knowledge": "Knowledge",
+    "config": "Settings"
+  },
+  "updated": "Updated {{time}}",
+  "not_updated": "Not updated",
+  "user_editor": {
+    "verified": "Verified",
+    "unverified": "Unverified",
+    "new": "New user",
+    "edit": "Edit user",
+    "create": "Create user"
+  },
+  "overview": {
+    "active_verified": "{{active}} active · {{verified}} verified",
+    "total_tokens": "{{tokens}} total tokens",
+    "tokens_consumed": "Tokens used"
+  },
+  "centinel": {
+    "filter_all": "All",
+    "filter_failed": "Failed",
+    "filter_passed": "Passed",
+    "filter_skipped": "Skipped",
+    "running": "Running…",
+    "run_empty": "Run the tests to see the results",
+    "none": "None"
+  },
   "open_webmail": "Open mailbox",
   "error_load": "Error loading users.",
   "empty": "No registered users.",
