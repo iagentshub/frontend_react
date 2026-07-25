@@ -5,6 +5,14 @@ import { api, ApiError } from "@/api/client";
 import "@/styles/routes/admin/admin.css";
 import "@/styles/routes/manager/manager.css";
 
+function DeleteIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <path d="M2 4h12M5 4V2h6v2M6 7v5M10 7v5M3 4l1 9h8l1-9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
 type WorkspaceRole = "owner" | "admin" | "member";
 
 interface Workspace {
@@ -214,7 +222,7 @@ export function ManagerPage() {
                             <option value="member">Miembro</option><option value="admin">Gestor</option>
                           </select>
                         )}
-                        {member.role !== "owner" && <button className="btn btn-ghost btn-sm action-item--danger" disabled={busy} onClick={() => { if (confirm(`¿Eliminar a ${member.username} del grupo?`)) removeMutation.mutate(member.username); }}>Eliminar</button>}
+                        {member.role !== "owner" && <button className="btn-icon btn-icon--danger" title="Eliminar" aria-label="Eliminar" disabled={busy} onClick={() => { if (confirm(`¿Eliminar a ${member.username} del grupo?`)) removeMutation.mutate(member.username); }}><DeleteIcon /></button>}
                         {member.role !== "owner" && <button className="btn btn-ghost btn-sm" disabled={busy} onClick={() => setPermissionsMember(member)}>Permisos</button>}
                       </div>
                     </td>
