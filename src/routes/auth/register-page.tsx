@@ -1,6 +1,7 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Link, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { api, ApiError } from "@/api/client";
 import { queryKeys } from "@/api/query-client";
 import { AuthCard } from "./auth-card";
@@ -21,6 +22,7 @@ interface ProfileFields {
 }
 
 export function RegisterPage() {
+  const { t } = useTranslation();
   const navigate = useNavigate(),
     settings = useQuery({
       queryKey: queryKeys.platform,
@@ -52,9 +54,9 @@ export function RegisterPage() {
   });
   const credentials = (event: FormEvent) => {
     event.preventDefault();
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) setValidation("Email inválido");
-    else if (password.length < 8) setValidation("La contraseña debe tener al menos 8 caracteres");
-    else if (password !== confirm) setValidation("Las contraseñas no coinciden");
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) setValidation(t("auth.register.error_invalid_email"));
+    else if (password.length < 8) setValidation(t("auth.register.error_short_password"));
+    else if (password !== confirm) setValidation(t("auth.register.error_password_mismatch"));
     else {
       setValidation(null);
       setStep(2);
@@ -64,22 +66,22 @@ export function RegisterPage() {
     return (
       <AuthCard>
         <div role="status">
-          <h2 style={{ marginBottom: 8 }}>Revisa tu correo</h2>
+          <h2 style={{ marginBottom: 8 }}>{t("auth.register.check_email_title")}</h2>
           <p className="login-sub" style={{ marginBottom: 24 }}>
-            Hemos enviado un enlace de verificación a{" "}
+            {t("auth.register.check_email_sub")}{" "}
             <strong>{register.data.email ?? email}</strong>
           </p>
           <p style={{ fontSize: 13, color: "var(--ink-2)", lineHeight: 1.6 }}>
-            Haz clic en el enlace del correo para activar tu cuenta.
+            {t("auth.register.check_email_body_line1")}
             <br />
-            Revisa también la carpeta de spam si no lo ves.
+            {t("auth.register.check_email_body_line2")}
           </p>
           <Link
             to="/login/"
             className="btn btn-ghost btn-full"
             style={{ marginTop: 24, display: "block", textAlign: "center" }}
           >
-            Volver al login
+            {t("auth.register.back_to_login")}
           </Link>
         </div>
       </AuthCard>
@@ -89,16 +91,16 @@ export function RegisterPage() {
     (register.error instanceof ApiError
       ? register.error.message
       : register.error
-        ? "Error al crear la cuenta"
+        ? t("auth.register.error_generic")
         : null);
   return (
     <AuthCard>
-      <h2>Crear cuenta</h2>
-      <p className="login-sub">Paso {step} de 2</p>
+      <h2>{t("auth.register.title")}</h2>
+      <p className="login-sub">{t("auth.register.step_label", { step })}</p>
       {step === 1 ? (
         <form noValidate onSubmit={credentials}>
           <div className="field">
-            <label htmlFor="reg-email">Email *</label>
+            <label htmlFor="reg-email">{t("auth.register.email_label")}</label>
             <input
               id="reg-email"
               type="email"
@@ -109,12 +111,12 @@ export function RegisterPage() {
             />
           </div>
           <div className="field">
-            <label htmlFor="reg-pw">Contraseña *</label>
+            <label htmlFor="reg-pw">{t("auth.register.password_label")}</label>
             <div className="field-pw">
               <input
                 id="reg-pw"
                 type={show ? "text" : "password"}
-                placeholder="Mínimo 8 caracteres"
+                placeholder={t("auth.register.password_placeholder")}
                 required
                 value={password}
                 onChange={(event) => setPassword(event.target.value)}
@@ -124,19 +126,19 @@ export function RegisterPage() {
                 className="pw-toggle"
                 tabIndex={-1}
                 onClick={() => setShow((value) => !value)}
-                aria-label={show ? "Ocultar contraseña" : "Mostrar contraseña"}
+                aria-label={show ? t("auth.hide_password") : t("auth.show_password")}
               >
                 <Eye closed={show} />
               </button>
             </div>
           </div>
           <div className="field">
-            <label htmlFor="reg-pw2">Confirmar contraseña *</label>
+            <label htmlFor="reg-pw2">{t("auth.register.confirm_password_label")}</label>
             <div className="field-pw">
               <input
                 id="reg-pw2"
                 type={show2 ? "text" : "password"}
-                placeholder="Repite la contraseña"
+                placeholder={t("auth.register.confirm_password_placeholder")}
                 required
                 value={confirm}
                 onChange={(event) => setConfirm(event.target.value)}
@@ -146,7 +148,7 @@ export function RegisterPage() {
                 className="pw-toggle"
                 tabIndex={-1}
                 onClick={() => setShow2((value) => !value)}
-                aria-label={show2 ? "Ocultar contraseña" : "Mostrar contraseña"}
+                aria-label={show2 ? t("auth.hide_password") : t("auth.show_password")}
               >
                 <Eye closed={show2} />
               </button>
@@ -157,13 +159,13 @@ export function RegisterPage() {
               {error}
             </div>
           )}
-          <button className="btn btn-primary btn-full">Continuar →</button>
+          <button className="btn btn-primary btn-full">{t("auth.register.continue_btn")}</button>
         </form>
       ) : (
         <>
-          <p className="step2-hint">Completa tu perfil (opcional)</p>
+          <p className="step2-hint">{t("auth.register.profile_hint")}</p>
           <div className="field">
-            <label htmlFor="reg-birth">Fecha de nacimiento</label>
+            <label htmlFor="reg-birth">{t("auth.register.birth_date_label")}</label>
             <input
               id="reg-birth"
               type="date"
@@ -172,26 +174,26 @@ export function RegisterPage() {
             />
           </div>
           <div className="field">
-            <label htmlFor="reg-gender">Género</label>
+            <label htmlFor="reg-gender">{t("auth.register.gender_label")}</label>
             <select
               id="reg-gender"
               value={profile.gender ?? ""}
               onChange={(event) => setProfile({ ...profile, gender: event.target.value })}
             >
-              <option value="">Prefiero no decir</option>
-              <option value="male">Hombre</option>
-              <option value="female">Mujer</option>
-              <option value="other">Otro</option>
+              <option value="">{t("auth.register.gender_none")}</option>
+              <option value="male">{t("auth.register.gender_male")}</option>
+              <option value="female">{t("auth.register.gender_female")}</option>
+              <option value="other">{t("auth.register.gender_other")}</option>
             </select>
           </div>
           <div className="field">
-            <label htmlFor="reg-country">País</label>
+            <label htmlFor="reg-country">{t("auth.register.country_label")}</label>
             <select
               id="reg-country"
               value={profile.country ?? ""}
               onChange={(event) => setProfile({ ...profile, country: event.target.value })}
             >
-              <option value="">Selecciona tu país</option>
+              <option value="">{t("auth.register.country_placeholder")}</option>
               {[
                 ["ES", "España"],
                 ["MX", "México"],
@@ -211,7 +213,7 @@ export function RegisterPage() {
             </select>
           </div>
           <div className="field">
-            <label htmlFor="reg-phone">Teléfono</label>
+            <label htmlFor="reg-phone">{t("auth.register.phone_label")}</label>
             <input
               id="reg-phone"
               type="tel"
@@ -231,25 +233,25 @@ export function RegisterPage() {
               onClick={() => register.mutate()}
               disabled={register.isPending}
             >
-              Omitir
+              {t("auth.register.skip_btn")}
             </button>
             <button
               className="btn btn-primary"
               onClick={() => register.mutate()}
               disabled={register.isPending}
             >
-              {register.isPending ? "Creando…" : "Crear cuenta"}
+              {register.isPending ? t("auth.register.finish_btn_loading") : t("auth.register.finish_btn")}
             </button>
           </div>
         </>
       )}
       <p className="login-register-link">
-        ¿Ya tienes cuenta? <Link to="/login/">Iniciar sesión</Link>
+        {t("auth.register.already_have_account")} <Link to="/login/">{t("auth.register.sign_in_link")}</Link>
       </p>
       <div className="login-explore">
-        <Link to="/pricing/">Precios</Link>
+        <Link to="/pricing/">{t("auth.pricing_link")}</Link>
         <span className="login-explore-sep" />
-        <Link to="/about">¿Qué es esto?</Link>
+        <Link to="/about">{t("auth.about_link")}</Link>
       </div>
     </AuthCard>
   );

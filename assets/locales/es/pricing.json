@@ -161,5 +161,24 @@
   "faq5_q": "¿Cómo funciona la facturación anual?",
   "faq5_a": "Pagas 10 meses y tienes acceso durante 12 — equivale a un 17% de descuento. La factura se emite una vez al año por el importe completo. El precio por licencia queda bloqueado durante toda la vigencia del contrato.",
   "footer_about": "Acerca de",
-  "footer_contact": "Contacto"
+  "footer_contact": "Contacto",
+  "checkout": {
+    "header_label": "Checkout",
+    "back_to_pricing": "← Volver a precios",
+    "title": "Confirma tu suscripción",
+    "loading": "Cargando…",
+    "success": "Suscripción activada. Redirigiendo…",
+    "plan_individual": "Individual",
+    "plan_business": "Business",
+    "seats_one": "1 licencia",
+    "seats_many": "{{count}} licencias",
+    "interval_year": "/ año",
+    "interval_month": "/ mes",
+    "error_quote": "No se pudo calcular el precio",
+    "error_subscribe": "No se pudo iniciar la suscripción",
+    "subscribe_btn": "Suscribirse por {{amount}}",
+    "processing": "Procesando…",
+    "error_payment": "El pago no se pudo completar",
+    "error_not_ready": "El pago aún no está listo"
+  }
 }

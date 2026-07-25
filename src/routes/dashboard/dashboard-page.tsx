@@ -13,6 +13,8 @@ import {
 import { SortableContext, arrayMove, rectSortingStrategy, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import type { TFunction } from "i18next";
 import { api } from "@/api/client";
 import type {
   ConnectionTest,
@@ -37,23 +39,26 @@ import "./dashboard-react.css";
 
 const defaults: WidgetId[] = ["summary", "token-usage", "conn-status", "recent"];
 const allSummaryItems: SummaryItem[] = ["agents", "connections", "skills", "memory", "knowledge"];
-const metadata: Record<WidgetId, { title: string; cols: number; config: WidgetConfig }> = {
-  summary: { title: "Resumen", cols: 4, config: { size: "large", items: allSummaryItems } },
+// titleKey guarda la CLAVE de i18n (no el texto traducido): este objeto se
+// construye una sola vez al cargar el módulo, antes de que las traducciones
+// hayan terminado de cargar. Se traduce con t(titleKey) en el punto de uso.
+const metadata: Record<WidgetId, { titleKey: string; cols: number; config: WidgetConfig }> = {
+  summary: { titleKey: "dashboard.widgets.summary_title", cols: 4, config: { size: "large", items: allSummaryItems } },
   "token-usage": {
-    title: "Uso de tokens",
+    titleKey: "dashboard.widgets.token_usage_title",
     cols: 2,
     config: { size: "medium", vizType: "bars", groupBy: "connection", scope: "all", limit: 5 },
   },
   "conn-status": {
-    title: "Estado de conexiones",
+    titleKey: "dashboard.widgets.conn_status_title",
     cols: 4,
     config: { size: "large", scope: "all", pageSize: 4 },
   },
-  recent: { title: "Agentes recientes", cols: 4, config: { size: "large", pageSize: 4 } },
-  activity: { title: "Actividad", cols: 4, config: { size: "large", days: 14 } },
-  composition: { title: "Composición", cols: 1, config: { size: "small" } },
+  recent: { titleKey: "dashboard.widgets.recent_title", cols: 4, config: { size: "large", pageSize: 4 } },
+  activity: { titleKey: "dashboard.widgets.activity_title", cols: 4, config: { size: "large", days: 14 } },
+  composition: { titleKey: "dashboard.widgets.composition_title", cols: 1, config: { size: "small" } },
   feed: {
-    title: "Feed",
+    titleKey: "dashboard.widgets.feed_title",
     cols: 2,
     config: {
       size: "medium",
@@ -98,22 +103,23 @@ function fmt(value: number): string {
   return String(value);
 }
 
+// labelKey guarda la CLAVE de i18n (ver nota en `metadata` sobre traducción perezosa).
 const summaryMeta: Record<
   SummaryItem,
-  { label: string; href: string; value: (data: DashboardData) => number }
+  { labelKey: string; href: string; value: (data: DashboardData) => number }
 > = {
-  agents: { label: "Agentes", href: "/agents/", value: (data) => data.agents.length },
+  agents: { labelKey: "dashboard.stats.agents", href: "/agents/", value: (data) => data.agents.length },
   connections: {
-    label: "Conexiones",
+    labelKey: "dashboard.stats.connections",
     href: "/connections/",
     value: (data) => data.connections.length,
   },
-  skills: { label: "Skills", href: "/knowledge/", value: (data) => data.skills.length },
-  memory: { label: "Memorias", href: "/memory/", value: (data) => data.memories.length },
-  knowledge: { label: "Conocimiento", href: "/knowledge/", value: (data) => data.knowledge.length },
+  skills: { labelKey: "dashboard.stats.skills", href: "/knowledge/", value: (data) => data.skills.length },
+  memory: { labelKey: "dashboard.stats.memory", href: "/memory/", value: (data) => data.memories.length },
+  knowledge: { labelKey: "dashboard.stats.knowledge", href: "/knowledge/", value: (data) => data.knowledge.length },
 };
 
-function Summary({ data, config }: { data: DashboardData; config: WidgetConfig }) {
+function Summary({ data, config, t }: { data: DashboardData; config: WidgetConfig; t: TFunction }) {
   const size = config.size ?? "large";
   const keys = config.items?.length ? config.items : allSummaryItems;
   if (size === "small")
@@ -124,7 +130,7 @@ function Summary({ data, config }: { data: DashboardData; config: WidgetConfig }
           return (
             <Link className="w-summary-row" to={item.href} key={key}>
               <span className="w-summary-row-val">{item.value(data)}</span>
-              <span className="w-summary-row-lbl">{item.label}</span>
+              <span className="w-summary-row-lbl">{t(item.labelKey)}</span>
             </Link>
           );
         })}
@@ -147,7 +153,7 @@ function Summary({ data, config }: { data: DashboardData; config: WidgetConfig }
             )}
             <div className="dash-stat-body">
               <div className="dash-stat-value">{item.value(data)}</div>
-              <div className="dash-stat-label">{item.label}</div>
+              <div className="dash-stat-label">{t(item.labelKey)}</div>
             </div>
           </Link>
         );
@@ -171,7 +177,7 @@ interface TokenRow {
 }
 const chartColors = ["#4f46e5", "#0891b2", "#059669", "#d97706", "#7c3aed", "#db2777"];
 
-function tokenRows(data: DashboardData, config: WidgetConfig): TokenRow[] {
+function tokenRows(data: DashboardData, config: WidgetConfig, t: TFunction): TokenRow[] {
   const connections =
     config.scope === "personal"
       ? data.connections.filter(
@@ -186,7 +192,7 @@ function tokenRows(data: DashboardData, config: WidgetConfig): TokenRow[] {
           config.scope !== "personal" || !agent.connection_id || allowed.has(agent.connection_id),
       )
       .map((agent) => ({
-        name: agent.name ?? "Agente",
+        name: agent.name ?? t("dashboard.recent.agent_fallback"),
         sub: agent.model ?? "",
         total: (agent.tokens_in ?? 0) + (agent.tokens_out ?? 0),
       }))
@@ -195,7 +201,7 @@ function tokenRows(data: DashboardData, config: WidgetConfig): TokenRow[] {
   }
   return connections
     .map((connection) => ({
-      name: connection.name ?? connection.type ?? "Conexión",
+      name: connection.name ?? connection.type ?? t("dashboard.conn_status.fallback_name"),
       sub: connection.type ?? "",
       total: (connection.tokens_in ?? 0) + (connection.tokens_out ?? 0),
     }))
@@ -252,18 +258,18 @@ function Donut({ rows, total, rich }: { rows: TokenRow[]; total: number; rich: b
   );
 }
 
-function Tokens({ data, config }: { data: DashboardData; config: WidgetConfig }) {
+function Tokens({ data, config, t }: { data: DashboardData; config: WidgetConfig; t: TFunction }) {
   const size = config.size ?? "medium";
   const limit = size === "large" ? (config.limit ?? 5) : 3;
-  const rows = tokenRows(data, config).slice(0, limit);
+  const rows = tokenRows(data, config, t).slice(0, limit);
   const total = rows.reduce((sum, row) => sum + row.total, 0);
   const max = rows[0]?.total ?? 1;
-  if (!rows.length) return <div className="dash-empty">Sin actividad de tokens</div>;
+  if (!rows.length) return <div className="dash-empty">{t("dashboard.token_usage.empty")}</div>;
   return (
     <>
       <div className="w-token-total-row">
         <span className="w-token-total-value">{fmt(total)}</span>
-        <span className="w-token-total-label">tokens</span>
+        <span className="w-token-total-label">{t("dashboard.token_usage.total_label")}</span>
       </div>
       {config.vizType === "donut" ? (
         <Donut rows={rows} total={total} rich={size === "large"} />
@@ -318,7 +324,7 @@ function Pager({
   );
 }
 
-function Recent({ data, config }: { data: DashboardData; config: WidgetConfig }) {
+function Recent({ data, config, t }: { data: DashboardData; config: WidgetConfig; t: TFunction }) {
   const [page, setPage] = useState(0);
   const all = data.agents.slice().reverse();
   const pageSize = config.pageSize ?? 4;
@@ -326,7 +332,7 @@ function Recent({ data, config }: { data: DashboardData; config: WidgetConfig })
   const safePage = Math.min(page, pages - 1);
   const items = all.slice(safePage * pageSize, (safePage + 1) * pageSize);
   const size = config.size ?? "large";
-  if (!items.length) return <div className="dash-empty">Sin agentes</div>;
+  if (!items.length) return <div className="dash-empty">{t("dashboard.recent.empty_short")}</div>;
   return (
     <>
       <div
@@ -347,7 +353,7 @@ function Recent({ data, config }: { data: DashboardData; config: WidgetConfig })
             key={agent.id}
           >
             <span className={size === "small" ? "w-recent-item-name" : "w-recent-name"}>
-              {agent.name ?? "Agente"}
+              {agent.name ?? t("dashboard.recent.agent_fallback")}
             </span>
             {agent.model && (
               <span className={size === "small" ? "w-recent-item-model" : "w-recent-model"}>
@@ -364,13 +370,13 @@ function Recent({ data, config }: { data: DashboardData; config: WidgetConfig })
   );
 }
 
-function Activity({ data, config }: { data: DashboardData; config: WidgetConfig }) {
+function Activity({ data, config, t }: { data: DashboardData; config: WidgetConfig; t: TFunction }) {
   const size = config.size ?? "large";
   const days = size === "small" ? 7 : size === "medium" ? 14 : (config.days ?? 14);
   const daily = data.tokenDaily.slice(-days);
   const total = daily.reduce((sum, item) => sum + (item.tokens ?? 0), 0);
   const max = Math.max(0, ...daily.map((item) => item.tokens ?? 0));
-  if (!daily.length) return <div className="dash-empty">Sin datos de actividad</div>;
+  if (!daily.length) return <div className="dash-empty">{t("dashboard.activity.empty")}</div>;
   const bars = (
     <div
       className={`w-activity-histo${size === "small" ? " w-activity-histo--mini" : size === "medium" ? " w-activity-histo--md" : ""}`}
@@ -392,12 +398,12 @@ function Activity({ data, config }: { data: DashboardData; config: WidgetConfig 
       <>
         <div className="w-activity-hero">
           <span className="w-activity-hero-val">{fmt(total)}</span>
-          <span className="w-activity-hero-lbl">tokens / {days} días</span>
+          <span className="w-activity-hero-lbl">{t("dashboard.activity.hero_label", { days })}</span>
         </div>
         {max > 0 && bars}
       </>
     );
-  if (!max) return <div className="dash-empty">Sin actividad en {days} días</div>;
+  if (!max) return <div className="dash-empty">{t("dashboard.activity.empty_days", { days })}</div>;
   return (
     <>
       {bars}
@@ -409,7 +415,7 @@ function Activity({ data, config }: { data: DashboardData; config: WidgetConfig 
   );
 }
 
-function Composition({ data }: { data: DashboardData }) {
+function Composition({ data, t }: { data: DashboardData; t: TFunction }) {
   const counts = new Map<string, number>();
   data.connections.forEach((connection) => {
     const key = (connection.type ?? "other").toLowerCase();
@@ -442,11 +448,11 @@ function Composition({ data }: { data: DashboardData }) {
       ))}
     </div>
   ) : (
-    <div className="dash-empty">Sin datos</div>
+    <div className="dash-empty">{t("dashboard.composition.empty")}</div>
   );
 }
 
-function Connections({ data, config }: { data: DashboardData; config: WidgetConfig }) {
+function Connections({ data, config, t }: { data: DashboardData; config: WidgetConfig; t: TFunction }) {
   const [page, setPage] = useState(0);
   const connections =
     config.scope === "personal"
@@ -463,7 +469,7 @@ function Connections({ data, config }: { data: DashboardData; config: WidgetConf
   useEffect(() => {
     if (connections.length) test.mutate();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
-  if (!connections.length) return <div className="dash-empty">Sin conexiones</div>;
+  if (!connections.length) return <div className="dash-empty">{t("dashboard.conn_status.empty")}</div>;
   const results = new Map(test.data?.map((result) => [result.id, result]));
   const size = config.size ?? "large";
   const pageSize = config.pageSize ?? 4;
@@ -485,11 +491,11 @@ function Connections({ data, config }: { data: DashboardData; config: WidgetConf
             {test.isPending ? "…" : ok}{" "}
             <span className="w-cs-hero-sep">/ {connections.length}</span>
           </span>
-          <span className="w-cs-hero-lbl">conexiones OK</span>
+          <span className="w-cs-hero-lbl">{t("dashboard.conn_status.ok_label")}</span>
         </div>
         <div className="w-widget-footer">
           <button className="w-cs-refresh" onClick={() => test.mutate()}>
-            Actualizar
+            {t("dashboard.conn_status.refresh_btn")}
           </button>
         </div>
       </>
@@ -507,7 +513,7 @@ function Connections({ data, config }: { data: DashboardData; config: WidgetConf
           </span>
         </div>
         <span className={size === "medium" ? "w-cs-compact-status" : "w-cs-msg"}>
-          {result?.message ?? (test.isError ? "Error" : "Comprobando…")}
+          {result?.message ?? (test.isError ? t("dashboard.conn_status.error") : t("dashboard.conn_status.checking"))}
         </span>
       </div>
     );
@@ -518,27 +524,29 @@ function Connections({ data, config }: { data: DashboardData; config: WidgetConf
       <div className="w-widget-footer">
         <span className="w-cs-summary">
           {test.data
-            ? `${ok} / ${connections.length} OK`
-            : `Comprobando ${connections.length} conexiones…`}
+            ? t("dashboard.conn_status.ok_ratio", { ok, total: connections.length })
+            : t("dashboard.conn_status.checking_count", { total: connections.length })}
         </span>
         {size === "large" && <Pager page={safePage} total={pages} onChange={setPage} />}
         <button className="w-cs-refresh" onClick={() => test.mutate()}>
-          Actualizar
+          {t("dashboard.conn_status.refresh_btn")}
         </button>
       </div>
     </>
   );
 }
 
-function relativeDate(value?: string): string {
+function relativeDate(value: string | undefined, t: TFunction): string {
   if (!value) return "";
   const minutes = Math.max(0, Math.floor((Date.now() - new Date(value).valueOf()) / 60_000));
-  if (minutes < 60) return `hace ${minutes}min`;
+  if (minutes < 60) return t("dashboard.feed.time_min", { count: minutes });
   const hours = Math.floor(minutes / 60);
-  return hours < 24 ? `hace ${hours}h` : `hace ${Math.floor(hours / 24)}d`;
+  return hours < 24
+    ? t("dashboard.feed.time_hour", { count: hours })
+    : t("dashboard.feed.time_day", { count: Math.floor(hours / 24) });
 }
 
-function Feed({ config }: { config: WidgetConfig }) {
+function Feed({ config, t }: { config: WidgetConfig; t: TFunction }) {
   const types = config.types ?? ["agent", "skill", "knowledge"];
   const limit = config.limit ?? 8;
   const single = types.length === 1 ? types[0] : undefined;
@@ -589,7 +597,7 @@ function Feed({ config }: { config: WidgetConfig }) {
   if (query.isError)
     return (
       <div className="wfeed-empty">
-        <p>Error al cargar el feed.</p>
+        <p>{t("dashboard.feed.error")}</p>
       </div>
     );
   const items = (query.data ?? [])
@@ -599,7 +607,8 @@ function Feed({ config }: { config: WidgetConfig }) {
     return (
       <div className="wfeed-empty">
         <p>
-          No hay publicaciones. Sigue usuarios en <Link to="/explore/">Explorar</Link>.
+          {t("dashboard.feed.empty_prefix")}
+          <Link to="/explore/">{t("dashboard.feed.explore_link")}</Link>.
         </p>
       </div>
     );
@@ -617,25 +626,33 @@ function Feed({ config }: { config: WidgetConfig }) {
               {(item.name ?? "?").charAt(0).toUpperCase()}
             </div>
             <div className="wfeed-card-body">
-              <div className="wfeed-card-name">{item.name ?? "Recurso"}</div>
+              <div className="wfeed-card-name">{item.name ?? t("dashboard.feed.resource_fallback")}</div>
               {config.density !== "compact" && item.description && (
                 <div className="wfeed-card-desc">{item.description}</div>
               )}
               <div className="wfeed-card-meta">
-                <span className="wfeed-badge">{item.resource_type}</span>
+                <span className="wfeed-badge">
+                  {item.resource_type === "agent"
+                    ? t("dashboard.feed.badge_agent")
+                    : item.resource_type === "skill"
+                      ? t("dashboard.feed.badge_skill")
+                      : item.resource_type === "knowledge"
+                        ? t("dashboard.feed.badge_knowledge")
+                        : item.resource_type}
+                </span>
                 {item.owner && (
                   <Link className="wfeed-author" to={`/u/${encodeURIComponent(item.owner)}`}>
                     @{item.owner}
                   </Link>
                 )}
-                <span className="wfeed-date">{relativeDate(item.updated_at)}</span>
+                <span className="wfeed-date">{relativeDate(item.updated_at, t)}</span>
               </div>
             </div>
             <button
               className={`wfeed-star${state.starred ? " starred" : ""}`}
               disabled={star.isPending}
               onClick={() => star.mutate(item)}
-              title="Star"
+              title={t("dashboard.feed.star_btn")}
             >
               ★<span>{state.count}</span>
             </button>
@@ -649,9 +666,11 @@ function Feed({ config }: { config: WidgetConfig }) {
 function SizePicker({
   value,
   onChange,
+  t,
 }: {
   value: WidgetSize;
   onChange: (size: WidgetSize) => void;
+  t: TFunction;
 }) {
   return (
     <div className="wcfg-sizes">
@@ -659,9 +678,7 @@ function SizePicker({
         <label className="wcfg-size-card" key={size}>
           <input type="radio" checked={value === size} onChange={() => onChange(size)} />
           <span className={`wcfg-size-visual wcfg-size-visual--${size.charAt(0)}`} />
-          <span className="wcfg-size-name">
-            {size === "small" ? "Pequeño" : size === "medium" ? "Mediano" : "Grande"}
-          </span>
+          <span className="wcfg-size-name">{t(`dashboard.size.${size}`)}</span>
         </label>
       ))}
     </div>
@@ -694,11 +711,13 @@ function ConfigForm({
   value,
   onCancel,
   onSave,
+  t,
 }: {
   id: WidgetId;
   value: WidgetConfig;
   onCancel: () => void;
   onSave: (value: WidgetConfig) => void;
+  t: TFunction;
 }) {
   const [draft, setDraft] = useState<WidgetConfig>(value);
   const set = <K extends keyof WidgetConfig>(key: K, next: WidgetConfig[K]) =>
@@ -711,18 +730,19 @@ function ConfigForm({
   );
   return (
     <div className="wcfg-body">
-      <div className="wcfg-title">{metadata[id].title}</div>
+      <div className="wcfg-title">{t(metadata[id].titleKey)}</div>
       {id !== "composition" &&
         field(
-          "Tamaño",
+          t("dashboard.size.label"),
           <SizePicker
             value={draft.size ?? metadata[id].config.size ?? "large"}
             onChange={(size) => set("size", size)}
+            t={t}
           />,
         )}
       {id === "summary" &&
         field(
-          "Mostrar",
+          t("dashboard.summary.show_label"),
           <div className="wcfg-checks">
             {allSummaryItems.map((item) => (
               <label className="wcfg-check" key={item}>
@@ -738,7 +758,7 @@ function ConfigForm({
                     )
                   }
                 />
-                {summaryMeta[item].label}
+                {t(summaryMeta[item].labelKey)}
               </label>
             ))}
           </div>,
@@ -746,40 +766,40 @@ function ConfigForm({
       {id === "token-usage" && (
         <>
           {field(
-            "Visualización",
+            t("dashboard.token_usage.viz_label"),
             <RadioPills
               value={draft.vizType ?? "bars"}
               options={[
-                ["bars", "Barras"],
-                ["donut", "Donut"],
+                ["bars", t("dashboard.token_usage.viz_bars")],
+                ["donut", t("dashboard.token_usage.viz_donut")],
               ]}
               onChange={(value) => set("vizType", value)}
             />,
           )}
           {field(
-            "Agrupar por",
+            t("dashboard.token_usage.group_by_label"),
             <RadioPills
               value={draft.groupBy ?? "connection"}
               options={[
-                ["connection", "Conexión"],
-                ["agent", "Agente"],
+                ["connection", t("dashboard.token_usage.group_connection")],
+                ["agent", t("dashboard.token_usage.group_agent")],
               ]}
               onChange={(value) => set("groupBy", value)}
             />,
           )}
           {field(
-            "Conexiones",
+            t("dashboard.conn_status.connections_label"),
             <RadioPills
               value={draft.scope ?? "all"}
               options={[
-                ["all", "Todas"],
-                ["personal", "Personales"],
+                ["all", t("dashboard.conn_status.scope_all")],
+                ["personal", t("dashboard.conn_status.scope_personal")],
               ]}
               onChange={(value) => set("scope", value)}
             />,
           )}
           {field(
-            "Máximo (Grande)",
+            t("dashboard.token_usage.max_label"),
             <select
               className="select select--sm"
               value={draft.limit ?? 5}
@@ -787,7 +807,7 @@ function ConfigForm({
             >
               {[3, 5, 10].map((number) => (
                 <option key={number} value={number}>
-                  Top {number}
+                  {t("dashboard.token_usage.top_label", { n: number })}
                 </option>
               ))}
             </select>,
@@ -797,18 +817,18 @@ function ConfigForm({
       {id === "conn-status" && (
         <>
           {field(
-            "Conexiones",
+            t("dashboard.conn_status.connections_label"),
             <RadioPills
               value={draft.scope ?? "all"}
               options={[
-                ["all", "Todas"],
-                ["personal", "Personales"],
+                ["all", t("dashboard.conn_status.scope_all")],
+                ["personal", t("dashboard.conn_status.scope_personal")],
               ]}
               onChange={(value) => set("scope", value)}
             />,
           )}
           {field(
-            "Por página (Grande)",
+            t("dashboard.conn_status.page_size_label"),
             <select
               className="select select--sm"
               value={draft.pageSize ?? 4}
@@ -823,7 +843,7 @@ function ConfigForm({
       )}
       {id === "recent" &&
         field(
-          "Por página",
+          t("dashboard.recent.page_size_label"),
           <select
             className="select select--sm"
             value={draft.pageSize ?? 4}
@@ -836,7 +856,7 @@ function ConfigForm({
         )}
       {id === "activity" &&
         field(
-          "Periodo (solo en Grande)",
+          t("dashboard.activity.period_label"),
           <select
             className="select select--sm"
             value={draft.days ?? 14}
@@ -844,7 +864,7 @@ function ConfigForm({
           >
             {[7, 14, 30].map((number) => (
               <option key={number} value={number}>
-                {number} días
+                {t(`dashboard.activity.days_${number}`)}
               </option>
             ))}
           </select>,
@@ -852,7 +872,7 @@ function ConfigForm({
       {id === "feed" && (
         <>
           {field(
-            "Tipos de recurso",
+            t("dashboard.feed.types_label"),
             <div className="wfeed-cfg-type-grid">
               {(["agent", "skill", "knowledge"] as FeedResourceType[]).map((type) => (
                 <label className="wfeed-cfg-type-opt" key={type}>
@@ -869,14 +889,18 @@ function ConfigForm({
                     }
                   />
                   <span>
-                    {type === "agent" ? "Agentes" : type === "skill" ? "Skills" : "Knowledge"}
+                    {type === "agent"
+                      ? t("dashboard.feed.type_agent")
+                      : type === "skill"
+                        ? t("dashboard.feed.type_skill")
+                        : t("dashboard.feed.type_knowledge")}
                   </span>
                 </label>
               ))}
             </div>,
           )}
           {field(
-            "Cantidad",
+            t("dashboard.feed.limit_label"),
             <select
               className="select select--sm"
               value={draft.limit ?? 8}
@@ -884,18 +908,18 @@ function ConfigForm({
             >
               {[4, 8, 15, 25].map((number) => (
                 <option key={number} value={number}>
-                  {number} items
+                  {t("dashboard.feed.items_count", { count: number })}
                 </option>
               ))}
             </select>,
           )}
           {field(
-            "Vista",
+            t("dashboard.feed.density_label"),
             <RadioPills
               value={draft.density ?? "normal"}
               options={[
-                ["normal", "Normal — con descripción"],
-                ["compact", "Compacta — solo nombre y autor"],
+                ["normal", t("dashboard.feed.density_normal")],
+                ["compact", t("dashboard.feed.density_compact")],
               ]}
               onChange={(value) => set("density", value)}
             />,
@@ -903,15 +927,15 @@ function ConfigForm({
         </>
       )}
       {id === "composition" && (
-        <p className="wcfg-desc">Este panel no tiene opciones adicionales.</p>
+        <p className="wcfg-desc">{t("dashboard.composition.config_desc")}</p>
       )}
       <div className="wcfg-actions">
         <button className="btn btn-ghost btn-sm" onClick={onCancel}>
-          Cancelar
+          {t("dashboard.size.cancel_btn")}
         </button>
         {id !== "composition" && (
           <button className="btn btn-primary btn-sm" onClick={() => onSave(draft)}>
-            Guardar
+            {t("dashboard.size.save_btn")}
           </button>
         )}
       </div>
@@ -923,18 +947,20 @@ function WidgetBody({
   id,
   data,
   config,
+  t,
 }: {
   id: WidgetId;
   data: DashboardData;
   config: WidgetConfig;
+  t: TFunction;
 }) {
-  if (id === "summary") return <Summary data={data} config={config} />;
-  if (id === "token-usage") return <Tokens data={data} config={config} />;
-  if (id === "conn-status") return <Connections data={data} config={config} />;
-  if (id === "recent") return <Recent data={data} config={config} />;
-  if (id === "activity") return <Activity data={data} config={config} />;
-  if (id === "feed") return <Feed config={config} />;
-  return <Composition data={data} />;
+  if (id === "summary") return <Summary data={data} config={config} t={t} />;
+  if (id === "token-usage") return <Tokens data={data} config={config} t={t} />;
+  if (id === "conn-status") return <Connections data={data} config={config} t={t} />;
+  if (id === "recent") return <Recent data={data} config={config} t={t} />;
+  if (id === "activity") return <Activity data={data} config={config} t={t} />;
+  if (id === "feed") return <Feed config={config} t={t} />;
+  return <Composition data={data} t={t} />;
 }
 
 function Widget({
@@ -946,6 +972,7 @@ function Widget({
   onConfigure,
   onConfigSave,
   onRemove,
+  t,
 }: {
   id: WidgetId;
   data: DashboardData;
@@ -955,10 +982,12 @@ function Widget({
   onConfigure: () => void;
   onConfigSave: (config: WidgetConfig) => void;
   onRemove: () => void;
+  t: TFunction;
 }) {
   const sortable = useSortable({ id, disabled: !editing || configuring });
   const size = config.size ?? metadata[id].config.size;
   const cols = size === "small" ? 1 : size === "medium" ? 2 : metadata[id].cols;
+  const title = t(metadata[id].titleKey);
   return (
     <section
       ref={sortable.setNodeRef}
@@ -973,24 +1002,24 @@ function Widget({
         <div className="dash-editbar">
           <button
             className="dash-drag-handle"
-            aria-label={`Mover ${metadata[id].title}`}
+            aria-label={t("dashboard.sidebar.move_aria", { title })}
             {...sortable.attributes}
             {...sortable.listeners}
           >
             ⠿
           </button>
-          <span className="dash-editbar-title">{metadata[id].title}</span>
+          <span className="dash-editbar-title">{title}</span>
           <div className="dash-editbar-actions">
             <button
               className="dash-config-btn"
-              aria-label={`Configurar ${metadata[id].title}`}
+              aria-label={t("dashboard.sidebar.configure_aria", { title })}
               onClick={onConfigure}
             >
               ⚙
             </button>
             <button
               className="dash-remove-btn"
-              aria-label={`Quitar ${metadata[id].title}`}
+              aria-label={t("dashboard.sidebar.remove_aria", { title })}
               onClick={onRemove}
             >
               ×
@@ -999,12 +1028,12 @@ function Widget({
         </div>
       )}
       {configuring ? (
-        <ConfigForm id={id} value={config} onCancel={onConfigure} onSave={onConfigSave} />
+        <ConfigForm id={id} value={config} onCancel={onConfigure} onSave={onConfigSave} t={t} />
       ) : (
         <>
-          <div className="dash-panel-title">{metadata[id].title}</div>
+          <div className="dash-panel-title">{title}</div>
           <div className="dash-panel-body">
-            <WidgetBody id={id} data={data} config={config} />
+            <WidgetBody id={id} data={data} config={config} t={t} />
           </div>
         </>
       )}
@@ -1013,6 +1042,7 @@ function Widget({
 }
 
 export function DashboardPage() {
+  const { t } = useTranslation();
   const query = useQuery({
     queryKey: ["dashboard"],
     queryFn: ({ signal }) => loadDashboard(signal),
@@ -1068,7 +1098,7 @@ export function DashboardPage() {
       <main className="page-content">
         <div className="route-loading">
           <div className="spinner" />
-          Cargando dashboard…
+          {t("dashboard.page.loading")}
         </div>
       </main>
     );
@@ -1076,9 +1106,9 @@ export function DashboardPage() {
     return (
       <main className="page-content">
         <div className="empty-state">
-          <h2>No se pudo cargar el dashboard</h2>
+          <h2>{t("dashboard.page.load_error")}</h2>
           <button className="btn btn-primary" onClick={() => void query.refetch()}>
-            Reintentar
+            {t("dashboard.page.retry_btn")}
           </button>
         </div>
       </main>
@@ -1091,7 +1121,7 @@ export function DashboardPage() {
         aria-hidden={!editing}
       >
         <div className="des-header">
-          <span className="des-title">Personalizar</span>
+          <span className="des-title">{t("dashboard.sidebar.customize_title")}</span>
           <button
             className="btn btn-primary btn-sm"
             onClick={() => {
@@ -1099,34 +1129,31 @@ export function DashboardPage() {
               setConfiguring(null);
             }}
           >
-            Listo
+            {t("dashboard.sidebar.done_btn")}
           </button>
         </div>
-        <p className="des-hint">
-          Pulsa un panel para añadirlo. Arrastra para reordenar y usa el engranaje para
-          configurarlo.
-        </p>
+        <p className="des-hint">{t("dashboard.sidebar.hint")}</p>
         <div className="des-list">
           {available.length ? (
             available.map((id) => (
               <button className="des-item" key={id} onClick={() => saveLayout([...layout, id])}>
                 <span className="des-item-header">
-                  <span className="des-item-title">{metadata[id].title}</span>
+                  <span className="des-item-title">{t(metadata[id].titleKey)}</span>
                   <span className="des-item-size">
                     {metadata[id].cols >= 4
-                      ? "Grande"
+                      ? t("dashboard.size.large")
                       : metadata[id].cols === 1
-                        ? "Pequeño"
-                        : "Mediano"}
+                        ? t("dashboard.size.small")
+                        : t("dashboard.size.medium")}
                   </span>
                 </span>
               </button>
             ))
           ) : (
             <p className="des-empty">
-              Todos los paneles están en el dashboard.
+              {t("dashboard.sidebar.empty_line1")}
               <br />
-              Usa × para quitar uno.
+              {t("dashboard.sidebar.empty_line2")}
             </p>
           )}
         </div>
@@ -1134,18 +1161,18 @@ export function DashboardPage() {
       <main className="page-content">
         <div className="page-header dash-page-header">
           <div>
-            <h1 className="page-title">Dashboard</h1>
-            <p className="page-subtitle">Visión general de tu plataforma</p>
+            <h1 className="page-title">{t("dashboard.page.title")}</h1>
+            <p className="page-subtitle">{t("dashboard.page.subtitle")}</p>
           </div>
           {!editing && (
             <button id="btn-edit-dashboard" type="button" className="btn btn-ghost btn-sm" onClick={() => setEditing(true)}>
-              Personalizar
+              {t("dashboard.sidebar.customize_title")}
             </button>
           )}
         </div>
         {saveError && (
           <div className="dashboard-save-error" role="alert">
-            No se pudo guardar: {saveError}
+            {t("dashboard.page.save_error", { error: saveError })}
           </div>
         )}
         <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={dragEnd}>
@@ -1165,6 +1192,7 @@ export function DashboardPage() {
                     setConfiguring(null);
                     saveLayout(layout.filter((item) => item !== id));
                   }}
+                  t={t}
                 />
               ))}
             </div>

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { Link, Navigate, useSearchParams } from "react-router-dom";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import { api, ApiError } from "@/api/client";
 import { runtimeConfig } from "@/config/runtime";
 import { queryKeys } from "@/api/query-client";
@@ -52,6 +53,7 @@ const loadStripe = () =>
   });
 
 export function CheckoutPage() {
+  const { t } = useTranslation();
   useBodyClass("pricing-page");
   const [params] = useSearchParams(),
     tier = params.get("tier") ?? "",
@@ -101,16 +103,16 @@ export function CheckoutPage() {
         elements.current.create("payment").mount("#payment-element");
         setReady(true);
       } catch (cause) {
-        setError(cause instanceof Error ? cause.message : "No se pudo iniciar la suscripción");
+        setError(cause instanceof Error ? cause.message : t("pricing.checkout.error_subscribe"));
       }
     })();
     return () => {
       active = false;
     };
-  }, [quote.data, tier, seats, interval, selfHosted]);
+  }, [quote.data, tier, seats, interval, selfHosted, t]);
   const confirm = useMutation({
     mutationFn: async () => {
-      if (!stripe.current || !elements.current) throw new Error("El pago aún no está listo");
+      if (!stripe.current || !elements.current) throw new Error(t("pricing.checkout.error_not_ready"));
       const result = await stripe.current.confirmPayment({
         elements: elements.current,
         confirmParams: {
@@ -118,7 +120,7 @@ export function CheckoutPage() {
         },
         redirect: "if_required",
       });
-      if (result.error) throw new Error(result.error.message ?? "El pago no se pudo completar");
+      if (result.error) throw new Error(result.error.message ?? t("pricing.checkout.error_payment"));
       const id = subscription.current ?? sessionStorage.getItem("co_subscription_id");
       if (id) await api.post("/api/billing/confirm", { subscription_id: id });
       sessionStorage.removeItem("co_subscription_id");
@@ -149,19 +151,19 @@ export function CheckoutPage() {
           iAgents<span>Hub</span>
         </Link>
         <div className="pr-header-divider" />
-        <span className="pr-header-label">Checkout</span>
+        <span className="pr-header-label">{t("pricing.checkout.header_label")}</span>
         <div className="pr-header-spacer" />
         <Link to="/pricing/" className="pr-header-link">
-          ← Volver a precios
+          {t("pricing.checkout.back_to_pricing")}
         </Link>
       </header>
       <main className="pr-main co-main">
         <div className="co-card">
-          <h1 className="co-title">Confirma tu suscripción</h1>
+          <h1 className="co-title">{t("pricing.checkout.title")}</h1>
           <div className="co-summary">
             <div className="co-summary-row">
-              <span>{tier === "developer" ? "Individual" : "Business"}</span>
-              <span>{tier === "business" ? `${seats} licencias` : "1 licencia"}</span>
+              <span>{tier === "developer" ? t("pricing.checkout.plan_individual") : t("pricing.checkout.plan_business")}</span>
+              <span>{tier === "business" ? t("pricing.checkout.seats_many", { count: seats }) : t("pricing.checkout.seats_one")}</span>
             </div>
             <div className="co-summary-total">
               <span>
@@ -171,12 +173,12 @@ export function CheckoutPage() {
                     )
                   : "—"}
               </span>
-              <span>/ {interval === "year" ? "año" : "mes"}</span>
+              <span>{interval === "year" ? t("pricing.checkout.interval_year") : t("pricing.checkout.interval_month")}</span>
             </div>
           </div>
           {success ? (
             <div className="co-success">
-              <p>Suscripción activada. Redirigiendo…</p>
+              <p>{t("pricing.checkout.success")}</p>
             </div>
           ) : (
             <form onSubmit={submit}>
@@ -188,10 +190,10 @@ export function CheckoutPage() {
               )}
               <button className="pr-btn co-submit" disabled={!ready || confirm.isPending}>
                 {confirm.isPending
-                  ? "Procesando…"
+                  ? t("pricing.checkout.processing")
                   : quote.data
-                    ? `Suscribirse por ${new Intl.NumberFormat("es-ES", { style: "currency", currency: "EUR" }).format(quote.data.amount_cents / 100)}`
-                    : "Cargando…"}
+                    ? t("pricing.checkout.subscribe_btn", { amount: new Intl.NumberFormat("es-ES", { style: "currency", currency: "EUR" }).format(quote.data.amount_cents / 100) })
+                    : t("pricing.checkout.loading")}
               </button>
             </form>
           )}

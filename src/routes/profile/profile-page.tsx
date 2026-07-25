@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { api } from "@/api/client";
 import { AccountSection, PreferencesSection, ProvidersSection, SocialSection, StyleSection } from "./basic-sections";
 import { BillingSection, PrivacySection } from "./privacy-billing-sections";
@@ -41,26 +42,27 @@ function NavIcon({ section }: { section: SectionId }) {
 }
 
 export function ProfilePage() {
+  const { t } = useTranslation();
   const [params, setParams] = useSearchParams();
   const query = useQuery({ queryKey: ["profile", "complete"], queryFn: ({ signal }) => loadProfile(signal) });
   const rawTab = params.get("tab")?.replace(/^section-/, "") ?? "account";
   const active: SectionId = sectionIds.includes(rawTab as SectionId) ? rawTab as SectionId : rawTab === "teams" ? "workspaces" : "account";
   const nav = useMemo(() => [
-    ["account", "Mi cuenta"], ["social", "Perfil público"], ["providers", "Proveedores"], ["preferences", "Preferencias"], ["style", "Estilo"], ["workspaces", "Grupos"], ["tokens", "Tokens"], ["privacy", "Privacidad"],
-    ...(query.data?.platform.billing_enabled ? [["billing", "Suscripción"]] : []),
+    ["account", "profile.nav.account"], ["social", "profile.nav.social"], ["providers", "profile.nav.providers"], ["preferences", "profile.nav.preferences"], ["style", "profile.nav.style"], ["workspaces", "profile.nav.workspaces"], ["tokens", "profile.nav.tokens"], ["privacy", "profile.nav.privacy"],
+    ...(query.data?.platform.billing_enabled ? [["billing", "profile.nav.billing"]] : []),
   ] as Array<[SectionId, string]>, [query.data?.platform.billing_enabled]);
 
-  if (query.isPending) return <main className="page-content"><div className="admin-empty">Cargando perfil…</div></main>;
-  if (query.isError || !query.data) return <main className="page-content"><div className="admin-empty"><p>No se pudo cargar el perfil.</p><button className="btn btn-primary" onClick={() => void query.refetch()}>Reintentar</button></div></main>;
+  if (query.isPending) return <main className="page-content"><div className="admin-empty">{t("profile.page.loading")}</div></main>;
+  if (query.isError || !query.data) return <main className="page-content"><div className="admin-empty"><p>{t("profile.page.load_error")}</p><button className="btn btn-primary" onClick={() => void query.refetch()}>{t("profile.page.retry_btn")}</button></div></main>;
   const { session, social } = query.data;
   const avatarUrl = social.avatar_url ?? null;
-  const roleLabel = session.role === "admin" ? "Administrador" : session.role === "gestor" ? "Gestor" : session.role === "guest" ? "Invitado" : "Estándar";
+  const roleLabel = session.role === "admin" ? t("profile.roles.admin") : session.role === "gestor" ? t("profile.roles.gestor") : session.role === "guest" ? t("profile.roles.guest") : t("profile.roles.standard");
   return <main className="page-content">
-    <div className="page-header"><div><h1 className="page-title">Perfil</h1><p className="page-subtitle">Configuración de tu cuenta</p></div></div>
+    <div className="page-header"><div><h1 className="page-title">{t("profile.page.title")}</h1><p className="page-subtitle">{t("profile.page.subtitle")}</p></div></div>
     <div className="profile-panel">
-      <nav className="profile-nav" aria-label="Secciones del perfil">
-        <div className="profile-nav-user"><button className="profile-avatar" title="Cambia la foto en Mi cuenta" onClick={() => setParams({ tab: "account" })}>{avatarUrl ? <img src={avatarUrl} alt="" /> : <span>{session.username.charAt(0).toUpperCase()}</span>}</button><div className="profile-nav-user-info"><div className="profile-username">{session.username}</div><div className="profile-nav-badges"><span className="profile-role-badge">{roleLabel}</span>{session.auth_method && session.auth_method !== "internal" && <span className="profile-auth-badge">{session.auth_method}</span>}</div></div></div>
-        <div className="profile-nav-items">{nav.map(([id, label]) => <button key={id} className={`profile-nav-item${active === id ? " active" : ""}`} aria-current={active === id ? "page" : undefined} onClick={() => setParams({ tab: id })}><NavIcon section={id} /><span>{label}</span></button>)}</div>
+      <nav className="profile-nav" aria-label={t("profile.nav_aria_label")}>
+        <div className="profile-nav-user"><button className="profile-avatar" title={t("profile.avatar_tooltip")} onClick={() => setParams({ tab: "account" })}>{avatarUrl ? <img src={avatarUrl} alt="" /> : <span>{session.username.charAt(0).toUpperCase()}</span>}</button><div className="profile-nav-user-info"><div className="profile-username">{session.username}</div><div className="profile-nav-badges"><span className="profile-role-badge">{roleLabel}</span>{session.auth_method && session.auth_method !== "internal" && <span className="profile-auth-badge">{session.auth_method}</span>}</div></div></div>
+        <div className="profile-nav-items">{nav.map(([id, labelKey]) => <button key={id} className={`profile-nav-item${active === id ? " active" : ""}`} aria-current={active === id ? "page" : undefined} onClick={() => setParams({ tab: id })}><NavIcon section={id} /><span>{t(labelKey)}</span></button>)}</div>
       </nav>
       <div className="profile-sections"><section className="profile-section">
         {active === "account" && <AccountSection session={session} onAvatarSaved={() => void query.refetch()} />}

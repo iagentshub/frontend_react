@@ -1,5 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
+import type { TFunction } from "i18next";
 import { api, ApiError } from "@/api/client";
 
 export interface PersonalToken {
@@ -16,20 +18,20 @@ export interface PersonalToken {
 type Expiry = "30" | "90" | "180" | "never";
 
 const EXPIRY_OPTIONS: Array<[Expiry, string]> = [
-  ["30", "30 días"],
-  ["90", "90 días"],
-  ["180", "180 días"],
-  ["never", "Sin caducidad"],
+  ["30", "profile.tokens_page.expiry_30"],
+  ["90", "profile.tokens_page.expiry_90"],
+  ["180", "profile.tokens_page.expiry_180"],
+  ["never", "profile.tokens_page.expiry_never"],
 ];
 
-const STATUS_LABEL: Record<PersonalToken["status"], string> = {
-  active: "Activo",
-  revoked: "Revocado",
-  expired: "Caducado",
+const STATUS_LABEL_KEY: Record<PersonalToken["status"], string> = {
+  active: "profile.tokens_page.status_active",
+  revoked: "profile.tokens_page.status_revoked",
+  expired: "profile.tokens_page.status_expired",
 };
 
-function errorText(error: unknown) {
-  return error instanceof ApiError ? error.message : "No se pudo completar la operación.";
+function errorText(error: unknown, t: TFunction) {
+  return error instanceof ApiError ? error.message : t("profile.error_generic");
 }
 
 function date(value?: string | null) {
@@ -39,6 +41,7 @@ function date(value?: string | null) {
 }
 
 export function TokensSection() {
+  const { t } = useTranslation();
   const [name, setName] = useState("");
   const [expiry, setExpiry] = useState<Expiry>("90");
   // El token en claro solo existe en esta variable, y solo hasta que se recargue
@@ -88,12 +91,12 @@ export function TokensSection() {
   return (
     <>
       <div className="section-title-row">
-        <div className="section-title">Tokens personales</div>
+        <div className="section-title">{t("profile.tokens_page.title")}</div>
       </div>
       <p className="profile-empty-msg" style={{ marginTop: 0 }}>
-        Un token te permite conectar clientes que no son un navegador —como la extensión de
-        VS Code— con tu cuenta. Concede <strong>acceso completo a la API con tus mismos
-        permisos</strong>: trátalo como una contraseña y revócalo si lo expones.
+        {t("profile.tokens_page.desc_prefix")}
+        <strong>{t("profile.tokens_page.desc_bold")}</strong>
+        {t("profile.tokens_page.desc_suffix")}
       </p>
 
       <form className="admin-toolbar" onSubmit={submit}>
@@ -102,28 +105,28 @@ export function TokensSection() {
           value={name}
           maxLength={100}
           onChange={(event) => setName(event.target.value)}
-          placeholder="Para qué es (p. ej. VS Code del portátil)"
+          placeholder={t("profile.tokens_page.name_placeholder")}
         />
         <select
           className="admin-select"
           value={expiry}
           onChange={(event) => setExpiry(event.target.value as Expiry)}
         >
-          {EXPIRY_OPTIONS.map(([value, label]) => (
+          {EXPIRY_OPTIONS.map(([value, labelKey]) => (
             <option key={value} value={value}>
-              {label}
+              {t(labelKey)}
             </option>
           ))}
         </select>
         <button className="btn btn-primary btn-sm" disabled={!name.trim() || create.isPending}>
-          + Crear token
+          {t("profile.tokens_page.create_btn")}
         </button>
       </form>
 
       {justCreated && (
         <div className="profile-ws-card" style={{ flexDirection: "column", alignItems: "stretch", gap: 10 }}>
           <div className="section-subtitle" style={{ margin: 0 }}>
-            Cópialo ahora — no volverá a mostrarse
+            {t("profile.tokens_page.copy_now_hint")}
           </div>
           <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
             <code
@@ -139,33 +142,33 @@ export function TokensSection() {
               {justCreated}
             </code>
             <button type="button" className="btn btn-primary btn-sm" onClick={() => void copy()}>
-              {copied ? "Copiado" : "Copiar"}
+              {copied ? t("profile.tokens_page.copied") : t("profile.tokens_page.copy_btn")}
             </button>
             <button type="button" className="btn btn-ghost btn-sm" onClick={() => setJustCreated(null)}>
-              Ocultar
+              {t("profile.tokens_page.hide_btn")}
             </button>
           </div>
         </div>
       )}
 
       {(create.error || revoke.error) && (
-        <p className="form-error">{errorText(create.error ?? revoke.error)}</p>
+        <p className="form-error">{errorText(create.error ?? revoke.error, t)}</p>
       )}
 
-      {list.isPending && <div className="admin-empty">Cargando tokens…</div>}
-      {list.error && <p className="form-error">{errorText(list.error)}</p>}
+      {list.isPending && <div className="admin-empty">{t("profile.tokens_page.loading")}</div>}
+      {list.error && <p className="form-error">{errorText(list.error, t)}</p>}
 
       {list.data &&
         (list.data.length ? (
           <table className="admin-table">
             <thead>
               <tr>
-                <th>Nombre</th>
-                <th>Token</th>
-                <th>Creado</th>
-                <th>Último uso</th>
-                <th>Caduca</th>
-                <th>Estado</th>
+                <th>{t("profile.tokens_page.col_name")}</th>
+                <th>{t("profile.tokens_page.col_token")}</th>
+                <th>{t("profile.tokens_page.col_created")}</th>
+                <th>{t("profile.tokens_page.col_last_used")}</th>
+                <th>{t("profile.tokens_page.col_expires")}</th>
+                <th>{t("profile.tokens_page.col_status")}</th>
                 <th />
               </tr>
             </thead>
@@ -178,10 +181,10 @@ export function TokensSection() {
                   </td>
                   <td className="td-date">{date(token.created_at)}</td>
                   <td className="td-date">{date(token.last_used_at)}</td>
-                  <td className="td-date">{token.expires_at ? date(token.expires_at) : "Nunca"}</td>
+                  <td className="td-date">{token.expires_at ? date(token.expires_at) : t("profile.tokens_page.never_expires")}</td>
                   <td>
                     <span className={`badge badge--${token.status === "active" ? "std" : "warn"}`}>
-                      {STATUS_LABEL[token.status]}
+                      {t(STATUS_LABEL_KEY[token.status])}
                     </span>
                   </td>
                   <td className="td-actions">
@@ -190,11 +193,11 @@ export function TokensSection() {
                         className="btn btn-ghost btn-sm action-item--danger"
                         disabled={revoke.isPending}
                         onClick={() => {
-                          if (confirm(`¿Revocar "${token.name}"? Dejará de funcionar de inmediato.`))
+                          if (confirm(t("profile.tokens_page.confirm_revoke", { name: token.name })))
                             revoke.mutate(token.id);
                         }}
                       >
-                        Revocar
+                        {t("profile.tokens_page.revoke_btn")}
                       </button>
                     )}
                   </td>
@@ -203,7 +206,7 @@ export function TokensSection() {
             </tbody>
           </table>
         ) : (
-          <p className="profile-empty-msg">Todavía no has creado ningún token.</p>
+          <p className="profile-empty-msg">{t("profile.tokens_page.empty")}</p>
         ))}
     </>
   );

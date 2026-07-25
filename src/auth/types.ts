@@ -14,6 +14,9 @@ export interface PlatformSettings {
   registration: "open" | "closed" | "invite";
   billing_enabled: boolean;
   landing_enabled?: boolean;
+  oauth_google_enabled?: boolean;
+  oauth_apple_enabled?: boolean;
+  oauth_microsoft_enabled?: boolean;
 }
 
 export interface UserSettings {
