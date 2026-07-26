@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useState, type FormEvent } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { api, ApiError } from "@/api/client";
+import { BlockActionIcon, DeleteActionIcon, UnblockActionIcon } from "@/components/resource-icons";
 import type { ProfileInvitation, ProfileSession, ProfileWorkspace } from "./types";
 
 interface Member {
@@ -335,7 +336,9 @@ function WorkspaceDialog({
                           <td className="td-actions">
                             {member.role !== "owner" && (
                               <button
-                                className="btn btn-ghost btn-sm action-item--danger"
+                                className="btn-icon btn-icon--danger"
+                                title={t("profile.workspaces_page.remove_btn")}
+                                aria-label={t("profile.workspaces_page.remove_btn")}
                                 disabled={operation.isPending}
                                 onClick={() => {
                                   if (
@@ -348,7 +351,7 @@ function WorkspaceDialog({
                                     operation.mutate({ kind: "remove", username: member.username });
                                 }}
                               >
-                                {t("legacy.text_be78bcf6d43b")}
+                                <DeleteActionIcon />
                               </button>
                             )}
                           </td>
@@ -407,7 +410,17 @@ function WorkspaceDialog({
                   </div>
                   <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
                     <button
-                      className="btn btn-ghost"
+                      className="btn-icon"
+                      title={
+                        workspace.status === "disabled"
+                          ? t("profile.workspaces_page.reactivate_ws_btn")
+                          : t("profile.workspaces_page.deactivate_ws_btn")
+                      }
+                      aria-label={
+                        workspace.status === "disabled"
+                          ? t("profile.workspaces_page.reactivate_ws_btn")
+                          : t("profile.workspaces_page.deactivate_ws_btn")
+                      }
                       disabled={operation.isPending}
                       onClick={() =>
                         operation.mutate({
@@ -416,10 +429,16 @@ function WorkspaceDialog({
                         })
                       }
                     >
-                      {workspace.status === "disabled" ? "Reactivar grupo" : "Desactivar grupo"}
+                      {workspace.status === "disabled" ? (
+                        <UnblockActionIcon />
+                      ) : (
+                        <BlockActionIcon />
+                      )}
                     </button>
                     <button
-                      className="btn btn-danger"
+                      className="btn-icon btn-icon--danger"
+                      title={t("profile.workspaces_page.delete_ws_btn")}
+                      aria-label={t("profile.workspaces_page.delete_ws_btn")}
                       disabled={operation.isPending}
                       onClick={() => {
                         if (
@@ -432,7 +451,7 @@ function WorkspaceDialog({
                           operation.mutate({ kind: "delete" });
                       }}
                     >
-                      {t("legacy.text_883631966861")}
+                      <DeleteActionIcon />
                     </button>
                   </div>
                   <div style={{ marginTop: 14, display: "flex", gap: 8 }}>

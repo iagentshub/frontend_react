@@ -85,6 +85,18 @@ export interface PlatformConfig {
   landing_enabled: boolean;
   billing_enabled: boolean;
   log_retention_days: number;
+  oauth_google_enabled: boolean;
+  oauth_apple_enabled: boolean;
+  oauth_microsoft_enabled: boolean;
+  auto_update_enabled: boolean;
+}
+
+export interface CheckUpdateResult {
+  checked: boolean;
+  reason?: string;
+  current_version: string;
+  latest_version?: string;
+  update_available?: boolean;
 }
 
 export interface AdminData {

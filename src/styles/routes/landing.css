@@ -217,6 +217,7 @@
 
         .landing-install-toggles {
             display: flex;
+            flex-wrap: wrap;
             gap: 8px;
             margin-bottom: 14px;
         }
@@ -255,11 +256,6 @@
             background: var(--surface-2);
             border-radius: var(--radius);
             padding: 12px 14px;
-        }
-
-        .landing-install-code.is-undefined {
-            font-style: italic;
-            color: var(--ink-3);
         }
 
         .landing-install-code {

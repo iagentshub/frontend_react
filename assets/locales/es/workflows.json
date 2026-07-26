@@ -24,6 +24,13 @@
     "delete_confirm": "¿Eliminar «{{name}}» definitivamente?",
     "operation_error": "No se pudo completar la operación"
   },
+  "dialog": {
+    "configuration": "Configuración",
+    "edit": "Editar orquestación",
+    "saved": "Guardado",
+    "close": "Cerrar",
+    "sequence": "Secuencia de agentes"
+  },
   "health": {
     "aria": "Estado de preparación",
     "ready_count": "Controles listos",

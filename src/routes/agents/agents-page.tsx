@@ -6,6 +6,7 @@ import { api } from "@/api/client";
 import { queryClient, queryKeys } from "@/api/query-client";
 import {
   AgentGlyph,
+  DeleteActionIcon,
   agentIconOptions,
   normalizeAgentIcon,
   type AgentIconName,
@@ -1136,14 +1137,16 @@ function AgentEditor({
 
                       <button
                         type="button"
-                        className="btn btn-ghost btn-sm action-item--danger"
+                        className="btn-icon btn-icon--danger"
+                        title={t("admin.delete_btn")}
+                        aria-label={t("admin.delete_btn")}
                         onClick={() =>
                           setRoutines((items) =>
                             items.filter((_, itemIndex) => itemIndex !== index),
                           )
                         }
                       >
-                        {t("legacy.text_6a578e1e2170")}
+                        <DeleteActionIcon />
                       </button>
                     </div>
                   ))}

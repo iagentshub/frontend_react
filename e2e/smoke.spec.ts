@@ -100,7 +100,7 @@ test("los enlaces públicos abren About y Documentación", async ({ page }) => {
   await expect(page.getByRole("heading", { level: 1 })).toContainText("¿Qué es iAgents Hub?");
 
   await page.goto("/");
-  await page.locator('a[href="/docs"]').click();
+  await page.getByRole("link", { name: "Documentación", exact: true }).click();
   await expect(page).toHaveURL(/\/docs$/);
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Documentación");
 });

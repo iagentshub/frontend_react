@@ -3,6 +3,12 @@ import { useTranslation } from "react-i18next";
 import { useMemo, useState, type FormEvent } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { api, ApiError } from "@/api/client";
+import {
+  BlockActionIcon,
+  DeleteActionIcon,
+  EditActionIcon,
+  UnblockActionIcon,
+} from "@/components/resource-icons";
 import type {
   AdminAgent,
   AdminConnection,
@@ -182,17 +188,29 @@ export function AdminUsersPanel({
                 <td className="td-actions">
                   <div style={{ display: "flex", gap: 4, justifyContent: "flex-end" }}>
                     <button
-                      className="btn btn-ghost btn-sm"
+                      className="btn-icon"
+                      title={t("admin.actions.edit")}
+                      aria-label={t("admin.actions.edit")}
                       onClick={() => setEditor({ mode: "edit", user })}
                     >
-                      {t("agents.modal.routine_edit")}
+                      <EditActionIcon />
                     </button>
                     <button
-                      className="btn btn-ghost btn-sm"
+                      className="btn-icon"
+                      title={
+                        isTrue(user.is_active)
+                          ? t("admin.actions.block")
+                          : t("admin.actions.activate")
+                      }
+                      aria-label={
+                        isTrue(user.is_active)
+                          ? t("admin.actions.block")
+                          : t("admin.actions.activate")
+                      }
                       disabled={action.isPending}
                       onClick={() => action.mutate({ kind: "active", user })}
                     >
-                      {isTrue(user.is_active) ? "Bloquear" : "Activar"}
+                      {isTrue(user.is_active) ? <BlockActionIcon /> : <UnblockActionIcon />}
                     </button>
                     {user.role !== "admin" && (
                       <button
@@ -213,7 +231,9 @@ export function AdminUsersPanel({
                       </button>
                     )}
                     <button
-                      className="btn btn-ghost btn-sm action-item--danger"
+                      className="btn-icon btn-icon--danger"
+                      title={t("admin.delete_btn")}
+                      aria-label={t("admin.delete_btn")}
                       disabled={action.isPending}
                       onClick={() => {
                         if (
@@ -226,7 +246,7 @@ export function AdminUsersPanel({
                           action.mutate({ kind: "delete", user });
                       }}
                     >
-                      {t("admin.delete_btn")}
+                      <DeleteActionIcon />
                     </button>
                   </div>
                 </td>
@@ -465,14 +485,26 @@ export function AdminWorkspacesPanel({
                 </td>
                 <td className="td-actions">
                   <button
-                    className="btn btn-ghost btn-sm"
+                    className="btn-icon"
+                    title={
+                      workspace.status === "disabled"
+                        ? t("admin.actions.activate")
+                        : t("admin.actions.deactivate")
+                    }
+                    aria-label={
+                      workspace.status === "disabled"
+                        ? t("admin.actions.activate")
+                        : t("admin.actions.deactivate")
+                    }
                     disabled={action.isPending}
                     onClick={() => action.mutate({ workspace, kind: "status" })}
                   >
-                    {workspace.status === "disabled" ? "Reactivar" : "Desactivar"}
+                    {workspace.status === "disabled" ? <UnblockActionIcon /> : <BlockActionIcon />}
                   </button>
                   <button
-                    className="btn btn-ghost btn-sm action-item--danger"
+                    className="btn-icon btn-icon--danger"
+                    title={t("admin.delete_btn")}
+                    aria-label={t("admin.delete_btn")}
                     disabled={action.isPending}
                     onClick={() => {
                       if (
@@ -485,7 +517,7 @@ export function AdminWorkspacesPanel({
                         action.mutate({ workspace, kind: "delete" });
                     }}
                   >
-                    {t("admin.delete_btn")}
+                    <DeleteActionIcon />
                   </button>
                 </td>
               </tr>
@@ -593,11 +625,18 @@ export function AdminAgentsPanel({
                   {fmt((agent.tokens_in ?? 0) + (agent.tokens_out ?? 0))}
                 </td>
                 <td className="td-actions">
-                  <button className="btn btn-ghost btn-sm" onClick={() => setEditing(agent)}>
-                    {t("agents.modal.routine_edit")}
+                  <button
+                    className="btn-icon"
+                    title={t("admin.actions.edit")}
+                    aria-label={t("admin.actions.edit")}
+                    onClick={() => setEditing(agent)}
+                  >
+                    <EditActionIcon />
                   </button>
                   <button
-                    className="btn btn-ghost btn-sm action-item--danger"
+                    className="btn-icon btn-icon--danger"
+                    title={t("admin.delete_btn")}
+                    aria-label={t("admin.delete_btn")}
                     disabled={remove.isPending}
                     onClick={() => {
                       if (
@@ -610,7 +649,7 @@ export function AdminAgentsPanel({
                         remove.mutate(agent);
                     }}
                   >
-                    {t("admin.delete_btn")}
+                    <DeleteActionIcon />
                   </button>
                 </td>
               </tr>
@@ -822,14 +861,16 @@ export function AdminConnectionsPanel({
                 <td className="td-date">{date(connection.created_at)}</td>
                 <td className="td-actions">
                   <button
-                    className="btn btn-ghost btn-sm action-item--danger"
+                    className="btn-icon btn-icon--danger"
+                    title={t("admin.delete_btn")}
+                    aria-label={t("admin.delete_btn")}
                     disabled={remove.isPending}
                     onClick={() => {
                       if (confirm(i18n.t("dynamic.text_3dac2f005418")))
                         remove.mutate(connection.id);
                     }}
                   >
-                    {t("admin.delete_btn")}
+                    <DeleteActionIcon />
                   </button>
                 </td>
               </tr>
@@ -944,13 +985,15 @@ export function AdminKnowledgePanel({
                 <td className="td-date">{date(item.created_at)}</td>
                 <td className="td-actions">
                   <button
-                    className="btn btn-ghost btn-sm action-item--danger"
+                    className="btn-icon btn-icon--danger"
+                    title={t("admin.delete_btn")}
+                    aria-label={t("admin.delete_btn")}
                     disabled={remove.isPending}
                     onClick={() => {
                       if (confirm(i18n.t("dynamic.text_6fbe51623c1f"))) remove.mutate(item.id);
                     }}
                   >
-                    {t("admin.delete_btn")}
+                    <DeleteActionIcon />
                   </button>
                 </td>
               </tr>

@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "react-router-dom";
 import { api, ApiError } from "@/api/client";
+import { DeleteActionIcon } from "@/components/resource-icons";
 import "@/styles/routes/admin/admin.css";
 import "@/styles/routes/manager/manager.css";
 
@@ -438,7 +439,9 @@ export function ManagerPage() {
 
                         {member.role !== "owner" && (
                           <button
-                            className="btn btn-ghost btn-sm action-item--danger"
+                            className="btn-icon btn-icon--danger"
+                            title={t("admin.delete_btn")}
+                            aria-label={t("admin.delete_btn")}
                             disabled={busy}
                             onClick={() => {
                               if (
@@ -451,7 +454,7 @@ export function ManagerPage() {
                                 removeMutation.mutate(member.username);
                             }}
                           >
-                            {t("admin.delete_btn")}
+                            <DeleteActionIcon />
                           </button>
                         )}
 

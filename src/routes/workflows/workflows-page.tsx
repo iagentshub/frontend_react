@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { api } from "@/api/client";
 import { queryClient } from "@/api/query-client";
 import { WorkflowCanvas } from "./workflow-canvas";
+import { WorkflowBuilderDialog } from "./workflow-builder-dialog";
 import { WorkflowRunner } from "./workflow-runner";
 import { WorkflowCatalog } from "./workflow-sidebar";
 import { WorkflowShareDialog } from "./workflow-share-dialog";
@@ -72,6 +73,7 @@ export function WorkflowsPage() {
     running: false,
   });
   const [view, setView] = useState<"catalog" | "editor">("catalog");
+  const [createDialogOpen, setCreateDialogOpen] = useState(false);
   const [shareTarget, setShareTarget] = useState<Workflow>();
   const [shareNotice, setShareNotice] = useState("");
   const normalizedDraft = useMemo(() => withLinearEdges(draft), [draft]);
@@ -111,12 +113,7 @@ export function WorkflowsPage() {
 
   const createNew = () => {
     if (!confirmDiscard()) return;
-    const fresh = emptyWorkflow(defaultName);
-    setDraft(fresh);
-    setSavedFingerprint(fingerprint(fresh));
-    setSelectedNodeId(undefined);
-    setProgress({ stages: {}, running: false });
-    setView("editor");
+    setCreateDialogOpen(true);
   };
 
   const selectWorkflow = (workflow: Workflow) => {
@@ -440,6 +437,22 @@ export function WorkflowsPage() {
         <div className="workflow-share-notice" role="status">
           {shareNotice}
         </div>
+      )}
+
+      {createDialogOpen && (
+        <WorkflowBuilderDialog
+          workflow={null}
+          agents={agents.data ?? []}
+          onClose={() => setCreateDialogOpen(false)}
+          onSaved={() => {
+            setCreateDialogOpen(false);
+            void workflows.refetch();
+          }}
+          onDeleted={() => {
+            setCreateDialogOpen(false);
+            void workflows.refetch();
+          }}
+        />
       )}
 
       {shareTarget?.id && (

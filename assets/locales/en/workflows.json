@@ -24,6 +24,13 @@
     "delete_confirm": "Permanently delete “{{name}}”?",
     "operation_error": "The operation could not be completed"
   },
+  "dialog": {
+    "configuration": "Configuration",
+    "edit": "Edit orchestration",
+    "saved": "Saved",
+    "close": "Close",
+    "sequence": "Agent sequence"
+  },
   "health": {
     "aria": "Readiness status",
     "ready_count": "Checks ready",

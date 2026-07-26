@@ -1,4 +1,3 @@
-import i18n from "@/i18n";
 import { useTranslation } from "react-i18next";
 import { useState, type FormEvent } from "react";
 import { useMutation } from "@tanstack/react-query";
@@ -20,7 +19,7 @@ export function ForgotPasswordPage() {
   const submit = (event: FormEvent) => {
     event.preventDefault();
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
-      setValidation(i18n.t("dynamic.text_90ab3644d955"));
+      setValidation(t("auth.forgot_password_page.error_invalid_email"));
       return;
     }
     setValidation(null);
@@ -31,7 +30,7 @@ export function ForgotPasswordPage() {
     (requestReset.error instanceof ApiError
       ? requestReset.error.message
       : requestReset.error
-        ? i18n.t("dynamic.text_e81ee946f7a0")
+        ? t("auth.forgot_password_page.error_generic")
         : null);
 
   return (
@@ -41,10 +40,10 @@ export function ForgotPasswordPage() {
           <p
             style={{ fontSize: 14, color: "var(--ink-1,#ccc)", lineHeight: 1.6, marginBottom: 24 }}
           >
-            {t("legacy.text_ba9a3d2a85f6")}
+            {t("auth.forgot_password_page.sent_body")}
             <br />
             <span style={{ fontSize: 12, color: "var(--ink-2,#888)" }}>
-              {t("legacy.text_99cb52cd4267")}
+              {t("auth.forgot_password_page.sent_spam_hint")}
             </span>
           </p>
           <Link
@@ -52,22 +51,22 @@ export function ForgotPasswordPage() {
             style={{ display: "block", textAlign: "center" }}
             to="/login/"
           >
-            {t("legacy.text_b80454b64a34")}
+            {t("auth.register.back_to_login")}
           </Link>
         </div>
       ) : (
         <>
-          <h2 style={{ marginBottom: 4 }}>{t("legacy.text_c655cfbac5dc")}</h2>
+          <h2 style={{ marginBottom: 4 }}>{t("auth.forgot_password_page.title")}</h2>
           <p className="login-sub" style={{ marginBottom: 24 }}>
-            {t("legacy.text_ed3a036490ff")}
+            {t("auth.forgot_password_page.sub")}
           </p>
           <form noValidate onSubmit={submit}>
             <div className="field">
-              <label htmlFor="forgot-email">{t("admin.table.email")}</label>
+              <label htmlFor="forgot-email">{t("auth.forgot_password_page.email_label")}</label>
               <input
                 id="forgot-email"
                 type="email"
-                placeholder={t("legacy.text_fd714d2efcca")}
+                placeholder="email@example.com"
                 required
                 autoComplete="email"
                 value={email}
@@ -84,11 +83,13 @@ export function ForgotPasswordPage() {
               className="btn btn-primary btn-full"
               disabled={requestReset.isPending}
             >
-              {requestReset.isPending ? "Enviando…" : "Enviar enlace"}
+              {requestReset.isPending
+                ? t("auth.forgot_password_page.send_btn_loading")
+                : t("auth.forgot_password_page.send_btn")}
             </button>
           </form>
           <p className="login-register-link" style={{ marginTop: 20 }}>
-            <Link to="/login/">{t("legacy.text_dfbb73924efc")}</Link>
+            <Link to="/login/">{t("auth.forgot_password_page.back_to_login_arrow")}</Link>
           </p>
         </>
       )}

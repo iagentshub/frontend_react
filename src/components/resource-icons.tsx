@@ -43,6 +43,40 @@ function Svg({ size = 20, ...props }: IconProps) {
   );
 }
 
+export function EditActionIcon({ size = 14, ...props }: IconProps) {
+  return (
+    <Svg size={size} {...props}>
+      <path d="m4 20 4.2-1 10.6-10.6a2.1 2.1 0 0 0-3-3L5.2 16 4 20Z" />
+      <path d="m14.5 6.7 3 3" />
+    </Svg>
+  );
+}
+
+export function DeleteActionIcon({ size = 14, ...props }: IconProps) {
+  return (
+    <Svg size={size} {...props}>
+      <path d="M4 7h16M9 7V4h6v3M7 7l1 14h8l1-14M10 11v6M14 11v6" />
+    </Svg>
+  );
+}
+
+export function BlockActionIcon({ size = 14, ...props }: IconProps) {
+  return (
+    <Svg size={size} {...props}>
+      <circle cx="12" cy="12" r="9" />
+      <path d="m5.6 5.6 12.8 12.8" />
+    </Svg>
+  );
+}
+
+export function UnblockActionIcon({ size = 14, ...props }: IconProps) {
+  return (
+    <Svg size={size} {...props}>
+      <path d="m5 12 4 4L19 6" />
+    </Svg>
+  );
+}
+
 export function AgentGlyph({
   icon,
   size = 20,

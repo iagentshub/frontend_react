@@ -164,5 +164,24 @@
   "faq5_q": "How does annual billing work?",
   "faq5_a": "You pay for 10 months and get access for 12 — equivalent to a 17% discount. The invoice is issued once a year for the full amount. The per-license price is locked for the entire duration of the contract.",
   "footer_about": "About",
-  "footer_contact": "Contact"
+  "footer_contact": "Contact",
+  "checkout": {
+    "header_label": "Checkout",
+    "back_to_pricing": "← Back to pricing",
+    "title": "Confirm your subscription",
+    "loading": "Loading…",
+    "success": "Subscription activated. Redirecting…",
+    "plan_individual": "Individual",
+    "plan_business": "Business",
+    "seats_one": "1 seat",
+    "seats_many": "{{count}} seats",
+    "interval_year": "/ year",
+    "interval_month": "/ month",
+    "error_quote": "Couldn't calculate the price",
+    "error_subscribe": "Couldn't start the subscription",
+    "subscribe_btn": "Subscribe for {{amount}}",
+    "processing": "Processing…",
+    "error_payment": "The payment couldn't be completed",
+    "error_not_ready": "Payment isn't ready yet"
+  }
 }

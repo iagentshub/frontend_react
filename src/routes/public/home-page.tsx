@@ -8,7 +8,9 @@ import { usePublicNavigation } from "@/i18n/public-paths";
 import "@/styles/routes/landing.css";
 type InstallMode = "docker" | "nodocker";
 type InstallOs = "linux" | "mac" | "windows";
+type InstallFrontend = "vanilla" | "react";
 
+const frontends: InstallFrontend[] = ["vanilla", "react"];
 const modes: InstallMode[] = ["docker", "nodocker"];
 const operatingSystems: InstallOs[] = ["linux", "mac", "windows"];
 const homeFeatures = [
@@ -19,23 +21,15 @@ const homeFeatures = [
   "groups",
   "export",
 ] as const;
-// install.sh (Linux/macOS) e install.ps1 (Windows) son ahora un único
-// instalador por SO: preguntan interactivamente Docker vs sin-Docker, así que
-// el comando es el mismo para ambos modos — la única variable real es el SO.
-const installMatrix: Record<`${InstallMode}|${InstallOs}`, string | null> = {
-  "docker|linux":
-    "curl -fsSL https://raw.githubusercontent.com/iagentshub/iAgents/main/install.sh | bash",
-  "docker|mac":
-    "curl -fsSL https://raw.githubusercontent.com/iagentshub/iAgents/main/install.sh | bash",
-  "docker|windows":
-    "irm https://raw.githubusercontent.com/iagentshub/iAgents/main/install.ps1 | iex",
-  "nodocker|linux":
-    "curl -fsSL https://raw.githubusercontent.com/iagentshub/iAgents/main/install.sh | bash",
-  "nodocker|mac":
-    "curl -fsSL https://raw.githubusercontent.com/iagentshub/iAgents/main/install.sh | bash",
-  "nodocker|windows":
-    "irm https://raw.githubusercontent.com/iagentshub/iAgents/main/install.ps1 | iex",
-};
+const modeToFlag: Record<InstallMode, string> = { docker: "docker", nodocker: "local" };
+
+function buildInstallCommand(frontend: InstallFrontend, mode: InstallMode, os: InstallOs): string {
+  const modeFlag = modeToFlag[mode];
+  if (os === "windows") {
+    return `$env:IAGENTSHUB_FRONTEND = "${frontend}"; $env:IAGENTSHUB_MODE = "${modeFlag}"; irm https://raw.githubusercontent.com/iagentshub/iAgents/main/install.ps1 | iex`;
+  }
+  return `curl -fsSL https://raw.githubusercontent.com/iagentshub/iAgents/main/install.sh | IAGENTSHUB_FRONTEND=${frontend} IAGENTSHUB_MODE=${modeFlag} bash`;
+}
 
 function nextValue<T>(values: T[], current: T): T {
   const index = values.indexOf(current);
@@ -46,6 +40,7 @@ export function HomePage() {
   const { t, i18n } = useTranslation();
   const platform = useQuery(platformQuery);
   const { language, publicLink, switchLanguage } = usePublicNavigation(i18n, "/");
+  const [frontend, setFrontend] = useState<InstallFrontend>("react");
   const [mode, setMode] = useState<InstallMode>("docker");
   const [os, setOs] = useState<InstallOs>("linux");
   const [copied, setCopied] = useState(false);
@@ -53,9 +48,8 @@ export function HomePage() {
   if (platform.isPending) return null;
   if (!platform.data?.landing_enabled || platform.isError) return <Navigate to="/login/" replace />;
 
-  const command = installMatrix[`${mode}|${os}`];
+  const command = buildInstallCommand(frontend, mode, os);
   const copyCommand = async () => {
-    if (!command) return;
     await navigator.clipboard.writeText(command);
     setCopied(true);
     window.setTimeout(() => setCopied(false), 1500);
@@ -149,6 +143,14 @@ export function HomePage() {
               <button
                 className="landing-toggle"
                 type="button"
+                onClick={() => setFrontend(nextValue(frontends, frontend))}
+              >
+                {t(`landing.install.frontend_${frontend}`)}
+              </button>
+
+              <button
+                className="landing-toggle"
+                type="button"
                 onClick={() => setMode(nextValue(modes, mode))}
               >
                 {t(`landing.install.mode_${mode}`)}
@@ -164,19 +166,15 @@ export function HomePage() {
             </div>
 
             <div className="landing-install-cmd">
-              <code className={`landing-install-code${command ? "" : " is-undefined"}`}>
-                {command ?? t("landing.install.undefined")}
-              </code>
+              <code className="landing-install-code">{command}</code>
 
-              {command && (
-                <button
-                  className="btn btn-ghost btn-sm"
-                  type="button"
-                  onClick={() => void copyCommand()}
-                >
-                  {copied ? t("landing.install.copied") : t("landing.install.copy")}
-                </button>
-              )}
+              <button
+                className="btn btn-ghost btn-sm"
+                type="button"
+                onClick={() => void copyCommand()}
+              >
+                {copied ? t("landing.install.copied") : t("landing.install.copy")}
+              </button>
             </div>
           </div>
         </section>
