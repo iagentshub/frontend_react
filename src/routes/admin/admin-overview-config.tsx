@@ -232,6 +232,24 @@ export function AdminConfigPanel({
             onChange={(value) => set("billing_enabled", value)}
           />
         </div>
+        <div className="admin-config-section">
+          <div className="admin-config-title">{t("admin.config.section_oauth")}</div>
+          <Toggle
+            label={t("admin.config.oauth_google_label")}
+            value={config.oauth_google_enabled}
+            onChange={(value) => set("oauth_google_enabled", value)}
+          />
+          <Toggle
+            label={t("admin.config.oauth_apple_label")}
+            value={config.oauth_apple_enabled}
+            onChange={(value) => set("oauth_apple_enabled", value)}
+          />
+          <Toggle
+            label={t("admin.config.oauth_microsoft_label")}
+            value={config.oauth_microsoft_enabled}
+            onChange={(value) => set("oauth_microsoft_enabled", value)}
+          />
+        </div>
       </div>
       <div style={{ marginTop: 16, display: "flex", gap: 12, alignItems: "center" }}>
         <button className="btn btn-primary" disabled={save.isPending}>

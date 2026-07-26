@@ -1,8 +1,9 @@
 import { useTranslation } from "react-i18next";
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { useMutation } from "@tanstack/react-query";
+import { Link, Navigate, useNavigate } from "react-router-dom";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { api, ApiError } from "@/api/client";
+import { queryKeys } from "@/api/query-client";
 import { Seo } from "@/components/seo";
 import { usePublicNavigation } from "@/i18n/public-paths";
 import { useBodyClass } from "./use-body-class";
@@ -176,8 +177,15 @@ const CARDS: Array<{
 export function PricingPage() {
   const { t, i18n } = useTranslation();
   useBodyClass("pricing-page");
-  const { publicLink } = usePublicNavigation(i18n, "/pricing/");
+  const { publicLink, language, switchLanguage } = usePublicNavigation(i18n, "/pricing/");
   const navigate = useNavigate();
+
+  // ── Guard: si la facturación está desactivada, no se muestra la página ──
+  const settings = useQuery({
+    queryKey: queryKeys.platform,
+    queryFn: ({ signal }) =>
+      api.get<{ billing_enabled?: boolean }>("/api/settings/platform/public", signal, false),
+  });
 
   // ── Toggle mensual/anual de la página ─────────────────────────────────
   const [annual, setAnnual] = useState(false);
@@ -255,6 +263,8 @@ export function PricingPage() {
   const annualSh = pmSelfHosted ? SH_ANNUAL : 0;
   const annualTotal = annualBase + annualSh;
   const saving = monthlyTotal * 12 - annualTotal;
+
+  if (settings.data && settings.data.billing_enabled === false) return <Navigate to="/" replace />;
 
   return (
     <>
@@ -707,6 +717,9 @@ export function PricingPage() {
         <span>© 2026 iAgentsHub</span>
         <Link to={publicLink("/about")}>{t("pricing.footer_about")}</Link>
         <a href="mailto:hola@iagentshub.com">{t("pricing.footer_contact")}</a>
+        <button className="pr-lang-btn" type="button" onClick={() => void switchLanguage()}>
+          {language.toUpperCase()}
+        </button>
       </footer>
     </>
   );
