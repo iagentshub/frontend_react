@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { api } from "@/api/client";
 import { sessionQuery } from "@/auth/queries";
+import { LabelChips } from "@/components/label-chips";
 import type {
   AgentTryResult,
   ConnectionOption,
@@ -28,25 +29,11 @@ const avatarColors = [
   "#db2777",
   "#0f766e",
 ] as const;
-const labelColors: Record<string, string> = {
-  public: "#059669",
-  private: "#64748b",
-  production: "#0891b2",
-  staging: "#475569",
-  development: "#d97706",
-  test: "#7c3aed",
-  favorite: "#f59e0b",
-  draft: "#8b5cf6",
-  review: "#f97316",
-  deprecated: "#ca8a04",
-  quarantine: "#ef4444",
-  archived: "#94a3b8",
-  delete: "#dc2626",
-};
 const resourceLabels: Record<ResourceType, string> = {
   agent: "Agente",
   skill: "Skill",
   knowledge: "Knowledge",
+  workflow: "Orquestación",
 };
 
 function avatarColor(value: string) {
@@ -99,25 +86,6 @@ function LinkIcon() {
         strokeLinecap="round"
       />
     </svg>
-  );
-}
-
-function LabelChips({ labels }: { labels: string[] | undefined }) {
-  const { t } = useTranslation();
-  const visible = (labels ?? []).filter((label) => label !== "private" && labelColors[label]);
-  if (!visible.length) return null;
-  return (
-    <div className="label-chips-row" style={{ marginTop: 4 }}>
-      {visible.map((label) => (
-        <span
-          className="label-chip"
-          style={{ "--lc": labelColors[label] } as React.CSSProperties}
-          key={label}
-        >
-          {t(`labels.${label}`)}
-        </span>
-      ))}
-    </div>
   );
 }
 
@@ -295,7 +263,7 @@ function PreviewContent({ preview }: { preview: ExplorePreview }) {
                 <span className="explore-card-type-badge">{preview.category}</span>
               )}
 
-              <LabelChips labels={preview.labels} />
+              <LabelChips labels={preview.labels} style={{ marginTop: 4 }} />
             </div>
           </div>
         </div>
@@ -353,7 +321,7 @@ function PreviewContent({ preview }: { preview: ExplorePreview }) {
             <span style={{ fontSize: 12, color: "var(--ink-2)" }}>{preview.category}</span>
           )}
 
-          <LabelChips labels={preview.labels} />
+          <LabelChips labels={preview.labels} style={{ marginTop: 4 }} />
         </div>
 
         {preview.description && (
@@ -393,12 +361,33 @@ function PreviewContent({ preview }: { preview: ExplorePreview }) {
       </>
     );
   }
+  if (preview.resource_type === "workflow") {
+    return (
+      <>
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <span className="explore-card-type-badge">{resourceLabels.workflow}</span>
+
+          {preview.category && (
+            <span style={{ fontSize: 12, color: "var(--ink-2)" }}>{preview.category}</span>
+          )}
+
+          <LabelChips labels={preview.labels} style={{ marginTop: 4 }} />
+        </div>
+
+        {preview.description && (
+          <p style={{ fontSize: 13, color: "var(--ink-2)", margin: 0 }}>{preview.description}</p>
+        )}
+
+        <PreviewList title={`Pasos (${preview.steps ?? 0})`} values={preview.agent_names} />
+      </>
+    );
+  }
   return (
     <>
       <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
         <span className="explore-card-type-badge">{t("legacy.text_dec1fccaba73")}</span>
 
-        <LabelChips labels={preview.labels} />
+        <LabelChips labels={preview.labels} style={{ marginTop: 4 }} />
       </div>
 
       {preview.source && (
@@ -524,7 +513,7 @@ function ResourceCard({
 
       <p className="explore-card-desc">{resource.description ?? ""}</p>
 
-      <LabelChips labels={resource.labels} />
+      <LabelChips labels={resource.labels} style={{ marginTop: 4 }} />
 
       <div className="explore-card-footer">
         <div className={`explore-card-actions${busy ? " explore-card-action-busy" : ""}`}>
@@ -687,7 +676,9 @@ export function ExplorePage() {
         const prefix =
           resource.resource_type === "knowledge"
             ? "/api/knowledge"
-            : `/api/${resource.resource_type === "skill" ? "skills" : "agents"}/public`;
+            : resource.resource_type === "workflow"
+              ? "/api/workflows"
+              : `/api/${resource.resource_type === "skill" ? "skills" : "agents"}/public`;
         const result = await api.post<SocialActionResult>(
           `${prefix}/${encodeURIComponent(resource.resource_id)}/${action}`,
           {},
@@ -813,6 +804,8 @@ export function ExplorePage() {
           <option value="skill">{t("explore.type_skills")}</option>
 
           <option value="knowledge">{t("explore.type_knowledge")}</option>
+
+          <option value="workflow">{t("explore.type_workflows")}</option>
 
           <option value="users">{t("explore.type_users")}</option>
         </select>

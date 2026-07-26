@@ -18,6 +18,7 @@ export interface Workflow {
     nodes: WorkflowNode[];
     edges: WorkflowEdge[];
   };
+  labels?: string[];
   updated_at?: string;
   owner_id?: string;
   _shared?: boolean;

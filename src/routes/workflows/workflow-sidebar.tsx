@@ -1,7 +1,9 @@
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
+import { LabelChips } from "@/components/label-chips";
 import "../../../assets/components/agent-card/agent-card.css";
+import "../../../assets/css/labels.css";
 import type { Workflow, WorkflowWorkspace } from "./types";
 
 function WorkflowActionIcon({ kind }: { kind: "view" | "edit" | "share" | "delete" }) {
@@ -243,6 +245,8 @@ export function WorkflowCatalog({
                         <h2>{workflow.name}</h2>
 
                         <p>{workflow.description || t("catalog.fallback_description")}</p>
+
+                        <LabelChips labels={workflow.labels} hidePrivate={false} />
                       </div>
                     </button>
 

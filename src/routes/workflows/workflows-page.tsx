@@ -3,6 +3,8 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { api } from "@/api/client";
 import { queryClient } from "@/api/query-client";
+import { LabelChips } from "@/components/label-chips";
+import { LabelsPicker } from "@/components/label-picker";
 import { WorkflowCanvas } from "./workflow-canvas";
 import { WorkflowBuilderDialog } from "./workflow-builder-dialog";
 import { WorkflowRunner } from "./workflow-runner";
@@ -23,6 +25,7 @@ const emptyWorkflow = (name: string): Workflow => ({
   name,
   description: "",
   definition: { nodes: [], edges: [] },
+  labels: ["private"],
 });
 
 function withLinearEdges(workflow: Workflow): Workflow {
@@ -93,6 +96,15 @@ export function WorkflowsPage() {
     onSuccess: async (saved) => {
       setDraft(saved);
       setSavedFingerprint(fingerprint(saved));
+      if (saved.id) {
+        const isPublic = (saved.labels ?? []).includes("public");
+        await api
+          .put(`/api/workflows/${encodeURIComponent(saved.id)}/visibility`, {
+            is_public: isPublic,
+            category: "Other",
+          })
+          .catch(() => undefined);
+      }
       await queryClient.invalidateQueries({ queryKey: ["workflows"] });
     },
   });
@@ -268,6 +280,19 @@ export function WorkflowsPage() {
                     placeholder={t("editor.result_placeholder")}
                   />
                 </label>
+
+                <div className="field">
+                  <label>{t("agents.modal.field_labels")}</label>
+
+                  {readonly ? (
+                    <LabelChips labels={draft.labels} hidePrivate={false} />
+                  ) : (
+                    <LabelsPicker
+                      labels={draft.labels ?? ["private"]}
+                      onChange={(next) => setDraft({ ...draft, labels: next })}
+                    />
+                  )}
+                </div>
               </div>
 
               <div className="workflow-health" aria-label={t("health.aria")}>

@@ -2,13 +2,14 @@ import { useMemo, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { api } from "@/api/client";
+import { LabelsPicker } from "@/components/label-picker";
 import { WorkflowCanvas } from "./workflow-canvas";
 import { WorkflowRunner } from "./workflow-runner";
 import { WorkflowStepEditor } from "./workflow-step-editor";
 import type { AgentOption, Workflow, WorkflowNode, WorkflowProgress } from "./types";
 
 function emptyWorkflow(name: string): Workflow {
-  return { name, description: "", definition: { nodes: [], edges: [] } };
+  return { name, description: "", definition: { nodes: [], edges: [] }, labels: ["private"] };
 }
 
 function withLinearEdges(workflow: Workflow): Workflow {
@@ -30,6 +31,7 @@ function fingerprint(workflow: Workflow): string {
     name: normalized.name,
     description: normalized.description,
     definition: normalized.definition,
+    labels: normalized.labels ?? ["private"],
   });
 }
 
@@ -74,8 +76,17 @@ export function WorkflowBuilderDialog({
 
   const save = useMutation({
     mutationFn: () => api.post<Workflow>("/api/workflows", normalizedDraft),
-    onSuccess: (saved) => {
+    onSuccess: async (saved) => {
       setDraft(saved);
+      if (saved.id) {
+        const isPublic = (saved.labels ?? []).includes("public");
+        await api
+          .put(`/api/workflows/${encodeURIComponent(saved.id)}/visibility`, {
+            is_public: isPublic,
+            category: "Other",
+          })
+          .catch(() => undefined);
+      }
       onSaved();
     },
   });
@@ -166,6 +177,15 @@ export function WorkflowBuilderDialog({
                 placeholder={t("editor.result_placeholder")}
               />
             </label>
+
+            <div className="field">
+              <label>{t("agents.modal.field_labels")}</label>
+
+              <LabelsPicker
+                labels={draft.labels ?? ["private"]}
+                onChange={(next) => setDraft({ ...draft, labels: next })}
+              />
+            </div>
           </div>
 
           <section className="workflow-builder">

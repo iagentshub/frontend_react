@@ -7,6 +7,7 @@
   "type_agents": "Agents",
   "type_skills": "Skills",
   "type_knowledge": "Knowledge",
+  "type_workflows": "Orchestrations",
   "type_users": "Users",
   "btn_search": "Search",
   "load_more": "Load more",

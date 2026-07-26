@@ -12,6 +12,7 @@ import {
   type AgentIconName,
 } from "@/components/resource-icons";
 import { ResourceHistoryButton } from "@/components/resource-history-dialog";
+import { LabelChips } from "@/components/label-chips";
 import { ChatDialog } from "./chat-dialog";
 import { AgentBuilderDialog } from "./agent-builder-dialog";
 import "../../../assets/components/agent-card/agent-card.css";
@@ -20,6 +21,7 @@ import "../../../assets/components/agent-catalog/agent-catalog.css";
 import "../../../assets/components/action-menu/action-menu.css";
 import "../../../assets/components/group-panel/group-panel.css";
 import "../../../assets/components/group-share-dialog/group-share-dialog.css";
+import "../../../assets/css/labels.css";
 import "@/styles/routes/agents/agents.css";
 
 interface Agent {
@@ -386,11 +388,7 @@ function AgentCard({
               </span>
             )}
 
-            {agent.labels?.map((label) => (
-              <span className="label-chip" key={label}>
-                {label}
-              </span>
-            ))}
+            <LabelChips labels={agent.labels} hidePrivate={false} bare />
           </div>
         )}
       </div>
