@@ -120,10 +120,17 @@ async function loadDashboard(signal: AbortSignal): Promise<{
   const valid = (layoutRes.layout ?? [])
     .map((id) => (id === "token-bars" || id === "token-donut" ? "token-usage" : id))
     .filter((id, index, all): id is WidgetId => id in metadata && all.indexOf(id) === index);
+  const config = configRes.config ?? {};
+  // Migración: configuraciones de "summary" guardadas antes de que existiera
+  // el item "workflows" no lo incluyen en su lista explícita — lo añadimos
+  // para que las cuentas ya configuradas también vean la card nueva.
+  if (config.summary?.items && !config.summary.items.includes("workflows")) {
+    config.summary = { ...config.summary, items: [...config.summary.items, "workflows"] };
+  }
   return {
     data: { agents, connections, skills, memories, knowledge, workflows, tokenDaily },
     layout: valid.length ? valid : defaults,
-    config: configRes.config ?? {},
+    config,
   };
 }
 
