@@ -211,7 +211,7 @@ async function loadAgents(signal: AbortSignal): Promise<AgentData> {
   return { agents, connections, skills, knowledge, memories, workspaces };
 }
 
-function Icon({ kind }: { kind: "chat" | "view" | "edit" | "delete" | "export" }) {
+function Icon({ kind }: { kind: "chat" | "view" | "edit" | "delete" | "export" | "share" }) {
   if (kind === "chat")
     return (
       <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true">
@@ -253,6 +253,20 @@ function Icon({ kind }: { kind: "chat" | "view" | "edit" | "delete" | "export" }
           d="M8 2v8M5 7l3 3 3-3M3 13h10"
           stroke="currentColor"
           strokeWidth="1.5"
+          strokeLinecap="round"
+        />
+      </svg>
+    );
+  if (kind === "share")
+    return (
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+        <circle cx="12" cy="3" r="1.5" stroke="currentColor" strokeWidth="1.4" />
+        <circle cx="12" cy="13" r="1.5" stroke="currentColor" strokeWidth="1.4" />
+        <circle cx="4" cy="8" r="1.5" stroke="currentColor" strokeWidth="1.4" />
+        <path
+          d="m10.5 3.8-5 3.4m5 5-5-3.4"
+          stroke="currentColor"
+          strokeWidth="1.3"
           strokeLinecap="round"
         />
       </svg>
@@ -416,7 +430,7 @@ function AgentCard({
                 title={t("legacy.text_3f5a069c03dd")}
                 onClick={() => onShare(agent)}
               >
-                ⌯
+                <Icon kind="share" />
               </button>
 
               <button

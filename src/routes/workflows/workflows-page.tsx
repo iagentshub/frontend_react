@@ -204,6 +204,11 @@ export function WorkflowsPage() {
           onSelect={selectWorkflow}
           onCreate={createNew}
           onShare={setShareTarget}
+          onDelete={(workflow) => {
+            if (confirm(t("editor.delete_confirm", { name: workflow.name }))) {
+              remove.mutate(workflow.id!);
+            }
+          }}
           workspaces={workspaces.data ?? []}
         />
       ) : (

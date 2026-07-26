@@ -1,7 +1,59 @@
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
+import "../../../assets/components/agent-card/agent-card.css";
 import type { Workflow, WorkflowWorkspace } from "./types";
+
+function WorkflowActionIcon({ kind }: { kind: "view" | "edit" | "share" | "delete" }) {
+  if (kind === "view")
+    return (
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+        <path
+          d="M1.5 8S4 3.5 8 3.5 14.5 8 14.5 8 12 12.5 8 12.5 1.5 8 1.5 8z"
+          stroke="currentColor"
+          strokeWidth="1.4"
+        />
+
+        <circle cx="8" cy="8" r="2" stroke="currentColor" strokeWidth="1.4" />
+      </svg>
+    );
+  if (kind === "edit")
+    return (
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+        <path
+          d="M10.8 2.2l3 3L5 14H2v-3z"
+          stroke="currentColor"
+          strokeWidth="1.4"
+          strokeLinejoin="round"
+        />
+      </svg>
+    );
+  if (kind === "share")
+    return (
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+        <circle cx="12" cy="3" r="1.5" stroke="currentColor" strokeWidth="1.4" />
+        <circle cx="12" cy="13" r="1.5" stroke="currentColor" strokeWidth="1.4" />
+        <circle cx="4" cy="8" r="1.5" stroke="currentColor" strokeWidth="1.4" />
+        <path
+          d="m10.5 3.8-5 3.4m5 5-5-3.4"
+          stroke="currentColor"
+          strokeWidth="1.3"
+          strokeLinecap="round"
+        />
+      </svg>
+    );
+  return (
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <path
+        d="M2 4h12M5 4V2h6v2M6 7v5M10 7v5M3 4l1 9h8l1-9"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
 
 export function WorkflowCatalog({
   workflows,
@@ -10,6 +62,7 @@ export function WorkflowCatalog({
   onSelect,
   onCreate,
   onShare,
+  onDelete,
   workspaces,
 }: {
   workflows: Workflow[];
@@ -18,6 +71,7 @@ export function WorkflowCatalog({
   onSelect: (workflow: Workflow) => void;
   onCreate: () => void;
   onShare: (workflow: Workflow) => void;
+  onDelete: (workflow: Workflow) => void;
   workspaces: WorkflowWorkspace[];
 }) {
   const { t, i18n } = useTranslation("workflows");
@@ -154,9 +208,8 @@ export function WorkflowCatalog({
 
           {!pending && !error && filteredWorkflows.length > 0 && (
             <div className="workflow-catalog-grid">
-              {filteredWorkflows.map((workflow, workflowIndex) => {
+              {filteredWorkflows.map((workflow) => {
                 const nodes = workflow.definition.nodes;
-                const configured = nodes.filter((node) => node.instruction?.trim()).length;
                 return (
                   <article className="workflow-catalog-card" key={workflow.id}>
                     <button
@@ -174,12 +227,6 @@ export function WorkflowCatalog({
 
                             <i />
                           </div>
-
-                          <span>
-                            {t("catalog.pipeline", {
-                              number: String(workflowIndex + 1).padStart(2, "0"),
-                            })}
-                          </span>
                         </div>
 
                         <span className={`workflow-card-status${nodes.length ? "" : " is-draft"}`}>
@@ -197,80 +244,51 @@ export function WorkflowCatalog({
 
                         <p>{workflow.description || t("catalog.fallback_description")}</p>
                       </div>
-
-                      <div className="workflow-card-flow" aria-hidden="true">
-                        <span className="workflow-card-endpoint">
-                          {t("legacy.text_6fca55ca3c82")}
-                        </span>
-
-                        {nodes.slice(0, 4).map((node, index) => (
-                          <span key={node.id}>
-                            <i className="workflow-card-connector" />
-
-                            <b title={node.label}>
-                              {(node.label || "A").charAt(0).toUpperCase()}
-
-                              <em>{index + 1}</em>
-                            </b>
-                          </span>
-                        ))}
-
-                        {nodes.length > 4 && (
-                          <small className="workflow-card-more">+{nodes.length - 4}</small>
-                        )}
-
-                        {!nodes.length && <small>{t("catalog.empty_pipeline")}</small>}
-
-                        {nodes.length > 0 && (
-                          <>
-                            <i className="workflow-card-connector" />
-
-                            <span className="workflow-card-endpoint output">
-                              {t("legacy.text_5d84eb9e92dc")}
-                            </span>
-                          </>
-                        )}
-                      </div>
-
-                      <div className="workflow-card-metrics">
-                        <span>
-                          <small>{t("catalog.agents")}</small>
-
-                          <strong>{String(nodes.length).padStart(2, "0")}</strong>
-                        </span>
-
-                        <span>
-                          <small>{t("catalog.links")}</small>
-
-                          <strong>{String(Math.max(0, nodes.length - 1)).padStart(2, "0")}</strong>
-                        </span>
-
-                        <span>
-                          <small>{t("catalog.configured")}</small>
-
-                          <strong>{String(configured).padStart(2, "0")}</strong>
-                        </span>
-                      </div>
                     </button>
 
                     <footer>
                       <span>{formatUpdatedAt(workflow.updated_at)}</span>
 
-                      <div>
-                        {!workflow._shared && (
-                          <button
-                            className="workflow-card-share"
-                            type="button"
-                            onClick={() => onShare(workflow)}
-                          >
-                            {t("catalog.share")}
-                          </button>
-                        )}
-
-                        <button type="button" onClick={() => onSelect(workflow)}>
-                          {t("catalog.open")}
-                          <span aria-hidden="true">→</span>
+                      <div className="agent-card-actions-right">
+                        <button
+                          type="button"
+                          className="agent-action-icon"
+                          title={t("catalog.open")}
+                          onClick={() => onSelect(workflow)}
+                        >
+                          <WorkflowActionIcon kind="view" />
                         </button>
+
+                        <button
+                          type="button"
+                          className="agent-action-icon"
+                          title={t("catalog.edit")}
+                          onClick={() => onSelect(workflow)}
+                        >
+                          <WorkflowActionIcon kind="edit" />
+                        </button>
+
+                        {!workflow._shared && (
+                          <>
+                            <button
+                              type="button"
+                              className="agent-action-icon"
+                              title={t("catalog.share")}
+                              onClick={() => onShare(workflow)}
+                            >
+                              <WorkflowActionIcon kind="share" />
+                            </button>
+
+                            <button
+                              type="button"
+                              className="agent-action-icon agent-action-icon--danger"
+                              title={t("admin.delete_btn")}
+                              onClick={() => onDelete(workflow)}
+                            >
+                              <WorkflowActionIcon kind="delete" />
+                            </button>
+                          </>
+                        )}
                       </div>
                     </footer>
                   </article>

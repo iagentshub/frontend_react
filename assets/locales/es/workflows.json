@@ -78,6 +78,7 @@
     "updated": "Actualizada {{date}}",
     "share": "Compartir",
     "open": "Abrir flujo",
+    "edit": "Editar",
     "no_matches": "Sin coincidencias",
     "no_matches_description": "No hay flujos que coincidan con “{{query}}”.",
     "group_empty": "Este grupo todavía no tiene orquestaciones",

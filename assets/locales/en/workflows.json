@@ -78,6 +78,7 @@
     "updated": "Updated {{date}}",
     "share": "Share",
     "open": "Open flow",
+    "edit": "Edit",
     "no_matches": "No matches",
     "no_matches_description": "No flows match “{{query}}”.",
     "group_empty": "This group has no orchestrations yet",
