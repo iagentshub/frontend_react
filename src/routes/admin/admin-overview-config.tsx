@@ -46,6 +46,12 @@ export function AdminOverview({ stats }: { stats: AdminStats }) {
       }),
     },
     {
+      icon: "workflows",
+      value: stats.workflows_total,
+      label: t("admin.tabs.workflows"),
+      sub: "",
+    },
+    {
       icon: "tokens",
       value: formatTokens(stats.tokens_in + stats.tokens_out),
       label: t("admin.overview.tokens_consumed"),
@@ -105,6 +111,19 @@ function AdminStatIcon({ kind }: { kind: string }) {
         <circle cx="6" cy="10" r="1" fill="currentColor" />
         <circle cx="10" cy="10" r="1" fill="currentColor" />
         <path d="M6.5 12.5h3" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+      </svg>
+    );
+  if (kind === "workflows")
+    return (
+      <svg width="18" height="18" viewBox="0 0 16 16" fill="none">
+        <circle cx="3" cy="3" r="1.5" stroke="currentColor" strokeWidth="1.3" />
+        <circle cx="13" cy="8" r="1.5" stroke="currentColor" strokeWidth="1.3" />
+        <circle cx="3" cy="13" r="1.5" stroke="currentColor" strokeWidth="1.3" />
+        <path
+          d="M4.5 3h2A2.5 2.5 0 0 1 9 5.5v0A2.5 2.5 0 0 0 11.5 8H9A2.5 2.5 0 0 0 6.5 10.5v0A2.5 2.5 0 0 1 4 13H4.5"
+          stroke="currentColor"
+          strokeWidth="1.2"
+        />
       </svg>
     );
   return (
