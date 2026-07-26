@@ -8,6 +8,7 @@ import {
   AdminConnectionsPanel,
   AdminKnowledgePanel,
   AdminUsersPanel,
+  AdminWorkflowsPanel,
   AdminWorkspacesPanel,
 } from "./admin-resource-panels";
 import type {
@@ -17,13 +18,21 @@ import type {
   AdminKnowledge,
   AdminStats,
   AdminUser,
+  AdminWorkflow,
   AdminWorkspace,
   PlatformConfig,
 } from "./types";
 import "@/styles/routes/admin/admin.css";
 
 type AdminTab =
-  "general" | "users" | "workspaces" | "agents" | "connections" | "knowledge" | "config";
+  | "general"
+  | "users"
+  | "workspaces"
+  | "agents"
+  | "connections"
+  | "knowledge"
+  | "workflows"
+  | "config";
 const tabs: Array<[AdminTab, string]> = [
   ["general", "admin.tabs.general"],
   ["users", "admin.tabs.users"],
@@ -31,20 +40,23 @@ const tabs: Array<[AdminTab, string]> = [
   ["agents", "admin.tabs.agents"],
   ["connections", "admin.tabs.connections"],
   ["knowledge", "admin.tabs.knowledge"],
+  ["workflows", "admin.tabs.workflows"],
   ["config", "admin.tabs.config"],
 ];
 
 async function loadAdmin(signal: AbortSignal): Promise<AdminData> {
-  const [stats, users, workspaces, agents, connections, knowledge, config] = await Promise.all([
-    api.get<AdminStats>("/api/admin/stats", signal),
-    api.get<AdminUser[]>("/api/admin/users", signal),
-    api.get<AdminWorkspace[]>("/api/admin/workspaces", signal),
-    api.get<AdminAgent[]>("/api/admin/agents", signal),
-    api.get<AdminConnection[]>("/api/admin/connections", signal),
-    api.get<AdminKnowledge[]>("/api/admin/knowledge", signal),
-    api.get<PlatformConfig>("/api/settings/platform", signal),
-  ]);
-  return { stats, users, workspaces, agents, connections, knowledge, config };
+  const [stats, users, workspaces, agents, connections, knowledge, workflows, config] =
+    await Promise.all([
+      api.get<AdminStats>("/api/admin/stats", signal),
+      api.get<AdminUser[]>("/api/admin/users", signal),
+      api.get<AdminWorkspace[]>("/api/admin/workspaces", signal),
+      api.get<AdminAgent[]>("/api/admin/agents", signal),
+      api.get<AdminConnection[]>("/api/admin/connections", signal),
+      api.get<AdminKnowledge[]>("/api/admin/knowledge", signal),
+      api.get<AdminWorkflow[]>("/api/admin/workflows", signal),
+      api.get<PlatformConfig>("/api/settings/platform", signal),
+    ]);
+  return { stats, users, workspaces, agents, connections, knowledge, workflows, config };
 }
 
 export function AdminPage() {
@@ -141,6 +153,10 @@ export function AdminPage() {
 
           {active === "knowledge" && (
             <AdminKnowledgePanel items={query.data.knowledge} onReload={reload} />
+          )}
+
+          {active === "workflows" && (
+            <AdminWorkflowsPanel workflows={query.data.workflows} onReload={reload} />
           )}
 
           {active === "config" && <AdminConfigPanel initial={query.data.config} onSaved={reload} />}

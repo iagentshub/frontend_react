@@ -14,6 +14,7 @@ import type {
   AdminConnection,
   AdminKnowledge,
   AdminUser,
+  AdminWorkflow,
   AdminWorkspace,
 } from "./types";
 
@@ -1002,6 +1003,108 @@ export function AdminKnowledgePanel({
         </table>
       ) : (
         <div className="admin-empty">{t("legacy.text_2397d785a6d8")}</div>
+      )}
+    </>
+  );
+}
+
+export function AdminWorkflowsPanel({
+  workflows,
+  onReload,
+}: {
+  workflows: AdminWorkflow[];
+  onReload: () => void;
+}) {
+  const { t } = useTranslation();
+  const [search, setSearch] = useState("");
+  const [owner, setOwner] = useState("");
+  const owners = useMemo(
+    () =>
+      [
+        ...new Set(
+          workflows
+            .map((item) => item.owner_email || item.owner_id)
+            .filter((value): value is string => Boolean(value)),
+        ),
+      ].sort(),
+    [workflows],
+  );
+  const filtered = useMemo(() => {
+    const q = search.toLowerCase();
+    return workflows.filter(
+      (item) =>
+        (!q ||
+          `${item.name ?? item.id} ${item.owner_email ?? item.owner_id ?? ""}`
+            .toLowerCase()
+            .includes(q)) &&
+        (!owner || (item.owner_email || item.owner_id) === owner),
+    );
+  }, [workflows, owner, search]);
+  const remove = useMutation({
+    mutationFn: (id: string) => api.delete(`/api/admin/workflows/${encodeURIComponent(id)}`),
+    onSuccess: onReload,
+  });
+  return (
+    <>
+      <div className="admin-toolbar">
+        <input
+          className="admin-search"
+          type="search"
+          value={search}
+          onChange={(event) => setSearch(event.target.value)}
+          placeholder={t("admin.filters.search_workflow")}
+        />
+        <select
+          className="admin-select"
+          value={owner}
+          onChange={(event) => setOwner(event.target.value)}
+        >
+          <option value="">{t("admin.filters.all_owners")}</option>
+          {owners.map((value) => (
+            <option key={value}>{value}</option>
+          ))}
+        </select>
+      </div>
+      {remove.error && <p className="form-error">{errorText(remove.error)}</p>}
+      {filtered.length ? (
+        <table className="admin-table">
+          <thead>
+            <tr>
+              <th>{t("admin.table.name")}</th>
+              <th>{t("admin.table.owner")}</th>
+              <th>{t("admin.table.steps")}</th>
+              <th>{t("teams.table.col_date")}</th>
+              <th />
+            </tr>
+          </thead>
+          <tbody>
+            {filtered.map((item) => (
+              <tr key={item.id}>
+                <td>
+                  <span className="conn-name">{item.name || item.id}</span>
+                </td>
+                <td className="td-owner">{item.owner_email || item.owner_id || "—"}</td>
+                <td className="td-tokens">{item.steps ?? 0}</td>
+                <td className="td-date">{date(item.updated_at)}</td>
+                <td className="td-actions">
+                  <button
+                    className="btn-icon btn-icon--danger"
+                    title={t("admin.delete_btn")}
+                    aria-label={t("admin.delete_btn")}
+                    disabled={remove.isPending}
+                    onClick={() => {
+                      if (confirm(i18n.t("admin.confirm.delete_workflow"))) remove.mutate(item.id);
+                    }}
+                  >
+                    <DeleteActionIcon />
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      ) : (
+        <div className="admin-empty">{t("admin.empty_workflows")}</div>
       )}
     </>
   );

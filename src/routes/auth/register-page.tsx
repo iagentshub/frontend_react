@@ -10,6 +10,7 @@ import "@/styles/routes/register/register.css";
 
 interface PublicSettings {
   registration?: string;
+  billing_enabled?: boolean;
 }
 interface RegisterResponse {
   pending_verification?: boolean;
@@ -279,9 +280,13 @@ export function RegisterPage() {
       </p>
 
       <div className="login-explore">
-        <Link to="/pricing/">{t("auth.pricing_link")}</Link>
+        {settings.data?.billing_enabled && (
+          <>
+            <Link to="/pricing/">{t("auth.pricing_link")}</Link>
 
-        <span className="login-explore-sep" />
+            <span className="login-explore-sep" />
+          </>
+        )}
 
         <Link to="/about">{t("auth.about_link")}</Link>
       </div>

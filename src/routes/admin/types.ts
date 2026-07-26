@@ -76,6 +76,15 @@ export interface AdminKnowledge {
   created_at?: string;
 }
 
+export interface AdminWorkflow {
+  id: string;
+  name?: string;
+  owner_id?: string;
+  owner_email?: string;
+  steps?: number;
+  updated_at?: string;
+}
+
 export interface PlatformConfig {
   registration: "open" | "closed" | "invite";
   max_users: number;
@@ -106,5 +115,6 @@ export interface AdminData {
   agents: AdminAgent[];
   connections: AdminConnection[];
   knowledge: AdminKnowledge[];
+  workflows: AdminWorkflow[];
   config: PlatformConfig;
 }

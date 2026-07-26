@@ -129,9 +129,11 @@ export function HomePage() {
             <Link className="btn btn-primary" to={publicLink("/docs")}>
               {t("landing.overview.docs_cta")}
             </Link>
-            <Link className="btn btn-ghost" to={publicLink("/pricing/")}>
-              {t("landing.overview.pricing_cta")}
-            </Link>
+            {platform.data?.billing_enabled && (
+              <Link className="btn btn-ghost" to={publicLink("/pricing/")}>
+                {t("landing.overview.pricing_cta")}
+              </Link>
+            )}
           </div>
         </section>
 
@@ -184,7 +186,9 @@ export function HomePage() {
 
           <Link to={publicLink("/docs")}>{t("auth.docs_link")}</Link>
 
-          <Link to={publicLink("/pricing/")}>{t("auth.pricing_link")}</Link>
+          {platform.data?.billing_enabled && (
+            <Link to={publicLink("/pricing/")}>{t("auth.pricing_link")}</Link>
+          )}
 
           <Link to={publicLink("/support")}>{t("nav.support")}</Link>
 

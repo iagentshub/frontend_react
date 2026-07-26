@@ -221,15 +221,6 @@ export function NavIcon({ kind, size = 15 }: { kind: string; size?: number }) {
           />
         </svg>
       );
-    case "workspace":
-      return (
-        <svg {...common}>
-          <rect x="2" y="2" width="5" height="5" rx="1" stroke="currentColor" strokeWidth="1.4" />
-          <rect x="9" y="2" width="5" height="5" rx="1" stroke="currentColor" strokeWidth="1.4" />
-          <rect x="2" y="9" width="5" height="5" rx="1" stroke="currentColor" strokeWidth="1.4" />
-          <rect x="9" y="9" width="5" height="5" rx="1" stroke="currentColor" strokeWidth="1.4" />
-        </svg>
-      );
     case "centinel":
       return (
         <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true">

@@ -15,6 +15,7 @@
     "agents": "Agents",
     "connections": "Connections",
     "knowledge": "Knowledge",
+    "workflows": "Orchestrations",
     "config": "Settings"
   },
   "updated": "Updated {{time}}",
@@ -43,6 +44,7 @@
   "open_webmail": "Open mailbox",
   "error_load": "Error loading users.",
   "empty": "No registered users.",
+  "empty_workflows": "No orchestrations registered.",
   "roles": {
     "admin": "Admin",
     "standard": "Standard"
@@ -51,7 +53,17 @@
     "user": "User",
     "email": "Email",
     "role": "Role",
-    "created": "Registered"
+    "created": "Registered",
+    "name": "Name",
+    "owner": "Owner",
+    "steps": "Steps"
+  },
+  "filters": {
+    "all_owners": "All owners",
+    "search_workflow": "Search orchestration…"
+  },
+  "confirm": {
+    "delete_workflow": "Permanently delete this orchestration?"
   },
   "confirm_delete": "Delete user {{username}}? This action cannot be undone.",
   "deleted": "User deleted",

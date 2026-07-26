@@ -8,12 +8,6 @@ import { sessionQuery } from "@/auth/queries";
 import { FeedDrawer } from "./feed-drawer";
 import { NavIcon } from "./nav-icon";
 
-interface NavWorkspace {
-  id: string;
-  name: string;
-  active?: boolean;
-}
-
 const primaryLinks = [
   ["/dashboard/", "dashboard", "nav.dashboard"],
   ["/explore/", "explore", "nav.explore"],
@@ -29,26 +23,7 @@ export function MainNav() {
   const { data: user } = useQuery(sessionQuery);
   const [open, setOpen] = useState(false);
   const [feedOpen, setFeedOpen] = useState(false);
-  const [workspaceOpen, setWorkspaceOpen] = useState(false);
   const closeFeed = useCallback(() => setFeedOpen(false), []);
-  const workspaces = useQuery({
-    queryKey: ["workspaces", "nav"],
-    queryFn: ({ signal }) => api.get<NavWorkspace[]>("/api/workspaces", signal),
-    enabled: Boolean(user && user.role !== "guest"),
-  });
-  const switchWorkspace = useMutation({
-    mutationFn: (id: string) => api.post(`/api/workspaces/switch/${encodeURIComponent(id)}`, {}),
-    onSuccess: async () => {
-      setWorkspaceOpen(false);
-      await queryClient.cancelQueries();
-      queryClient.clear();
-      window.location.reload();
-    },
-  });
-  const createWorkspace = useMutation({
-    mutationFn: (name: string) => api.post<NavWorkspace>("/api/workspaces", { name }),
-    onSuccess: (workspace) => switchWorkspace.mutate(workspace.id),
-  });
   const logout = useMutation({
     mutationFn: () => api.post<{ ok: boolean }>("/api/auth/logout", {}),
     onSuccess: async () => {
@@ -108,59 +83,6 @@ export function MainNav() {
             ×
           </button>
         </div>
-
-        {user?.role !== "guest" && (
-          <div className="nav-workspace-bar">
-            <button
-              className="nav-ws-btn"
-              aria-label={t("legacy.text_d4d45041879d")}
-              aria-expanded={workspaceOpen}
-              onClick={() => setWorkspaceOpen((value) => !value)}
-            >
-              <NavIcon kind="workspace" />
-
-              <span className="nav-ws-name">
-                {user?.workspace_name ??
-                  workspaces.data?.find((workspace) => workspace.active)?.name ??
-                  "Personal"}
-              </span>
-
-              <span className="nav-ws-chevron">⌄</span>
-            </button>
-
-            {workspaceOpen && (
-              <div className="nav-ws-dropdown">
-                <div className="nav-ws-list">
-                  {(workspaces.data ?? []).map((workspace) => (
-                    <button
-                      className={`nav-ws-item${workspace.active ? " nav-ws-item--active" : ""}`}
-                      disabled={switchWorkspace.isPending}
-                      onClick={() => switchWorkspace.mutate(workspace.id)}
-                      key={workspace.id}
-                    >
-                      <span className="nav-ws-item-name">{workspace.name}</span>
-
-                      {workspace.active && <span aria-hidden="true">✓</span>}
-                    </button>
-                  ))}
-                </div>
-
-                <div className="nav-ws-footer">
-                  <button
-                    className="nav-ws-create-btn"
-                    disabled={createWorkspace.isPending || switchWorkspace.isPending}
-                    onClick={() => {
-                      const name = window.prompt(t("common.workspace.new_prompt"));
-                      if (name?.trim()) createWorkspace.mutate(name.trim());
-                    }}
-                  >
-                    {t("legacy.text_04cbb54a3460")}
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
-        )}
 
         <div className="nav-section">
           {primaryLinks.map(([to, icon, key]) => (

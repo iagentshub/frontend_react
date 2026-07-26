@@ -15,6 +15,7 @@
     "agents": "Agentes",
     "connections": "Conexiones",
     "knowledge": "Conocimiento",
+    "workflows": "Orquestaciones",
     "config": "Configuración"
   },
   "updated": "Actualizado {{time}}",
@@ -43,6 +44,7 @@
   "open_webmail": "Ver correos",
   "error_load": "Error al cargar usuarios.",
   "empty": "No hay usuarios registrados.",
+  "empty_workflows": "No hay orquestaciones registradas.",
   "roles": {
     "admin": "Admin",
     "standard": "Estándar"
@@ -51,7 +53,17 @@
     "user": "Usuario",
     "email": "Email",
     "role": "Rol",
-    "created": "Registro"
+    "created": "Registro",
+    "name": "Nombre",
+    "owner": "Propietario",
+    "steps": "Pasos"
+  },
+  "filters": {
+    "all_owners": "Todos los propietarios",
+    "search_workflow": "Buscar orquestación…"
+  },
+  "confirm": {
+    "delete_workflow": "¿Eliminar esta orquestación permanentemente?"
   },
   "confirm_delete": "¿Eliminar al usuario {{username}}? Esta acción no se puede deshacer.",
   "deleted": "Usuario eliminado",
