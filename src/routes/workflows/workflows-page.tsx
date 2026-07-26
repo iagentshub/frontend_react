@@ -76,12 +76,14 @@ export function WorkflowsPage() {
     running: false,
   });
   const [view, setView] = useState<"catalog" | "editor">("catalog");
+  const [viewOnly, setViewOnly] = useState(false);
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
   const [shareTarget, setShareTarget] = useState<Workflow>();
   const [shareNotice, setShareNotice] = useState("");
   const normalizedDraft = useMemo(() => withLinearEdges(draft), [draft]);
   const dirty = fingerprint(draft) !== savedFingerprint;
-  const readonly = Boolean(draft._shared);
+  const isShared = Boolean(draft._shared);
+  const readonly = viewOnly || isShared;
   const selectedNode = draft.definition.nodes.find((node) => node.id === selectedNodeId);
   const configuredNodes = draft.definition.nodes.filter((node) => node.instruction?.trim()).length;
   const readinessChecks = [
@@ -134,6 +136,17 @@ export function WorkflowsPage() {
     setSavedFingerprint(fingerprint(workflow));
     setSelectedNodeId(workflow.definition.nodes[0]?.id);
     setProgress({ stages: {}, running: false });
+    setViewOnly(false);
+    setView("editor");
+  };
+
+  const viewWorkflow = (workflow: Workflow) => {
+    if (!confirmDiscard()) return;
+    setDraft(workflow);
+    setSavedFingerprint(fingerprint(workflow));
+    setSelectedNodeId(workflow.definition.nodes[0]?.id);
+    setProgress({ stages: {}, running: false });
+    setViewOnly(true);
     setView("editor");
   };
 
@@ -145,6 +158,7 @@ export function WorkflowsPage() {
     setSavedFingerprint(fingerprint(nextDraft));
     setSelectedNodeId(undefined);
     setProgress({ stages: {}, running: false });
+    setViewOnly(false);
     setView("catalog");
   };
 
@@ -214,6 +228,7 @@ export function WorkflowsPage() {
           pending={workflows.isPending}
           error={workflows.isError}
           onSelect={selectWorkflow}
+          onView={viewWorkflow}
           onCreate={createNew}
           onShare={setShareTarget}
           onDelete={(workflow) => {
@@ -239,7 +254,11 @@ export function WorkflowsPage() {
 
               <div className="workflow-editor-status">
                 <span className="workflow-environment">
-                  {readonly ? t("editor.shared_access") : t("editor.production")}
+                  {isShared
+                    ? t("editor.shared_access")
+                    : viewOnly
+                      ? t("editor.view_access")
+                      : t("editor.production")}
                 </span>
 
                 <span className={`workflow-save-state ${dirty ? "dirty" : ""}`}>

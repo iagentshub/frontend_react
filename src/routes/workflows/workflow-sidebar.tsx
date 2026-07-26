@@ -62,6 +62,7 @@ export function WorkflowCatalog({
   pending,
   error,
   onSelect,
+  onView,
   onCreate,
   onShare,
   onDelete,
@@ -71,6 +72,7 @@ export function WorkflowCatalog({
   pending: boolean;
   error: boolean;
   onSelect: (workflow: Workflow) => void;
+  onView: (workflow: Workflow) => void;
   onCreate: () => void;
   onShare: (workflow: Workflow) => void;
   onDelete: (workflow: Workflow) => void;
@@ -95,15 +97,6 @@ export function WorkflowCatalog({
             .includes(normalizedQuery)),
     );
   }, [groupId, i18n.resolvedLanguage, query, workflows]);
-  const formatUpdatedAt = (value?: string) => {
-    if (!value) return t("catalog.never_run");
-    const date = new Intl.DateTimeFormat(i18n.resolvedLanguage === "en" ? "en" : "es", {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-    }).format(new Date(value));
-    return t("catalog.updated", { date });
-  };
 
   return (
     <section className="workflow-catalog">
@@ -211,13 +204,12 @@ export function WorkflowCatalog({
           {!pending && !error && filteredWorkflows.length > 0 && (
             <div className="workflow-catalog-grid">
               {filteredWorkflows.map((workflow) => {
-                const nodes = workflow.definition.nodes;
                 return (
                   <article className="workflow-catalog-card" key={workflow.id}>
                     <button
                       className="workflow-card-main"
                       type="button"
-                      onClick={() => onSelect(workflow)}
+                      onClick={() => onView(workflow)}
                       aria-label={t("catalog.open")}
                     >
                       <div className="workflow-card-top">
@@ -230,15 +222,6 @@ export function WorkflowCatalog({
                             <i />
                           </div>
                         </div>
-
-                        <span className={`workflow-card-status${nodes.length ? "" : " is-draft"}`}>
-                          <i aria-hidden="true" />
-                          {workflow._shared
-                            ? t("catalog.shared")
-                            : nodes.length
-                              ? t("catalog.operational")
-                              : t("catalog.draft")}
-                        </span>
                       </div>
 
                       <div className="workflow-card-copy">
@@ -251,14 +234,12 @@ export function WorkflowCatalog({
                     </button>
 
                     <footer>
-                      <span>{formatUpdatedAt(workflow.updated_at)}</span>
-
                       <div className="agent-card-actions-right">
                         <button
                           type="button"
                           className="agent-action-icon"
                           title={t("catalog.open")}
-                          onClick={() => onSelect(workflow)}
+                          onClick={() => onView(workflow)}
                         >
                           <WorkflowActionIcon kind="view" />
                         </button>

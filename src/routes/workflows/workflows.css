@@ -143,9 +143,6 @@
   border: 1px solid var(--border);
   border-radius: 16px;
   background: var(--surface);
-  box-shadow:
-    var(--shadow-sm),
-    0 1px 0 rgb(255 255 255 / 4%) inset;
   overflow: hidden;
   transition:
     border-color 180ms ease,
@@ -235,36 +232,6 @@
   background: var(--workflow-card-accent);
 }
 
-.workflow-card-status {
-  display: flex;
-  border: 1px solid color-mix(in srgb, var(--success, #16a34a) 18%, transparent);
-  border-radius: 999px;
-  padding: 5px 8px;
-  align-items: center;
-  gap: 6px;
-  color: var(--success, #15803d);
-  background: color-mix(in srgb, var(--success, #16a34a) 9%, transparent);
-  font-size: 0.62rem;
-  font-weight: 700;
-}
-
-.workflow-card-status i {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--success, #16a34a);
-}
-
-.workflow-card-status.is-draft {
-  border-color: color-mix(in srgb, var(--warning, #d97706) 18%, transparent);
-  color: var(--warning, #b45309);
-  background: color-mix(in srgb, var(--warning, #d97706) 9%, transparent);
-}
-
-.workflow-card-status.is-draft i {
-  background: var(--warning, #d97706);
-}
-
 .workflow-card-copy {
   margin-top: 14px;
 }
@@ -292,14 +259,9 @@
   border-top: 1px solid var(--border);
   padding: 9px 16px;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   gap: 10px;
   background: color-mix(in srgb, var(--surface-2) 62%, var(--surface));
-}
-
-.workflow-catalog-card > footer > span {
-  color: var(--text-2);
-  font-size: 0.61rem;
 }
 
 .workflow-catalog-card > footer .agent-card-actions-right {
