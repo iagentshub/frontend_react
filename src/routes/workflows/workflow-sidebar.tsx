@@ -23,6 +23,7 @@ export function WorkflowCatalog({
   const { t, i18n } = useTranslation("workflows");
   const [query, setQuery] = useState("");
   const [groupId, setGroupId] = useState("");
+  const [groupsOpen, setGroupsOpen] = useState(true);
   const teamGroups = workspaces.filter((workspace) => workspace.type === "team");
   const filteredWorkflows = useMemo(() => {
     const normalizedQuery = query.trim().toLocaleLowerCase(i18n.resolvedLanguage);
@@ -50,8 +51,36 @@ export function WorkflowCatalog({
 
   return (
     <section className="workflow-catalog">
+      <div className="folder-toggle-row">
+        <button
+          className={`folder-toggle-btn${groupsOpen ? " folder-toggle-btn--on" : ""}`}
+          type="button"
+          onClick={() => setGroupsOpen((value) => !value)}
+          title={t(groupsOpen ? "common.workspace.hide_groups" : "common.workspace.groups")}
+        >
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <circle cx="5" cy="5" r="2" stroke="currentColor" strokeWidth="1.4" />
+            <circle cx="11" cy="5" r="2" stroke="currentColor" strokeWidth="1.4" />
+            <path
+              d="M1.5 13v-.5A3.5 3.5 0 0 1 5 9a3.5 3.5 0 0 1 3.5 3.5V13"
+              stroke="currentColor"
+              strokeWidth="1.4"
+              strokeLinecap="round"
+            />
+            <path
+              d="M9 9.2A3.5 3.5 0 0 1 14.5 12.5V13"
+              stroke="currentColor"
+              strokeWidth="1.4"
+              strokeLinecap="round"
+            />
+          </svg>
+        </button>
+      </div>
       <div className="workflow-catalog-layout">
-        <aside className="workflow-groups kf-panel" aria-label={t("groups.aria")}>
+        <aside
+          className={`workflow-groups kf-panel${groupsOpen ? "" : " folder-panel--collapsed"}`}
+          aria-label={t("groups.aria")}
+        >
           <div className="kf-section-header">
             <span className="kf-section-label">{t("groups.title")}</span>
 
