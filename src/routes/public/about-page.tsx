@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { sessionQuery } from "@/auth/queries";
 import { Seo } from "@/components/seo";
+import { usePublicNavigation } from "@/i18n/public-paths";
 import { useBodyClass } from "./use-body-class";
 import "@/styles/routes/about/about.css";
 
@@ -39,14 +40,20 @@ export function AboutPage() {
   useBodyClass("about-page");
   const { t, i18n } = useTranslation();
   const session = useQuery(sessionQuery);
+  const { language, publicLink, switchLanguage } = usePublicNavigation(i18n, "/about");
   const authenticated = Boolean(session.data?.username);
 
   return (
     <>
-      <Seo title={t("seo.about.title")} description={t("seo.about.description")} path="/about" />
+      <Seo
+        title={t("seo.about.title")}
+        description={t("seo.about.description")}
+        path="/about"
+        localizedPath="/about"
+      />
 
       <header className="about-header">
-        <Link className="about-logo" to="/">
+        <Link className="about-logo" to={publicLink("/")}>
           {t("legacy.text_1fda9fc57a04")}
           <span>{t("legacy.text_a38df5fc50fb")}</span>
         </Link>
@@ -57,11 +64,8 @@ export function AboutPage() {
 
         <div className="about-header-spacer" />
 
-        <button
-          className="about-header-lang"
-          onClick={() => void i18n.changeLanguage(i18n.language === "es" ? "en" : "es")}
-        >
-          {i18n.language.toUpperCase()}
+        <button className="about-header-lang" onClick={() => void switchLanguage()}>
+          {language.toUpperCase()}
         </button>
 
         <Link to={authenticated ? "/dashboard/" : "/login/"} className="about-header-action">

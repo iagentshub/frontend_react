@@ -22,9 +22,10 @@ jobs:
       - run: npm ci
       - run: npm run typecheck
       - run: npm run lint
+      - run: npm run seo:csp-hash
       - run: npm run test
-      - run: npm run build
       - run: npx playwright install --with-deps chromium
+      - run: npm run prerender
       - run: npm run test:e2e:chromium
 
   publish:

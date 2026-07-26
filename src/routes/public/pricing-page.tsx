@@ -5,6 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { api, ApiError } from "@/api/client";
 import { Seo } from "@/components/seo";
+import { usePublicNavigation } from "@/i18n/public-paths";
 import { useBodyClass } from "./use-body-class";
 import "@/styles/routes/pricing/pricing.css";
 
@@ -63,8 +64,9 @@ function euro(value: number) {
 }
 
 export function PricingPage() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   useBodyClass("pricing-page");
+  const { language, publicLink, switchLanguage } = usePublicNavigation(i18n, "/pricing/");
   const navigate = useNavigate(),
     [annual, setAnnual] = useState(false),
     [calculator, setCalculator] = useState(false),
@@ -90,10 +92,11 @@ export function PricingPage() {
         title={t("seo.pricing.title")}
         description={t("seo.pricing.description")}
         path="/pricing/"
+        localizedPath="/pricing/"
       />
 
       <header className="pr-header">
-        <Link className="pr-logo" to="/">
+        <Link className="pr-logo" to={publicLink("/")}>
           {t("legacy.text_1fda9fc57a04")}
           <span>{t("legacy.text_a38df5fc50fb")}</span>
         </Link>
@@ -104,7 +107,11 @@ export function PricingPage() {
 
         <div className="pr-header-spacer" />
 
-        <Link to="/about" className="pr-header-link">
+        <button className="pr-header-link" type="button" onClick={() => void switchLanguage()}>
+          {language.toUpperCase()}
+        </button>
+
+        <Link to={publicLink("/about")} className="pr-header-link">
           {t("about.page.title")}
         </Link>
 

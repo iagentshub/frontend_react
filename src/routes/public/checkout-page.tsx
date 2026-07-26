@@ -6,6 +6,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { api, ApiError } from "@/api/client";
 import { runtimeConfig } from "@/config/runtime";
 import { queryKeys } from "@/api/query-client";
+import { Seo } from "@/components/seo";
 import { useBodyClass } from "./use-body-class";
 import "@/styles/routes/pricing/pricing.css";
 import "@/styles/routes/checkout/checkout.css";
@@ -148,6 +149,13 @@ export function CheckoutPage() {
         : null);
   return (
     <>
+      <Seo
+        title={t("seo.checkout.title")}
+        description={t("seo.checkout.description")}
+        path="/checkout/"
+        noindex
+      />
+
       <header className="pr-header">
         <Link className="pr-logo" to="/">
           {t("legacy.text_1fda9fc57a04")}

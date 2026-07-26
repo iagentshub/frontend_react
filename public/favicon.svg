@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="iAgents Hub">
+  <rect width="64" height="64" rx="14" fill="#DB2935" />
+  <path
+    fill="#FFFFFF"
+    d="M14.6 20.4h4.6v25.2h-4.6zM16.9 12.2a2.9 2.9 0 1 1 0 5.8 2.9 2.9 0 0 1 0-5.8zM34.2 14.4h5.4l11.8 31.2h-5.2l-2.9-8.1H30.4l-2.9 8.1h-5.1zm2.7 6.4-4.9 13.4h9.8z"
+  />
+</svg>

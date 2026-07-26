@@ -5,6 +5,7 @@ import type { TFunction } from "i18next";
 import { Link } from "react-router-dom";
 import { sessionQuery } from "@/auth/queries";
 import { Seo } from "@/components/seo";
+import { usePublicNavigation } from "@/i18n/public-paths";
 import { useBodyClass } from "./use-body-class";
 import "@/styles/routes/docs/docs.css";
 
@@ -25,6 +26,7 @@ export function DocsPage() {
   useBodyClass("docs-page");
   const { t, i18n } = useTranslation();
   const session = useQuery(sessionQuery);
+  const { language, publicLink, switchLanguage } = usePublicNavigation(i18n, "/docs");
   const [open, setOpen] = useState<string | null>(null);
   const authenticated = Boolean(session.data?.username);
 
@@ -37,10 +39,15 @@ export function DocsPage() {
 
   return (
     <>
-      <Seo title={t("seo.docs.title")} description={t("seo.docs.description")} path="/docs" />
+      <Seo
+        title={t("seo.docs.title")}
+        description={t("seo.docs.description")}
+        path="/docs"
+        localizedPath="/docs"
+      />
 
       <header className="docs-header">
-        <Link className="docs-logo" to="/">
+        <Link className="docs-logo" to={publicLink("/")}>
           {t("legacy.text_1fda9fc57a04")}
           <span>{t("legacy.text_a38df5fc50fb")}</span>
         </Link>
@@ -48,11 +55,8 @@ export function DocsPage() {
         <span className="docs-header-label">{t("docs.page.title")}</span>
         <div className="docs-header-spacer" />
 
-        <button
-          className="docs-header-lang"
-          onClick={() => void i18n.changeLanguage(i18n.language === "es" ? "en" : "es")}
-        >
-          {i18n.language.toUpperCase()}
+        <button className="docs-header-lang" onClick={() => void switchLanguage()}>
+          {language.toUpperCase()}
         </button>
 
         <Link to={authenticated ? "/dashboard/" : "/login/"} className="docs-header-action">

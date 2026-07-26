@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset
+  xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml"
+>
+  <url>
+    <loc>https://www.iagentshub.com/</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.iagentshub.com/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.iagentshub.com/en/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.iagentshub.com/" />
+  </url>
+  <url>
+    <loc>https://www.iagentshub.com/en/</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.iagentshub.com/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.iagentshub.com/en/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.iagentshub.com/" />
+  </url>
+  <url>
+    <loc>https://www.iagentshub.com/about</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.iagentshub.com/about" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.iagentshub.com/en/about" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.iagentshub.com/about" />
+  </url>
+  <url>
+    <loc>https://www.iagentshub.com/en/about</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.iagentshub.com/about" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.iagentshub.com/en/about" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.iagentshub.com/about" />
+  </url>
+  <url>
+    <loc>https://www.iagentshub.com/docs</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.iagentshub.com/docs" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.iagentshub.com/en/docs" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.iagentshub.com/docs" />
+  </url>
+  <url>
+    <loc>https://www.iagentshub.com/en/docs</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.iagentshub.com/docs" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.iagentshub.com/en/docs" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.iagentshub.com/docs" />
+  </url>
+  <url>
+    <loc>https://www.iagentshub.com/pricing/</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.iagentshub.com/pricing/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.iagentshub.com/en/pricing/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.iagentshub.com/pricing/" />
+  </url>
+  <url>
+    <loc>https://www.iagentshub.com/en/pricing/</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.iagentshub.com/pricing/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.iagentshub.com/en/pricing/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.iagentshub.com/pricing/" />
+  </url>
+  <url>
+    <loc>https://www.iagentshub.com/support</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.iagentshub.com/support" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.iagentshub.com/en/support" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.iagentshub.com/support" />
+  </url>
+  <url>
+    <loc>https://www.iagentshub.com/en/support</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.iagentshub.com/support" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.iagentshub.com/en/support" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.iagentshub.com/support" />
+  </url>
+</urlset>

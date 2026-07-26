@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { localizedPublicPath, type PublicBasePath } from "@/i18n/public-paths";
 
 // Origen canónico de la instancia pública. Los buscadores necesitan URLs
 // absolutas y estables: no se deriva de window.location para que un despliegue
@@ -7,6 +8,10 @@ import { useTranslation } from "react-i18next";
 export const SITE_URL = "https://www.iagentshub.com";
 export const SITE_NAME = "iAgents Hub";
 const DEFAULT_OG_IMAGE = `${SITE_URL}/og-image.png`;
+const DEFAULT_IMAGE_ALT = {
+  es: "iAgents Hub, plataforma para crear y orquestar agentes de IA",
+  en: "iAgents Hub, a platform for building and orchestrating AI agents",
+} as const;
 
 function upsertMeta(attribute: "name" | "property", key: string, content: string) {
   const selector = `meta[${attribute}="${key}"]`;
@@ -31,6 +36,12 @@ function upsertLink(rel: string, href: string, hreflang?: string) {
   tag.setAttribute("href", href);
 }
 
+function removeLanguageAlternates() {
+  document.head
+    .querySelectorAll<HTMLLinkElement>('link[rel="alternate"][hreflang]')
+    .forEach((tag) => tag.remove());
+}
+
 export type SeoProps = {
   /** Título completo de la pestaña; se usa tal cual en <title> y og:title. */
   title: string;
@@ -40,6 +51,8 @@ export type SeoProps = {
   /** Páginas privadas, de autenticación o de error: fuera del índice. */
   noindex?: boolean;
   image?: string;
+  imageAlt?: string;
+  localizedPath?: PublicBasePath;
 };
 
 /**
@@ -50,13 +63,23 @@ export type SeoProps = {
  * hay dos <title> ni dos description compitiendo, y el prerender de build
  * captura exactamente un juego de metadatos por ruta.
  */
-export function Seo({ title, description, path, noindex = false, image }: SeoProps) {
+export function Seo({
+  title,
+  description,
+  path,
+  noindex = false,
+  image,
+  imageAlt,
+  localizedPath,
+}: SeoProps) {
   const { i18n } = useTranslation();
   const language = i18n.resolvedLanguage === "en" ? "en" : "es";
 
   useEffect(() => {
-    const url = `${SITE_URL}${path}`;
+    const canonicalPath = localizedPath ? localizedPublicPath(localizedPath, language) : path;
+    const url = `${SITE_URL}${canonicalPath}`;
     const ogImage = image ?? DEFAULT_OG_IMAGE;
+    const ogImageAlt = imageAlt ?? DEFAULT_IMAGE_ALT[language];
 
     document.title = title;
     upsertMeta("name", "description", description);
@@ -66,6 +89,16 @@ export function Seo({ title, description, path, noindex = false, image }: SeoPro
       noindex ? "noindex, nofollow" : "index, follow, max-image-preview:large, max-snippet:-1",
     );
     upsertLink("canonical", url);
+    removeLanguageAlternates();
+    if (localizedPath) {
+      upsertLink("alternate", `${SITE_URL}${localizedPublicPath(localizedPath, "es")}`, "es");
+      upsertLink("alternate", `${SITE_URL}${localizedPublicPath(localizedPath, "en")}`, "en");
+      upsertLink(
+        "alternate",
+        `${SITE_URL}${localizedPublicPath(localizedPath, "es")}`,
+        "x-default",
+      );
+    }
 
     upsertMeta("property", "og:type", "website");
     upsertMeta("property", "og:site_name", SITE_NAME);
@@ -75,13 +108,18 @@ export function Seo({ title, description, path, noindex = false, image }: SeoPro
     upsertMeta("property", "og:description", description);
     upsertMeta("property", "og:url", url);
     upsertMeta("property", "og:image", ogImage);
-    upsertMeta("property", "og:image:alt", SITE_NAME);
+    upsertMeta("property", "og:image:secure_url", ogImage);
+    upsertMeta("property", "og:image:type", "image/png");
+    upsertMeta("property", "og:image:width", "1200");
+    upsertMeta("property", "og:image:height", "630");
+    upsertMeta("property", "og:image:alt", ogImageAlt);
 
     upsertMeta("name", "twitter:card", "summary_large_image");
     upsertMeta("name", "twitter:title", title);
     upsertMeta("name", "twitter:description", description);
     upsertMeta("name", "twitter:image", ogImage);
-  }, [title, description, path, noindex, image, language]);
+    upsertMeta("name", "twitter:image:alt", ogImageAlt);
+  }, [title, description, path, noindex, image, imageAlt, localizedPath, language]);
 
   return null;
 }

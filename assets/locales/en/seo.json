@@ -27,6 +27,10 @@
     "title": "Create account · iAgents Hub",
     "description": "Create your iAgents Hub account and start building AI agents with your own providers."
   },
+  "account": {
+    "title": "Your account · iAgents Hub",
+    "description": "Manage access to your iAgents Hub account."
+  },
   "checkout": {
     "title": "Checkout · iAgents Hub",
     "description": "Complete the purchase of your iAgents Hub plan."

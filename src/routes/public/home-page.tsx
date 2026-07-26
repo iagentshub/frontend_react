@@ -4,12 +4,21 @@ import { useTranslation } from "react-i18next";
 import { Link, Navigate } from "react-router-dom";
 import { platformQuery } from "@/auth/queries";
 import { Seo } from "@/components/seo";
+import { usePublicNavigation } from "@/i18n/public-paths";
 import "@/styles/routes/landing.css";
 type InstallMode = "docker" | "nodocker";
 type InstallOs = "linux" | "mac" | "windows";
 
 const modes: InstallMode[] = ["docker", "nodocker"];
 const operatingSystems: InstallOs[] = ["linux", "mac", "windows"];
+const homeFeatures = [
+  "multi_agent",
+  "providers",
+  "selfhosted",
+  "knowledge",
+  "groups",
+  "export",
+] as const;
 // install.sh (Linux/macOS) e install.ps1 (Windows) son ahora un único
 // instalador por SO: preguntan interactivamente Docker vs sin-Docker, así que
 // el comando es el mismo para ambos modos — la única variable real es el SO.
@@ -36,6 +45,7 @@ function nextValue<T>(values: T[], current: T): T {
 export function HomePage() {
   const { t, i18n } = useTranslation();
   const platform = useQuery(platformQuery);
+  const { language, publicLink, switchLanguage } = usePublicNavigation(i18n, "/");
   const [mode, setMode] = useState<InstallMode>("docker");
   const [os, setOs] = useState<InstallOs>("linux");
   const [copied, setCopied] = useState(false);
@@ -53,11 +63,16 @@ export function HomePage() {
 
   return (
     <>
-      <Seo title={t("seo.home.title")} description={t("seo.home.description")} path="/" />
+      <Seo
+        title={t("seo.home.title")}
+        description={t("seo.home.description")}
+        path="/"
+        localizedPath="/"
+      />
 
       <div className="landing-page" style={{ display: "block" }}>
         <header className="landing-header">
-          <Link className="landing-logo" to="/">
+          <Link className="landing-logo" to={publicLink("/")}>
             {t("legacy.text_1fda9fc57a04")}
             <span>{t("legacy.text_a38df5fc50fb")}</span>
           </Link>
@@ -97,6 +112,32 @@ export function HomePage() {
               </span>
               <span className="landing-hero-stat-label">{t("auth.stat_private")}</span>
             </div>
+          </div>
+        </section>
+
+        <section className="landing-section" aria-labelledby="landing-capabilities-title">
+          <div className="landing-section-intro">
+            <span className="landing-section-eyebrow">{t("landing.overview.eyebrow")}</span>
+            <h2 id="landing-capabilities-title">{t("landing.overview.title")}</h2>
+            <p>{t("landing.overview.body")}</p>
+          </div>
+
+          <div className="landing-feature-grid">
+            {homeFeatures.map((feature) => (
+              <article className="landing-feature-card" key={feature}>
+                <h3>{t(`landing.features.${feature}_title`)}</h3>
+                <p>{t(`landing.features.${feature}_body`)}</p>
+              </article>
+            ))}
+          </div>
+
+          <div className="landing-section-actions">
+            <Link className="btn btn-primary" to={publicLink("/docs")}>
+              {t("landing.overview.docs_cta")}
+            </Link>
+            <Link className="btn btn-ghost" to={publicLink("/pricing/")}>
+              {t("landing.overview.pricing_cta")}
+            </Link>
           </div>
         </section>
 
@@ -141,22 +182,20 @@ export function HomePage() {
         </section>
 
         <footer className="landing-footer">
-          <Link to="/about">{t("auth.about_link")}</Link>
+          <Link to={publicLink("/about")}>{t("auth.about_link")}</Link>
 
-          <Link to="/docs">{t("auth.docs_link")}</Link>
+          <Link to={publicLink("/docs")}>{t("auth.docs_link")}</Link>
 
-          <Link to="/support">{t("nav.support")}</Link>
+          <Link to={publicLink("/pricing/")}>{t("auth.pricing_link")}</Link>
+
+          <Link to={publicLink("/support")}>{t("nav.support")}</Link>
 
           <a href="https://github.com/iagentshub/iAgents" target="_blank" rel="noopener noreferrer">
             {t("errors.fields.github")}
           </a>
 
-          <button
-            className="landing-lang-btn"
-            type="button"
-            onClick={() => void i18n.changeLanguage(i18n.language === "es" ? "en" : "es")}
-          >
-            {i18n.language.toUpperCase()}
+          <button className="landing-lang-btn" type="button" onClick={() => void switchLanguage()}>
+            {language.toUpperCase()}
           </button>
         </footer>
       </div>

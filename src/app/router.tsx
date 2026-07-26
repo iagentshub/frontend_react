@@ -2,6 +2,7 @@
 import { lazy, Suspense, type ReactNode } from "react";
 import { Navigate, createBrowserRouter } from "react-router-dom";
 import { RequireAuth } from "@/auth/guards";
+import i18n, { type SupportedLanguage } from "@/i18n";
 import { AppShell } from "@/layout/app-shell";
 import { NotFoundPage, RouteErrorBoundary, RouteLoading } from "@/routes/shared/status-pages";
 
@@ -96,8 +97,26 @@ function lazyRoute(element: ReactNode) {
   return <Suspense fallback={<RouteLoading />}>{element}</Suspense>;
 }
 
+function publicLanguageLoader(language: SupportedLanguage) {
+  return async () => {
+    if (i18n.resolvedLanguage !== language) await i18n.changeLanguage(language);
+    return null;
+  };
+}
+
 export const router = createBrowserRouter([
-  { path: "/", element: lazyRoute(<HomePage />), errorElement: <RouteErrorBoundary /> },
+  {
+    path: "/",
+    loader: publicLanguageLoader("es"),
+    element: lazyRoute(<HomePage />),
+    errorElement: <RouteErrorBoundary />,
+  },
+  {
+    path: "/en/",
+    loader: publicLanguageLoader("en"),
+    element: lazyRoute(<HomePage />),
+    errorElement: <RouteErrorBoundary />,
+  },
   { path: "/login", element: <Navigate to="/login/" replace /> },
   { path: "/login/", element: lazyRoute(<LoginPage />) },
   // Sin AppShell: es una pantalla de consentimiento de paso, no una sección de la app.
@@ -221,10 +240,34 @@ export const router = createBrowserRouter([
     ),
     children: [{ index: true, element: lazyRoute(<CentinelPage />) }],
   },
-  { path: "/about", element: lazyRoute(<AboutPage />) },
-  { path: "/pricing/", element: lazyRoute(<PricingPage />) },
-  { path: "/docs", element: lazyRoute(<DocsPage />) },
-  { path: "/support", element: lazyRoute(<SupportPage />) },
+  { path: "/about", loader: publicLanguageLoader("es"), element: lazyRoute(<AboutPage />) },
+  {
+    path: "/en/about",
+    loader: publicLanguageLoader("en"),
+    element: lazyRoute(<AboutPage />),
+  },
+  {
+    path: "/pricing/",
+    loader: publicLanguageLoader("es"),
+    element: lazyRoute(<PricingPage />),
+  },
+  {
+    path: "/en/pricing/",
+    loader: publicLanguageLoader("en"),
+    element: lazyRoute(<PricingPage />),
+  },
+  { path: "/docs", loader: publicLanguageLoader("es"), element: lazyRoute(<DocsPage />) },
+  {
+    path: "/en/docs",
+    loader: publicLanguageLoader("en"),
+    element: lazyRoute(<DocsPage />),
+  },
+  { path: "/support", loader: publicLanguageLoader("es"), element: lazyRoute(<SupportPage />) },
+  {
+    path: "/en/support",
+    loader: publicLanguageLoader("en"),
+    element: lazyRoute(<SupportPage />),
+  },
   { path: "/register/", element: lazyRoute(<RegisterPage />) },
   { path: "/verify/", element: lazyRoute(<VerifyPage />) },
   { path: "/forgot-password/", element: lazyRoute(<ForgotPasswordPage />) },
