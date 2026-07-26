@@ -169,7 +169,7 @@ export function AdminUsersPanel({
                   <span
                     className={`badge ${isTrue(user.is_active) ? "badge--ok" : "badge--danger"}`}
                   >
-                    {isTrue(user.is_active) ? "Activo" : "Bloqueado"}
+                    {isTrue(user.is_active) ? t("admin.status.active") : t("admin.status.blocked")}
                   </span>
                 </td>
                 <td>
@@ -480,7 +480,7 @@ export function AdminWorkspacesPanel({
                   <span
                     className={`badge ${workspace.status === "disabled" ? "badge--danger" : "badge--ok"}`}
                   >
-                    {workspace.status === "disabled" ? "Desactivado" : "Activo"}
+                    {workspace.status === "disabled" ? t("admin.status.disabled") : t("admin.status.active")}
                   </span>
                 </td>
                 <td className="td-actions">

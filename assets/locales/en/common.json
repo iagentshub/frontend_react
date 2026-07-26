@@ -19,7 +19,8 @@
     "about": "About",
     "support": "Support",
     "explore": "Explore",
-    "upgrade": "Upgrade plan"
+    "upgrade": "Upgrade plan",
+    "logout_confirm": "Log out?"
   },
   "actions": {
     "save": "Save",

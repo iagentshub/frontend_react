@@ -269,7 +269,8 @@
     "placeholder": "Type a message…",
     "close": "Close",
     "new_conversation": "New conversation",
-    "timeout_msg": "Timed out — the agent did not respond in time."
+    "timeout_msg": "Timed out — the agent did not respond in time.",
+    "stream_error": "Response without stream"
   },
   "builder_actions": {
     "saving": "Saving…",

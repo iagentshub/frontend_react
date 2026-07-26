@@ -269,7 +269,8 @@
     "placeholder": "Escribe un mensaje…",
     "close": "Cerrar",
     "new_conversation": "Nueva conversación",
-    "timeout_msg": "Tiempo agotado — el agente no respondió en el tiempo configurado."
+    "timeout_msg": "Tiempo agotado — el agente no respondió en el tiempo configurado.",
+    "stream_error": "Respuesta sin stream"
   },
   "builder_actions": {
     "saving": "Guardando…",

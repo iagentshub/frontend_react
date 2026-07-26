@@ -163,5 +163,10 @@
     "update_available": "⬆ A newer version is available: {{latest}} (current: {{current}}). It will apply on its own within ≤1h (Watchtower), or run now: docker compose pull && docker compose up -d",
     "up_to_date": "✓ You're up to date (version {{version}})",
     "check_update_error": "Error checking for updates."
+  },
+  "status": {
+    "active": "Active",
+    "blocked": "Blocked",
+    "disabled": "Disabled"
   }
 }

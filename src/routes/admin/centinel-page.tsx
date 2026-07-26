@@ -78,8 +78,8 @@ export function CentinelPage() {
   const { t } = useTranslation();
   const [section, setSection] = useState<"functional" | "stress" | "probe">("functional");
   const subtitles = {
-    functional: "Test runner del backend",
-    stress: "Pruebas de rendimiento",
+    functional: t("dynamic.centinel_subtitle_functional"),
+    stress: t("dynamic.centinel_subtitle_stress"),
     probe: i18n.t("dynamic.text_95c622165cf6"),
   };
   return (

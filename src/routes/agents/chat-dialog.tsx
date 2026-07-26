@@ -110,7 +110,7 @@ export function ChatDialog({ agent, onClose }: { agent: ChatAgent; onClose: () =
         signal: controller.signal,
       });
       if (!response.ok) throw new ApiError(response.status);
-      if (!response.body) throw new Error("Respuesta sin stream");
+      if (!response.body) throw new Error(t("agents.chat.stream_error"));
       const reader = response.body.getReader(),
         decoder = new TextDecoder();
       let buffer = "",
