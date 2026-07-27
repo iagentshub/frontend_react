@@ -273,7 +273,8 @@
   },
   "builder_actions": {
     "saving": "Guardando…",
-    "create_agent": "Crear agente"
+    "create_agent": "Crear agente",
+    "memory_hint": "Se guarda en este borrador y se activa al crear el agente."
   },
   "catalog": {
     "open_btn": "Catálogo",

@@ -273,7 +273,8 @@
   },
   "builder_actions": {
     "saving": "Saving…",
-    "create_agent": "Create agent"
+    "create_agent": "Create agent",
+    "memory_hint": "Saved in this draft and enabled when the agent is created."
   },
   "catalog": {
     "open_btn": "Catalog",

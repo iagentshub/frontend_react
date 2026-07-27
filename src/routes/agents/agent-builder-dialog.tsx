@@ -201,6 +201,8 @@ export function AgentBuilderDialog({
     try {
       await api.post("/api/agents", {
         ...draft,
+        // Memory remains part of the draft and is only persisted with the agent.
+        use_memory: Boolean(draft.use_memory),
         connection_id: agentConnectionId,
         agent_type: "generic",
         scope: "private",
@@ -494,6 +496,28 @@ export function AgentBuilderDialog({
                           }
                         />
                       </label>
+
+                      <div
+                        className={`agent-builder-memory${draft.use_memory ? " agent-builder-memory--active" : ""}`}
+                      >
+                        <label className="toggle-label agent-builder-memory-toggle">
+                          <input
+                            type="checkbox"
+                            className="toggle-checkbox"
+                            checked={draft.use_memory}
+                            onChange={(event) =>
+                              setDraft({ ...draft, use_memory: event.target.checked })
+                            }
+                          />
+
+                          <span className="toggle-track" />
+
+                          <span className="agent-builder-memory-copy">
+                            <strong>{t("agents.modal.field_memory")}</strong>
+                            <small>{t("agents.builder_actions.memory_hint")}</small>
+                          </span>
+                        </label>
+                      </div>
 
                       <div className="agent-builder-preview-actions">
                         <button
