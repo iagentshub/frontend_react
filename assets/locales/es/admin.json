@@ -174,7 +174,12 @@
     "check_update_unknown": "No se pudo determinar si hay actualizaciones.",
     "update_available": "⬆ Hay una versión más reciente: {{latest}} (actual: {{current}}). Se aplicará sola en ≤1h (Watchtower), o ejecuta ahora: docker compose pull && docker compose up -d",
     "up_to_date": "✓ Estás al día (versión {{version}})",
-    "check_update_error": "Error al comprobar actualizaciones."
+    "check_update_error": "Error al comprobar actualizaciones.",
+    "backend_commit_label": "Backend",
+    "frontend_commit_label": "Frontend ({{variant}})",
+    "commit_up_to_date": "{{commit}} (al día)",
+    "commit_outdated": "{{commit}} → hay una versión más reciente en GitHub: {{latest}}",
+    "commit_unchecked": "{{commit}} (no se pudo comprobar contra GitHub)"
   },
   "status": {
     "active": "Activo",

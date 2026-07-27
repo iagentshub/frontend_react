@@ -35,6 +35,21 @@ function describeCheckUpdate(result: CheckUpdateResult, t: TFunction): string {
   return t("admin.config.up_to_date", { version: result.current_version });
 }
 
+// GAIA_VERSION solo dice "cuándo" se construyó la imagen — esto compara el
+// commit horneado de cada repo (backend/frontend) contra el HEAD de main en
+// GitHub, para saber cuál de los dos está desactualizado cuando el push a su
+// propio repo no ha disparado un rebuild de la imagen unificada.
+function describeCommit(
+  commit: string | undefined,
+  latest: string | null | undefined,
+  upToDate: boolean | null | undefined,
+  t: TFunction,
+): string {
+  if (upToDate === true) return t("admin.config.commit_up_to_date", { commit });
+  if (upToDate === false) return t("admin.config.commit_outdated", { commit, latest });
+  return t("admin.config.commit_unchecked", { commit });
+}
+
 export function AdminOverview({ stats }: { stats: AdminStats }) {
   const { t } = useTranslation();
   const cards = [
@@ -331,6 +346,31 @@ export function AdminConfigPanel({
           </div>
           {checkUpdate.data && (
             <div className="admin-config-hint">{describeCheckUpdate(checkUpdate.data, t)}</div>
+          )}
+          {checkUpdate.data?.backend_commit && checkUpdate.data.backend_commit !== "dev" && (
+            <div className="admin-config-hint">
+              {t("admin.config.backend_commit_label")}:{" "}
+              {describeCommit(
+                checkUpdate.data.backend_commit,
+                checkUpdate.data.backend_commit_latest,
+                checkUpdate.data.backend_up_to_date,
+                t,
+              )}
+            </div>
+          )}
+          {checkUpdate.data?.frontend_commit && checkUpdate.data.frontend_commit !== "dev" && (
+            <div className="admin-config-hint">
+              {t("admin.config.frontend_commit_label", {
+                variant: checkUpdate.data.frontend_variant,
+              })}
+              :{" "}
+              {describeCommit(
+                checkUpdate.data.frontend_commit,
+                checkUpdate.data.frontend_commit_latest,
+                checkUpdate.data.frontend_up_to_date,
+                t,
+              )}
+            </div>
           )}
           {checkUpdate.error && (
             <div className="admin-config-hint">{t("admin.config.check_update_error")}</div>

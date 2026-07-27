@@ -107,6 +107,13 @@ export interface CheckUpdateResult {
   current_version: string;
   latest_version?: string;
   update_available?: boolean;
+  backend_commit?: string;
+  backend_commit_latest?: string | null;
+  backend_up_to_date?: boolean | null;
+  frontend_commit?: string;
+  frontend_commit_latest?: string | null;
+  frontend_up_to_date?: boolean | null;
+  frontend_variant?: string;
 }
 
 export interface AdminData {
