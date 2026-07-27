@@ -134,6 +134,6 @@ jobs:
             GAIA_VERSION=${{ steps.version.outputs.value }}
           tags: |
             iagenthub/app:latest
-            iagenthub/app:${{ steps.version.outputs.value }}
+            iagenthub/app:react-${{ steps.version.outputs.value }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
