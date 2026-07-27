@@ -4,9 +4,13 @@ import { streamEvents } from "@/api/client";
 import type { WorkflowProgress, WorkflowRunEvent, WorkflowStageStatus } from "./types";
 
 interface RunEntry {
+  id: string;
+  kind: "stage" | "evaluation";
   nodeId: string;
   agentName: string;
   output: string;
+  iteration: number;
+  approved?: boolean;
 }
 
 export function WorkflowRunner({
@@ -39,6 +43,7 @@ export function WorkflowRunner({
     onProgress({ stages: {}, running: true });
     let activeNodeId = "";
     const completed: Record<string, WorkflowStageStatus> = {};
+    const evaluations: NonNullable<WorkflowProgress["evaluations"]> = {};
     try {
       for await (const item of streamEvents<WorkflowRunEvent>(
         `/api/workflows/${encodeURIComponent(workflowId)}/run`,
@@ -58,18 +63,57 @@ export function WorkflowRunner({
           onProgress({
             running: true,
             stages: { ...completed, [event.node_id]: "running" },
+            evaluations: { ...evaluations },
           });
         } else if (event.type === "stage_done" && event.node_id) {
           completed[event.node_id] = "done";
           setEntries((current) => [
             ...current,
             {
+              id: `${event.node_id}:${event.iteration ?? 1}:${current.length}`,
+              kind: "stage",
               nodeId: event.node_id!,
               agentName: event.agent_name || t("runner.agent"),
               output: event.output || "",
+              iteration: event.iteration ?? 1,
             },
           ]);
-          onProgress({ running: true, stages: { ...completed } });
+          onProgress({
+            running: true,
+            stages: { ...completed },
+            evaluations: { ...evaluations },
+          });
+        } else if (event.type === "evaluation_started" && event.node_id) {
+          activeNodeId = event.node_id;
+          onProgress({
+            running: true,
+            stages: { ...completed, [event.node_id]: "evaluating" },
+            evaluations: { ...evaluations },
+          });
+        } else if (event.type === "evaluation_done" && event.node_id) {
+          completed[event.node_id] = "done";
+          evaluations[event.node_id] = {
+            approved: Boolean(event.approved),
+            reason: event.reason || "",
+            iteration: event.iteration ?? 1,
+          };
+          setEntries((current) => [
+            ...current,
+            {
+              id: `${event.node_id}:${event.iteration ?? 1}:${current.length}`,
+              kind: "evaluation",
+              nodeId: event.node_id!,
+              agentName: event.agent_name || t("runner.agent"),
+              output: event.reason || "",
+              iteration: event.iteration ?? 1,
+              approved: Boolean(event.approved),
+            },
+          ]);
+          onProgress({
+            running: true,
+            stages: { ...completed },
+            evaluations: { ...evaluations },
+          });
         } else if (event.type === "workflow_done") {
           setFinalOutput(event.output || "");
         }
@@ -84,7 +128,11 @@ export function WorkflowRunner({
     } finally {
       controller.current = null;
       setRunning(false);
-      onProgress({ running: false, stages: { ...completed } });
+      onProgress({
+        running: false,
+        stages: { ...completed },
+        evaluations: { ...evaluations },
+      });
     }
   };
 
@@ -136,13 +184,19 @@ export function WorkflowRunner({
       {(entries.length > 0 || finalOutput || error) && (
         <div className="workflow-run-results" aria-live="polite">
           {entries.map((entry, index) => (
-            <details key={entry.nodeId} open={index === entries.length - 1 && !finalOutput}>
+            <details key={entry.id} open={index === entries.length - 1 && !finalOutput}>
               <summary>
-                <span>{index + 1}</span>
+                <span>{entry.kind === "evaluation" ? "E" : index + 1}</span>
 
                 {entry.agentName}
 
-                <small>{t("runner.completed")}</small>
+                <small>
+                  {entry.kind === "evaluation"
+                    ? `${t("runner.iteration", { count: entry.iteration })} · ${t(
+                        entry.approved ? "runner.approved" : "runner.rejected",
+                      )}`
+                    : t("runner.completed")}
+                </small>
               </summary>
 
               <pre>{entry.output}</pre>

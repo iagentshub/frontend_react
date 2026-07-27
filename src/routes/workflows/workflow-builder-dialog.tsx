@@ -6,6 +6,7 @@ import { LabelsPicker } from "@/components/label-picker";
 import { WorkflowCanvas } from "./workflow-canvas";
 import { WorkflowRunner } from "./workflow-runner";
 import { WorkflowStepEditor } from "./workflow-step-editor";
+import { hydrateWorkflowPositions, nextWorkflowPosition } from "./workflow-layout";
 import type { AgentOption, Workflow, WorkflowNode, WorkflowProgress } from "./types";
 
 function emptyWorkflow(name: string): Workflow {
@@ -13,14 +14,21 @@ function emptyWorkflow(name: string): Workflow {
 }
 
 function withLinearEdges(workflow: Workflow): Workflow {
+  const nodes = hydrateWorkflowPositions(workflow.definition.nodes);
+  const loops = workflow.definition.edges.filter((edge) => edge.type === "loop");
   return {
     ...workflow,
     definition: {
       ...workflow.definition,
-      edges: workflow.definition.nodes.slice(1).map((node, index) => ({
-        source: workflow.definition.nodes[index]!.id,
-        target: node.id,
-      })),
+      nodes,
+      edges: [
+        ...nodes.slice(1).map((node, index) => ({
+          source: nodes[index]!.id,
+          target: node.id,
+          type: "sequence" as const,
+        })),
+        ...loops,
+      ],
     },
   };
 }
@@ -63,7 +71,10 @@ export function WorkflowBuilderDialog({
   onDeleted: () => void;
 }) {
   const { t } = useTranslation("workflows");
-  const initial = useMemo(() => workflow ?? emptyWorkflow(t("editor.default_name")), [t, workflow]);
+  const initial = useMemo(
+    () => withLinearEdges(workflow ?? emptyWorkflow(t("editor.default_name"))),
+    [t, workflow],
+  );
   const [draft, setDraft] = useState<Workflow>(initial);
   const [agentId, setAgentId] = useState("");
   const [selectedNodeId, setSelectedNodeId] = useState<string | undefined>(
@@ -99,10 +110,17 @@ export function WorkflowBuilderDialog({
     if (!dirty || confirm(t("editor.discard_confirm"))) onClose();
   };
 
-  const updateNodes = (nodes: WorkflowNode[]) => {
-    setDraft((current) => ({ ...current, definition: { ...current.definition, nodes } }));
+  const updateDefinition = (nodes: WorkflowNode[], edges = draft.definition.edges) => {
+    setDraft((current) =>
+      withLinearEdges({
+        ...current,
+        definition: { ...current.definition, nodes, edges },
+      }),
+    );
     setProgress({ stages: {}, running: false });
   };
+
+  const updateNodes = (nodes: WorkflowNode[]) => updateDefinition(nodes);
 
   const addAgent = () => {
     if (!agentId) return;
@@ -112,19 +130,12 @@ export function WorkflowBuilderDialog({
       agent_id: agentId,
       label: agent?.name || agentId,
       instruction: "",
+      kind: "agent",
+      position: nextWorkflowPosition(draft.definition.nodes),
     };
     updateNodes([...draft.definition.nodes, node]);
     setSelectedNodeId(node.id);
     setAgentId("");
-  };
-
-  const moveNode = (id: string, direction: -1 | 1) => {
-    const nodes = [...draft.definition.nodes];
-    const index = nodes.findIndex((node) => node.id === id);
-    const target = index + direction;
-    if (index < 0 || target < 0 || target >= nodes.length) return;
-    [nodes[index], nodes[target]] = [nodes[target]!, nodes[index]!];
-    updateNodes(nodes);
   };
 
   const operationError = save.error || remove.error;
@@ -222,24 +233,27 @@ export function WorkflowBuilderDialog({
             </div>
             <WorkflowCanvas
               nodes={draft.definition.nodes}
+              edges={draft.definition.edges}
               agents={agents}
               selectedId={selectedNodeId}
               stages={progress.stages}
+              evaluations={progress.evaluations}
               onSelect={setSelectedNodeId}
-              onMove={moveNode}
-              onRemove={(id) => {
-                updateNodes(draft.definition.nodes.filter((node) => node.id !== id));
-                if (selectedNodeId === id) setSelectedNodeId(undefined);
+              onChange={(nodes, edges) => {
+                updateDefinition(nodes, edges);
+                if (selectedNodeId && !nodes.some((node) => node.id === selectedNodeId)) {
+                  setSelectedNodeId(undefined);
+                }
               }}
             />
 
             {selectedNode && (
               <WorkflowStepEditor
                 node={selectedNode}
-                onChange={(instruction) =>
+                onChange={(nextNode) =>
                   updateNodes(
                     draft.definition.nodes.map((node) =>
-                      node.id === selectedNode.id ? { ...node, instruction } : node,
+                      node.id === selectedNode.id ? nextNode : node,
                     ),
                   )
                 }

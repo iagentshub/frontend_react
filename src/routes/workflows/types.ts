@@ -1,13 +1,29 @@
+export interface WorkflowPosition {
+  x: number;
+  y: number;
+}
+
+export interface WorkflowEvaluatorConfig {
+  condition: string;
+  max_iterations: number;
+}
+
 export interface WorkflowNode {
   id: string;
   agent_id: string;
   label: string;
   instruction?: string;
+  kind?: "agent" | "evaluator";
+  position?: WorkflowPosition;
+  evaluator?: WorkflowEvaluatorConfig;
 }
 
 export interface WorkflowEdge {
   source: string;
   target: string;
+  type?: "sequence" | "loop";
+  mode?: "fixed" | "condition";
+  iterations?: number;
 }
 
 export interface Workflow {
@@ -39,17 +55,36 @@ export interface AgentOption {
   description?: string;
 }
 
-export type WorkflowStageStatus = "pending" | "running" | "done" | "error";
+export type WorkflowStageStatus = "pending" | "running" | "evaluating" | "done" | "error";
 
 export interface WorkflowProgress {
   stages: Record<string, WorkflowStageStatus>;
   running: boolean;
+  evaluations?: Record<string, WorkflowEvaluation>;
+}
+
+export interface WorkflowEvaluation {
+  approved: boolean;
+  reason: string;
+  iteration: number;
 }
 
 export interface WorkflowRunEvent {
-  type: "stage_started" | "stage_done" | "workflow_done" | "error";
+  type:
+    | "stage_started"
+    | "stage_done"
+    | "evaluation_started"
+    | "evaluation_done"
+    | "loop_iteration_started"
+    | "loop_limit_reached"
+    | "workflow_done"
+    | "error";
   node_id?: string;
+  target_node_id?: string;
   agent_name?: string;
   output?: string;
   message?: string;
+  iteration?: number;
+  approved?: boolean;
+  reason?: string;
 }

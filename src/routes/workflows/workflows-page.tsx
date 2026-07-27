@@ -11,6 +11,7 @@ import { WorkflowRunner } from "./workflow-runner";
 import { WorkflowCatalog } from "./workflow-sidebar";
 import { WorkflowShareDialog } from "./workflow-share-dialog";
 import { WorkflowStepEditor } from "./workflow-step-editor";
+import { hydrateWorkflowPositions, nextWorkflowPosition } from "./workflow-layout";
 import type {
   AgentOption,
   Workflow,
@@ -29,14 +30,21 @@ const emptyWorkflow = (name: string): Workflow => ({
 });
 
 function withLinearEdges(workflow: Workflow): Workflow {
+  const nodes = hydrateWorkflowPositions(workflow.definition.nodes);
+  const loops = workflow.definition.edges.filter((edge) => edge.type === "loop");
   return {
     ...workflow,
     definition: {
       ...workflow.definition,
-      edges: workflow.definition.nodes.slice(1).map((node, index) => ({
-        source: workflow.definition.nodes[index]!.id,
-        target: node.id,
-      })),
+      nodes,
+      edges: [
+        ...nodes.slice(1).map((node, index) => ({
+          source: nodes[index]!.id,
+          target: node.id,
+          type: "sequence" as const,
+        })),
+        ...loops,
+      ],
     },
   };
 }
@@ -132,9 +140,10 @@ export function WorkflowsPage() {
 
   const selectWorkflow = (workflow: Workflow) => {
     if (!confirmDiscard()) return;
-    setDraft(workflow);
-    setSavedFingerprint(fingerprint(workflow));
-    setSelectedNodeId(workflow.definition.nodes[0]?.id);
+    const hydrated = withLinearEdges(workflow);
+    setDraft(hydrated);
+    setSavedFingerprint(fingerprint(hydrated));
+    setSelectedNodeId(hydrated.definition.nodes[0]?.id);
     setProgress({ stages: {}, running: false });
     setViewOnly(false);
     setView("editor");
@@ -142,9 +151,10 @@ export function WorkflowsPage() {
 
   const viewWorkflow = (workflow: Workflow) => {
     if (!confirmDiscard()) return;
-    setDraft(workflow);
-    setSavedFingerprint(fingerprint(workflow));
-    setSelectedNodeId(workflow.definition.nodes[0]?.id);
+    const hydrated = withLinearEdges(workflow);
+    setDraft(hydrated);
+    setSavedFingerprint(fingerprint(hydrated));
+    setSelectedNodeId(hydrated.definition.nodes[0]?.id);
     setProgress({ stages: {}, running: false });
     setViewOnly(true);
     setView("editor");
@@ -153,7 +163,7 @@ export function WorkflowsPage() {
   const openCatalog = () => {
     if (!confirmDiscard()) return;
     const savedWorkflow = workflows.data?.find((workflow) => workflow.id === draft.id);
-    const nextDraft = savedWorkflow ?? emptyWorkflow(defaultName);
+    const nextDraft = withLinearEdges(savedWorkflow ?? emptyWorkflow(defaultName));
     setDraft(nextDraft);
     setSavedFingerprint(fingerprint(nextDraft));
     setSelectedNodeId(undefined);
@@ -162,13 +172,17 @@ export function WorkflowsPage() {
     setView("catalog");
   };
 
-  const updateNodes = (nodes: WorkflowNode[]) => {
+  const updateDefinition = (nodes: WorkflowNode[], edges = draft.definition.edges) => {
     setDraft((current) => ({
-      ...current,
-      definition: { ...current.definition, nodes },
+      ...withLinearEdges({
+        ...current,
+        definition: { ...current.definition, nodes, edges },
+      }),
     }));
     setProgress({ stages: {}, running: false });
   };
+
+  const updateNodes = (nodes: WorkflowNode[]) => updateDefinition(nodes);
 
   const addAgent = () => {
     if (!agentId) return;
@@ -178,19 +192,12 @@ export function WorkflowsPage() {
       agent_id: agentId,
       label: agent?.name || agentId,
       instruction: "",
+      kind: "agent",
+      position: nextWorkflowPosition(draft.definition.nodes),
     };
     updateNodes([...draft.definition.nodes, node]);
     setSelectedNodeId(node.id);
     setAgentId("");
-  };
-
-  const moveNode = (id: string, direction: -1 | 1) => {
-    const nodes = [...draft.definition.nodes];
-    const index = nodes.findIndex((node) => node.id === id);
-    const target = index + direction;
-    if (index < 0 || target < 0 || target >= nodes.length) return;
-    [nodes[index], nodes[target]] = [nodes[target]!, nodes[index]!];
-    updateNodes(nodes);
   };
 
   const operationError = save.error || remove.error;
@@ -408,15 +415,18 @@ export function WorkflowsPage() {
 
               <WorkflowCanvas
                 nodes={draft.definition.nodes}
+                edges={draft.definition.edges}
                 agents={agents.data ?? []}
                 selectedId={selectedNodeId}
                 stages={progress.stages}
+                evaluations={progress.evaluations}
                 readonly={readonly}
                 onSelect={setSelectedNodeId}
-                onMove={moveNode}
-                onRemove={(id) => {
-                  updateNodes(draft.definition.nodes.filter((node) => node.id !== id));
-                  if (selectedNodeId === id) setSelectedNodeId(undefined);
+                onChange={(nodes, edges) => {
+                  updateDefinition(nodes, edges);
+                  if (selectedNodeId && !nodes.some((node) => node.id === selectedNodeId)) {
+                    setSelectedNodeId(undefined);
+                  }
                 }}
               />
 
@@ -424,10 +434,10 @@ export function WorkflowsPage() {
                 <WorkflowStepEditor
                   node={selectedNode}
                   readonly={readonly}
-                  onChange={(instruction) =>
+                  onChange={(nextNode) =>
                     updateNodes(
                       draft.definition.nodes.map((node) =>
-                        node.id === selectedNode.id ? { ...node, instruction } : node,
+                        node.id === selectedNode.id ? nextNode : node,
                       ),
                     )
                   }
