@@ -2,9 +2,27 @@ import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { LabelChips, OriginChip } from "@/components/label-chips";
+import { FilterDropdown, FilterOption, toggleValue } from "@/components/filter-dropdown";
 import "../../../assets/components/agent-card/agent-card.css";
+import "../../../assets/components/filter_agents/filter_agents.css";
 import "../../../assets/css/labels.css";
 import type { Workflow, WorkflowWorkspace } from "./types";
+
+const FILTER_LABELS = [
+  ["public", "Público", "#10b981"],
+  ["production", "Producción", "#0891b2"],
+  ["staging", "Staging", "#64748b"],
+  ["development", "Desarrollo", "#f59e0b"],
+  ["test", "Test", "#8b5cf6"],
+  ["linked", "linked", "#94a3b8"],
+  ["favorite", "Favorito", "#f59e0b"],
+  ["draft", "Borrador", "#8b5cf6"],
+  ["review", "Revisar", "#f97316"],
+  ["deprecated", "Obsoleto", "#ca8a04"],
+  ["quarantine", "Cuarentena", "#ef4444"],
+  ["archived", "Archivado", "#94a3b8"],
+  ["delete", "Marcar borrar", "#dc2626"],
+] as const;
 
 function WorkflowActionIcon({ kind }: { kind: "view" | "edit" | "share" | "delete" }) {
   if (kind === "view")
@@ -82,6 +100,8 @@ export function WorkflowCatalog({
   const [query, setQuery] = useState("");
   const [groupId, setGroupId] = useState("");
   const [groupsOpen, setGroupsOpen] = useState(true);
+  const [labels, setLabels] = useState<string[]>([]);
+  const [openFilter, setOpenFilter] = useState<string | null>(null);
   const teamGroups = workspaces.filter((workspace) => workspace.type === "team");
   const filteredWorkflows = useMemo(() => {
     const normalizedQuery = query.trim().toLocaleLowerCase(i18n.resolvedLanguage);
@@ -94,9 +114,15 @@ export function WorkflowCatalog({
         (!normalizedQuery ||
           `${workflow.name} ${workflow.description}`
             .toLocaleLowerCase("es")
-            .includes(normalizedQuery)),
+            .includes(normalizedQuery)) &&
+        (!labels.length || labels.some((label) => (workflow.labels ?? []).includes(label))),
     );
-  }, [groupId, i18n.resolvedLanguage, query, workflows]);
+  }, [groupId, i18n.resolvedLanguage, labels, query, workflows]);
+  const clearFilters = () => {
+    setQuery("");
+    setLabels([]);
+  };
+  const filtersActive = Boolean(query || labels.length);
 
   return (
     <section className="workflow-catalog">
@@ -167,26 +193,59 @@ export function WorkflowCatalog({
 
         <div className="workflow-catalog-content">
           <div className="workflow-catalog-toolbar">
-            <label className="workflow-search">
-              <span aria-hidden="true">⌕</span>
+            <div className="fa-bar">
+              <div className="fa-search-wrap">
+                <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <circle cx="7" cy="7" r="5" stroke="currentColor" strokeWidth="1.4" />
 
-              <input
-                value={query}
-                onChange={(event) => setQuery(event.target.value)}
-                placeholder={t("catalog.search")}
-                aria-label={t("catalog.search")}
-              />
+                  <path d="m11 11 3 3" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+                </svg>
 
-              {query && (
-                <button
-                  type="button"
-                  onClick={() => setQuery("")}
-                  aria-label={t("catalog.clear_search")}
+                <input
+                  className="fa-search-input"
+                  value={query}
+                  onChange={(event) => setQuery(event.target.value)}
+                  placeholder={t("catalog.search")}
+                  aria-label={t("catalog.search")}
+                />
+
+                {query && (
+                  <button
+                    type="button"
+                    className="fa-search-clear"
+                    onClick={() => setQuery("")}
+                    aria-label={t("catalog.clear_search")}
+                  >
+                    ×
+                  </button>
+                )}
+              </div>
+
+              <div className="fa-filter-group">
+                <FilterDropdown
+                  label={t("agents.blueprint.status")}
+                  count={labels.length}
+                  open={openFilter === "labels"}
+                  onToggle={() => setOpenFilter(openFilter === "labels" ? null : "labels")}
                 >
-                  ×
-                </button>
-              )}
-            </label>
+                  {FILTER_LABELS.map(([label, text, color]) => (
+                    <FilterOption
+                      key={label}
+                      label={text}
+                      color={color}
+                      active={labels.includes(label)}
+                      onClick={() => toggleValue(labels, label, setLabels)}
+                    />
+                  ))}
+                </FilterDropdown>
+
+                {filtersActive && (
+                  <button className="fa-clear-all" type="button" onClick={clearFilters}>
+                    {t("admin.metadata.log_clear")}
+                  </button>
+                )}
+              </div>
+            </div>
 
             <span className="workflow-catalog-count">
               {t(filteredWorkflows.length === 1 ? "catalog.count_one" : "catalog.count_many", {
