@@ -70,7 +70,7 @@ function WorkflowAgentNode({ data, selected }: NodeProps<CanvasFlowNode>) {
   return (
     <>
       <NodeToolbar isVisible={selected && !data.readonly} position={Position.Top}>
-        <div className="workflow-node-toolbar">
+        <div className="workflow-node-toolbar nodrag nopan">
           <button type="button" onClick={() => data.onSelect(node.id)}>
             {labels.configure}
           </button>
