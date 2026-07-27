@@ -215,10 +215,19 @@ export function WorkflowsPage() {
         </div>
 
         {view === "catalog" && (
-          <button className="btn btn-primary" onClick={createNew}>
-            <span aria-hidden="true">＋</span>
-            {t("page.new")}
-          </button>
+          <div className="page-actions">
+            <button className="btn btn-primary page-primary-action" onClick={createNew}>
+              <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
+                <path
+                  d="M6.5 1v11M1 6.5h11"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                />
+              </svg>
+              {t("page.new")}
+            </button>
+          </div>
         )}
       </header>
 
@@ -229,7 +238,6 @@ export function WorkflowsPage() {
           error={workflows.isError}
           onSelect={selectWorkflow}
           onView={viewWorkflow}
-          onCreate={createNew}
           onShare={setShareTarget}
           onDelete={(workflow) => {
             if (confirm(t("editor.delete_confirm", { name: workflow.name }))) {

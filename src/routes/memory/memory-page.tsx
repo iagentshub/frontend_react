@@ -477,7 +477,7 @@ export function MemoryPage() {
         <div className="page-actions">
           <div className="memory-new-wrap" ref={menuWrap}>
             <button
-              className="btn btn-primary"
+              className="btn btn-primary page-primary-action"
               type="button"
               aria-haspopup="menu"
               aria-expanded={menuOpen}

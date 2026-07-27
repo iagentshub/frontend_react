@@ -1295,7 +1295,7 @@ export function KnowledgePage() {
   const actionButton = (
     <div className="page-actions knowledge-header-actions">
       <button
-        className="btn btn-primary"
+        className="btn btn-primary page-primary-action"
         onClick={() => {
           if (tab === "urls") setUrlOpen(true);
           else if (tab === "documents") docFile.current?.click();

@@ -1564,7 +1564,7 @@ export function AgentsPage() {
           <button
             id="btn-new-agent"
             type="button"
-            className="btn btn-primary"
+            className="btn btn-primary page-primary-action"
             onClick={() => setNewMenu((value) => !value)}
             aria-expanded={newMenu}
           >

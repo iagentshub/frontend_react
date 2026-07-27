@@ -410,6 +410,23 @@
   font-size: 0.75rem;
 }
 
+.workflow-catalog-empty {
+  display: flex;
+  min-height: 220px;
+  padding: 36px 20px;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 14px;
+  color: var(--text-2);
+  text-align: center;
+}
+
+.workflow-catalog-empty p {
+  margin: 0;
+  font-size: 0.76rem;
+}
+
 .workflow-list {
   position: sticky;
   top: 18px;

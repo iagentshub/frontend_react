@@ -1194,7 +1194,7 @@ export function ConnectionsPage() {
           </button>
 
           <button
-            className="btn btn-primary"
+            className="btn btn-primary page-primary-action"
             type="button"
             disabled={!providers.length}
             onClick={() => setEditor(null)}

@@ -33,6 +33,20 @@
     filter: brightness(0.88);
 }
 
+/* Shared CTA used in page headers and tab-level creation actions. */
+.page-primary-action {
+    min-height: 34px;
+    padding: 9px 16px;
+    justify-content: center;
+    border-radius: var(--radius);
+    font-weight: 600;
+}
+
+.page-primary-action > svg,
+.page-primary-action > span[aria-hidden="true"] {
+    flex: 0 0 auto;
+}
+
 .btn-ghost {
     background: var(--surface-2);
     color: var(--ink-2);

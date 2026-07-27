@@ -81,7 +81,6 @@ export function WorkflowCatalog({
   error,
   onSelect,
   onView,
-  onCreate,
   onShare,
   onDelete,
   workspaces,
@@ -91,7 +90,6 @@ export function WorkflowCatalog({
   error: boolean;
   onSelect: (workflow: Workflow) => void;
   onView: (workflow: Workflow) => void;
-  onCreate: () => void;
   onShare: (workflow: Workflow) => void;
   onDelete: (workflow: Workflow) => void;
   workspaces: WorkflowWorkspace[];
@@ -372,17 +370,8 @@ export function WorkflowCatalog({
           )}
 
           {!pending && !error && !query && !groupId && !workflows.length && (
-            <div className="workflow-catalog-state">
-              <span>⌁</span>
-
-              <strong>{t("catalog.empty")}</strong>
-
-              <p>{t("catalog.empty_description")}</p>
-
-              <button className="btn btn-primary" type="button" onClick={onCreate}>
-                <span aria-hidden="true">＋</span>
-                {t("page.new")}
-              </button>
+            <div className="workflow-catalog-empty">
+              <p>{t("catalog.empty")}</p>
             </div>
           )}
         </div>
