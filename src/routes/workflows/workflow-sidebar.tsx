@@ -8,22 +8,6 @@ import "../../../assets/components/filter_agents/filter_agents.css";
 import "../../../assets/css/labels.css";
 import type { Workflow, WorkflowWorkspace } from "./types";
 
-const FILTER_LABELS = [
-  ["public", "Público", "#10b981"],
-  ["production", "Producción", "#0891b2"],
-  ["staging", "Staging", "#64748b"],
-  ["development", "Desarrollo", "#f59e0b"],
-  ["test", "Test", "#8b5cf6"],
-  ["linked", "linked", "#94a3b8"],
-  ["favorite", "Favorito", "#f59e0b"],
-  ["draft", "Borrador", "#8b5cf6"],
-  ["review", "Revisar", "#f97316"],
-  ["deprecated", "Obsoleto", "#ca8a04"],
-  ["quarantine", "Cuarentena", "#ef4444"],
-  ["archived", "Archivado", "#94a3b8"],
-  ["delete", "Marcar borrar", "#dc2626"],
-] as const;
-
 function WorkflowActionIcon({ kind }: { kind: "view" | "edit" | "share" | "delete" }) {
   if (kind === "view")
     return (
@@ -121,6 +105,21 @@ export function WorkflowCatalog({
     setLabels([]);
   };
   const filtersActive = Boolean(query || labels.length);
+  const filterLabelOptions = [
+    ["public", i18n.t("dynamic.text_ff2e5e62f8bf"), "#10b981"],
+    ["production", i18n.t("dynamic.text_f88f7779e99a"), "#0891b2"],
+    ["staging", "Staging", "#64748b"],
+    ["development", "Desarrollo", "#f59e0b"],
+    ["test", "Test", "#8b5cf6"],
+    ["linked", "linked", "#94a3b8"],
+    ["favorite", "Favorito", "#f59e0b"],
+    ["draft", "Borrador", "#8b5cf6"],
+    ["review", i18n.t("dynamic.text_efb87a29756b"), "#f97316"],
+    ["deprecated", "Obsoleto", "#ca8a04"],
+    ["quarantine", "Cuarentena", "#ef4444"],
+    ["archived", "Archivado", "#94a3b8"],
+    ["delete", t("common.actions.delete"), "#dc2626"],
+  ] as const;
 
   return (
     <section className="workflow-catalog">
@@ -226,7 +225,7 @@ export function WorkflowCatalog({
                   open={openFilter === "labels"}
                   onToggle={() => setOpenFilter(openFilter === "labels" ? null : "labels")}
                 >
-                  {FILTER_LABELS.map(([label, text, color]) => (
+                  {filterLabelOptions.map(([label, text, color]) => (
                     <FilterOption
                       key={label}
                       label={text}

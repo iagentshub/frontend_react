@@ -85,23 +85,27 @@ body.dash-editing .nav-backdrop {
   position: relative;
 }
 
-.agents-page .fa-bar {
+.agents-page .fa-bar,
+.workflows-page .fa-bar {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   align-items: stretch;
   gap: 8px;
 }
 
-.agents-page .fa-search-wrap {
+.agents-page .fa-search-wrap,
+.workflows-page .fa-search-wrap {
   width: 100%;
   flex: none;
 }
 
-.agents-page .fa-filter-group {
+.agents-page .fa-filter-group,
+.workflows-page .fa-filter-group {
   width: 100%;
 }
 
-.agents-page .fa-option {
+.agents-page .fa-option,
+.workflows-page .fa-option {
   width: 100%;
   border: 0;
   background: transparent;
@@ -110,6 +114,7 @@ body.dash-editing .nav-backdrop {
   font-family: var(--font);
 }
 
-.agents-page .fa-option--active {
+.agents-page .fa-option--active,
+.workflows-page .fa-option--active {
   background: var(--accent-dim);
 }
