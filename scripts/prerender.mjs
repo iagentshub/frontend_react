@@ -43,6 +43,22 @@ async function waitForServer() {
   throw new Error("Vite preview no arrancó a tiempo");
 }
 
+function targetFor(route) {
+  if (route === "/") return path.join("dist", "index.html");
+  if (route.endsWith("/"))
+    return path.join("dist", route.replace(/^\//, "").replace(/\/$/, ""), "index.html");
+  return path.join("dist", `${route.replace(/^\//, "")}.html`);
+}
+
+async function freeze(page, target) {
+  // Los <link> de precarga que React inyecta en runtime quedan serializados
+  // con href absoluto al servidor de preview: se vuelven relativos o el HTML
+  // desplegado pediría los chunks a 127.0.0.1.
+  const html = (await page.content()).replaceAll(origin, "");
+  await mkdir(path.dirname(target), { recursive: true });
+  await writeFile(target, html, "utf8");
+}
+
 try {
   await waitForServer();
   // Copia intacta del shell antes de congelar nada: es el fallback de nginx
@@ -86,22 +102,21 @@ try {
         expectedCanonical: `https://www.iagentshub.com${route}`,
       },
     );
-    // Los <link> de precarga que React inyecta en runtime quedan serializados
-    // con href absoluto al servidor de preview: se vuelven relativos o el HTML
-    // desplegado pediría los chunks a 127.0.0.1.
-    const html = (await page.content()).replaceAll(origin, "");
-    // Las rutas sin barra final se guardan como `<ruta>.html` (nginx las sirve
-    // con `try_files $uri.html`): si se guardaran como carpeta, nginx redirigiría
-    // 301 a `/about/` y el canonical apuntaría a una URL distinta de la servida.
-    const target =
-      route === "/"
-        ? path.join("dist", "index.html")
-        : route.endsWith("/")
-          ? path.join("dist", route.replace(/^\//, "").replace(/\/$/, ""), "index.html")
-          : path.join("dist", `${route.replace(/^\//, "")}.html`);
-    await mkdir(path.dirname(target), { recursive: true });
-    await writeFile(target, html, "utf8");
+    await freeze(page, targetFor(route));
   }
+
+  // Una URL desconocida debe responder con estado HTTP 404, no con el shell y
+  // un 200. Se congela la misma pantalla de React para mantener el diseño y las
+  // traducciones, mientras nginx se encarga del estado real.
+  await page.goto(`${origin}/`, { waitUntil: "networkidle", timeout: 60_000 });
+  await page.goto(`${origin}/__not_found__`, { waitUntil: "networkidle", timeout: 60_000 });
+  await page.waitForFunction(
+    () =>
+      document.querySelector('meta[name="robots"]')?.getAttribute("content") ===
+        "noindex, nofollow" && document.querySelector("h1")?.textContent === "404",
+  );
+  await freeze(page, path.join("dist", "404.html"));
+
   await browser.close();
 } finally {
   preview.kill();

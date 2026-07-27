@@ -38,8 +38,8 @@ export function NotFoundPage() {
   const location = useLocation();
   return (
     <main className="route-error">
-      {/* El fallback SPA de nginx devuelve 200 en rutas inexistentes: sin este
-          noindex serían soft 404 indexables. */}
+      {/* El noindex protege también el entorno de desarrollo; en producción
+          nginx sirve esta pantalla con estado HTTP 404 real. */}
       <Seo
         title={t("seo.not_found.title")}
         description={t("seo.not_found.description")}
