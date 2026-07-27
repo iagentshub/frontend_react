@@ -148,6 +148,67 @@ export function WorkflowCatalog({
           </svg>
         </button>
       </div>
+      <div className="workflow-catalog-toolbar">
+        <div className="fa-bar">
+          <div className="fa-search-wrap">
+            <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <circle cx="7" cy="7" r="5" stroke="currentColor" strokeWidth="1.4" />
+
+              <path d="m11 11 3 3" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+            </svg>
+
+            <input
+              className="fa-search-input"
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              placeholder={t("catalog.search")}
+              aria-label={t("catalog.search")}
+            />
+
+            {query && (
+              <button
+                type="button"
+                className="fa-search-clear"
+                onClick={() => setQuery("")}
+                aria-label={t("catalog.clear_search")}
+              >
+                ×
+              </button>
+            )}
+          </div>
+
+          <div className="fa-filter-group">
+            <FilterDropdown
+              label={t("agents.blueprint.status")}
+              count={labels.length}
+              open={openFilter === "labels"}
+              onToggle={() => setOpenFilter(openFilter === "labels" ? null : "labels")}
+            >
+              {filterLabelOptions.map(([label, text, color]) => (
+                <FilterOption
+                  key={label}
+                  label={text}
+                  color={color}
+                  active={labels.includes(label)}
+                  onClick={() => toggleValue(labels, label, setLabels)}
+                />
+              ))}
+            </FilterDropdown>
+
+            {filtersActive && (
+              <button className="fa-clear-all" type="button" onClick={clearFilters}>
+                {t("admin.metadata.log_clear")}
+              </button>
+            )}
+          </div>
+        </div>
+
+        <span className="workflow-catalog-count">
+          {t(filteredWorkflows.length === 1 ? "catalog.count_one" : "catalog.count_many", {
+            count: filteredWorkflows.length,
+          })}
+        </span>
+      </div>
       <div className="workflow-catalog-layout">
         <aside
           className={`workflow-groups kf-panel${groupsOpen ? "" : " folder-panel--collapsed"}`}
@@ -189,68 +250,6 @@ export function WorkflowCatalog({
         </aside>
 
         <div className="workflow-catalog-content">
-          <div className="workflow-catalog-toolbar">
-            <div className="fa-bar">
-              <div className="fa-search-wrap">
-                <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                  <circle cx="7" cy="7" r="5" stroke="currentColor" strokeWidth="1.4" />
-
-                  <path d="m11 11 3 3" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
-                </svg>
-
-                <input
-                  className="fa-search-input"
-                  value={query}
-                  onChange={(event) => setQuery(event.target.value)}
-                  placeholder={t("catalog.search")}
-                  aria-label={t("catalog.search")}
-                />
-
-                {query && (
-                  <button
-                    type="button"
-                    className="fa-search-clear"
-                    onClick={() => setQuery("")}
-                    aria-label={t("catalog.clear_search")}
-                  >
-                    ×
-                  </button>
-                )}
-              </div>
-
-              <div className="fa-filter-group">
-                <FilterDropdown
-                  label={t("agents.blueprint.status")}
-                  count={labels.length}
-                  open={openFilter === "labels"}
-                  onToggle={() => setOpenFilter(openFilter === "labels" ? null : "labels")}
-                >
-                  {filterLabelOptions.map(([label, text, color]) => (
-                    <FilterOption
-                      key={label}
-                      label={text}
-                      color={color}
-                      active={labels.includes(label)}
-                      onClick={() => toggleValue(labels, label, setLabels)}
-                    />
-                  ))}
-                </FilterDropdown>
-
-                {filtersActive && (
-                  <button className="fa-clear-all" type="button" onClick={clearFilters}>
-                    {t("admin.metadata.log_clear")}
-                  </button>
-                )}
-              </div>
-            </div>
-
-            <span className="workflow-catalog-count">
-              {t(filteredWorkflows.length === 1 ? "catalog.count_one" : "catalog.count_many", {
-                count: filteredWorkflows.length,
-              })}
-            </span>
-          </div>
-
           {pending && <div className="workflow-catalog-state">{t("catalog.loading")}</div>}
 
           {error && (
