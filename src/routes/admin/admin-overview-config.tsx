@@ -2,8 +2,9 @@ import i18n from "@/i18n";
 import { useTranslation } from "react-i18next";
 import { useState, type FormEvent } from "react";
 import { useMutation } from "@tanstack/react-query";
+import type { TFunction } from "i18next";
 import { api, ApiError } from "@/api/client";
-import type { AdminStats, PlatformConfig } from "./types";
+import type { AdminStats, CheckUpdateResult, PlatformConfig } from "./types";
 
 function formatTokens(value: number) {
   return value >= 1_000_000
@@ -14,6 +15,24 @@ function formatTokens(value: number) {
 }
 function errorText(error: unknown) {
   return error instanceof ApiError ? error.message : i18n.t("common.errors.save_config");
+}
+
+// Solo consulta si hay actualización disponible (Docker Hub) — no la aplica.
+// Aplicarla es cosa de Watchtower (automático, cada hora por defecto) o de
+// `docker compose pull && up -d` manual.
+function describeCheckUpdate(result: CheckUpdateResult, t: TFunction): string {
+  if (!result.checked) {
+    if (result.reason === "no_version") return t("admin.config.no_version");
+    if (result.reason === "no_remote_versions") return t("admin.config.no_remote_versions");
+    return t("admin.config.check_update_unknown");
+  }
+  if (result.update_available) {
+    return t("admin.config.update_available", {
+      latest: result.latest_version,
+      current: result.current_version,
+    });
+  }
+  return t("admin.config.up_to_date", { version: result.current_version });
 }
 
 export function AdminOverview({ stats }: { stats: AdminStats }) {
@@ -161,8 +180,20 @@ export function AdminConfigPanel({
       onSaved(value);
     },
   });
+  const checkUpdate = useMutation({
+    mutationFn: () => api.get<CheckUpdateResult>("/api/admin/check-update"),
+  });
   const set = <K extends keyof PlatformConfig>(key: K, value: PlatformConfig[K]) =>
     setConfig((current) => ({ ...current, [key]: value }));
+  // Aplica al momento (arranca/para "watchtower" de verdad) — por eso vive
+  // fuera de PlatformConfigUpdate y de la mutación save() de arriba. El
+  // checkbox es controlado por config.auto_update_enabled, así que si la
+  // llamada falla y no lo actualizamos, el toggle no llega a moverse.
+  const autoUpdate = useMutation({
+    mutationFn: (enabled: boolean) =>
+      api.put<{ auto_update_enabled: boolean }>("/api/admin/auto-update", { enabled }),
+    onSuccess: (value) => set("auto_update_enabled", value.auto_update_enabled),
+  });
   const submit = (event: FormEvent) => {
     event.preventDefault();
     setSaved(false);
@@ -268,6 +299,42 @@ export function AdminConfigPanel({
             value={config.oauth_microsoft_enabled}
             onChange={(value) => set("oauth_microsoft_enabled", value)}
           />
+        </div>
+        <div className="admin-config-section">
+          <div className="admin-config-title">{t("admin.config.section_updates")}</div>
+          <div className="admin-config-toggle-row">
+            <label className="toggle">
+              <input
+                type="checkbox"
+                checked={config.auto_update_enabled}
+                disabled={autoUpdate.isPending}
+                onChange={(event) => autoUpdate.mutate(event.target.checked)}
+              />
+              <span className="toggle-track" />
+              <span className="toggle-label">{t("admin.config.auto_update_label")}</span>
+            </label>
+          </div>
+          {autoUpdate.error && (
+            <div className="admin-config-hint">{errorText(autoUpdate.error)}</div>
+          )}
+          <div className="admin-config-row" style={{ marginTop: 10 }}>
+            <button
+              type="button"
+              className="btn btn-ghost btn-sm"
+              disabled={checkUpdate.isPending}
+              onClick={() => checkUpdate.mutate()}
+            >
+              {checkUpdate.isPending
+                ? t("admin.config.check_update_btn_loading")
+                : t("admin.config.check_update_btn")}
+            </button>
+          </div>
+          {checkUpdate.data && (
+            <div className="admin-config-hint">{describeCheckUpdate(checkUpdate.data, t)}</div>
+          )}
+          {checkUpdate.error && (
+            <div className="admin-config-hint">{t("admin.config.check_update_error")}</div>
+          )}
         </div>
       </div>
       <div style={{ marginTop: 16, display: "flex", gap: 12, alignItems: "center" }}>
