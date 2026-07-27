@@ -2030,7 +2030,8 @@ export function AgentsPage() {
                               <button
                                 className="ac-template-btn"
                                 onClick={() => {
-                                  const { origin_type: _originType, ...template } = agent;
+                                  const template = { ...agent };
+                                  Reflect.deleteProperty(template, "origin_type");
                                   setEditor({ ...template, id: "" });
                                   setCatalog(false);
                                 }}

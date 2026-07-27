@@ -18,13 +18,13 @@ export default tseslint.config(
     plugins: { "react-hooks": reactHooks, "react-refresh": reactRefresh },
     rules: {
       ...reactHooks.configs.recommended.rules,
-      "react-refresh/only-export-components": ["warn", { allowConstantExport: true, allowExportNames: ["themes", "useTheme", "LABEL_COLORS", "LABEL_GROUPS", "labelGroupId"] }],
+      "react-refresh/only-export-components": ["warn", { allowConstantExport: true, allowExportNames: ["themes", "useTheme", "LABEL_COLORS", "LABEL_GROUPS", "labelGroupId", "toggleValue"] }],
       "@typescript-eslint/consistent-type-imports": "error",
       "@typescript-eslint/no-floating-promises": "error"
     },
   },
   {
-    files: ["*.config.{js,ts}", "scripts/**/*.mjs"],
+    files: ["*.config.{js,ts}", "scripts/**/*.{mjs,d.mts}"],
     extends: [tseslint.configs.disableTypeChecked],
     languageOptions: { globals: globals.node },
   },

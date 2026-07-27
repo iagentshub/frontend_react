@@ -3,24 +3,10 @@ import { chromium } from "@playwright/test";
 import { spawn } from "node:child_process";
 import { copyFile, mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { publicRoutes } from "./public-routes.mjs";
 
 const port = 4174;
 const origin = `http://127.0.0.1:${port}`;
-// Rutas públicas indexables: cada una se congela con su <title>, description,
-// canonical y Open Graph ya resueltos, para que los buscadores no dependan de
-// ejecutar el bundle.
-const routes = [
-  { path: "/", language: "es" },
-  { path: "/about", language: "es" },
-  { path: "/pricing/", language: "es" },
-  { path: "/docs", language: "es" },
-  { path: "/support", language: "es" },
-  { path: "/en/", language: "en" },
-  { path: "/en/about", language: "en" },
-  { path: "/en/pricing/", language: "en" },
-  { path: "/en/docs", language: "en" },
-  { path: "/en/support", language: "en" },
-];
 // Se lanza el binario de vite con el propio node en vez de `npm run preview`:
 // spawn de un .cmd falla en Windows con Node ≥ 22 (EINVAL) y, con shell, el
 // kill del final mataría al shell dejando vivo el servidor.
@@ -88,7 +74,9 @@ try {
       body: JSON.stringify({ detail: "Unauthorized" }),
     }),
   );
-  for (const { path: route, language } of routes) {
+  // Solo se congelan las diez URL declaradas en public-routes.mjs. Mantener la
+  // lista fuera de este script evita que sitemap, router y prerender diverjan.
+  for (const { path: route, language } of publicRoutes) {
     await page.goto(`${origin}${route}`, { waitUntil: "networkidle", timeout: 60_000 });
     await page.waitForFunction(
       ({ expectedLanguage, expectedCanonical }) =>
