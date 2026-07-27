@@ -45,8 +45,7 @@
   "origin": {
     "label": "Origen",
     "owner": "Propietario",
-    "linked": "Enlazado",
-    "fork": "Fork"
+    "linked": "Enlazado"
   },
   "icons": {
     "assistant": "Asistente",
@@ -269,7 +268,8 @@
     "placeholder": "Escribe un mensaje…",
     "close": "Cerrar",
     "new_conversation": "Nueva conversación",
-    "timeout_msg": "Tiempo agotado — el agente no respondió en el tiempo configurado."
+    "timeout_msg": "Tiempo agotado — el agente no respondió en el tiempo configurado.",
+    "stream_error": "Respuesta sin stream"
   },
   "builder_actions": {
     "saving": "Guardando…",
@@ -281,7 +281,6 @@
     "search_placeholder": "Buscar agentes…",
     "empty": "No hay agentes públicos disponibles",
     "empty_search": "Ningún agente coincide con la búsqueda",
-    "fork_btn": "Personalizar",
     "use_btn": "Usar"
   },
   "blueprint": {

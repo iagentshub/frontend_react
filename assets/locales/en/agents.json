@@ -45,8 +45,7 @@
   "origin": {
     "label": "Origin",
     "owner": "Owner",
-    "linked": "Linked",
-    "fork": "Fork"
+    "linked": "Linked"
   },
   "icons": {
     "assistant": "Assistant",
@@ -269,7 +268,8 @@
     "placeholder": "Type a message…",
     "close": "Close",
     "new_conversation": "New conversation",
-    "timeout_msg": "Timed out — the agent did not respond in time."
+    "timeout_msg": "Timed out — the agent did not respond in time.",
+    "stream_error": "Response without stream"
   },
   "builder_actions": {
     "saving": "Saving…",
@@ -281,7 +281,6 @@
     "search_placeholder": "Search agents…",
     "empty": "No public agents available",
     "empty_search": "No agents match your search",
-    "fork_btn": "Customize",
     "use_btn": "Use"
   },
   "blueprint": {

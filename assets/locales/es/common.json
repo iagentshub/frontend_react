@@ -19,7 +19,8 @@
     "about": "Acerca de",
     "support": "Soporte",
     "explore": "Explorar",
-    "upgrade": "Mejorar plan"
+    "upgrade": "Mejorar plan",
+    "logout_confirm": "¿Cerrar sesión?"
   },
   "actions": {
     "save": "Guardar",

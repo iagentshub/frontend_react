@@ -88,5 +88,7 @@
   "workspace_remove_member_confirm": "¿Quitar a {{username}}?",
   "workspace_leave_confirm": "¿Abandonar \"{{name}}\"?",
   "agent_builder_designing": "Diseñando el agente… {{seconds}}s",
-  "admin_agents_summary": "{{public}} públicos · {{private}} privados"
+  "admin_agents_summary": "{{public}} públicos · {{private}} privados",
+  "centinel_subtitle_functional": "Test runner del backend",
+  "centinel_subtitle_stress": "Pruebas de rendimiento"
 }

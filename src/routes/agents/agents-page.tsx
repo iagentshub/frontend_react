@@ -12,6 +12,8 @@ import {
   type AgentIconName,
 } from "@/components/resource-icons";
 import { ResourceHistoryButton } from "@/components/resource-history-dialog";
+import { LabelChips, OriginChip } from "@/components/label-chips";
+import { FilterDropdown, FilterOption, toggleValue } from "@/components/filter-dropdown";
 import { ChatDialog } from "./chat-dialog";
 import { AgentBuilderDialog } from "./agent-builder-dialog";
 import "../../../assets/components/agent-card/agent-card.css";
@@ -20,6 +22,7 @@ import "../../../assets/components/agent-catalog/agent-catalog.css";
 import "../../../assets/components/action-menu/action-menu.css";
 import "../../../assets/components/group-panel/group-panel.css";
 import "../../../assets/components/group-share-dialog/group-share-dialog.css";
+import "../../../assets/css/labels.css";
 import "@/styles/routes/agents/agents.css";
 
 interface Agent {
@@ -211,7 +214,7 @@ async function loadAgents(signal: AbortSignal): Promise<AgentData> {
   return { agents, connections, skills, knowledge, memories, workspaces };
 }
 
-function Icon({ kind }: { kind: "chat" | "view" | "edit" | "delete" | "export" }) {
+function Icon({ kind }: { kind: "chat" | "view" | "edit" | "delete" | "export" | "share" }) {
   if (kind === "chat")
     return (
       <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true">
@@ -253,6 +256,20 @@ function Icon({ kind }: { kind: "chat" | "view" | "edit" | "delete" | "export" }
           d="M8 2v8M5 7l3 3 3-3M3 13h10"
           stroke="currentColor"
           strokeWidth="1.5"
+          strokeLinecap="round"
+        />
+      </svg>
+    );
+  if (kind === "share")
+    return (
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+        <circle cx="12" cy="3" r="1.5" stroke="currentColor" strokeWidth="1.4" />
+        <circle cx="12" cy="13" r="1.5" stroke="currentColor" strokeWidth="1.4" />
+        <circle cx="4" cy="8" r="1.5" stroke="currentColor" strokeWidth="1.4" />
+        <path
+          d="m10.5 3.8-5 3.4m5 5-5-3.4"
+          stroke="currentColor"
+          strokeWidth="1.3"
           strokeLinecap="round"
         />
       </svg>
@@ -362,21 +379,9 @@ function AgentCard({
 
         {(agent.labels?.length || agent.origin_type) && (
           <div className="label-chips-row agent-label-chips">
-            {agent.origin_type && (
-              <span className="label-chip" style={{ "--lc": "#059669" } as React.CSSProperties}>
-                {agent.origin_type === "linked"
-                  ? "Enlazado"
-                  : agent.origin_type === "fork"
-                    ? "Fork"
-                    : "Propietario"}
-              </span>
-            )}
+            <OriginChip originType={agent.origin_type} />
 
-            {agent.labels?.map((label) => (
-              <span className="label-chip" key={label}>
-                {label}
-              </span>
-            ))}
+            <LabelChips labels={agent.labels} hidePrivate={false} bare />
           </div>
         )}
       </div>
@@ -416,7 +421,7 @@ function AgentCard({
                 title={t("legacy.text_3f5a069c03dd")}
                 onClick={() => onShare(agent)}
               >
-                ⌯
+                <Icon kind="share" />
               </button>
 
               <button
@@ -1366,79 +1371,6 @@ function ExportDialog({ agent, onClose }: { agent: Agent; onClose: () => void })
   );
 }
 
-function FilterDropdown({
-  label,
-  count,
-  open,
-  onToggle,
-  children,
-}: {
-  label: string;
-  count: number;
-  open: boolean;
-  onToggle: () => void;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="fa-dropdown-wrap">
-      <button
-        type="button"
-        className={`fa-filter-btn${count ? " fa-filter-btn--active" : ""}`}
-        onClick={onToggle}
-      >
-        {label}
-
-        {count > 0 && <span className="fa-filter-count">{count}</span>}
-
-        <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
-          <path
-            d="M2 3.5l3 3 3-3"
-            stroke="currentColor"
-            strokeWidth="1.4"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
-      </button>
-
-      {open && (
-        <div className="fa-panel">
-          <div className="fa-panel-list">{children}</div>
-        </div>
-      )}
-    </div>
-  );
-}
-
-function FilterOption({
-  active,
-  label,
-  color,
-  onClick,
-}: {
-  active: boolean;
-  label: string;
-  color?: string;
-  onClick: () => void;
-}) {
-  return (
-    <button
-      type="button"
-      className={`fa-option${active ? " fa-option--active" : ""}`}
-      onMouseDown={(event) => {
-        event.preventDefault();
-        onClick();
-      }}
-    >
-      <span className="fa-option-check">{active ? "✓" : ""}</span>
-
-      {color && <span className="fa-lbl-dot" style={{ background: color }} />}
-
-      <span className="fa-option-label">{label}</span>
-    </button>
-  );
-}
-
 export function AgentsPage() {
   const { t } = useTranslation();
   const query = useQuery({
@@ -1518,8 +1450,6 @@ export function AgentsPage() {
       knowledgeIds.length ||
       labels.length,
     );
-  const toggleValue = (values: string[], value: string, update: (next: string[]) => void) =>
-    update(values.includes(value) ? values.filter((item) => item !== value) : [...values, value]);
   const confirmDelete = (agent: Agent) => {
     if (
       window.confirm(
@@ -1882,7 +1812,6 @@ export function AgentsPage() {
                 ["staging", "Staging", "#64748b"],
                 ["development", "Desarrollo", "#f59e0b"],
                 ["test", "Test", "#8b5cf6"],
-                ["fork", "fork", "#94a3b8"],
                 ["linked", "linked", "#94a3b8"],
                 ["favorite", "Favorito", "#f59e0b"],
                 ["draft", "Borrador", "#8b5cf6"],
@@ -2099,9 +2028,10 @@ export function AgentsPage() {
 
                             <div className="ac-card-footer">
                               <button
-                                className="ac-fork-btn"
+                                className="ac-template-btn"
                                 onClick={() => {
-                                  setEditor({ ...agent, id: "", origin_type: "fork" });
+                                  const { origin_type: _originType, ...template } = agent;
+                                  setEditor({ ...template, id: "" });
                                   setCatalog(false);
                                 }}
                               >

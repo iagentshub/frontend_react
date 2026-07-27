@@ -18,7 +18,8 @@
     "connections": "Conexiones",
     "skills": "Skills",
     "memory": "Memoria",
-    "knowledge": "Conocimiento"
+    "knowledge": "Conocimiento",
+    "workflows": "Orquestación"
   },
   "tokens": {
     "title": "Uso de tokens",

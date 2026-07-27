@@ -103,28 +103,29 @@ export function Modal({
 export function LabelChips({
   labels,
   hidePrivate = true,
+  bare = false,
 }: {
   labels?: string[];
   hidePrivate?: boolean;
+  /** Render just the chip spans, without the wrapping row div (to embed inside an existing row). */
+  bare?: boolean;
 }) {
   const { t } = useTranslation();
   const shown = (labels ?? []).filter(
     (label) => labelColor[label] && (!hidePrivate || label !== "private"),
   );
   if (!shown.length) return null;
-  return (
-    <div className="label-chips-row">
-      {shown.map((label) => (
-        <span
-          className="label-chip"
-          style={{ "--lc": labelColor[label] } as CSSProperties}
-          key={label}
-        >
-          {t(`labels.${label}`)}
-        </span>
-      ))}
-    </div>
-  );
+  const chips = shown.map((label) => (
+    <span
+      className="label-chip"
+      style={{ "--lc": labelColor[label] } as CSSProperties}
+      key={label}
+    >
+      {t(`labels.${label}`)}
+    </span>
+  ));
+  if (bare) return chips;
+  return <div className="label-chips-row">{chips}</div>;
 }
 
 export function LabelPicker({
@@ -188,7 +189,6 @@ export function Icon({
     | "delete"
     | "share"
     | "export"
-    | "fork"
     | "link"
     | "sync"
     | "grid"
@@ -331,23 +331,6 @@ export function Icon({
           d="M8 2v8M5 7l3 3 3-3M3 13h10"
           stroke="currentColor"
           strokeWidth="1.5"
-          strokeLinecap="round"
-        />
-      </svg>
-    );
-  if (kind === "fork")
-    return (
-      <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-        <circle cx="8" cy="2.5" r="1.5" stroke="currentColor" strokeWidth="1.3" />
-
-        <circle cx="3" cy="13.5" r="1.5" stroke="currentColor" strokeWidth="1.3" />
-
-        <circle cx="13" cy="13.5" r="1.5" stroke="currentColor" strokeWidth="1.3" />
-
-        <path
-          d="M8 4v3l-5 5m5-5 5 5"
-          stroke="currentColor"
-          strokeWidth="1.3"
           strokeLinecap="round"
         />
       </svg>

@@ -11,6 +11,7 @@ export interface Skill {
   body?: string;
   scope?: "private" | "public";
   owner_id?: string;
+  origin_type?: string;
   labels?: string[];
   created_at?: string;
   updated_at?: string;

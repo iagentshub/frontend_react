@@ -38,6 +38,7 @@ export interface Connection {
   tokens_in?: number;
   tokens_out?: number;
   owner_id?: string;
+  origin_type?: string;
   _shared?: boolean;
   _personal_key?: boolean;
   _group_id?: string;

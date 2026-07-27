@@ -126,7 +126,7 @@
     justify-content: flex-end;
 }
 
-.ac-fork-btn {
+.ac-template-btn {
     padding: 5px 14px;
     border-radius: var(--radius);
     background: var(--accent-dim);
@@ -139,7 +139,7 @@
     transition: background .12s, color .12s;
 }
 
-.ac-fork-btn:hover {
+.ac-template-btn:hover {
     background: var(--accent);
     color: #fff;
 }

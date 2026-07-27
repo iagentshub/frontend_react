@@ -437,8 +437,8 @@
     white-space: nowrap;
 }
 
-/* Fork button */
-.pub-resource-fork {
+/* Botón de copiar (enlazar) */
+.pub-resource-link {
     background: none;
     border: 1px solid var(--border);
     cursor: pointer;
@@ -453,12 +453,12 @@
     transition: color .12s, background .12s, border-color .12s;
     font-family: var(--font, inherit);
 }
-.pub-resource-fork:hover {
+.pub-resource-link:hover {
     color: var(--accent);
     background: var(--accent-dim);
     border-color: var(--accent);
 }
-.pub-resource-fork.forked {
+.pub-resource-link.linked {
     color: var(--accent);
     border-color: var(--accent);
     opacity: .6;

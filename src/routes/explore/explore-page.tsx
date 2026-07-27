@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { api } from "@/api/client";
 import { sessionQuery } from "@/auth/queries";
+import { LabelChips } from "@/components/label-chips";
 import type {
   AgentTryResult,
   ConnectionOption,
@@ -28,25 +29,11 @@ const avatarColors = [
   "#db2777",
   "#0f766e",
 ] as const;
-const labelColors: Record<string, string> = {
-  public: "#059669",
-  private: "#64748b",
-  production: "#0891b2",
-  staging: "#475569",
-  development: "#d97706",
-  test: "#7c3aed",
-  favorite: "#f59e0b",
-  draft: "#8b5cf6",
-  review: "#f97316",
-  deprecated: "#ca8a04",
-  quarantine: "#ef4444",
-  archived: "#94a3b8",
-  delete: "#dc2626",
-};
 const resourceLabels: Record<ResourceType, string> = {
   agent: "Agente",
   skill: "Skill",
   knowledge: "Knowledge",
+  workflow: "Orquestación",
 };
 
 function avatarColor(value: string) {
@@ -69,26 +56,6 @@ function EyeIcon() {
   );
 }
 
-function ForkIcon() {
-  return (
-    <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-      <circle cx="8" cy="2.5" r="1.7" stroke="currentColor" strokeWidth="1.4" />
-
-      <circle cx="3" cy="13.5" r="1.7" stroke="currentColor" strokeWidth="1.4" />
-
-      <circle cx="13" cy="13.5" r="1.7" stroke="currentColor" strokeWidth="1.4" />
-
-      <path
-        d="M8 4.2v3.5m0 0L3 11.8m5-4.1 5 4.1"
-        stroke="currentColor"
-        strokeWidth="1.4"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
-
 function LinkIcon() {
   return (
     <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true">
@@ -99,25 +66,6 @@ function LinkIcon() {
         strokeLinecap="round"
       />
     </svg>
-  );
-}
-
-function LabelChips({ labels }: { labels: string[] | undefined }) {
-  const { t } = useTranslation();
-  const visible = (labels ?? []).filter((label) => label !== "private" && labelColors[label]);
-  if (!visible.length) return null;
-  return (
-    <div className="label-chips-row" style={{ marginTop: 4 }}>
-      {visible.map((label) => (
-        <span
-          className="label-chip"
-          style={{ "--lc": labelColors[label] } as React.CSSProperties}
-          key={label}
-        >
-          {t(`labels.${label}`)}
-        </span>
-      ))}
-    </div>
   );
 }
 
@@ -295,7 +243,7 @@ function PreviewContent({ preview }: { preview: ExplorePreview }) {
                 <span className="explore-card-type-badge">{preview.category}</span>
               )}
 
-              <LabelChips labels={preview.labels} />
+              <LabelChips labels={preview.labels} style={{ marginTop: 4 }} />
             </div>
           </div>
         </div>
@@ -353,7 +301,7 @@ function PreviewContent({ preview }: { preview: ExplorePreview }) {
             <span style={{ fontSize: 12, color: "var(--ink-2)" }}>{preview.category}</span>
           )}
 
-          <LabelChips labels={preview.labels} />
+          <LabelChips labels={preview.labels} style={{ marginTop: 4 }} />
         </div>
 
         {preview.description && (
@@ -393,12 +341,33 @@ function PreviewContent({ preview }: { preview: ExplorePreview }) {
       </>
     );
   }
+  if (preview.resource_type === "workflow") {
+    return (
+      <>
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <span className="explore-card-type-badge">{resourceLabels.workflow}</span>
+
+          {preview.category && (
+            <span style={{ fontSize: 12, color: "var(--ink-2)" }}>{preview.category}</span>
+          )}
+
+          <LabelChips labels={preview.labels} style={{ marginTop: 4 }} />
+        </div>
+
+        {preview.description && (
+          <p style={{ fontSize: 13, color: "var(--ink-2)", margin: 0 }}>{preview.description}</p>
+        )}
+
+        <PreviewList title={`Pasos (${preview.steps ?? 0})`} values={preview.agent_names} />
+      </>
+    );
+  }
   return (
     <>
       <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
         <span className="explore-card-type-badge">{t("legacy.text_dec1fccaba73")}</span>
 
-        <LabelChips labels={preview.labels} />
+        <LabelChips labels={preview.labels} style={{ marginTop: 4 }} />
       </div>
 
       {preview.source && (
@@ -456,11 +425,10 @@ interface ResourceCardProps {
   resource: ExploreResource;
   ownUsername: string;
   starred: boolean;
-  forked: boolean;
   linked: boolean;
   busyAction: string | undefined;
   onPreview: (resource: ExploreResource) => void;
-  onAction: (action: "star" | "fork" | "link", resource: ExploreResource) => void;
+  onAction: (action: "star" | "link", resource: ExploreResource) => void;
   onTry: (resource: ExploreResource) => void;
 }
 
@@ -468,7 +436,6 @@ function ResourceCard({
   resource,
   ownUsername,
   starred,
-  forked,
   linked,
   busyAction,
   onPreview,
@@ -477,7 +444,7 @@ function ResourceCard({
 }: ResourceCardProps) {
   const { t } = useTranslation();
   const isOwn = Boolean(ownUsername) && resource.owner === ownUsername;
-  const forkable = !isOwn;
+  const linkable = !isOwn;
   const busy = Boolean(busyAction);
   return (
     <article className="explore-card">
@@ -498,12 +465,8 @@ function ResourceCard({
 
             {resource.category}
 
-            {resource.fork_of_id && (
-              <span className="explore-card-fork-badge">{t("labels.fork")}</span>
-            )}
-
             {resource.linked_to_id && (
-              <span className="explore-card-fork-badge">{t("labels.linked")}</span>
+              <span className="explore-card-origin-badge">{t("labels.linked")}</span>
             )}
 
             {resource.verified && (
@@ -524,7 +487,7 @@ function ResourceCard({
 
       <p className="explore-card-desc">{resource.description ?? ""}</p>
 
-      <LabelChips labels={resource.labels} />
+      <LabelChips labels={resource.labels} style={{ marginTop: 4 }} />
 
       <div className="explore-card-footer">
         <div className={`explore-card-actions${busy ? " explore-card-action-busy" : ""}`}>
@@ -537,28 +500,16 @@ function ResourceCard({
             <EyeIcon />
           </button>
 
-          {forkable && (
-            <>
-              <button
-                disabled={forked || busy}
-                className={`explore-card-fork-btn${forked ? " forked" : ""}`}
-                onClick={() => onAction("fork", resource)}
-                title={t("labels.actions.fork")}
-                aria-label={`${t("labels.actions.fork")} ${resource.name}`}
-              >
-                <ForkIcon />
-              </button>
-
-              <button
-                disabled={linked || busy}
-                className={`explore-card-fork-btn${linked ? " forked" : ""}`}
-                onClick={() => onAction("link", resource)}
-                title={t("labels.actions.link")}
-                aria-label={`${t("labels.actions.link")} ${resource.name}`}
-              >
-                <LinkIcon />
-              </button>
-            </>
+          {linkable && (
+            <button
+              disabled={linked || busy}
+              className={`explore-card-link-btn${linked ? " linked" : ""}`}
+              onClick={() => onAction("link", resource)}
+              title={t("labels.actions.link")}
+              aria-label={`${t("labels.actions.link")} ${resource.name}`}
+            >
+              <LinkIcon />
+            </button>
           )}
 
           {!isOwn && resource.resource_type === "agent" && (
@@ -599,7 +550,6 @@ export function ExplorePage() {
   const [previewLoading, setPreviewLoading] = useState(false);
   const [tryResource, setTryResource] = useState<ExploreResource | null>(null);
   const [starred, setStarred] = useState<Record<string, boolean>>({});
-  const [forked, setForked] = useState<Record<string, boolean>>({});
   const [linked, setLinked] = useState<Record<string, boolean>>({});
   const [busyKey, setBusyKey] = useState("");
   const workspaceId =
@@ -659,7 +609,7 @@ export function ExplorePage() {
     searchMutation.mutate({ append, searchType, searchQuery: query });
   };
 
-  const socialAction = async (action: "star" | "fork" | "link", resource: ExploreResource) => {
+  const socialAction = async (action: "star" | "link", resource: ExploreResource) => {
     const key = `${resource.resource_type}:${resource.resource_id}`;
     setBusyKey(`${key}:${action}`);
     setStatus("");
@@ -687,16 +637,15 @@ export function ExplorePage() {
         const prefix =
           resource.resource_type === "knowledge"
             ? "/api/knowledge"
-            : `/api/${resource.resource_type === "skill" ? "skills" : "agents"}/public`;
+            : resource.resource_type === "workflow"
+              ? "/api/workflows"
+              : `/api/${resource.resource_type === "skill" ? "skills" : "agents"}/public`;
         const result = await api.post<SocialActionResult>(
           `${prefix}/${encodeURIComponent(resource.resource_id)}/${action}`,
           {},
         );
-        if (action === "fork") setForked((current) => ({ ...current, [key]: true }));
-        else setLinked((current) => ({ ...current, [key]: true }));
-        setStatus(
-          `${action === "fork" ? t("labels.actions.fork_success") : t("labels.actions.link_success")}${result.name ? `: ${result.name}` : ""}`,
-        );
+        setLinked((current) => ({ ...current, [key]: true }));
+        setStatus(`${t("labels.actions.link_success")}${result.name ? `: ${result.name}` : ""}`);
       }
     } catch (error) {
       setStatus(error instanceof Error ? error.message : i18n.t("dynamic.text_5ed5994ab986"));
@@ -814,6 +763,8 @@ export function ExplorePage() {
 
           <option value="knowledge">{t("explore.type_knowledge")}</option>
 
+          <option value="workflow">{t("explore.type_workflows")}</option>
+
           <option value="users">{t("explore.type_users")}</option>
         </select>
 
@@ -852,7 +803,6 @@ export function ExplorePage() {
                 resource={resource}
                 ownUsername={session?.username ?? ""}
                 starred={Boolean(starred[key])}
-                forked={Boolean(forked[key])}
                 linked={Boolean(linked[key])}
                 busyAction={busyKey.startsWith(`${key}:`) ? busyKey : undefined}
                 onPreview={(item) => void openPreview(item)}

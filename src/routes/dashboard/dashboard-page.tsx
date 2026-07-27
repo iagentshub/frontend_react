@@ -38,7 +38,14 @@ import "@/styles/routes/dashboard/widgets/feed/widget.css";
 import "./dashboard-react.css";
 
 const defaults: WidgetId[] = ["summary", "token-usage", "conn-status", "recent"];
-const allSummaryItems: SummaryItem[] = ["agents", "connections", "skills", "memory", "knowledge"];
+const allSummaryItems: SummaryItem[] = [
+  "agents",
+  "connections",
+  "skills",
+  "memory",
+  "knowledge",
+  "workflows",
+];
 const metadata: Record<WidgetId, { titleKey: string; cols: number; config: WidgetConfig }> = {
   summary: {
     titleKey: "dashboard.widgets.summary",
@@ -89,24 +96,41 @@ async function loadDashboard(signal: AbortSignal): Promise<{
 }> {
   const safe = async <T,>(url: string, fallback: T) =>
     api.get<T>(url, signal).catch(() => fallback);
-  const [agents, connections, skills, memories, knowledge, tokenDaily, layoutRes, configRes] =
-    await Promise.all([
-      safe<DashboardData["agents"]>("/api/agents", []),
-      safe<DashboardData["connections"]>("/api/connections", []),
-      safe<unknown[]>("/api/skills", []),
-      safe<unknown[]>("/api/memory", []),
-      safe<unknown[]>("/api/knowledge", []),
-      safe<DashboardData["tokenDaily"]>("/api/connections/tokens-daily?days=30", []),
-      safe<{ layout: string[] | null }>("/api/settings/dashboard-layout", { layout: null }),
-      safe<{ config: DashboardConfig }>("/api/settings/dashboard-config", { config: {} }),
-    ]);
+  const [
+    agents,
+    connections,
+    skills,
+    memories,
+    knowledge,
+    workflows,
+    tokenDaily,
+    layoutRes,
+    configRes,
+  ] = await Promise.all([
+    safe<DashboardData["agents"]>("/api/agents", []),
+    safe<DashboardData["connections"]>("/api/connections", []),
+    safe<unknown[]>("/api/skills", []),
+    safe<unknown[]>("/api/memory", []),
+    safe<unknown[]>("/api/knowledge", []),
+    safe<unknown[]>("/api/workflows", []),
+    safe<DashboardData["tokenDaily"]>("/api/connections/tokens-daily?days=30", []),
+    safe<{ layout: string[] | null }>("/api/settings/dashboard-layout", { layout: null }),
+    safe<{ config: DashboardConfig }>("/api/settings/dashboard-config", { config: {} }),
+  ]);
   const valid = (layoutRes.layout ?? [])
     .map((id) => (id === "token-bars" || id === "token-donut" ? "token-usage" : id))
     .filter((id, index, all): id is WidgetId => id in metadata && all.indexOf(id) === index);
+  const config = configRes.config ?? {};
+  // Migración: configuraciones de "summary" guardadas antes de que existiera
+  // el item "workflows" no lo incluyen en su lista explícita — lo añadimos
+  // para que las cuentas ya configuradas también vean la card nueva.
+  if (config.summary?.items && !config.summary.items.includes("workflows")) {
+    config.summary = { ...config.summary, items: [...config.summary.items, "workflows"] };
+  }
   return {
-    data: { agents, connections, skills, memories, knowledge, tokenDaily },
+    data: { agents, connections, skills, memories, knowledge, workflows, tokenDaily },
     layout: valid.length ? valid : defaults,
-    config: configRes.config ?? {},
+    config,
   };
 }
 
@@ -144,6 +168,11 @@ const summaryMeta: Record<
     labelKey: "dashboard.stats.knowledge",
     href: "/knowledge/",
     value: (data) => data.knowledge.length,
+  },
+  workflows: {
+    labelKey: "dashboard.stats.workflows",
+    href: "/orchestrations/",
+    value: (data) => data.workflows.length,
   },
 };
 
@@ -249,6 +278,19 @@ function SummaryIcon({ kind }: { kind: SummaryItem }) {
           stroke="currentColor"
           strokeWidth="1.2"
           strokeLinecap="round"
+        />
+      </svg>
+    );
+  if (kind === "workflows")
+    return (
+      <svg width="18" height="18" viewBox="0 0 16 16" fill="none">
+        <circle cx="3" cy="3" r="1.5" stroke="currentColor" strokeWidth="1.3" />
+        <circle cx="13" cy="8" r="1.5" stroke="currentColor" strokeWidth="1.3" />
+        <circle cx="3" cy="13" r="1.5" stroke="currentColor" strokeWidth="1.3" />
+        <path
+          d="M4.5 3h2A2.5 2.5 0 0 1 9 5.5v0A2.5 2.5 0 0 0 11.5 8H9A2.5 2.5 0 0 0 6.5 10.5v0A2.5 2.5 0 0 1 4 13H4.5"
+          stroke="currentColor"
+          strokeWidth="1.2"
         />
       </svg>
     );
@@ -1289,7 +1331,7 @@ export function DashboardPage() {
         aria-hidden={!editing}
       >
         <div className="des-header">
-          <span className="des-title">{t("agents.catalog.fork_btn")}</span>
+          <span className="des-title">{t("dashboard.customize_title")}</span>
 
           <button
             className="btn btn-primary btn-sm"
@@ -1346,7 +1388,7 @@ export function DashboardPage() {
               className="btn btn-ghost btn-sm"
               onClick={() => setEditing(true)}
             >
-              {t("agents.catalog.fork_btn")}
+              {t("dashboard.customize_title")}
             </button>
           )}
         </div>

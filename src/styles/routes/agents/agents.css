@@ -1295,11 +1295,6 @@ details[open] > .advanced-summary::before {
   flex-shrink: 0;
 }
 
-.origin-badge--fork {
-  background: #fff3e0;
-  color: #e65100;
-}
-
 /* ── Non-owner banner en modal de edición ── */
 .agent-non-owner-banner {
   display: flex;

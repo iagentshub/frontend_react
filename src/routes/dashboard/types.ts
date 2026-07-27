@@ -29,13 +29,14 @@ export interface DashboardData {
   skills: unknown[];
   memories: unknown[];
   knowledge: unknown[];
+  workflows: unknown[];
   tokenDaily: TokenDay[];
 }
 
 export type WidgetId =
   "summary" | "token-usage" | "conn-status" | "recent" | "activity" | "composition" | "feed";
 export type WidgetSize = "small" | "medium" | "large";
-export type SummaryItem = "agents" | "connections" | "skills" | "memory" | "knowledge";
+export type SummaryItem = "agents" | "connections" | "skills" | "memory" | "knowledge" | "workflows";
 export type FeedResourceType = "agent" | "skill" | "knowledge";
 
 export interface WidgetConfig {

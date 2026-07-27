@@ -1,4 +1,4 @@
-export type ExploreType = "all" | "agent" | "skill" | "knowledge" | "users";
+export type ExploreType = "all" | "agent" | "skill" | "knowledge" | "workflow" | "users";
 export type ResourceType = Exclude<ExploreType, "all" | "users">;
 
 export interface ExploreResource {
@@ -9,8 +9,6 @@ export interface ExploreResource {
   description?: string;
   category?: string;
   stars_count?: number;
-  fork_of_user?: string | null;
-  fork_of_id?: string | null;
   linked_to_user?: string | null;
   linked_to_id?: string | null;
   tags?: string[];
@@ -51,6 +49,8 @@ export interface ExplorePreview {
   type?: string;
   source?: string;
   char_count?: number;
+  steps?: number;
+  agent_names?: string[];
 }
 
 export interface ConnectionOption {

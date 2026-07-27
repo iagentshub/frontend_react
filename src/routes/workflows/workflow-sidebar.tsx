@@ -1,28 +1,107 @@
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
+import { LabelChips, OriginChip } from "@/components/label-chips";
+import { FilterDropdown, FilterOption, toggleValue } from "@/components/filter-dropdown";
+import "../../../assets/components/agent-card/agent-card.css";
+import "../../../assets/components/filter_agents/filter_agents.css";
+import "../../../assets/css/labels.css";
 import type { Workflow, WorkflowWorkspace } from "./types";
+
+const FILTER_LABELS = [
+  ["public", "Público", "#10b981"],
+  ["production", "Producción", "#0891b2"],
+  ["staging", "Staging", "#64748b"],
+  ["development", "Desarrollo", "#f59e0b"],
+  ["test", "Test", "#8b5cf6"],
+  ["linked", "linked", "#94a3b8"],
+  ["favorite", "Favorito", "#f59e0b"],
+  ["draft", "Borrador", "#8b5cf6"],
+  ["review", "Revisar", "#f97316"],
+  ["deprecated", "Obsoleto", "#ca8a04"],
+  ["quarantine", "Cuarentena", "#ef4444"],
+  ["archived", "Archivado", "#94a3b8"],
+  ["delete", "Marcar borrar", "#dc2626"],
+] as const;
+
+function WorkflowActionIcon({ kind }: { kind: "view" | "edit" | "share" | "delete" }) {
+  if (kind === "view")
+    return (
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+        <path
+          d="M1.5 8S4 3.5 8 3.5 14.5 8 14.5 8 12 12.5 8 12.5 1.5 8 1.5 8z"
+          stroke="currentColor"
+          strokeWidth="1.4"
+        />
+
+        <circle cx="8" cy="8" r="2" stroke="currentColor" strokeWidth="1.4" />
+      </svg>
+    );
+  if (kind === "edit")
+    return (
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+        <path
+          d="M10.8 2.2l3 3L5 14H2v-3z"
+          stroke="currentColor"
+          strokeWidth="1.4"
+          strokeLinejoin="round"
+        />
+      </svg>
+    );
+  if (kind === "share")
+    return (
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+        <circle cx="12" cy="3" r="1.5" stroke="currentColor" strokeWidth="1.4" />
+        <circle cx="12" cy="13" r="1.5" stroke="currentColor" strokeWidth="1.4" />
+        <circle cx="4" cy="8" r="1.5" stroke="currentColor" strokeWidth="1.4" />
+        <path
+          d="m10.5 3.8-5 3.4m5 5-5-3.4"
+          stroke="currentColor"
+          strokeWidth="1.3"
+          strokeLinecap="round"
+        />
+      </svg>
+    );
+  return (
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <path
+        d="M2 4h12M5 4V2h6v2M6 7v5M10 7v5M3 4l1 9h8l1-9"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
 
 export function WorkflowCatalog({
   workflows,
   pending,
   error,
   onSelect,
+  onView,
   onCreate,
   onShare,
+  onDelete,
   workspaces,
 }: {
   workflows: Workflow[];
   pending: boolean;
   error: boolean;
   onSelect: (workflow: Workflow) => void;
+  onView: (workflow: Workflow) => void;
   onCreate: () => void;
   onShare: (workflow: Workflow) => void;
+  onDelete: (workflow: Workflow) => void;
   workspaces: WorkflowWorkspace[];
 }) {
   const { t, i18n } = useTranslation("workflows");
   const [query, setQuery] = useState("");
   const [groupId, setGroupId] = useState("");
+  const [groupsOpen, setGroupsOpen] = useState(true);
+  const [labels, setLabels] = useState<string[]>([]);
+  const [openFilter, setOpenFilter] = useState<string | null>(null);
   const teamGroups = workspaces.filter((workspace) => workspace.type === "team");
   const filteredWorkflows = useMemo(() => {
     const normalizedQuery = query.trim().toLocaleLowerCase(i18n.resolvedLanguage);
@@ -35,23 +114,48 @@ export function WorkflowCatalog({
         (!normalizedQuery ||
           `${workflow.name} ${workflow.description}`
             .toLocaleLowerCase("es")
-            .includes(normalizedQuery)),
+            .includes(normalizedQuery)) &&
+        (!labels.length || labels.some((label) => (workflow.labels ?? []).includes(label))),
     );
-  }, [groupId, i18n.resolvedLanguage, query, workflows]);
-  const formatUpdatedAt = (value?: string) => {
-    if (!value) return t("catalog.never_run");
-    const date = new Intl.DateTimeFormat(i18n.resolvedLanguage === "en" ? "en" : "es", {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-    }).format(new Date(value));
-    return t("catalog.updated", { date });
+  }, [groupId, i18n.resolvedLanguage, labels, query, workflows]);
+  const clearFilters = () => {
+    setQuery("");
+    setLabels([]);
   };
+  const filtersActive = Boolean(query || labels.length);
 
   return (
     <section className="workflow-catalog">
+      <div className="folder-toggle-row">
+        <button
+          className={`folder-toggle-btn${groupsOpen ? " folder-toggle-btn--on" : ""}`}
+          type="button"
+          onClick={() => setGroupsOpen((value) => !value)}
+          title={t(groupsOpen ? "common.workspace.hide_groups" : "common.workspace.groups")}
+        >
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <circle cx="5" cy="5" r="2" stroke="currentColor" strokeWidth="1.4" />
+            <circle cx="11" cy="5" r="2" stroke="currentColor" strokeWidth="1.4" />
+            <path
+              d="M1.5 13v-.5A3.5 3.5 0 0 1 5 9a3.5 3.5 0 0 1 3.5 3.5V13"
+              stroke="currentColor"
+              strokeWidth="1.4"
+              strokeLinecap="round"
+            />
+            <path
+              d="M9 9.2A3.5 3.5 0 0 1 14.5 12.5V13"
+              stroke="currentColor"
+              strokeWidth="1.4"
+              strokeLinecap="round"
+            />
+          </svg>
+        </button>
+      </div>
       <div className="workflow-catalog-layout">
-        <aside className="workflow-groups kf-panel" aria-label={t("groups.aria")}>
+        <aside
+          className={`workflow-groups kf-panel${groupsOpen ? "" : " folder-panel--collapsed"}`}
+          aria-label={t("groups.aria")}
+        >
           <div className="kf-section-header">
             <span className="kf-section-label">{t("groups.title")}</span>
 
@@ -89,26 +193,59 @@ export function WorkflowCatalog({
 
         <div className="workflow-catalog-content">
           <div className="workflow-catalog-toolbar">
-            <label className="workflow-search">
-              <span aria-hidden="true">⌕</span>
+            <div className="fa-bar">
+              <div className="fa-search-wrap">
+                <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <circle cx="7" cy="7" r="5" stroke="currentColor" strokeWidth="1.4" />
 
-              <input
-                value={query}
-                onChange={(event) => setQuery(event.target.value)}
-                placeholder={t("catalog.search")}
-                aria-label={t("catalog.search")}
-              />
+                  <path d="m11 11 3 3" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+                </svg>
 
-              {query && (
-                <button
-                  type="button"
-                  onClick={() => setQuery("")}
-                  aria-label={t("catalog.clear_search")}
+                <input
+                  className="fa-search-input"
+                  value={query}
+                  onChange={(event) => setQuery(event.target.value)}
+                  placeholder={t("catalog.search")}
+                  aria-label={t("catalog.search")}
+                />
+
+                {query && (
+                  <button
+                    type="button"
+                    className="fa-search-clear"
+                    onClick={() => setQuery("")}
+                    aria-label={t("catalog.clear_search")}
+                  >
+                    ×
+                  </button>
+                )}
+              </div>
+
+              <div className="fa-filter-group">
+                <FilterDropdown
+                  label={t("agents.blueprint.status")}
+                  count={labels.length}
+                  open={openFilter === "labels"}
+                  onToggle={() => setOpenFilter(openFilter === "labels" ? null : "labels")}
                 >
-                  ×
-                </button>
-              )}
-            </label>
+                  {FILTER_LABELS.map(([label, text, color]) => (
+                    <FilterOption
+                      key={label}
+                      label={text}
+                      color={color}
+                      active={labels.includes(label)}
+                      onClick={() => toggleValue(labels, label, setLabels)}
+                    />
+                  ))}
+                </FilterDropdown>
+
+                {filtersActive && (
+                  <button className="fa-clear-all" type="button" onClick={clearFilters}>
+                    {t("admin.metadata.log_clear")}
+                  </button>
+                )}
+              </div>
+            </div>
 
             <span className="workflow-catalog-count">
               {t(filteredWorkflows.length === 1 ? "catalog.count_one" : "catalog.count_many", {
@@ -125,15 +262,13 @@ export function WorkflowCatalog({
 
           {!pending && !error && filteredWorkflows.length > 0 && (
             <div className="workflow-catalog-grid">
-              {filteredWorkflows.map((workflow, workflowIndex) => {
-                const nodes = workflow.definition.nodes;
-                const configured = nodes.filter((node) => node.instruction?.trim()).length;
+              {filteredWorkflows.map((workflow) => {
                 return (
                   <article className="workflow-catalog-card" key={workflow.id}>
                     <button
                       className="workflow-card-main"
                       type="button"
-                      onClick={() => onSelect(workflow)}
+                      onClick={() => onView(workflow)}
                       aria-label={t("catalog.open")}
                     >
                       <div className="workflow-card-top">
@@ -145,103 +280,65 @@ export function WorkflowCatalog({
 
                             <i />
                           </div>
-
-                          <span>
-                            {t("catalog.pipeline", {
-                              number: String(workflowIndex + 1).padStart(2, "0"),
-                            })}
-                          </span>
                         </div>
-
-                        <span className={`workflow-card-status${nodes.length ? "" : " is-draft"}`}>
-                          <i aria-hidden="true" />
-                          {workflow._shared
-                            ? t("catalog.shared")
-                            : nodes.length
-                              ? t("catalog.operational")
-                              : t("catalog.draft")}
-                        </span>
                       </div>
 
                       <div className="workflow-card-copy">
                         <h2>{workflow.name}</h2>
 
                         <p>{workflow.description || t("catalog.fallback_description")}</p>
-                      </div>
 
-                      <div className="workflow-card-flow" aria-hidden="true">
-                        <span className="workflow-card-endpoint">
-                          {t("legacy.text_6fca55ca3c82")}
-                        </span>
+                        {(workflow.labels?.length || workflow.origin_type) && (
+                          <div className="label-chips-row">
+                            <OriginChip originType={workflow.origin_type} />
 
-                        {nodes.slice(0, 4).map((node, index) => (
-                          <span key={node.id}>
-                            <i className="workflow-card-connector" />
-
-                            <b title={node.label}>
-                              {(node.label || "A").charAt(0).toUpperCase()}
-
-                              <em>{index + 1}</em>
-                            </b>
-                          </span>
-                        ))}
-
-                        {nodes.length > 4 && (
-                          <small className="workflow-card-more">+{nodes.length - 4}</small>
+                            <LabelChips labels={workflow.labels} hidePrivate={false} bare />
+                          </div>
                         )}
-
-                        {!nodes.length && <small>{t("catalog.empty_pipeline")}</small>}
-
-                        {nodes.length > 0 && (
-                          <>
-                            <i className="workflow-card-connector" />
-
-                            <span className="workflow-card-endpoint output">
-                              {t("legacy.text_5d84eb9e92dc")}
-                            </span>
-                          </>
-                        )}
-                      </div>
-
-                      <div className="workflow-card-metrics">
-                        <span>
-                          <small>{t("catalog.agents")}</small>
-
-                          <strong>{String(nodes.length).padStart(2, "0")}</strong>
-                        </span>
-
-                        <span>
-                          <small>{t("catalog.links")}</small>
-
-                          <strong>{String(Math.max(0, nodes.length - 1)).padStart(2, "0")}</strong>
-                        </span>
-
-                        <span>
-                          <small>{t("catalog.configured")}</small>
-
-                          <strong>{String(configured).padStart(2, "0")}</strong>
-                        </span>
                       </div>
                     </button>
 
                     <footer>
-                      <span>{formatUpdatedAt(workflow.updated_at)}</span>
-
-                      <div>
-                        {!workflow._shared && (
-                          <button
-                            className="workflow-card-share"
-                            type="button"
-                            onClick={() => onShare(workflow)}
-                          >
-                            {t("catalog.share")}
-                          </button>
-                        )}
-
-                        <button type="button" onClick={() => onSelect(workflow)}>
-                          {t("catalog.open")}
-                          <span aria-hidden="true">→</span>
+                      <div className="agent-card-actions-right">
+                        <button
+                          type="button"
+                          className="agent-action-icon"
+                          title={t("catalog.open")}
+                          onClick={() => onView(workflow)}
+                        >
+                          <WorkflowActionIcon kind="view" />
                         </button>
+
+                        <button
+                          type="button"
+                          className="agent-action-icon"
+                          title={t("catalog.edit")}
+                          onClick={() => onSelect(workflow)}
+                        >
+                          <WorkflowActionIcon kind="edit" />
+                        </button>
+
+                        {!workflow._shared && (
+                          <>
+                            <button
+                              type="button"
+                              className="agent-action-icon"
+                              title={t("catalog.share")}
+                              onClick={() => onShare(workflow)}
+                            >
+                              <WorkflowActionIcon kind="share" />
+                            </button>
+
+                            <button
+                              type="button"
+                              className="agent-action-icon agent-action-icon--danger"
+                              title={t("admin.delete_btn")}
+                              onClick={() => onDelete(workflow)}
+                            >
+                              <WorkflowActionIcon kind="delete" />
+                            </button>
+                          </>
+                        )}
                       </div>
                     </footer>
                   </article>
