@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
-import { LabelChips } from "@/components/label-chips";
+import { LabelChips, OriginChip } from "@/components/label-chips";
 import "../../../assets/components/agent-card/agent-card.css";
 import "../../../assets/css/labels.css";
 import type { Workflow, WorkflowWorkspace } from "./types";
@@ -229,7 +229,13 @@ export function WorkflowCatalog({
 
                         <p>{workflow.description || t("catalog.fallback_description")}</p>
 
-                        <LabelChips labels={workflow.labels} hidePrivate={false} />
+                        {(workflow.labels?.length || workflow.origin_type) && (
+                          <div className="label-chips-row">
+                            <OriginChip originType={workflow.origin_type} />
+
+                            <LabelChips labels={workflow.labels} hidePrivate={false} bare />
+                          </div>
+                        )}
                       </div>
                     </button>
 

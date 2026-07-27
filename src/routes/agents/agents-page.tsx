@@ -12,7 +12,7 @@ import {
   type AgentIconName,
 } from "@/components/resource-icons";
 import { ResourceHistoryButton } from "@/components/resource-history-dialog";
-import { LabelChips } from "@/components/label-chips";
+import { LabelChips, OriginChip } from "@/components/label-chips";
 import { ChatDialog } from "./chat-dialog";
 import { AgentBuilderDialog } from "./agent-builder-dialog";
 import "../../../assets/components/agent-card/agent-card.css";
@@ -378,15 +378,7 @@ function AgentCard({
 
         {(agent.labels?.length || agent.origin_type) && (
           <div className="label-chips-row agent-label-chips">
-            {agent.origin_type && (
-              <span className="label-chip" style={{ "--lc": "#059669" } as React.CSSProperties}>
-                {agent.origin_type === "linked"
-                  ? "Enlazado"
-                  : agent.origin_type === "fork"
-                    ? "Fork"
-                    : "Propietario"}
-              </span>
-            )}
+            <OriginChip originType={agent.origin_type} />
 
             <LabelChips labels={agent.labels} hidePrivate={false} bare />
           </div>
@@ -1894,7 +1886,6 @@ export function AgentsPage() {
                 ["staging", "Staging", "#64748b"],
                 ["development", "Desarrollo", "#f59e0b"],
                 ["test", "Test", "#8b5cf6"],
-                ["fork", "fork", "#94a3b8"],
                 ["linked", "linked", "#94a3b8"],
                 ["favorite", "Favorito", "#f59e0b"],
                 ["draft", "Borrador", "#8b5cf6"],
@@ -2111,9 +2102,10 @@ export function AgentsPage() {
 
                             <div className="ac-card-footer">
                               <button
-                                className="ac-fork-btn"
+                                className="ac-template-btn"
                                 onClick={() => {
-                                  setEditor({ ...agent, id: "", origin_type: "fork" });
+                                  const { origin_type: _originType, ...template } = agent;
+                                  setEditor({ ...template, id: "" });
                                   setCatalog(false);
                                 }}
                               >

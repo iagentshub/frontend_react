@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { api } from "@/api/client";
 import { queryClient, queryKeys } from "@/api/query-client";
 import { sessionQuery } from "@/auth/queries";
+import { OriginChip } from "@/components/label-chips";
 import type {
   Connection,
   ConnectionCategory,
@@ -810,14 +811,10 @@ function ConnectionCard({
             </span>
           )}
 
-          {groupMode && (
-            <span className="conn-owner-badge">
-              {connection._shared
-                ? connection.owner_id
-                  ? `@${connection.owner_id}`
-                  : "Compartido"
-                : "Tuyo"}
-            </span>
+          <OriginChip originType={connection.origin_type} />
+
+          {groupMode && connection._shared && connection.owner_id && (
+            <span className="conn-owner-badge">{`@${connection.owner_id}`}</span>
           )}
 
           {connection._personal_key && (

@@ -100,3 +100,18 @@ export function LabelChips({
     </div>
   );
 }
+
+/** Chip de origen del recurso respecto al usuario actual: "Propietario" o "Enlazado". */
+export function OriginChip({ originType }: { originType: string | undefined }) {
+  const { t } = useTranslation();
+  if (!originType) return null;
+  const linked = originType === "linked";
+  return (
+    <span
+      className="label-chip"
+      style={{ "--lc": linked ? "#0891b2" : "#059669" } as React.CSSProperties}
+    >
+      {t(linked ? "labels.linked" : "labels.owner")}
+    </span>
+  );
+}

@@ -264,7 +264,7 @@
     color: #f59e0b;
 }
 
-.explore-card-fork-badge {
+.explore-card-origin-badge {
     font-size: 10px;
     color: var(--ink-muted);
     background: var(--bg);
@@ -273,7 +273,7 @@
     padding: 1px 6px;
 }
 
-/* Agrupación de acciones (fork + star) en el footer */
+/* Agrupación de acciones (link + star) en el footer */
 .explore-card-actions {
     display: flex;
     align-items: center;
@@ -299,8 +299,8 @@
     background: var(--accent-dim);
 }
 
-/* Botón de fork */
-.explore-card-fork-btn {
+/* Botón de enlazar */
+.explore-card-link-btn {
     background: none;
     border: none;
     cursor: pointer;
@@ -314,18 +314,18 @@
     line-height: 0;
 }
 
-.explore-card-fork-btn:hover {
+.explore-card-link-btn:hover {
     color: var(--accent);
     background: var(--accent-dim);
 }
 
-.explore-card-fork-btn.forked {
+.explore-card-link-btn.linked {
     color: var(--accent);
     opacity: .6;
     cursor: default;
 }
 
-.explore-card-fork-btn:disabled {
+.explore-card-link-btn:disabled {
     cursor: default;
 }
 

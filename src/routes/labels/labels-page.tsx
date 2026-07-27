@@ -49,7 +49,6 @@ const labelGroups: readonly LabelGroup[] = [
 
 const originTypes = [
   { key: "owner", color: "#16a34a", className: "origin-badge--owner" },
-  { key: "fork", color: "#e65100", className: "origin-badge--fork" },
   { key: "linked", color: "#0ea5e9", className: "origin-badge--linked" },
 ] as const;
 

@@ -38,7 +38,7 @@ export function PublicProfilePage() {
   const { username: raw = "" } = useParams(),
     username = decodeURIComponent(raw),
     [tab, setTab] = useState<Resource["resource_type"]>("agent"),
-    [forked, setForked] = useState<string[]>([]);
+    [linkedCopies, setLinkedCopies] = useState<string[]>([]);
   const profile = useQuery({
     queryKey: ["user", username],
     queryFn: ({ signal }) => api.get<Profile>(`/api/users/${encodeURIComponent(username)}`, signal),
@@ -60,14 +60,14 @@ export function PublicProfilePage() {
         : api.post(`/api/users/${encodeURIComponent(username)}/follow`, {}),
     onSuccess: () => void follow.refetch(),
   });
-  const fork = useMutation({
+  const linkCopy = useMutation({
     mutationFn: (resource: Resource) =>
       api.post(
-        `/api/${resource.resource_type === "skill" ? "skills" : "agents"}/private/${encodeURIComponent(resource.resource_id)}/fork`,
+        `/api/${resource.resource_type === "skill" ? "skills" : "agents"}/private/${encodeURIComponent(resource.resource_id)}/link`,
         {},
       ),
     onSuccess: (_, resource) =>
-      setForked((values) => [...values, `${resource.resource_type}:${resource.resource_id}`]),
+      setLinkedCopies((values) => [...values, `${resource.resource_type}:${resource.resource_id}`]),
   });
   const visible = useMemo(
     () => (resources.data ?? []).filter((resource) => resource.resource_type === tab),
@@ -263,7 +263,7 @@ export function PublicProfilePage() {
                 {visible.length ? (
                   visible.map((resource) => {
                     const key = `${resource.resource_type}:${resource.resource_id}`,
-                      copied = forked.includes(key);
+                      copied = linkedCopies.includes(key);
                     return (
                       <div className="pub-resource-card" key={key}>
                         <div
@@ -292,9 +292,9 @@ export function PublicProfilePage() {
 
                           {resource.resource_type !== "knowledge" && (
                             <button
-                              className={`pub-resource-fork${copied ? " forked" : ""}`}
-                              disabled={copied || fork.isPending}
-                              onClick={() => fork.mutate(resource)}
+                              className={`pub-resource-link${copied ? " linked" : ""}`}
+                              disabled={copied || linkCopy.isPending}
+                              onClick={() => linkCopy.mutate(resource)}
                             >
                               ⑂ {copied ? "Copiado" : "Copiar"}
                             </button>

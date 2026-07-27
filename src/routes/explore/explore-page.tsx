@@ -56,26 +56,6 @@ function EyeIcon() {
   );
 }
 
-function ForkIcon() {
-  return (
-    <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-      <circle cx="8" cy="2.5" r="1.7" stroke="currentColor" strokeWidth="1.4" />
-
-      <circle cx="3" cy="13.5" r="1.7" stroke="currentColor" strokeWidth="1.4" />
-
-      <circle cx="13" cy="13.5" r="1.7" stroke="currentColor" strokeWidth="1.4" />
-
-      <path
-        d="M8 4.2v3.5m0 0L3 11.8m5-4.1 5 4.1"
-        stroke="currentColor"
-        strokeWidth="1.4"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
-
 function LinkIcon() {
   return (
     <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true">
@@ -445,11 +425,10 @@ interface ResourceCardProps {
   resource: ExploreResource;
   ownUsername: string;
   starred: boolean;
-  forked: boolean;
   linked: boolean;
   busyAction: string | undefined;
   onPreview: (resource: ExploreResource) => void;
-  onAction: (action: "star" | "fork" | "link", resource: ExploreResource) => void;
+  onAction: (action: "star" | "link", resource: ExploreResource) => void;
   onTry: (resource: ExploreResource) => void;
 }
 
@@ -457,7 +436,6 @@ function ResourceCard({
   resource,
   ownUsername,
   starred,
-  forked,
   linked,
   busyAction,
   onPreview,
@@ -466,7 +444,7 @@ function ResourceCard({
 }: ResourceCardProps) {
   const { t } = useTranslation();
   const isOwn = Boolean(ownUsername) && resource.owner === ownUsername;
-  const forkable = !isOwn;
+  const linkable = !isOwn;
   const busy = Boolean(busyAction);
   return (
     <article className="explore-card">
@@ -487,12 +465,8 @@ function ResourceCard({
 
             {resource.category}
 
-            {resource.fork_of_id && (
-              <span className="explore-card-fork-badge">{t("labels.fork")}</span>
-            )}
-
             {resource.linked_to_id && (
-              <span className="explore-card-fork-badge">{t("labels.linked")}</span>
+              <span className="explore-card-origin-badge">{t("labels.linked")}</span>
             )}
 
             {resource.verified && (
@@ -526,28 +500,16 @@ function ResourceCard({
             <EyeIcon />
           </button>
 
-          {forkable && (
-            <>
-              <button
-                disabled={forked || busy}
-                className={`explore-card-fork-btn${forked ? " forked" : ""}`}
-                onClick={() => onAction("fork", resource)}
-                title={t("labels.actions.fork")}
-                aria-label={`${t("labels.actions.fork")} ${resource.name}`}
-              >
-                <ForkIcon />
-              </button>
-
-              <button
-                disabled={linked || busy}
-                className={`explore-card-fork-btn${linked ? " forked" : ""}`}
-                onClick={() => onAction("link", resource)}
-                title={t("labels.actions.link")}
-                aria-label={`${t("labels.actions.link")} ${resource.name}`}
-              >
-                <LinkIcon />
-              </button>
-            </>
+          {linkable && (
+            <button
+              disabled={linked || busy}
+              className={`explore-card-link-btn${linked ? " linked" : ""}`}
+              onClick={() => onAction("link", resource)}
+              title={t("labels.actions.link")}
+              aria-label={`${t("labels.actions.link")} ${resource.name}`}
+            >
+              <LinkIcon />
+            </button>
           )}
 
           {!isOwn && resource.resource_type === "agent" && (
@@ -588,7 +550,6 @@ export function ExplorePage() {
   const [previewLoading, setPreviewLoading] = useState(false);
   const [tryResource, setTryResource] = useState<ExploreResource | null>(null);
   const [starred, setStarred] = useState<Record<string, boolean>>({});
-  const [forked, setForked] = useState<Record<string, boolean>>({});
   const [linked, setLinked] = useState<Record<string, boolean>>({});
   const [busyKey, setBusyKey] = useState("");
   const workspaceId =
@@ -648,7 +609,7 @@ export function ExplorePage() {
     searchMutation.mutate({ append, searchType, searchQuery: query });
   };
 
-  const socialAction = async (action: "star" | "fork" | "link", resource: ExploreResource) => {
+  const socialAction = async (action: "star" | "link", resource: ExploreResource) => {
     const key = `${resource.resource_type}:${resource.resource_id}`;
     setBusyKey(`${key}:${action}`);
     setStatus("");
@@ -683,11 +644,8 @@ export function ExplorePage() {
           `${prefix}/${encodeURIComponent(resource.resource_id)}/${action}`,
           {},
         );
-        if (action === "fork") setForked((current) => ({ ...current, [key]: true }));
-        else setLinked((current) => ({ ...current, [key]: true }));
-        setStatus(
-          `${action === "fork" ? t("labels.actions.fork_success") : t("labels.actions.link_success")}${result.name ? `: ${result.name}` : ""}`,
-        );
+        setLinked((current) => ({ ...current, [key]: true }));
+        setStatus(`${t("labels.actions.link_success")}${result.name ? `: ${result.name}` : ""}`);
       }
     } catch (error) {
       setStatus(error instanceof Error ? error.message : i18n.t("dynamic.text_5ed5994ab986"));
@@ -845,7 +803,6 @@ export function ExplorePage() {
                 resource={resource}
                 ownUsername={session?.username ?? ""}
                 starred={Boolean(starred[key])}
-                forked={Boolean(forked[key])}
                 linked={Boolean(linked[key])}
                 busyAction={busyKey.startsWith(`${key}:`) ? busyKey : undefined}
                 onPreview={(item) => void openPreview(item)}

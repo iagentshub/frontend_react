@@ -21,6 +21,7 @@ export interface Workflow {
   labels?: string[];
   updated_at?: string;
   owner_id?: string;
+  origin_type?: string;
   _shared?: boolean;
   _group_id?: string;
   _group_ids?: string[];

@@ -45,8 +45,7 @@
   "origin": {
     "label": "Origen",
     "owner": "Propietario",
-    "linked": "Enlazado",
-    "fork": "Fork"
+    "linked": "Enlazado"
   },
   "icons": {
     "assistant": "Asistente",
@@ -282,7 +281,6 @@
     "search_placeholder": "Buscar agentes…",
     "empty": "No hay agentes públicos disponibles",
     "empty_search": "Ningún agente coincide con la búsqueda",
-    "fork_btn": "Personalizar",
     "use_btn": "Usar"
   },
   "blueprint": {

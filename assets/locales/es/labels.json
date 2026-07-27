@@ -12,7 +12,7 @@
   "staging":     "Staging",
   "development": "Desarrollo",
   "test":        "Test",
-  "fork":        "Fork",
+  "owner":       "Propietario",
   "linked":      "Enlazado",
   "favorite":    "Favorito",
   "draft":       "Borrador",
@@ -30,10 +30,8 @@
     "staging":     "Entorno pre-producción. El recurso está listo para validación final antes de pasar a producción.",
     "development": "Recurso en desarrollo o pruebas. Señala que aún puede cambiar.",
     "test":        "Recurso reservado para pruebas y validaciones.",
-    "fork":         "Copia independiente de otro recurso. Puedes modificarla libremente sin afectar al original. Se creó con la acción Fork.",
     "linked":       "Enlace en vivo a un recurso fuente. Puedes sincronizarlo con el original cuando este cambie usando el botón Sincronizar.",
     "origin_owner": "Eres el propietario original de este agente. Puedes editarlo, exportarlo y eliminarlo.",
-    "origin_fork":  "Este agente es una copia independiente (fork) de otro. Lo puedes editar sin afectar al original.",
     "origin_linked":"Este agente es un enlace a un recurso de otro usuario o workspace. Es de solo lectura.",
     "favorite":    "Marca el recurso como favorito para encontrarlo rápido.",
     "draft":       "Borrador en construcción, todavía no listo para usar. Bloquea el acceso hasta que esté terminado.",
@@ -54,13 +52,10 @@
     "nav_title":       "Etiquetas"
   },
   "actions": {
-    "fork":   "Fork",
     "link":   "Enlazar",
     "sync":   "Sincronizar",
-    "fork_success":   "Copiado correctamente",
     "link_success":   "Enlazado correctamente",
     "sync_success":   "Sincronizado con el original",
-    "fork_error":     "Error al hacer fork",
     "link_error":     "Error al enlazar",
     "sync_error":     "Error al sincronizar"
   }

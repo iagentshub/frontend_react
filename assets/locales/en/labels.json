@@ -12,7 +12,7 @@
   "staging":     "Staging",
   "development": "Development",
   "test":        "Test",
-  "fork":        "Fork",
+  "owner":       "Owner",
   "linked":      "Linked",
   "favorite":    "Favorite",
   "draft":       "Draft",
@@ -30,10 +30,8 @@
     "staging":     "Pre-production environment. The resource is ready for final validation before going to production.",
     "development": "Resource under development or testing. Signals it may still change.",
     "test":        "Resource reserved for testing and validation.",
-    "fork":         "Independent copy of another resource. You can freely modify it without affecting the original. Created via the Fork action.",
     "linked":       "Live link to a source resource. You can sync it with the original when it changes using the Sync button.",
     "origin_owner": "You are the original owner of this agent. You can edit, export, and delete it.",
-    "origin_fork":  "This agent is an independent copy (fork) of another. You can edit it without affecting the original.",
     "origin_linked":"This agent is a link to a resource from another user or workspace. It is read-only.",
     "favorite":    "Marks the resource as a favorite for quick access.",
     "draft":       "Work in progress, not ready to use. Blocks access until it is complete.",
@@ -54,13 +52,10 @@
     "nav_title":       "Labels"
   },
   "actions": {
-    "fork":         "Fork",
     "link":         "Link",
     "sync":         "Sync",
-    "fork_success": "Copied successfully",
     "link_success": "Linked successfully",
     "sync_success": "Synced with original",
-    "fork_error":   "Error forking",
     "link_error":   "Error linking",
     "sync_error":   "Error syncing"
   }

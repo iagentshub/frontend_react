@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { api } from "@/api/client";
 import { SkillCategoryGlyph, type SkillCategory } from "@/components/resource-icons";
 import { ResourceHistoryButton } from "@/components/resource-history-dialog";
+import { OriginChip } from "@/components/label-chips";
 import { FilterBar, Icon, LabelChips, LabelPicker, Modal } from "./knowledge-ui";
 import { SkillBuilderDialog } from "./skill-builder-dialog";
 import type {
@@ -553,7 +554,13 @@ function SkillCard({
           {skill.description || i18n.t("dynamic.text_3f8d6232f5be")}
         </p>
 
-        <LabelChips labels={skill.labels ?? []} hidePrivate={false} />
+        {Boolean(skill.labels?.length || skill.origin_type) && (
+          <div className="label-chips-row">
+            <OriginChip originType={skill.origin_type} />
+
+            <LabelChips labels={skill.labels ?? []} hidePrivate={false} bare />
+          </div>
+        )}
       </div>
 
       <footer className="skill-card-footer">
@@ -1033,7 +1040,7 @@ function Catalog({
   skills: Skill[];
   onClose: () => void;
   onImport: (skill: Skill) => void;
-  onSocialAction: (action: "fork" | "link", skill: Skill) => void;
+  onSocialAction: (action: "link", skill: Skill) => void;
 }) {
   const { t } = useTranslation();
   const [query, setQuery] = useState("");
@@ -1073,14 +1080,6 @@ function Catalog({
               <div className="knowledge-skill-actions">
                 <button className="btn btn-primary btn-sm" onClick={() => onImport(skill)}>
                   {t("skills.catalog.import_btn")}
-                </button>
-
-                <button
-                  className="skill-action-icon"
-                  onClick={() => onSocialAction("fork", skill)}
-                  title={t("labels.actions.fork")}
-                >
-                  <Icon kind="fork" />
                 </button>
 
                 <button
@@ -1682,9 +1681,7 @@ export function KnowledgePage() {
             void run(
               `${action}:${skill.id}`,
               () => api.post(`/api/skills/public/${encodeURIComponent(skill.id)}/${action}`, {}),
-              action === "fork"
-                ? t("labels.actions.fork_success")
-                : t("labels.actions.link_success"),
+              t("labels.actions.link_success"),
             )
           }
         />

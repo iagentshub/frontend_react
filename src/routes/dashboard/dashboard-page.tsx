@@ -1331,7 +1331,7 @@ export function DashboardPage() {
         aria-hidden={!editing}
       >
         <div className="des-header">
-          <span className="des-title">{t("agents.catalog.fork_btn")}</span>
+          <span className="des-title">{t("dashboard.customize_title")}</span>
 
           <button
             className="btn btn-primary btn-sm"
@@ -1388,7 +1388,7 @@ export function DashboardPage() {
               className="btn btn-ghost btn-sm"
               onClick={() => setEditing(true)}
             >
-              {t("agents.catalog.fork_btn")}
+              {t("dashboard.customize_title")}
             </button>
           )}
         </div>

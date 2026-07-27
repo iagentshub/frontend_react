@@ -138,33 +138,21 @@
 }
 
 .workflow-catalog-card {
-  --workflow-card-accent: var(--accent);
   position: relative;
-  border: 1px solid var(--border);
-  border-radius: 16px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
   background: var(--surface);
   overflow: hidden;
   transition:
-    border-color 180ms ease,
-    box-shadow 180ms ease,
-    transform 180ms ease;
-}
-
-.workflow-catalog-card::before {
-  position: absolute;
-  z-index: 2;
-  top: 0;
-  right: 0;
-  left: 0;
-  height: 3px;
-  background: linear-gradient(90deg, var(--workflow-card-accent), transparent 78%);
-  content: "";
+    border-color 150ms ease,
+    box-shadow 150ms ease,
+    transform 120ms ease;
 }
 
 .workflow-catalog-card:hover {
-  border-color: color-mix(in srgb, var(--workflow-card-accent) 46%, var(--border));
-  box-shadow: 0 18px 42px color-mix(in srgb, var(--workflow-card-accent) 12%, transparent);
-  transform: translateY(-4px);
+  border-color: var(--line-strong);
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
 }
 
 .workflow-card-main {
@@ -175,11 +163,7 @@
   padding: 16px;
   flex-direction: column;
   color: inherit;
-  background: radial-gradient(
-    circle at 3% 2%,
-    color-mix(in srgb, var(--workflow-card-accent) 12%, transparent),
-    transparent 34%
-  );
+  background: none;
   text-align: left;
   cursor: pointer;
 }
@@ -206,20 +190,19 @@
   display: flex;
   width: 32px;
   height: 32px;
-  border: 1px solid color-mix(in srgb, var(--workflow-card-accent) 32%, var(--border));
+  border: 1px solid var(--line);
   border-radius: 10px;
   align-items: center;
   justify-content: center;
   gap: 3px;
-  background: color-mix(in srgb, var(--workflow-card-accent) 9%, var(--surface));
-  box-shadow: 0 7px 16px color-mix(in srgb, var(--workflow-card-accent) 12%, transparent);
+  background: var(--surface-2);
 }
 
 .workflow-card-glyph::before {
   position: absolute;
   width: 22px;
   height: 1px;
-  background: color-mix(in srgb, var(--workflow-card-accent) 55%, var(--border));
+  background: var(--line-strong);
   content: "";
 }
 
@@ -227,9 +210,9 @@
   z-index: 1;
   width: 6px;
   height: 6px;
-  border: 2px solid var(--surface);
+  border: 2px solid var(--surface-2);
   border-radius: 50%;
-  background: var(--workflow-card-accent);
+  background: var(--ink-3);
 }
 
 .workflow-card-copy {
@@ -246,7 +229,7 @@
   display: -webkit-box;
   min-height: 34px;
   margin: 4px 0 0;
-  color: var(--text-2);
+  color: var(--ink-2);
   font-size: 0.67rem;
   line-height: 1.4;
   overflow: hidden;
@@ -256,12 +239,11 @@
 
 .workflow-catalog-card > footer {
   display: flex;
-  border-top: 1px solid var(--border);
+  border-top: 1px solid var(--line);
   padding: 9px 16px;
   align-items: center;
   justify-content: flex-end;
   gap: 10px;
-  background: color-mix(in srgb, var(--surface-2) 62%, var(--surface));
 }
 
 .workflow-catalog-card > footer .agent-card-actions-right {
