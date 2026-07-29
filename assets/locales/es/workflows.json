@@ -43,7 +43,7 @@
     "eyebrow": "Diseñador de pipeline",
     "title": "Flujo de ejecución",
     "description": "Conecta agentes en secuencia o en paralelo y reúne sus resultados en puertas de calidad.",
-    "connections_hint": "Arrastra desde el conector derecho de un nodo al conector izquierdo de otro. Selecciona una conexión y pulsa Supr para eliminarla.",
+    "connections_hint": "Arrastra desde el conector derecho de un nodo al conector izquierdo de otro. Selecciona una conexión para mostrar el botón de eliminar; también puedes pulsar Supr o hacer doble clic.",
     "metrics_aria": "Métricas del pipeline",
     "agents": "agentes",
     "links": "enlaces",
@@ -107,12 +107,31 @@
     "move_left": "Mover {{name}} a la izquierda",
     "move_right": "Mover {{name}} a la derecha",
     "remove": "Quitar {{name}}",
+    "remove_connection": "Eliminar conexión",
     "status": {
       "pending": "Pendiente",
       "running": "Trabajando",
       "evaluating": "Evaluando",
       "done": "Completado",
       "error": "Error"
+    }
+  },
+  "graph": {
+    "ready": "Grafo listo para guardar",
+    "invalid": "Completa las conexiones antes de guardar",
+    "summary": "{{branches}} puntos de ramificación y {{joins}} puntos de unión.",
+    "issues": {
+      "empty": "Añade al menos un agente.",
+      "invalid_reference": "Hay una conexión hacia un agente que ya no existe.",
+      "self_connection": "Un agente no puede conectarse consigo mismo: {{nodes}}.",
+      "duplicate_connection": "Hay conexiones duplicadas entre: {{nodes}}.",
+      "disconnected": "Estos agentes están separados del flujo principal: {{nodes}}.",
+      "multiple_starts": "Solo puede haber una entrada. Inicios actuales: {{nodes}}.",
+      "multiple_ends": "Solo puede haber un resultado final. Finales actuales: {{nodes}}.",
+      "cycle": "El flujo principal contiene un ciclo no controlado: {{nodes}}.",
+      "invalid_loop": "Hay un ciclo que no vuelve por una ruta válida o tiene límites incorrectos: {{nodes}}.",
+      "overlapping_loops": "Los ciclos no pueden solaparse ni anidarse: {{nodes}}.",
+      "invalid_evaluator": "Cada evaluador debe cerrar un único ciclo por condición y tener una condición válida: {{nodes}}."
     }
   },
   "layout": {

@@ -43,7 +43,7 @@
     "eyebrow": "Pipeline designer",
     "title": "Execution flow",
     "description": "Connect agents sequentially or in parallel and merge their results at quality gates.",
-    "connections_hint": "Drag from a node's right connector to another node's left connector. Select a connection and press Delete to remove it.",
+    "connections_hint": "Drag from a node's right connector to another node's left connector. Select a connection to show its remove button; you can also press Delete or double-click it.",
     "metrics_aria": "Pipeline metrics",
     "agents": "agents",
     "links": "links",
@@ -107,12 +107,31 @@
     "move_left": "Move {{name}} left",
     "move_right": "Move {{name}} right",
     "remove": "Remove {{name}}",
+    "remove_connection": "Remove connection",
     "status": {
       "pending": "Pending",
       "running": "Working",
       "evaluating": "Evaluating",
       "done": "Completed",
       "error": "Error"
+    }
+  },
+  "graph": {
+    "ready": "Graph ready to save",
+    "invalid": "Complete the connections before saving",
+    "summary": "{{branches}} branch points and {{joins}} join points.",
+    "issues": {
+      "empty": "Add at least one agent.",
+      "invalid_reference": "A connection points to an agent that no longer exists.",
+      "self_connection": "An agent cannot connect to itself: {{nodes}}.",
+      "duplicate_connection": "Duplicate connections exist between: {{nodes}}.",
+      "disconnected": "These agents are separated from the main flow: {{nodes}}.",
+      "multiple_starts": "Only one input is allowed. Current starts: {{nodes}}.",
+      "multiple_ends": "Only one final output is allowed. Current ends: {{nodes}}.",
+      "cycle": "The main flow contains an uncontrolled cycle: {{nodes}}.",
+      "invalid_loop": "A loop does not return through a valid path or has invalid limits: {{nodes}}.",
+      "overlapping_loops": "Loops cannot overlap or be nested: {{nodes}}.",
+      "invalid_evaluator": "Each evaluator must close one condition loop and have a valid condition: {{nodes}}."
     }
   },
   "layout": {

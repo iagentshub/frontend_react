@@ -7,12 +7,14 @@ import { LabelChips } from "@/components/label-chips";
 import { LabelsPicker } from "@/components/label-picker";
 import { WorkflowCanvas } from "./workflow-canvas";
 import { WorkflowBuilderDialog } from "./workflow-builder-dialog";
+import { WorkflowGraphStatus } from "./workflow-graph-status";
 import { WorkflowRunner } from "./workflow-runner";
 import { WorkflowCatalog } from "./workflow-sidebar";
 import { WorkflowShareDialog } from "./workflow-share-dialog";
 import { WorkflowStepEditor } from "./workflow-step-editor";
 import { nextWorkflowPosition } from "./workflow-layout";
 import {
+  analyzeWorkflowGraph,
   normalizeLoadedWorkflow,
   prepareWorkflowForSave,
   sequenceEdges,
@@ -75,6 +77,10 @@ export function WorkflowsPage() {
   const [shareTarget, setShareTarget] = useState<Workflow>();
   const [shareNotice, setShareNotice] = useState("");
   const normalizedDraft = useMemo(() => prepareWorkflowForSave(draft), [draft]);
+  const graphAnalysis = useMemo(
+    () => analyzeWorkflowGraph(draft.definition.nodes, draft.definition.edges),
+    [draft.definition.edges, draft.definition.nodes],
+  );
   const dirty = fingerprint(draft) !== savedFingerprint;
   const isShared = Boolean(draft._shared);
   const readonly = viewOnly || isShared;
@@ -83,7 +89,7 @@ export function WorkflowsPage() {
   const readinessChecks = [
     { label: t("health.name"), ready: Boolean(draft.name.trim()) },
     { label: t("health.objective"), ready: Boolean(draft.description.trim()) },
-    { label: t("health.pipeline"), ready: draft.definition.nodes.length > 0 },
+    { label: t("health.pipeline"), ready: graphAnalysis.valid },
   ];
   const readyChecks = readinessChecks.filter((check) => check.ready).length;
 
@@ -429,6 +435,8 @@ export function WorkflowsPage() {
                   }
                 }}
               />
+              <small className="workflow-connections-hint">{t("builder.connections_hint")}</small>
+              <WorkflowGraphStatus analysis={graphAnalysis} nodes={draft.definition.nodes} />
 
               {selectedNode && (
                 <WorkflowStepEditor
@@ -486,7 +494,7 @@ export function WorkflowsPage() {
                     !dirty ||
                     readonly ||
                     !draft.name.trim() ||
-                    !draft.definition.nodes.length ||
+                    !graphAnalysis.valid ||
                     save.isPending ||
                     progress.running
                   }

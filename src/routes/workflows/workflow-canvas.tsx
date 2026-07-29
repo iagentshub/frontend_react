@@ -17,7 +17,9 @@ import {
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import {
+  analyzeWorkflowGraph,
   canConnectSequence,
+  hasSequencePath,
   workflowRoots,
   workflowSinks,
 } from "./workflow-graph";
@@ -221,6 +223,7 @@ export function WorkflowCanvas({
   const { t } = useTranslation("workflows");
   const [locked, setLocked] = useState(false);
   const [loopDraft, setLoopDraft] = useState<LoopDraft | null>(null);
+  const [selectedConnectionId, setSelectedConnectionId] = useState<string | null>(null);
   const hydrated = useMemo(() => hydrateWorkflowPositions(nodes), [nodes]);
   const sequenceEdges = useMemo(
     () => edges.filter((edge) => (edge.type ?? "sequence") === "sequence"),
@@ -229,6 +232,27 @@ export function WorkflowCanvas({
   const loopEdges = useMemo(() => edges.filter((edge) => edge.type === "loop"), [edges]);
   const roots = useMemo(() => workflowRoots(nodes, edges), [edges, nodes]);
   const sinks = useMemo(() => workflowSinks(nodes, edges), [edges, nodes]);
+  const graphAnalysis = useMemo(() => analyzeWorkflowGraph(nodes, edges), [edges, nodes]);
+  const orderedLoopNodes = useMemo(() => {
+    if (graphAnalysis.topologicalOrder.length !== nodes.length) return nodes;
+    const byId = new Map(nodes.map((node) => [node.id, node]));
+    return graphAnalysis.topologicalOrder.flatMap((id) => {
+      const node = byId.get(id);
+      return node ? [node] : [];
+    });
+  }, [graphAnalysis.topologicalOrder, nodes]);
+  const selectedConnection = sequenceEdges.find(
+    (edge) => `sequence:${edge.source}:${edge.target}` === selectedConnectionId,
+  );
+
+  const removeConnections = (ids: Set<string>) => {
+    if (readonly || !ids.size) return;
+    onChange(
+      nodes,
+      edges.filter((edge) => !ids.has(`sequence:${edge.source}:${edge.target}`)),
+    );
+    setSelectedConnectionId(null);
+  };
 
   const removeNode = (id: string) => {
     onChange(
@@ -285,23 +309,29 @@ export function WorkflowCanvas({
 
   const unavailableTargets = useMemo(() => {
     if (!loopDraft) return new Set<string>();
-    const sourceIndex = nodes.findIndex((node) => node.id === loopDraft.sourceId);
+    const sourceIndex = orderedLoopNodes.findIndex((node) => node.id === loopDraft.sourceId);
     const otherRanges = loopEdges
       .filter((edge) => edge.source !== loopDraft.sourceId)
       .map((edge) => {
-        const start = nodes.findIndex((node) => node.id === edge.target);
-        const end = nodes.findIndex((node) => node.id === edge.source);
+        const start = orderedLoopNodes.findIndex((node) => node.id === edge.target);
+        const end = orderedLoopNodes.findIndex((node) => node.id === edge.source);
         return [start, end] as [number, number];
       });
     return new Set(
-      nodes
+      orderedLoopNodes
         .filter((node, index) => {
-          if (node.kind === "evaluator" || index >= sourceIndex) return true;
+          if (
+            node.kind === "evaluator" ||
+            index >= sourceIndex ||
+            !hasSequencePath(edges, node.id, loopDraft.sourceId)
+          ) {
+            return true;
+          }
           return otherRanges.some((range) => rangesOverlap([index, sourceIndex], range));
         })
         .map((node) => node.id),
     );
-  }, [loopDraft, loopEdges, nodes]);
+  }, [edges, loopDraft, loopEdges, orderedLoopNodes]);
 
   const saveLoop = () => {
     if (!loopDraft?.targetId) return;
@@ -349,14 +379,10 @@ export function WorkflowCanvas({
         };
         nextNodes.splice(sourceIndex + 1, 0, evaluatorNode);
         const sourceSuccessors = nextEdges.filter(
-          (edge) =>
-            (edge.type ?? "sequence") === "sequence" &&
-            edge.source === loopDraft.sourceId,
+          (edge) => (edge.type ?? "sequence") === "sequence" && edge.source === loopDraft.sourceId,
         );
         nextEdges = nextEdges.filter(
-          (edge) =>
-            (edge.type ?? "sequence") !== "sequence" ||
-            edge.source !== loopDraft.sourceId,
+          (edge) => (edge.type ?? "sequence") !== "sequence" || edge.source !== loopDraft.sourceId,
         );
         nextEdges.push({
           source: loopDraft.sourceId,
@@ -395,14 +421,10 @@ export function WorkflowCanvas({
     );
     if (loopDraft.existingEvaluator) {
       const incoming = remainingEdges.filter(
-        (edge) =>
-          (edge.type ?? "sequence") === "sequence" &&
-          edge.target === loopDraft.sourceId,
+        (edge) => (edge.type ?? "sequence") === "sequence" && edge.target === loopDraft.sourceId,
       );
       const outgoing = remainingEdges.filter(
-        (edge) =>
-          (edge.type ?? "sequence") === "sequence" &&
-          edge.source === loopDraft.sourceId,
+        (edge) => (edge.type ?? "sequence") === "sequence" && edge.source === loopDraft.sourceId,
       );
       const withoutEvaluator = remainingEdges.filter(
         (edge) => edge.source !== loopDraft.sourceId && edge.target !== loopDraft.sourceId,
@@ -416,9 +438,19 @@ export function WorkflowCanvas({
             type: "sequence" as const,
           })),
       );
+      const deduplicated = [...withoutEvaluator];
+      for (const edge of reconnected) {
+        const duplicate = deduplicated.some(
+          (current) =>
+            (current.type ?? "sequence") === "sequence" &&
+            current.source === edge.source &&
+            current.target === edge.target,
+        );
+        if (!duplicate) deduplicated.push(edge);
+      }
       onChange(
         nodes.filter((node) => node.id !== loopDraft.sourceId),
-        [...withoutEvaluator, ...reconnected],
+        deduplicated,
       );
     } else {
       onChange(nodes, remainingEdges);
@@ -524,6 +556,7 @@ export function WorkflowCanvas({
         id: `sequence:${edge.source}:${edge.target}`,
         source: edge.source,
         target: edge.target,
+        selected: selectedConnectionId === `sequence:${edge.source}:${edge.target}`,
         interactionWidth: 24,
         deletable: !readonly,
         markerEnd: { type: MarkerType.ArrowClosed, color: "var(--accent)" },
@@ -561,7 +594,7 @@ export function WorkflowCanvas({
       markerEnd: { type: MarkerType.ArrowClosed, color: "var(--warning, #d97706)" },
     }));
     return [...main, ...loops];
-  }, [hydrated, loopEdges, readonly, roots, sequenceEdges, sinks, t]);
+  }, [hydrated, loopEdges, readonly, roots, selectedConnectionId, sequenceEdges, sinks, t]);
 
   if (!nodes.length) {
     return (
@@ -592,29 +625,31 @@ export function WorkflowCanvas({
           elementsSelectable
           panOnDrag
           zoomOnScroll
+          deleteKeyCode={["Backspace", "Delete"]}
           onConnect={connectNodes}
           isValidConnection={(connection) =>
             Boolean(
               connection.source &&
-                connection.target &&
-                canConnectSequence(nodes, edges, connection.source, connection.target),
+              connection.target &&
+              canConnectSequence(nodes, edges, connection.source, connection.target),
             )
           }
           onEdgesDelete={(deleted) => {
-            const removed = new Set(
-              deleted
-                .filter((edge) => edge.id.startsWith("sequence:"))
-                .map((edge) => edge.id),
-            );
-            if (!removed.size) return;
-            onChange(
-              nodes,
-              edges.filter(
-                (edge) =>
-                  !removed.has(`sequence:${edge.source}:${edge.target}`),
+            removeConnections(
+              new Set(
+                deleted.filter((edge) => edge.id.startsWith("sequence:")).map((edge) => edge.id),
               ),
             );
           }}
+          onEdgeClick={(_, edge) => {
+            setSelectedConnectionId(edge.id.startsWith("sequence:") ? edge.id : null);
+          }}
+          onEdgeDoubleClick={(_, edge) => {
+            if (edge.id.startsWith("sequence:")) {
+              removeConnections(new Set([edge.id]));
+            }
+          }}
+          onPaneClick={() => setSelectedConnectionId(null)}
           onNodesChange={(changes) => {
             const positionChanges = new Map(
               changes.flatMap((change) =>
@@ -649,6 +684,24 @@ export function WorkflowCanvas({
         >
           <Background variant={BackgroundVariant.Dots} gap={20} size={1} />
           <Controls showInteractive={false} />
+          {!readonly && selectedConnection && (
+            <Panel position="bottom-center" className="workflow-edge-panel">
+              <span>
+                {nodes.find((node) => node.id === selectedConnection.source)?.label ??
+                  selectedConnection.source}
+                {" → "}
+                {nodes.find((node) => node.id === selectedConnection.target)?.label ??
+                  selectedConnection.target}
+              </span>
+              <button
+                type="button"
+                className="danger"
+                onClick={() => removeConnections(new Set([selectedConnectionId!]))}
+              >
+                {t("canvas.remove_connection")}
+              </button>
+            </Panel>
+          )}
           {!readonly && (
             <Panel position="top-right" className="workflow-layout-panel">
               {(["vertical", "horizontal", "grid", "circle"] as const).map((preset) => (
@@ -702,7 +755,7 @@ export function WorkflowCanvas({
                   onChange={(event) => setLoopDraft({ ...loopDraft, targetId: event.target.value })}
                 >
                   <option value="">{t("loops.select_target")}</option>
-                  {nodes.map((node, index) => (
+                  {orderedLoopNodes.map((node, index) => (
                     <option
                       value={node.id}
                       disabled={unavailableTargets.has(node.id)}

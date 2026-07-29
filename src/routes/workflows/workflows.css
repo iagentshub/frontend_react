@@ -803,6 +803,41 @@
   font-size: 0.72rem;
 }
 
+.workflow-graph-status {
+  display: flex;
+  margin-top: 8px;
+  border: 1px solid;
+  border-radius: 9px;
+  padding: 9px 11px;
+  align-items: flex-start;
+  gap: 9px;
+  font-size: 0.72rem;
+  line-height: 1.4;
+}
+
+.workflow-graph-status.valid {
+  border-color: color-mix(in srgb, var(--success, #15803d) 35%, var(--border));
+  color: var(--success, #15803d);
+  background: color-mix(in srgb, var(--success, #15803d) 7%, var(--surface));
+}
+
+.workflow-graph-status.invalid {
+  border-color: color-mix(in srgb, var(--danger, #dc2626) 35%, var(--border));
+  color: var(--danger, #dc2626);
+  background: color-mix(in srgb, var(--danger, #dc2626) 7%, var(--surface));
+}
+
+.workflow-graph-status strong {
+  flex: 0 0 auto;
+}
+
+.workflow-graph-status ul {
+  display: grid;
+  margin: 0;
+  padding-left: 18px;
+  gap: 3px;
+}
+
 .workflow-canvas .react-flow__node-workflow {
   width: 168px;
 }
@@ -1089,6 +1124,30 @@
   gap: 2px;
   background: var(--surface);
   box-shadow: var(--shadow-sm);
+}
+
+.workflow-edge-panel {
+  display: flex;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  padding: 6px 8px;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-1);
+  background: var(--surface);
+  box-shadow: var(--shadow-md);
+  font-size: 0.68rem;
+}
+
+.workflow-edge-panel button {
+  border: 0;
+  border-radius: 7px;
+  padding: 5px 8px;
+  color: white;
+  background: var(--danger, #dc2626);
+  cursor: pointer;
+  font: inherit;
+  font-weight: 700;
 }
 
 .workflow-loop-backdrop {

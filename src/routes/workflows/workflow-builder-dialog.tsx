@@ -4,9 +4,11 @@ import { useTranslation } from "react-i18next";
 import { api } from "@/api/client";
 import { LabelsPicker } from "@/components/label-picker";
 import { WorkflowCanvas } from "./workflow-canvas";
+import { WorkflowGraphStatus } from "./workflow-graph-status";
 import { WorkflowRunner } from "./workflow-runner";
 import { WorkflowStepEditor } from "./workflow-step-editor";
 import {
+  analyzeWorkflowGraph,
   normalizeLoadedWorkflow,
   prepareWorkflowForSave,
   workflowSinks,
@@ -67,13 +69,17 @@ export function WorkflowBuilderDialog({
   );
   const [progress, setProgress] = useState<WorkflowProgress>({ stages: {}, running: false });
   const normalizedDraft = useMemo(() => prepareWorkflowForSave(draft), [draft]);
+  const graphAnalysis = useMemo(
+    () => analyzeWorkflowGraph(draft.definition.nodes, draft.definition.edges),
+    [draft.definition.edges, draft.definition.nodes],
+  );
   const dirty = fingerprint(draft) !== fingerprint(initial);
   const selectedNode = draft.definition.nodes.find((node) => node.id === selectedNodeId);
 
   const save = useMutation({
     mutationFn: () => api.post<Workflow>("/api/workflows", normalizedDraft),
     onSuccess: async (saved) => {
-      setDraft(saved);
+      setDraft(normalizeLoadedWorkflow(saved));
       if (saved.id) {
         const isPublic = (saved.labels ?? []).includes("public");
         await api
@@ -96,12 +102,10 @@ export function WorkflowBuilderDialog({
   };
 
   const updateDefinition = (nodes: WorkflowNode[], edges = draft.definition.edges) => {
-    setDraft((current) =>
-      ({
-        ...current,
-        definition: { ...current.definition, nodes, edges },
-      }),
-    );
+    setDraft((current) => ({
+      ...current,
+      definition: { ...current.definition, nodes, edges },
+    }));
     setProgress({ stages: {}, running: false });
   };
 
@@ -118,10 +122,7 @@ export function WorkflowBuilderDialog({
       kind: "agent",
       position: nextWorkflowPosition(draft.definition.nodes),
     };
-    const previousSinks = workflowSinks(
-      draft.definition.nodes,
-      draft.definition.edges,
-    );
+    const previousSinks = workflowSinks(draft.definition.nodes, draft.definition.edges);
     const nextEdges = [...draft.definition.edges];
     if (previousSinks.length === 1) {
       nextEdges.push({
@@ -243,9 +244,8 @@ export function WorkflowBuilderDialog({
                 }
               }}
             />
-            <small className="workflow-connections-hint">
-              {t("builder.connections_hint")}
-            </small>
+            <small className="workflow-connections-hint">{t("builder.connections_hint")}</small>
+            <WorkflowGraphStatus analysis={graphAnalysis} nodes={draft.definition.nodes} />
 
             {selectedNode && (
               <WorkflowStepEditor
@@ -310,7 +310,7 @@ export function WorkflowBuilderDialog({
               disabled={
                 !dirty ||
                 !draft.name.trim() ||
-                !draft.definition.nodes.length ||
+                !graphAnalysis.valid ||
                 save.isPending ||
                 progress.running
               }

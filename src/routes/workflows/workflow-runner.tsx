@@ -41,8 +41,7 @@ export function WorkflowRunner({
     setFinalOutput("");
     setError("");
     onProgress({ stages: {}, running: true });
-    let activeNodeId = "";
-    const completed: Record<string, WorkflowStageStatus> = {};
+    const stageStates: Record<string, WorkflowStageStatus> = {};
     const evaluations: NonNullable<WorkflowProgress["evaluations"]> = {};
     try {
       for await (const item of streamEvents<WorkflowRunEvent>(
@@ -59,14 +58,14 @@ export function WorkflowRunner({
           throw new Error(event.message || t("runner.run_error"));
         }
         if (event.type === "stage_started" && event.node_id) {
-          activeNodeId = event.node_id;
+          stageStates[event.node_id] = "running";
           onProgress({
             running: true,
-            stages: { ...completed, [event.node_id]: "running" },
+            stages: { ...stageStates },
             evaluations: { ...evaluations },
           });
         } else if (event.type === "stage_done" && event.node_id) {
-          completed[event.node_id] = "done";
+          stageStates[event.node_id] = "done";
           setEntries((current) => [
             ...current,
             {
@@ -80,18 +79,18 @@ export function WorkflowRunner({
           ]);
           onProgress({
             running: true,
-            stages: { ...completed },
+            stages: { ...stageStates },
             evaluations: { ...evaluations },
           });
         } else if (event.type === "evaluation_started" && event.node_id) {
-          activeNodeId = event.node_id;
+          stageStates[event.node_id] = "evaluating";
           onProgress({
             running: true,
-            stages: { ...completed, [event.node_id]: "evaluating" },
+            stages: { ...stageStates },
             evaluations: { ...evaluations },
           });
         } else if (event.type === "evaluation_done" && event.node_id) {
-          completed[event.node_id] = "done";
+          stageStates[event.node_id] = "done";
           evaluations[event.node_id] = {
             approved: Boolean(event.approved),
             reason: event.reason || "",
@@ -111,7 +110,7 @@ export function WorkflowRunner({
           ]);
           onProgress({
             running: true,
-            stages: { ...completed },
+            stages: { ...stageStates },
             evaluations: { ...evaluations },
           });
         } else if (event.type === "workflow_done") {
@@ -123,14 +122,18 @@ export function WorkflowRunner({
         setError(t("runner.cancelled"));
       } else {
         setError(caught instanceof Error ? caught.message : t("runner.unexpected_error"));
-        if (activeNodeId) completed[activeNodeId] = "error";
+        for (const [nodeId, status] of Object.entries(stageStates)) {
+          if (status === "running" || status === "evaluating") {
+            stageStates[nodeId] = "error";
+          }
+        }
       }
     } finally {
       controller.current = null;
       setRunning(false);
       onProgress({
         running: false,
-        stages: { ...completed },
+        stages: { ...stageStates },
         evaluations: { ...evaluations },
       });
     }
