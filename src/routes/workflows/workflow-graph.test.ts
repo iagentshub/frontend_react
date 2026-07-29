@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   canConnectSequence,
   normalizeLoadedWorkflow,
+  prepareWorkflowForSave,
   workflowRoots,
   workflowSinks,
 } from "./workflow-graph";
@@ -42,6 +43,16 @@ describe("workflow graph", () => {
         definition: { nodes, edges },
       }).definition.edges,
     ).toEqual(edges);
+  });
+
+  it("does not recreate default connections while the graph is being edited", () => {
+    const workflow: Workflow = {
+      name: "editing",
+      description: "",
+      definition: { nodes: nodes.slice(0, 3), edges: [] },
+    };
+
+    expect(prepareWorkflowForSave(workflow).definition.edges).toEqual([]);
   });
 
   it("rejects duplicate and cyclic connections", () => {

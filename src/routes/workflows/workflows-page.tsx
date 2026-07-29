@@ -11,7 +11,13 @@ import { WorkflowRunner } from "./workflow-runner";
 import { WorkflowCatalog } from "./workflow-sidebar";
 import { WorkflowShareDialog } from "./workflow-share-dialog";
 import { WorkflowStepEditor } from "./workflow-step-editor";
-import { hydrateWorkflowPositions, nextWorkflowPosition } from "./workflow-layout";
+import { nextWorkflowPosition } from "./workflow-layout";
+import {
+  normalizeLoadedWorkflow,
+  prepareWorkflowForSave,
+  sequenceEdges,
+  workflowSinks,
+} from "./workflow-graph";
 import type {
   AgentOption,
   Workflow,
@@ -29,28 +35,8 @@ const emptyWorkflow = (name: string): Workflow => ({
   labels: ["private"],
 });
 
-function withLinearEdges(workflow: Workflow): Workflow {
-  const nodes = hydrateWorkflowPositions(workflow.definition.nodes);
-  const loops = workflow.definition.edges.filter((edge) => edge.type === "loop");
-  return {
-    ...workflow,
-    definition: {
-      ...workflow.definition,
-      nodes,
-      edges: [
-        ...nodes.slice(1).map((node, index) => ({
-          source: nodes[index]!.id,
-          target: node.id,
-          type: "sequence" as const,
-        })),
-        ...loops,
-      ],
-    },
-  };
-}
-
 function fingerprint(workflow: Workflow): string {
-  const normalized = withLinearEdges(workflow);
+  const normalized = prepareWorkflowForSave(workflow);
   return JSON.stringify({
     name: normalized.name,
     description: normalized.description,
@@ -88,7 +74,7 @@ export function WorkflowsPage() {
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
   const [shareTarget, setShareTarget] = useState<Workflow>();
   const [shareNotice, setShareNotice] = useState("");
-  const normalizedDraft = useMemo(() => withLinearEdges(draft), [draft]);
+  const normalizedDraft = useMemo(() => prepareWorkflowForSave(draft), [draft]);
   const dirty = fingerprint(draft) !== savedFingerprint;
   const isShared = Boolean(draft._shared);
   const readonly = viewOnly || isShared;
@@ -104,8 +90,9 @@ export function WorkflowsPage() {
   const save = useMutation({
     mutationFn: () => api.post<Workflow>("/api/workflows", normalizedDraft),
     onSuccess: async (saved) => {
-      setDraft(saved);
-      setSavedFingerprint(fingerprint(saved));
+      const normalized = normalizeLoadedWorkflow(saved);
+      setDraft(normalized);
+      setSavedFingerprint(fingerprint(normalized));
       if (saved.id) {
         const isPublic = (saved.labels ?? []).includes("public");
         await api
@@ -140,7 +127,7 @@ export function WorkflowsPage() {
 
   const selectWorkflow = (workflow: Workflow) => {
     if (!confirmDiscard()) return;
-    const hydrated = withLinearEdges(workflow);
+    const hydrated = normalizeLoadedWorkflow(workflow);
     setDraft(hydrated);
     setSavedFingerprint(fingerprint(hydrated));
     setSelectedNodeId(hydrated.definition.nodes[0]?.id);
@@ -151,7 +138,7 @@ export function WorkflowsPage() {
 
   const viewWorkflow = (workflow: Workflow) => {
     if (!confirmDiscard()) return;
-    const hydrated = withLinearEdges(workflow);
+    const hydrated = normalizeLoadedWorkflow(workflow);
     setDraft(hydrated);
     setSavedFingerprint(fingerprint(hydrated));
     setSelectedNodeId(hydrated.definition.nodes[0]?.id);
@@ -163,7 +150,7 @@ export function WorkflowsPage() {
   const openCatalog = () => {
     if (!confirmDiscard()) return;
     const savedWorkflow = workflows.data?.find((workflow) => workflow.id === draft.id);
-    const nextDraft = withLinearEdges(savedWorkflow ?? emptyWorkflow(defaultName));
+    const nextDraft = normalizeLoadedWorkflow(savedWorkflow ?? emptyWorkflow(defaultName));
     setDraft(nextDraft);
     setSavedFingerprint(fingerprint(nextDraft));
     setSelectedNodeId(undefined);
@@ -173,12 +160,12 @@ export function WorkflowsPage() {
   };
 
   const updateDefinition = (nodes: WorkflowNode[], edges = draft.definition.edges) => {
-    setDraft((current) => ({
-      ...withLinearEdges({
+    setDraft((current) =>
+      prepareWorkflowForSave({
         ...current,
         definition: { ...current.definition, nodes, edges },
       }),
-    }));
+    );
     setProgress({ stages: {}, running: false });
   };
 
@@ -195,7 +182,20 @@ export function WorkflowsPage() {
       kind: "agent",
       position: nextWorkflowPosition(draft.definition.nodes),
     };
-    updateNodes([...draft.definition.nodes, node]);
+    const currentNodes = draft.definition.nodes;
+    const sinks = workflowSinks(currentNodes, draft.definition.edges);
+    const edges =
+      currentNodes.length > 0 && sinks.length === 1
+        ? [
+            ...draft.definition.edges,
+            {
+              source: sinks[0]!.id,
+              target: node.id,
+              type: "sequence" as const,
+            },
+          ]
+        : draft.definition.edges;
+    updateDefinition([...currentNodes, node], edges);
     setSelectedNodeId(node.id);
     setAgentId("");
   };
@@ -366,7 +366,7 @@ export function WorkflowsPage() {
                   </span>
 
                   <span>
-                    <strong>{Math.max(0, draft.definition.nodes.length - 1)}</strong>{" "}
+                    <strong>{sequenceEdges(draft.definition.edges).length}</strong>{" "}
                     {t("builder.links")}
                   </span>
 
