@@ -10,11 +10,17 @@ import {
   Panel,
   Position,
   ReactFlow,
+  type Connection,
   type Edge as FlowEdge,
   type Node as FlowNode,
   type NodeProps,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
+import {
+  canConnectSequence,
+  workflowRoots,
+  workflowSinks,
+} from "./workflow-graph";
 import {
   applyWorkflowLayout,
   hydrateWorkflowPositions,
@@ -104,7 +110,7 @@ function WorkflowAgentNode({ data, selected }: NodeProps<CanvasFlowNode>) {
         </div>
       </NodeToolbar>
 
-      <Handle type="target" position={Position.Left} isConnectable={false} />
+      <Handle type="target" position={Position.Left} isConnectable={!data.readonly} />
       <article
         className={[
           "workflow-flow-node",
@@ -148,7 +154,7 @@ function WorkflowAgentNode({ data, selected }: NodeProps<CanvasFlowNode>) {
           {data.hasLoop && <b aria-label={labels.editLoop}>↻</b>}
         </footer>
       </article>
-      <Handle type="source" position={Position.Right} isConnectable={false} />
+      <Handle type="source" position={Position.Right} isConnectable={!data.readonly} />
     </>
   );
 }
@@ -221,6 +227,8 @@ export function WorkflowCanvas({
     [edges],
   );
   const loopEdges = useMemo(() => edges.filter((edge) => edge.type === "loop"), [edges]);
+  const roots = useMemo(() => workflowRoots(nodes, edges), [edges, nodes]);
+  const sinks = useMemo(() => workflowSinks(nodes, edges), [edges, nodes]);
 
   const removeNode = (id: string) => {
     onChange(
@@ -236,6 +244,26 @@ export function WorkflowCanvas({
     if (index < 0 || target < 0 || target >= next.length) return;
     [next[index], next[target]] = [next[target]!, next[index]!];
     onChange(next, edges);
+  };
+
+  const connectNodes = (connection: Connection) => {
+    if (
+      readonly ||
+      locked ||
+      !connection.source ||
+      !connection.target ||
+      !canConnectSequence(nodes, edges, connection.source, connection.target)
+    ) {
+      return;
+    }
+    onChange(nodes, [
+      ...edges,
+      {
+        source: connection.source,
+        target: connection.target,
+        type: "sequence",
+      },
+    ]);
   };
 
   const openLoop = (sourceId: string) => {
@@ -320,6 +348,28 @@ export function WorkflowCanvas({
           },
         };
         nextNodes.splice(sourceIndex + 1, 0, evaluatorNode);
+        const sourceSuccessors = nextEdges.filter(
+          (edge) =>
+            (edge.type ?? "sequence") === "sequence" &&
+            edge.source === loopDraft.sourceId,
+        );
+        nextEdges = nextEdges.filter(
+          (edge) =>
+            (edge.type ?? "sequence") !== "sequence" ||
+            edge.source !== loopDraft.sourceId,
+        );
+        nextEdges.push({
+          source: loopDraft.sourceId,
+          target: evaluatorId,
+          type: "sequence",
+        });
+        nextEdges.push(
+          ...sourceSuccessors.map((edge) => ({
+            source: evaluatorId,
+            target: edge.target,
+            type: "sequence" as const,
+          })),
+        );
         sourceId = evaluatorId;
       }
     }
@@ -344,11 +394,31 @@ export function WorkflowCanvas({
       (edge) => edge.type !== "loop" || edge.source !== loopDraft.sourceId,
     );
     if (loopDraft.existingEvaluator) {
+      const incoming = remainingEdges.filter(
+        (edge) =>
+          (edge.type ?? "sequence") === "sequence" &&
+          edge.target === loopDraft.sourceId,
+      );
+      const outgoing = remainingEdges.filter(
+        (edge) =>
+          (edge.type ?? "sequence") === "sequence" &&
+          edge.source === loopDraft.sourceId,
+      );
+      const withoutEvaluator = remainingEdges.filter(
+        (edge) => edge.source !== loopDraft.sourceId && edge.target !== loopDraft.sourceId,
+      );
+      const reconnected = incoming.flatMap((sourceEdge) =>
+        outgoing
+          .filter((targetEdge) => sourceEdge.source !== targetEdge.target)
+          .map((targetEdge) => ({
+            source: sourceEdge.source,
+            target: targetEdge.target,
+            type: "sequence" as const,
+          })),
+      );
       onChange(
         nodes.filter((node) => node.id !== loopDraft.sourceId),
-        remainingEdges.filter(
-          (edge) => edge.source !== loopDraft.sourceId && edge.target !== loopDraft.sourceId,
-        ),
+        [...withoutEvaluator, ...reconnected],
       );
     } else {
       onChange(nodes, remainingEdges);
@@ -358,8 +428,10 @@ export function WorkflowCanvas({
 
   const flowNodes = ((): Array<CanvasFlowNode | EndpointFlowNode> => {
     if (!hydrated.length) return [];
-    const first = hydrated[0]!;
-    const last = hydrated.at(-1)!;
+    const rootNodes = hydrated.filter((node) => roots.some((root) => root.id === node.id));
+    const sinkNodes = hydrated.filter((node) => sinks.some((sink) => sink.id === node.id));
+    const first = rootNodes[0] ?? hydrated[0]!;
+    const last = sinkNodes.at(-1) ?? hydrated.at(-1)!;
     const inputPosition = {
       x: (first.position?.x ?? 0) - 150,
       y: (first.position?.y ?? 0) + (WORKFLOW_NODE_HEIGHT - 72) / 2,
@@ -435,24 +507,43 @@ export function WorkflowCanvas({
       {
         id: "__input-edge",
         source: "__input",
-        target: hydrated[0]!.id,
+        target: roots[0]?.id ?? hydrated[0]!.id,
         interactionWidth: 24,
+        deletable: false,
         markerEnd: { type: MarkerType.ArrowClosed, color: "var(--accent)" },
       },
+      ...roots.slice(1).map((node) => ({
+        id: `__input-edge:${node.id}`,
+        source: "__input",
+        target: node.id,
+        interactionWidth: 24,
+        deletable: false,
+        markerEnd: { type: MarkerType.ArrowClosed, color: "var(--accent)" },
+      })),
       ...sequenceEdges.map((edge) => ({
         id: `sequence:${edge.source}:${edge.target}`,
         source: edge.source,
         target: edge.target,
         interactionWidth: 24,
+        deletable: !readonly,
         markerEnd: { type: MarkerType.ArrowClosed, color: "var(--accent)" },
       })),
       {
         id: "__output-edge",
-        source: hydrated.at(-1)!.id,
+        source: sinks[0]?.id ?? hydrated.at(-1)!.id,
         target: "__output",
         interactionWidth: 24,
+        deletable: false,
         markerEnd: { type: MarkerType.ArrowClosed, color: "var(--accent)" },
       },
+      ...sinks.slice(1).map((node) => ({
+        id: `__output-edge:${node.id}`,
+        source: node.id,
+        target: "__output",
+        interactionWidth: 24,
+        deletable: false,
+        markerEnd: { type: MarkerType.ArrowClosed, color: "var(--accent)" },
+      })),
     ];
     const loops: FlowEdge[] = loopEdges.map((edge) => ({
       id: `loop:${edge.source}:${edge.target}`,
@@ -461,6 +552,7 @@ export function WorkflowCanvas({
       type: "smoothstep",
       className: "workflow-loop-edge",
       animated: true,
+      deletable: false,
       interactionWidth: 28,
       label:
         edge.mode === "condition"
@@ -469,7 +561,7 @@ export function WorkflowCanvas({
       markerEnd: { type: MarkerType.ArrowClosed, color: "var(--warning, #d97706)" },
     }));
     return [...main, ...loops];
-  }, [hydrated, loopEdges, sequenceEdges, t]);
+  }, [hydrated, loopEdges, readonly, roots, sequenceEdges, sinks, t]);
 
   if (!nodes.length) {
     return (
@@ -496,10 +588,33 @@ export function WorkflowCanvas({
           minZoom={0.25}
           maxZoom={1.8}
           nodesDraggable={!readonly && !locked}
-          nodesConnectable={false}
+          nodesConnectable={!readonly && !locked}
           elementsSelectable
           panOnDrag
           zoomOnScroll
+          onConnect={connectNodes}
+          isValidConnection={(connection) =>
+            Boolean(
+              connection.source &&
+                connection.target &&
+                canConnectSequence(nodes, edges, connection.source, connection.target),
+            )
+          }
+          onEdgesDelete={(deleted) => {
+            const removed = new Set(
+              deleted
+                .filter((edge) => edge.id.startsWith("sequence:"))
+                .map((edge) => edge.id),
+            );
+            if (!removed.size) return;
+            onChange(
+              nodes,
+              edges.filter(
+                (edge) =>
+                  !removed.has(`sequence:${edge.source}:${edge.target}`),
+              ),
+            );
+          }}
           onNodesChange={(changes) => {
             const positionChanges = new Map(
               changes.flatMap((change) =>

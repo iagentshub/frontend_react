@@ -796,6 +796,13 @@
   overflow: hidden;
 }
 
+.workflow-connections-hint {
+  display: block;
+  margin: 8px 2px 0;
+  color: var(--text-2);
+  font-size: 0.72rem;
+}
+
 .workflow-canvas .react-flow__node-workflow {
   width: 168px;
 }

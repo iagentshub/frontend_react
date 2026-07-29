@@ -30,7 +30,7 @@
     "edit": "Editar orquestación",
     "saved": "Guardado",
     "close": "Cerrar",
-    "sequence": "Secuencia de agentes"
+    "sequence": "Flujo de agentes"
   },
   "health": {
     "aria": "Estado de preparación",
@@ -42,7 +42,8 @@
   "builder": {
     "eyebrow": "Diseñador de pipeline",
     "title": "Flujo de ejecución",
-    "description": "La salida de cada agente alimenta de forma segura el siguiente paso.",
+    "description": "Conecta agentes en secuencia o en paralelo y reúne sus resultados en puertas de calidad.",
+    "connections_hint": "Arrastra desde el conector derecho de un nodo al conector izquierdo de otro. Selecciona una conexión y pulsa Supr para eliminarla.",
     "metrics_aria": "Métricas del pipeline",
     "agents": "agentes",
     "links": "enlaces",
@@ -158,7 +159,7 @@
   "runner": {
     "eyebrow": "Prueba controlada",
     "title": "Ejecutar orquestación",
-    "description": "La salida de cada paso se convierte en la entrada del siguiente.",
+    "description": "Las ramas independientes se ejecutan en paralelo y sus resultados se reúnen en el siguiente nodo común.",
     "running": "En ejecución",
     "placeholder": "Describe la tarea que iniciará la orquestación…",
     "cancel": "Cancelar",

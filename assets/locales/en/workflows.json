@@ -30,7 +30,7 @@
     "edit": "Edit orchestration",
     "saved": "Saved",
     "close": "Close",
-    "sequence": "Agent sequence"
+    "sequence": "Agent flow"
   },
   "health": {
     "aria": "Readiness status",
@@ -42,7 +42,8 @@
   "builder": {
     "eyebrow": "Pipeline designer",
     "title": "Execution flow",
-    "description": "Each agent's output securely feeds the next step.",
+    "description": "Connect agents sequentially or in parallel and merge their results at quality gates.",
+    "connections_hint": "Drag from a node's right connector to another node's left connector. Select a connection and press Delete to remove it.",
     "metrics_aria": "Pipeline metrics",
     "agents": "agents",
     "links": "links",
@@ -158,7 +159,7 @@
   "runner": {
     "eyebrow": "Controlled test",
     "title": "Run orchestration",
-    "description": "Each step's output becomes the next step's input.",
+    "description": "Independent branches run in parallel and their results merge at the next shared node.",
     "running": "Running",
     "placeholder": "Describe the task that will start the orchestration…",
     "cancel": "Cancel",

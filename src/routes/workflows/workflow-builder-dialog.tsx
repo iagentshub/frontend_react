@@ -6,35 +6,20 @@ import { LabelsPicker } from "@/components/label-picker";
 import { WorkflowCanvas } from "./workflow-canvas";
 import { WorkflowRunner } from "./workflow-runner";
 import { WorkflowStepEditor } from "./workflow-step-editor";
-import { hydrateWorkflowPositions, nextWorkflowPosition } from "./workflow-layout";
+import {
+  normalizeLoadedWorkflow,
+  prepareWorkflowForSave,
+  workflowSinks,
+} from "./workflow-graph";
+import { nextWorkflowPosition } from "./workflow-layout";
 import type { AgentOption, Workflow, WorkflowNode, WorkflowProgress } from "./types";
 
 function emptyWorkflow(name: string): Workflow {
   return { name, description: "", definition: { nodes: [], edges: [] }, labels: ["private"] };
 }
 
-function withLinearEdges(workflow: Workflow): Workflow {
-  const nodes = hydrateWorkflowPositions(workflow.definition.nodes);
-  const loops = workflow.definition.edges.filter((edge) => edge.type === "loop");
-  return {
-    ...workflow,
-    definition: {
-      ...workflow.definition,
-      nodes,
-      edges: [
-        ...nodes.slice(1).map((node, index) => ({
-          source: nodes[index]!.id,
-          target: node.id,
-          type: "sequence" as const,
-        })),
-        ...loops,
-      ],
-    },
-  };
-}
-
 function fingerprint(workflow: Workflow): string {
-  const normalized = withLinearEdges(workflow);
+  const normalized = prepareWorkflowForSave(workflow);
   return JSON.stringify({
     name: normalized.name,
     description: normalized.description,
@@ -72,7 +57,7 @@ export function WorkflowBuilderDialog({
 }) {
   const { t } = useTranslation("workflows");
   const initial = useMemo(
-    () => withLinearEdges(workflow ?? emptyWorkflow(t("editor.default_name"))),
+    () => normalizeLoadedWorkflow(workflow ?? emptyWorkflow(t("editor.default_name"))),
     [t, workflow],
   );
   const [draft, setDraft] = useState<Workflow>(initial);
@@ -81,7 +66,7 @@ export function WorkflowBuilderDialog({
     initial.definition.nodes[0]?.id,
   );
   const [progress, setProgress] = useState<WorkflowProgress>({ stages: {}, running: false });
-  const normalizedDraft = useMemo(() => withLinearEdges(draft), [draft]);
+  const normalizedDraft = useMemo(() => prepareWorkflowForSave(draft), [draft]);
   const dirty = fingerprint(draft) !== fingerprint(initial);
   const selectedNode = draft.definition.nodes.find((node) => node.id === selectedNodeId);
 
@@ -112,7 +97,7 @@ export function WorkflowBuilderDialog({
 
   const updateDefinition = (nodes: WorkflowNode[], edges = draft.definition.edges) => {
     setDraft((current) =>
-      withLinearEdges({
+      ({
         ...current,
         definition: { ...current.definition, nodes, edges },
       }),
@@ -133,7 +118,19 @@ export function WorkflowBuilderDialog({
       kind: "agent",
       position: nextWorkflowPosition(draft.definition.nodes),
     };
-    updateNodes([...draft.definition.nodes, node]);
+    const previousSinks = workflowSinks(
+      draft.definition.nodes,
+      draft.definition.edges,
+    );
+    const nextEdges = [...draft.definition.edges];
+    if (previousSinks.length === 1) {
+      nextEdges.push({
+        source: previousSinks[0]!.id,
+        target: node.id,
+        type: "sequence",
+      });
+    }
+    updateDefinition([...draft.definition.nodes, node], nextEdges);
     setSelectedNodeId(node.id);
     setAgentId("");
   };
@@ -203,7 +200,7 @@ export function WorkflowBuilderDialog({
             <div className="workflow-builder-heading">
               <div>
                 <span className="workflow-section-label">{t("builder.eyebrow")}</span>
-                <h2>{t("dialog.sequence")}</h2>
+                <h2>{t("builder.title")}</h2>
               </div>
               <span>{t("builder.capacity", { count: draft.definition.nodes.length })}</span>
             </div>
@@ -246,6 +243,9 @@ export function WorkflowBuilderDialog({
                 }
               }}
             />
+            <small className="workflow-connections-hint">
+              {t("builder.connections_hint")}
+            </small>
 
             {selectedNode && (
               <WorkflowStepEditor
