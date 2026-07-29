@@ -14,7 +14,10 @@ if (!match) {
   process.exit(1);
 }
 
-const hash = `sha256-${createHash("sha256").update(match[1], "utf8").digest("base64")}`;
+// Git puede materializar CRLF en Windows aunque la imagen se construya en
+// Linux con LF. Normalizar evita validar un hash distinto al de producción.
+const normalizedJsonLd = match[1].replace(/\r\n/g, "\n");
+const hash = `sha256-${createHash("sha256").update(normalizedJsonLd, "utf8").digest("base64")}`;
 
 if (process.argv.includes("--print")) {
   console.log(hash);
