@@ -4,7 +4,7 @@ import { useState, type FormEvent } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { api, ApiError } from "@/api/client";
 import { BlockActionIcon, DeleteActionIcon, UnblockActionIcon } from "@/components/resource-icons";
-import type { ProfileInvitation, ProfileSession, ProfileWorkspace } from "./types";
+import type { ProfileInvitation, ProfileSession, ProfileGroup } from "./types";
 
 interface Member {
   username: string;
@@ -31,23 +31,23 @@ function date(value?: string | null) {
     : parsed.toLocaleDateString(i18n.resolvedLanguage === "en" ? "en-GB" : "es-ES");
 }
 
-export function WorkspacesSection({
+export function GroupsSection({
   session,
-  workspaces,
+  groups,
   invitations,
   onReload,
 }: {
   session: ProfileSession;
-  workspaces: ProfileWorkspace[];
+  groups: ProfileGroup[];
   invitations: ProfileInvitation[];
   onReload: () => void;
 }) {
   const { t } = useTranslation();
   const [view, setView] = useState<"mine" | "invitations">("mine");
   const [newName, setNewName] = useState("");
-  const [selected, setSelected] = useState<ProfileWorkspace | null>(null);
+  const [selected, setSelected] = useState<ProfileGroup | null>(null);
   const create = useMutation({
-    mutationFn: (name: string) => api.post("/api/workspaces", { name }),
+    mutationFn: (name: string) => api.post("/api/groups", { name }),
     onSuccess: () => {
       setNewName("");
       onReload();
@@ -55,7 +55,7 @@ export function WorkspacesSection({
   });
   const invitationAction = useMutation({
     mutationFn: ({ id, action }: { id: string; action: "accept" | "reject" }) =>
-      api.post(`/api/workspaces/invitations/${encodeURIComponent(id)}/${action}`, {}),
+      api.post(`/api/groups/invitations/${encodeURIComponent(id)}/${action}`, {}),
     onSuccess: onReload,
   });
   return (
@@ -108,20 +108,20 @@ export function WorkspacesSection({
 
       {view === "mine" && (
         <div>
-          {workspaces.filter((workspace) => workspace.type === "team").length ? (
-            workspaces
-              .filter((workspace) => workspace.type === "team")
-              .map((workspace) => (
-                <div className="profile-ws-card" key={workspace.id}>
-                  <div className="profile-ws-info">
-                    <span className="profile-ws-name">{workspace.name}</span>
-                    <span className="profile-ws-role">
-                      {{ owner: "Propietario", admin: "Gestor", member: "Miembro" }[workspace.role]}
-                      {workspace.status === "disabled" ? " · Desactivado" : ""}
+          {groups.filter((group) => group.type === "team").length ? (
+            groups
+              .filter((group) => group.type === "team")
+              .map((group) => (
+                <div className="profile-group-card" key={group.id}>
+                  <div className="profile-group-info">
+                    <span className="profile-group-name">{group.name}</span>
+                    <span className="profile-group-role">
+                      {{ owner: "Propietario", admin: "Gestor", member: "Miembro" }[group.role]}
+                      {group.status === "disabled" ? " · Desactivado" : ""}
                     </span>
                   </div>
-                  <button className="btn btn-ghost btn-sm" onClick={() => setSelected(workspace)}>
-                    {workspace.role === "member" ? "Ver" : "Gestionar"}
+                  <button className="btn btn-ghost btn-sm" onClick={() => setSelected(group)}>
+                    {group.role === "member" ? "Ver" : "Gestionar"}
                   </button>
                 </div>
               ))
@@ -135,17 +135,17 @@ export function WorkspacesSection({
         <div>
           {invitations.length ? (
             invitations.map((invitation) => (
-              <div className="ws-inv-received-card" key={invitation.id}>
-                <div className="ws-inv-info">
-                  <span className="ws-inv-ws-name">
-                    {invitation.workspace_name || invitation.workspace_id}
+              <div className="group-inv-received-card" key={invitation.id}>
+                <div className="group-inv-info">
+                  <span className="group-inv-group-name">
+                    {invitation.group_name || invitation.group_id}
                   </span>
-                  <span className="ws-inv-from">
+                  <span className="group-inv-from">
                     {t("teams.invitations.col_invited_by")}
                     <strong>{invitation.invited_by}</strong>
                   </span>
                 </div>
-                <div className="ws-inv-actions">
+                <div className="group-inv-actions">
                   <button
                     className="btn btn-primary btn-sm"
                     disabled={invitationAction.isPending}
@@ -170,9 +170,9 @@ export function WorkspacesSection({
       )}
 
       {selected && (
-        <WorkspaceDialog
+        <GroupDialog
           session={session}
-          workspace={selected}
+          group={selected}
           onClose={() => setSelected(null)}
           onReload={() => {
             onReload();
@@ -187,33 +187,33 @@ export function WorkspacesSection({
   );
 }
 
-function WorkspaceDialog({
+function GroupDialog({
   session,
-  workspace,
+  group,
   onClose,
   onReload,
   onDeleted,
 }: {
   session: ProfileSession;
-  workspace: ProfileWorkspace;
+  group: ProfileGroup;
   onClose: () => void;
   onReload: () => void;
   onDeleted: () => void;
 }) {
   const { t } = useTranslation();
-  const canManage = workspace.role === "owner" || workspace.role === "admin";
+  const canManage = group.role === "owner" || group.role === "admin";
   const [invite, setInvite] = useState("");
   const [transferTo, setTransferTo] = useState("");
   const details = useQuery({
-    queryKey: ["profile", "workspace", workspace.id],
+    queryKey: ["profile", "group", group.id],
     queryFn: async ({ signal }) => {
       const members = await api.get<Member[]>(
-        `/api/workspaces/${encodeURIComponent(workspace.id)}/members`,
+        `/api/groups/${encodeURIComponent(group.id)}/members`,
         signal,
       );
       const pending = canManage
         ? await api.get<Pending[]>(
-            `/api/workspaces/${encodeURIComponent(workspace.id)}/invitations`,
+            `/api/groups/${encodeURIComponent(group.id)}/invitations`,
             signal,
           )
         : [];
@@ -232,7 +232,7 @@ function WorkspaceDialog({
         | { kind: "leave" }
         | { kind: "transfer"; username: string },
     ) => {
-      const base = `/api/workspaces/${encodeURIComponent(workspace.id)}`;
+      const base = `/api/groups/${encodeURIComponent(group.id)}`;
       switch (task.kind) {
         case "invite":
           return api.post(`${base}/invitations`, { username: task.username });
@@ -275,15 +275,15 @@ function WorkspaceDialog({
       className="modal-bg"
       role="dialog"
       aria-modal="true"
-      aria-labelledby="profile-workspace-title"
+      aria-labelledby="profile-group-title"
       onMouseDown={(event) => {
         if (event.target === event.currentTarget) onClose();
       }}
     >
       <div className="modal-box" style={{ maxWidth: 640 }}>
         <div className="modal-header">
-          <h3 className="modal-title" id="profile-workspace-title">
-            {workspace.name}
+          <h3 className="modal-title" id="profile-group-title">
+            {group.name}
           </h3>
           <button className="modal-close" onClick={onClose} aria-label={t("agents.chat.close")}>
             ×
@@ -337,13 +337,13 @@ function WorkspaceDialog({
                             {member.role !== "owner" && (
                               <button
                                 className="btn-icon btn-icon--danger"
-                                title={t("profile.workspaces_page.remove_btn")}
-                                aria-label={t("profile.workspaces_page.remove_btn")}
+                                title={t("profile.groups_page.remove_btn")}
+                                aria-label={t("profile.groups_page.remove_btn")}
                                 disabled={operation.isPending}
                                 onClick={() => {
                                   if (
                                     confirm(
-                                      i18n.t("dynamic.workspace_remove_member_confirm", {
+                                      i18n.t("dynamic.group_remove_member_confirm", {
                                         username: member.username,
                                       }),
                                     )
@@ -385,8 +385,8 @@ function WorkspaceDialog({
                     <div className="section-subtitle">{t("legacy.text_51875371a9f6")}</div>
                     {details.data.pending.length ? (
                       details.data.pending.map((pending) => (
-                        <div className="ws-inv-row" key={pending.id}>
-                          <span className="ws-inv-username">{pending.username}</span>
+                        <div className="group-inv-row" key={pending.id}>
+                          <span className="group-inv-username">{pending.username}</span>
                           <button
                             className="btn btn-ghost btn-sm"
                             disabled={operation.isPending}
@@ -403,7 +403,7 @@ function WorkspaceDialog({
                 </>
               )}
 
-              {workspace.role === "owner" ? (
+              {group.role === "owner" ? (
                 <div style={{ borderTop: "1px solid var(--line)", paddingTop: 16 }}>
                   <div className="section-subtitle" style={{ color: "var(--danger,#e55)" }}>
                     {t("legacy.text_fef7749db2c4")}
@@ -412,24 +412,24 @@ function WorkspaceDialog({
                     <button
                       className="btn-icon"
                       title={
-                        workspace.status === "disabled"
-                          ? t("profile.workspaces_page.reactivate_ws_btn")
-                          : t("profile.workspaces_page.deactivate_ws_btn")
+                        group.status === "disabled"
+                          ? t("profile.groups_page.reactivate_group_btn")
+                          : t("profile.groups_page.deactivate_group_btn")
                       }
                       aria-label={
-                        workspace.status === "disabled"
-                          ? t("profile.workspaces_page.reactivate_ws_btn")
-                          : t("profile.workspaces_page.deactivate_ws_btn")
+                        group.status === "disabled"
+                          ? t("profile.groups_page.reactivate_group_btn")
+                          : t("profile.groups_page.deactivate_group_btn")
                       }
                       disabled={operation.isPending}
                       onClick={() =>
                         operation.mutate({
                           kind: "status",
-                          status: workspace.status === "disabled" ? "active" : "disabled",
+                          status: group.status === "disabled" ? "active" : "disabled",
                         })
                       }
                     >
-                      {workspace.status === "disabled" ? (
+                      {group.status === "disabled" ? (
                         <UnblockActionIcon />
                       ) : (
                         <BlockActionIcon />
@@ -437,14 +437,14 @@ function WorkspaceDialog({
                     </button>
                     <button
                       className="btn-icon btn-icon--danger"
-                      title={t("profile.workspaces_page.delete_ws_btn")}
-                      aria-label={t("profile.workspaces_page.delete_ws_btn")}
+                      title={t("profile.groups_page.delete_group_btn")}
+                      aria-label={t("profile.groups_page.delete_group_btn")}
                       disabled={operation.isPending}
                       onClick={() => {
                         if (
                           confirm(
-                            i18n.t("dynamic.workspace_delete_confirm", {
-                              name: workspace.name,
+                            i18n.t("dynamic.group_delete_confirm", {
+                              name: group.name,
                             }),
                           )
                         )
@@ -486,8 +486,8 @@ function WorkspaceDialog({
                     onClick={() => {
                       if (
                         confirm(
-                          i18n.t("dynamic.workspace_leave_confirm", {
-                            name: workspace.name,
+                          i18n.t("dynamic.group_leave_confirm", {
+                            name: group.name,
                           }),
                         )
                       )

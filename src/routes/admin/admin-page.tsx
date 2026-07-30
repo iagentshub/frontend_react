@@ -9,7 +9,7 @@ import {
   AdminKnowledgePanel,
   AdminUsersPanel,
   AdminWorkflowsPanel,
-  AdminWorkspacesPanel,
+  AdminGroupsPanel,
 } from "./admin-resource-panels";
 import type {
   AdminAgent,
@@ -19,7 +19,7 @@ import type {
   AdminStats,
   AdminUser,
   AdminWorkflow,
-  AdminWorkspace,
+  AdminGroup,
   PlatformConfig,
 } from "./types";
 import "@/styles/routes/admin/admin.css";
@@ -27,7 +27,7 @@ import "@/styles/routes/admin/admin.css";
 type AdminTab =
   | "general"
   | "users"
-  | "workspaces"
+  | "groups"
   | "agents"
   | "connections"
   | "knowledge"
@@ -36,7 +36,7 @@ type AdminTab =
 const tabs: Array<[AdminTab, string]> = [
   ["general", "admin.tabs.general"],
   ["users", "admin.tabs.users"],
-  ["workspaces", "admin.tabs.workspaces"],
+  ["groups", "admin.tabs.groups"],
   ["agents", "admin.tabs.agents"],
   ["connections", "admin.tabs.connections"],
   ["knowledge", "admin.tabs.knowledge"],
@@ -45,18 +45,18 @@ const tabs: Array<[AdminTab, string]> = [
 ];
 
 async function loadAdmin(signal: AbortSignal): Promise<AdminData> {
-  const [stats, users, workspaces, agents, connections, knowledge, workflows, config] =
+  const [stats, users, groups, agents, connections, knowledge, workflows, config] =
     await Promise.all([
       api.get<AdminStats>("/api/admin/stats", signal),
       api.get<AdminUser[]>("/api/admin/users", signal),
-      api.get<AdminWorkspace[]>("/api/admin/workspaces", signal),
+      api.get<AdminGroup[]>("/api/admin/groups", signal),
       api.get<AdminAgent[]>("/api/admin/agents", signal),
       api.get<AdminConnection[]>("/api/admin/connections", signal),
       api.get<AdminKnowledge[]>("/api/admin/knowledge", signal),
       api.get<AdminWorkflow[]>("/api/admin/workflows", signal),
       api.get<PlatformConfig>("/api/settings/platform", signal),
     ]);
-  return { stats, users, workspaces, agents, connections, knowledge, workflows, config };
+  return { stats, users, groups, agents, connections, knowledge, workflows, config };
 }
 
 export function AdminPage() {
@@ -141,8 +141,8 @@ export function AdminPage() {
             />
           )}
 
-          {active === "workspaces" && (
-            <AdminWorkspacesPanel workspaces={query.data.workspaces} onReload={reload} />
+          {active === "groups" && (
+            <AdminGroupsPanel groups={query.data.groups} onReload={reload} />
           )}
 
           {active === "agents" && <AdminAgentsPanel agents={query.data.agents} onReload={reload} />}

@@ -8,21 +8,21 @@ import { DeleteActionIcon } from "@/components/resource-icons";
 import "@/styles/routes/admin/admin.css";
 import "@/styles/routes/manager/manager.css";
 
-type WorkspaceRole = "owner" | "admin" | "member";
+type GroupRole = "owner" | "admin" | "member";
 
-interface Workspace {
+interface Group {
   id: string;
   name: string;
   type: "personal" | "team";
-  role: WorkspaceRole;
+  role: GroupRole;
   active?: boolean;
 }
 
-interface WorkspaceMember {
+interface GroupMember {
   username: string;
   email?: string | null;
   display_name?: string | null;
-  role: WorkspaceRole;
+  role: GroupRole;
   joined_at?: string | null;
   permissions?: PermissionMap;
 }
@@ -41,7 +41,7 @@ interface ManagedResource {
   name: string;
 }
 
-interface WorkspaceInvitation {
+interface GroupInvitation {
   id: string;
   username: string;
   invited_by?: string;
@@ -50,10 +50,10 @@ interface WorkspaceInvitation {
 }
 
 interface ManagerData {
-  workspaces: Workspace[];
-  workspace: Workspace;
-  members: WorkspaceMember[];
-  invitations: WorkspaceInvitation[];
+  groups: Group[];
+  group: Group;
+  members: GroupMember[];
+  invitations: GroupInvitation[];
   resources: Record<PermissionKind, ManagedResource[]>;
 }
 
@@ -72,22 +72,22 @@ function shortDate(value?: string | null): string {
 }
 
 async function loadManager(
-  workspaceParam: string | null,
+  groupParam: string | null,
   signal: AbortSignal,
 ): Promise<ManagerData> {
-  const workspaces = await api.get<Workspace[]>("/api/workspaces", signal);
-  const manageable = workspaces.filter(
+  const groups = await api.get<Group[]>("/api/groups", signal);
+  const manageable = groups.filter(
     (item) => item.type === "team" && (item.role === "owner" || item.role === "admin"),
   );
-  const workspace = manageable.find((item) => item.id === workspaceParam) ?? manageable[0];
-  if (!workspace) throw new ApiError(403, i18n.t("manager.manager.no_managed_workspace"));
+  const group = manageable.find((item) => item.id === groupParam) ?? manageable[0];
+  if (!group) throw new ApiError(403, i18n.t("manager.manager.no_managed_group"));
   const [members, invitations, agents, connections, knowledge] = await Promise.all([
-    api.get<WorkspaceMember[]>(
-      `/api/workspaces/${encodeURIComponent(workspace.id)}/members`,
+    api.get<GroupMember[]>(
+      `/api/groups/${encodeURIComponent(group.id)}/members`,
       signal,
     ),
-    api.get<WorkspaceInvitation[]>(
-      `/api/workspaces/${encodeURIComponent(workspace.id)}/invitations`,
+    api.get<GroupInvitation[]>(
+      `/api/groups/${encodeURIComponent(group.id)}/invitations`,
       signal,
     ),
     api.get<Array<{ id: string; name?: string }>>("/api/agents?scope=private", signal),
@@ -95,8 +95,8 @@ async function loadManager(
     api.get<Array<{ id: string; title?: string }>>("/api/knowledge", signal),
   ]);
   return {
-    workspaces: manageable,
-    workspace,
+    groups: manageable,
+    group,
     members,
     invitations,
     resources: {
@@ -116,7 +116,7 @@ function PermissionsDialog({
   onClose,
   onSaved,
 }: {
-  member: WorkspaceMember;
+  member: GroupMember;
   resources: ManagerData["resources"];
   onClose: () => void;
   onSaved: (permissions: PermissionMap) => void;
@@ -238,19 +238,19 @@ function PermissionsDialog({
 export function ManagerPage() {
   const { t } = useTranslation();
   const [params, setParams] = useSearchParams();
-  const selectedId = params.get("team") ?? params.get("workspace");
+  const selectedId = params.get("team") ?? params.get("group");
   const [tab, setTab] = useState<"team" | "invitations">("team");
   const [invite, setInvite] = useState("");
-  const [permissionsMember, setPermissionsMember] = useState<WorkspaceMember | null>(null);
+  const [permissionsMember, setPermissionsMember] = useState<GroupMember | null>(null);
   const query = useQuery({
     queryKey: ["manager", selectedId],
     queryFn: ({ signal }) => loadManager(selectedId, signal),
   });
-  const workspaceId = query.data?.workspace.id;
+  const groupId = query.data?.group.id;
 
   const inviteMutation = useMutation({
     mutationFn: (username: string) =>
-      api.post(`/api/workspaces/${encodeURIComponent(workspaceId ?? "")}/invitations`, {
+      api.post(`/api/groups/${encodeURIComponent(groupId ?? "")}/invitations`, {
         username,
       }),
     onSuccess: async () => {
@@ -259,9 +259,9 @@ export function ManagerPage() {
     },
   });
   const roleMutation = useMutation({
-    mutationFn: ({ username, role }: { username: string; role: WorkspaceRole }) =>
+    mutationFn: ({ username, role }: { username: string; role: GroupRole }) =>
       api.patch(
-        `/api/workspaces/${encodeURIComponent(workspaceId ?? "")}/members/${encodeURIComponent(username)}`,
+        `/api/groups/${encodeURIComponent(groupId ?? "")}/members/${encodeURIComponent(username)}`,
         { role },
       ),
     onSuccess: () => query.refetch(),
@@ -269,21 +269,21 @@ export function ManagerPage() {
   const removeMutation = useMutation({
     mutationFn: (username: string) =>
       api.delete(
-        `/api/workspaces/${encodeURIComponent(workspaceId ?? "")}/members/${encodeURIComponent(username)}`,
+        `/api/groups/${encodeURIComponent(groupId ?? "")}/members/${encodeURIComponent(username)}`,
       ),
     onSuccess: () => query.refetch(),
   });
   const cancelMutation = useMutation({
     mutationFn: (id: string) =>
       api.delete(
-        `/api/workspaces/${encodeURIComponent(workspaceId ?? "")}/invitations/${encodeURIComponent(id)}`,
+        `/api/groups/${encodeURIComponent(groupId ?? "")}/invitations/${encodeURIComponent(id)}`,
       ),
     onSuccess: () => query.refetch(),
   });
   const permissionsMutation = useMutation({
     mutationFn: ({ username, permissions }: { username: string; permissions: PermissionMap }) =>
       api.patch(
-        `/api/workspaces/${encodeURIComponent(workspaceId ?? "")}/members/${encodeURIComponent(username)}`,
+        `/api/groups/${encodeURIComponent(groupId ?? "")}/members/${encodeURIComponent(username)}`,
         { permissions },
       ),
     onSuccess: async () => {
@@ -298,7 +298,7 @@ export function ManagerPage() {
     roleMutation.isPending ||
     removeMutation.isPending ||
     cancelMutation.isPending;
-  const workspaceOptions = useMemo(() => query.data?.workspaces ?? [], [query.data]);
+  const groupOptions = useMemo(() => query.data?.groups ?? [], [query.data]);
 
   return (
     <main className="page-content">
@@ -307,20 +307,20 @@ export function ManagerPage() {
           <h1 className="page-title">{t("manager.manager.page.title")}</h1>
 
           <p className="page-subtitle">
-            {query.data?.workspace.name ?? "Gestiona miembros e invitaciones"}
+            {query.data?.group.name ?? "Gestiona miembros e invitaciones"}
           </p>
         </div>
 
-        {workspaceOptions.length > 1 && (
+        {groupOptions.length > 1 && (
           <select
             className="admin-select"
             aria-label={t("legacy.text_ad095cfffcda")}
-            value={query.data?.workspace.id ?? selectedId ?? ""}
+            value={query.data?.group.id ?? selectedId ?? ""}
             onChange={(event) => setParams({ team: event.target.value })}
           >
-            {workspaceOptions.map((workspace) => (
-              <option key={workspace.id} value={workspace.id}>
-                {workspace.name}
+            {groupOptions.map((group) => (
+              <option key={group.id} value={group.id}>
+                {group.name}
               </option>
             ))}
           </select>
@@ -428,7 +428,7 @@ export function ManagerPage() {
                             onChange={(event) =>
                               roleMutation.mutate({
                                 username: member.username,
-                                role: event.target.value as WorkspaceRole,
+                                role: event.target.value as GroupRole,
                               })
                             }
                           >

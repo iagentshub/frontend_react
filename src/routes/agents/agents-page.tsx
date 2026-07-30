@@ -94,7 +94,7 @@ interface SelectItem {
   title?: string;
   type?: string;
 }
-interface Workspace {
+interface Group {
   id: string;
   name: string;
   type?: string;
@@ -105,7 +105,7 @@ interface AgentData {
   skills: SelectItem[];
   knowledge: SelectItem[];
   memories: SelectItem[];
-  workspaces: Workspace[];
+  groups: Group[];
 }
 
 const colors = ["#4f46e5", "#0891b2", "#059669", "#d97706", "#7c3aed", "#db2777", "#0f766e"];
@@ -203,15 +203,15 @@ function parseSkillFile(path: string, content: string): ScannedSkill {
 
 async function loadAgents(signal: AbortSignal): Promise<AgentData> {
   const safe = <T,>(url: string) => api.get<T[]>(url, signal).catch(() => []);
-  const [agents, connections, skills, knowledge, memories, workspaces] = await Promise.all([
+  const [agents, connections, skills, knowledge, memories, groups] = await Promise.all([
     api.get<Agent[]>("/api/agents", signal),
     api.get<Connection[]>("/api/connections", signal),
     safe<SelectItem>("/api/skills"),
     safe<SelectItem>("/api/knowledge"),
     safe<SelectItem>("/api/memory"),
-    safe<Workspace>("/api/workspaces"),
+    safe<Group>("/api/groups"),
   ]);
-  return { agents, connections, skills, knowledge, memories, workspaces };
+  return { agents, connections, skills, knowledge, memories, groups };
 }
 
 function Icon({ kind }: { kind: "chat" | "view" | "edit" | "delete" | "export" | "share" }) {
@@ -1200,7 +1200,7 @@ function ShareDialog({
   onClose,
 }: {
   agent: Agent;
-  groups: Workspace[];
+  groups: Group[];
   onClose: () => void;
 }) {
   const { t } = useTranslation();
@@ -1887,7 +1887,7 @@ export function AgentsPage() {
                 <span className="kf-item-name">{t("admin.logs.filter_all")}</span>
               </button>
 
-              {query.data?.workspaces
+              {query.data?.groups
                 .filter((group) => group.type === "team")
                 .map((group) => (
                   <button
@@ -2141,7 +2141,7 @@ export function AgentsPage() {
             {shareAgent && query.data && (
               <ShareDialog
                 agent={shareAgent}
-                groups={query.data.workspaces.filter((group) => group.type === "team")}
+                groups={query.data.groups.filter((group) => group.type === "team")}
                 onClose={() => setShareAgent(null)}
               />
             )}

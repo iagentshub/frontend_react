@@ -25,7 +25,7 @@ import type {
   Workflow,
   WorkflowNode,
   WorkflowProgress,
-  WorkflowWorkspace,
+  WorkflowGroup,
 } from "./types";
 import "./workflows.css";
 import "../../../assets/components/group-panel/group-panel.css";
@@ -57,9 +57,9 @@ export function WorkflowsPage() {
     queryKey: ["agents", "workflow-options"],
     queryFn: ({ signal }) => api.get<AgentOption[]>("/api/agents", signal),
   });
-  const workspaces = useQuery({
-    queryKey: ["workspaces"],
-    queryFn: ({ signal }) => api.get<WorkflowWorkspace[]>("/api/workspaces", signal),
+  const groups = useQuery({
+    queryKey: ["groups"],
+    queryFn: ({ signal }) => api.get<WorkflowGroup[]>("/api/groups", signal),
   });
   const [draft, setDraft] = useState<Workflow>(() => emptyWorkflow(defaultName));
   const [savedFingerprint, setSavedFingerprint] = useState(() =>
@@ -257,7 +257,7 @@ export function WorkflowsPage() {
               remove.mutate(workflow.id!);
             }
           }}
-          workspaces={workspaces.data ?? []}
+          groups={groups.data ?? []}
         />
       ) : (
         <div className="workflows-layout">
@@ -533,7 +533,7 @@ export function WorkflowsPage() {
       {shareTarget?.id && (
         <WorkflowShareDialog
           workflow={shareTarget}
-          workspaces={workspaces.data ?? []}
+          groups={groups.data ?? []}
           onClose={() => setShareTarget(undefined)}
           onSaved={async () => {
             setShareTarget(undefined);

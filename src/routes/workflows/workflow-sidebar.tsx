@@ -6,7 +6,7 @@ import { FilterDropdown, FilterOption, toggleValue } from "@/components/filter-d
 import "../../../assets/components/agent-card/agent-card.css";
 import "../../../assets/components/filter_agents/filter_agents.css";
 import "../../../assets/css/labels.css";
-import type { Workflow, WorkflowWorkspace } from "./types";
+import type { Workflow, WorkflowGroup } from "./types";
 
 function WorkflowActionIcon({ kind }: { kind: "view" | "edit" | "share" | "delete" }) {
   if (kind === "view")
@@ -67,7 +67,7 @@ export function WorkflowCatalog({
   onView,
   onShare,
   onDelete,
-  workspaces,
+  groups,
 }: {
   workflows: Workflow[];
   pending: boolean;
@@ -76,7 +76,7 @@ export function WorkflowCatalog({
   onView: (workflow: Workflow) => void;
   onShare: (workflow: Workflow) => void;
   onDelete: (workflow: Workflow) => void;
-  workspaces: WorkflowWorkspace[];
+  groups: WorkflowGroup[];
 }) {
   const { t, i18n } = useTranslation("workflows");
   const [query, setQuery] = useState("");
@@ -84,7 +84,7 @@ export function WorkflowCatalog({
   const [groupsOpen, setGroupsOpen] = useState(true);
   const [labels, setLabels] = useState<string[]>([]);
   const [openFilter, setOpenFilter] = useState<string | null>(null);
-  const teamGroups = workspaces.filter((workspace) => workspace.type === "team");
+  const teamGroups = groups.filter((group) => group.type === "team");
   const filteredWorkflows = useMemo(() => {
     const normalizedQuery = query.trim().toLocaleLowerCase(i18n.resolvedLanguage);
     return workflows.filter(
@@ -128,7 +128,7 @@ export function WorkflowCatalog({
           className={`folder-toggle-btn${groupsOpen ? " folder-toggle-btn--on" : ""}`}
           type="button"
           onClick={() => setGroupsOpen((value) => !value)}
-          title={t(groupsOpen ? "common.workspace.hide_groups" : "common.workspace.groups")}
+          title={t(groupsOpen ? "common.group.hide_groups" : "common.group.groups")}
         >
           <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
             <circle cx="5" cy="5" r="2" stroke="currentColor" strokeWidth="1.4" />
@@ -219,7 +219,7 @@ export function WorkflowCatalog({
 
             <Link
               className="kf-add-btn"
-              to="/profile/?tab=workspaces"
+              to="/profile/?tab=groups"
               title={t("groups.manage")}
               aria-label={t("groups.manage")}
             >

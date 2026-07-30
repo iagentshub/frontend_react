@@ -53,7 +53,7 @@ export interface ConnectionTestResult {
   latency_ms?: number | null;
 }
 
-export interface Workspace {
+export interface Group {
   id: string;
   name: string;
   type: "personal" | "team";

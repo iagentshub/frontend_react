@@ -3,9 +3,9 @@ export interface SessionUser {
   role: "admin" | "user" | "guest";
   email?: string;
   display_name?: string;
-  workspace?: string;
-  workspace_id?: string;
-  workspace_name?: string;
+  group?: string;
+  group_id?: string;
+  group_name?: string;
   [key: string]: unknown;
 }
 

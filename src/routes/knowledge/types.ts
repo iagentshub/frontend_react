@@ -56,7 +56,7 @@ export interface SocialResourcesResponse {
   resources: SocialResource[];
 }
 
-export interface Workspace {
+export interface Group {
   id: string;
   name: string;
   type: "personal" | "team";

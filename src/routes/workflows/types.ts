@@ -43,7 +43,7 @@ export interface Workflow {
   _group_ids?: string[];
 }
 
-export interface WorkflowWorkspace {
+export interface WorkflowGroup {
   id: string;
   name: string;
   type?: string;

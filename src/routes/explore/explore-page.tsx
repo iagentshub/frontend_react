@@ -552,8 +552,8 @@ export function ExplorePage() {
   const [starred, setStarred] = useState<Record<string, boolean>>({});
   const [linked, setLinked] = useState<Record<string, boolean>>({});
   const [busyKey, setBusyKey] = useState("");
-  const workspaceId =
-    typeof session?.workspace_id === "string" ? session.workspace_id : (session?.username ?? "");
+  const groupId =
+    typeof session?.group_id === "string" ? session.group_id : (session?.username ?? "");
 
   const searchMutation = useMutation({
     mutationFn: async ({
@@ -672,14 +672,14 @@ export function ExplorePage() {
   };
 
   const invite = async (username: string) => {
-    if (!workspaceId) {
-      setStatus(t("explore.users.invite_no_ws"));
+    if (!groupId) {
+      setStatus(t("explore.users.invite_no_group"));
       setStatusError(true);
       return;
     }
     setBusyKey(`invite:${username}`);
     try {
-      await api.post(`/api/workspaces/${encodeURIComponent(workspaceId)}/invitations`, {
+      await api.post(`/api/groups/${encodeURIComponent(groupId)}/invitations`, {
         username,
       });
       setStatus(`${t("explore.users.invite_sent")} @${username}`);

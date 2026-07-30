@@ -20,11 +20,11 @@ import type {
   ProfilePlatform,
   ProfileSession,
   ProfileSettings,
-  ProfileWorkspace,
+  ProfileGroup,
   SocialProfile,
 } from "./types";
 import { TokensSection } from "./tokens-section";
-import { WorkspacesSection } from "./workspaces-section";
+import { GroupsSection } from "./groups-section";
 import "@/styles/routes/profile/profile.css";
 import "@/styles/routes/admin/admin.css";
 import "@/styles/routes/manager/manager.css";
@@ -35,7 +35,7 @@ type SectionId =
   | "providers"
   | "preferences"
   | "style"
-  | "workspaces"
+  | "groups"
   | "tokens"
   | "privacy"
   | "billing";
@@ -45,7 +45,7 @@ const sectionIds: SectionId[] = [
   "providers",
   "preferences",
   "style",
-  "workspaces",
+  "groups",
   "tokens",
   "privacy",
   "billing",
@@ -55,15 +55,15 @@ async function loadProfile(signal: AbortSignal): Promise<ProfileData> {
   const session = await api.get<ProfileSession>("/api/auth/me", signal);
   const safe = async <T,>(url: string, fallback: T): Promise<T> =>
     api.get<T>(url, signal).catch(() => fallback);
-  const [social, settings, platform, workspaces, invitations, connections, deletion] =
+  const [social, settings, platform, groups, invitations, connections, deletion] =
     await Promise.all([
       safe<SocialProfile>(`/api/users/${encodeURIComponent(session.username)}`, {
         username: session.username,
       }),
       safe<ProfileSettings>("/api/settings", {}),
       safe<ProfilePlatform>("/api/settings/platform/public", {}),
-      safe<ProfileWorkspace[]>("/api/workspaces", []),
-      safe<ProfileInvitation[]>("/api/workspaces/my-invitations", []),
+      safe<ProfileGroup[]>("/api/groups", []),
+      safe<ProfileInvitation[]>("/api/groups/my-invitations", []),
       safe<ProfileConnection[]>("/api/connections/raw", []),
       safe<DeletionStatus>("/api/auth/me/deletion-status", { scheduled: false }),
     ]);
@@ -75,7 +75,7 @@ async function loadProfile(signal: AbortSignal): Promise<ProfileData> {
     social,
     settings,
     platform,
-    workspaces,
+    groups,
     invitations,
     connections,
     deletion,
@@ -105,7 +105,7 @@ function NavIcon({ section }: { section: SectionId }) {
         <path d="M6 7.5l4-2.5M6 8.5l4 2.5" stroke="currentColor" strokeWidth="1.3" />
       </svg>
     );
-  if (section === "workspaces")
+  if (section === "groups")
     return (
       <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
         <rect x="2" y="4" width="12" height="9" rx="2" stroke="currentColor" strokeWidth="1.4" />
@@ -168,7 +168,7 @@ export function ProfilePage() {
   const active: SectionId = sectionIds.includes(rawTab as SectionId)
     ? (rawTab as SectionId)
     : rawTab === "teams"
-      ? "workspaces"
+      ? "groups"
       : "account";
   const nav = useMemo(
     () =>
@@ -178,7 +178,7 @@ export function ProfilePage() {
         ["providers", t("profile.nav.providers")],
         ["preferences", t("profile.nav.preferences")],
         ["style", t("profile.nav.style")],
-        ["workspaces", t("profile.nav.workspaces")],
+        ["groups", t("profile.nav.groups")],
         ["tokens", t("profile.nav.tokens")],
         ["privacy", t("profile.nav.privacy")],
         ...(query.data?.platform.billing_enabled ? [["billing", t("profile.nav.billing")]] : []),
@@ -282,10 +282,10 @@ export function ProfilePage() {
 
             {active === "style" && <StyleSection />}
 
-            {active === "workspaces" && (
-              <WorkspacesSection
+            {active === "groups" && (
+              <GroupsSection
                 session={session}
-                workspaces={query.data.workspaces}
+                groups={query.data.groups}
                 invitations={query.data.invitations}
                 onReload={() => void query.refetch()}
               />

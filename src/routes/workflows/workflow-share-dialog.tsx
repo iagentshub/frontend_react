@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { api } from "@/api/client";
-import type { Workflow, WorkflowWorkspace } from "./types";
+import type { Workflow, WorkflowGroup } from "./types";
 
 interface ResourceGroupsResponse {
   group_ids: string[];
@@ -10,18 +10,18 @@ interface ResourceGroupsResponse {
 
 export function WorkflowShareDialog({
   workflow,
-  workspaces,
+  groups,
   onClose,
   onSaved,
 }: {
   workflow: Workflow;
-  workspaces: WorkflowWorkspace[];
+  groups: WorkflowGroup[];
   onClose: () => void;
   onSaved: () => void | Promise<void>;
 }) {
   const { t } = useTranslation("workflows");
   const [changes, setChanges] = useState<Record<string, boolean>>({});
-  const groups = workspaces.filter((workspace) => workspace.type === "team");
+  const teamGroups = groups.filter((group) => group.type === "team");
   const current = useQuery({
     queryKey: ["workflow-sharing", workflow.id],
     queryFn: ({ signal }) =>
@@ -34,12 +34,12 @@ export function WorkflowShareDialog({
     mutationFn: async () => {
       const before = new Set(current.data?.group_ids ?? []);
       const after = new Set(
-        groups
+        teamGroups
           .filter((group) => changes[group.id] ?? before.has(group.id))
           .map((group) => group.id),
       );
       await Promise.all(
-        groups.flatMap((group) => {
+        teamGroups.flatMap((group) => {
           if (after.has(group.id) && !before.has(group.id)) {
             return [
               api.post(`/api/sharing/workflow/${encodeURIComponent(workflow.id!)}`, {
@@ -87,9 +87,9 @@ export function WorkflowShareDialog({
 
           {current.isPending ? (
             <div className="workflow-share-empty">{t("share.loading")}</div>
-          ) : groups.length ? (
+          ) : teamGroups.length ? (
             <div className="workflow-share-list">
-              {groups.map((group) => {
+              {teamGroups.map((group) => {
                 const checked =
                   changes[group.id] ?? current.data?.group_ids.includes(group.id) ?? false;
                 return (

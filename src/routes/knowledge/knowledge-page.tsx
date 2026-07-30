@@ -18,7 +18,7 @@ import type {
   SkillDraft,
   SocialResourcesResponse,
   ViewMode,
-  Workspace,
+  Group,
 } from "./types";
 import "../../../assets/css/labels.css";
 import "../../../assets/components/filter_agents/filter_agents.css";
@@ -925,20 +925,20 @@ function ShareDialog({
   resourceType,
   resourceId,
   resourceName,
-  workspaces,
+  groups,
   onClose,
   onSaved,
 }: {
   resourceType: "skill" | "knowledge";
   resourceId: string;
   resourceName: string;
-  workspaces: Workspace[];
+  groups: Group[];
   onClose: () => void;
   onSaved: (message: string) => void;
 }) {
   const { t } = useTranslation();
   const [changes, setChanges] = useState<Record<string, boolean>>({});
-  const groups = useQuery({
+  const sharedGroups = useQuery({
     queryKey: ["knowledge", "sharing", resourceType, resourceId],
     queryFn: ({ signal }) =>
       api.get<ResourceGroupsResponse>(
@@ -948,26 +948,26 @@ function ShareDialog({
   });
   const save = useMutation({
     mutationFn: async () => {
-      const before = new Set(groups.data?.group_ids ?? []),
+      const before = new Set(sharedGroups.data?.group_ids ?? []),
         after = new Set(
-          workspaces
-            .filter((workspace) => changes[workspace.id] ?? before.has(workspace.id))
-            .map((workspace) => workspace.id),
+          groups
+            .filter((group) => changes[group.id] ?? before.has(group.id))
+            .map((group) => group.id),
         );
       await Promise.all(
-        workspaces
-          .filter((workspace) => workspace.type === "team")
-          .flatMap((workspace) => {
-            if (after.has(workspace.id) && !before.has(workspace.id))
+        groups
+          .filter((group) => group.type === "team")
+          .flatMap((group) => {
+            if (after.has(group.id) && !before.has(group.id))
               return [
                 api.post(`/api/sharing/${resourceType}/${encodeURIComponent(resourceId)}`, {
-                  group_id: workspace.id,
+                  group_id: group.id,
                 }),
               ];
-            if (!after.has(workspace.id) && before.has(workspace.id))
+            if (!after.has(group.id) && before.has(group.id))
               return [
                 api.delete(
-                  `/api/sharing/${resourceType}/${encodeURIComponent(resourceId)}?group_id=${encodeURIComponent(workspace.id)}`,
+                  `/api/sharing/${resourceType}/${encodeURIComponent(resourceId)}?group_id=${encodeURIComponent(group.id)}`,
                 ),
               ];
             return [];
@@ -976,33 +976,35 @@ function ShareDialog({
     },
     onSuccess: () => onSaved(`“${resourceName}” compartido correctamente`),
   });
-  const teamGroups = workspaces.filter((workspace) => workspace.type === "team");
+  const teamGroups = groups.filter((group) => group.type === "team");
   return (
     <Modal title={`Compartir “${resourceName}”`} width={480} onClose={onClose}>
       <div className="modal-body">
         <p className="input-hint">{t("legacy.text_bd44333d66b3")}</p>
 
-        {groups.isPending ? (
+        {sharedGroups.isPending ? (
           <div className="empty-state">{t("workflows.share.loading")}</div>
         ) : teamGroups.length ? (
           <div className="knowledge-share-list">
-            {teamGroups.map((workspace) => {
+            {teamGroups.map((group) => {
               const checked =
-                changes[workspace.id] ?? groups.data?.group_ids.includes(workspace.id) ?? false;
+                changes[group.id] ??
+                sharedGroups.data?.group_ids.includes(group.id) ??
+                false;
               return (
-                <label className="knowledge-share-row" key={workspace.id}>
+                <label className="knowledge-share-row" key={group.id}>
                   <input
                     type="checkbox"
                     checked={checked}
                     onChange={(event) =>
                       setChanges((current) => ({
                         ...current,
-                        [workspace.id]: event.target.checked,
+                        [group.id]: event.target.checked,
                       }))
                     }
                   />
 
-                  <span>{workspace.name}</span>
+                  <span>{group.name}</span>
                 </label>
               );
             })}
@@ -1021,7 +1023,7 @@ function ShareDialog({
 
         <button
           className="btn btn-primary"
-          disabled={save.isPending || groups.isPending}
+          disabled={save.isPending || sharedGroups.isPending}
           onClick={() => save.mutate()}
         >
           {save.isPending ? t("common.actions.saving") : t("common.actions.save")}
@@ -1137,13 +1139,13 @@ export function KnowledgePage() {
     queryKey: ["knowledge", "overview", groupId],
     queryFn: ({ signal }) => loadKnowledge(groupId, signal),
   });
-  const workspaceQuery = useQuery({
-    queryKey: ["workspaces"],
-    queryFn: ({ signal }) => api.get<Workspace[]>("/api/workspaces", signal),
+  const groupQuery = useQuery({
+    queryKey: ["groups"],
+    queryFn: ({ signal }) => api.get<Group[]>("/api/groups", signal),
     retry: false,
   });
   const data = queryResult.data;
-  const teams = (workspaceQuery.data ?? []).filter((workspace) => workspace.type === "team");
+  const teams = (groupQuery.data ?? []).filter((group) => group.type === "team");
 
   const done = (message: string) => {
     setStatus(message);
@@ -1471,7 +1473,7 @@ export function KnowledgePage() {
         <button
           className={`folder-toggle-btn kg-toggle-btn${groupsOpen ? " folder-toggle-btn--on" : ""}`}
           onClick={() => setGroupsOpen((value) => !value)}
-          title={t(groupsOpen ? "common.workspace.hide_groups" : "common.workspace.groups")}
+          title={t(groupsOpen ? "common.group.hide_groups" : "common.group.groups")}
         >
           <Icon kind="groups" />
         </button>
@@ -1699,7 +1701,7 @@ export function KnowledgePage() {
           resourceType={share.type}
           resourceId={share.id}
           resourceName={share.name}
-          workspaces={workspaceQuery.data ?? []}
+          groups={groupQuery.data ?? []}
           onClose={() => setShare(null)}
           onSaved={done}
         />

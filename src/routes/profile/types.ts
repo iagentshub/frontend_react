@@ -2,8 +2,8 @@ export interface ProfileSession {
   username: string;
   role: "admin" | "gestor" | "standard" | "user" | "guest";
   auth_method?: string;
-  workspace_id?: string;
-  workspace_name?: string;
+  group_id?: string;
+  group_name?: string;
 }
 
 export interface SocialProfile {
@@ -25,7 +25,7 @@ export interface ProfilePlatform {
   billing_enabled?: boolean;
 }
 
-export interface ProfileWorkspace {
+export interface ProfileGroup {
   id: string;
   name: string;
   type: "personal" | "team";
@@ -37,8 +37,8 @@ export interface ProfileWorkspace {
 
 export interface ProfileInvitation {
   id: string;
-  workspace_id: string;
-  workspace_name?: string;
+  group_id: string;
+  group_name?: string;
   username: string;
   invited_by: string;
   created_at?: string;
@@ -86,7 +86,7 @@ export interface ProfileData {
   social: SocialProfile;
   settings: ProfileSettings;
   platform: ProfilePlatform;
-  workspaces: ProfileWorkspace[];
+  groups: ProfileGroup[];
   invitations: ProfileInvitation[];
   connections: ProfileConnection[];
   deletion: DeletionStatus;

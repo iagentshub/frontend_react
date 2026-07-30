@@ -15,7 +15,7 @@ import type {
   AdminKnowledge,
   AdminUser,
   AdminWorkflow,
-  AdminWorkspace,
+  AdminGroup,
 } from "./types";
 
 function errorText(error: unknown) {
@@ -412,30 +412,30 @@ function UserEditor({
   );
 }
 
-export function AdminWorkspacesPanel({
-  workspaces,
+export function AdminGroupsPanel({
+  groups,
   onReload,
 }: {
-  workspaces: AdminWorkspace[];
+  groups: AdminGroup[];
   onReload: () => void;
 }) {
   const { t } = useTranslation();
   const [search, setSearch] = useState("");
   const action = useMutation({
-    mutationFn: ({ workspace, kind }: { workspace: AdminWorkspace; kind: "status" | "delete" }) =>
+    mutationFn: ({ group, kind }: { group: AdminGroup; kind: "status" | "delete" }) =>
       kind === "delete"
-        ? api.delete(`/api/admin/workspaces/${encodeURIComponent(workspace.id)}`)
-        : api.post(`/api/admin/workspaces/${encodeURIComponent(workspace.id)}/status`, {
-            status: workspace.status === "disabled" ? "active" : "disabled",
+        ? api.delete(`/api/admin/groups/${encodeURIComponent(group.id)}`)
+        : api.post(`/api/admin/groups/${encodeURIComponent(group.id)}/status`, {
+            status: group.status === "disabled" ? "active" : "disabled",
           }),
     onSuccess: onReload,
   });
   const filtered = useMemo(() => {
     const q = search.toLowerCase();
-    return workspaces.filter(
-      (workspace) => !q || `${workspace.name} ${workspace.created_by}`.toLowerCase().includes(q),
+    return groups.filter(
+      (group) => !q || `${group.name} ${group.created_by}`.toLowerCase().includes(q),
     );
-  }, [search, workspaces]);
+  }, [search, groups]);
   return (
     <>
       <div className="admin-toolbar">
@@ -464,43 +464,43 @@ export function AdminWorkspacesPanel({
             </tr>
           </thead>
           <tbody>
-            {filtered.map((workspace) => (
-              <tr key={workspace.id}>
+            {filtered.map((group) => (
+              <tr key={group.id}>
                 <td>
-                  <span className="conn-name">{workspace.name}</span>
+                  <span className="conn-name">{group.name}</span>
                 </td>
-                <td className="td-owner">{workspace.created_by}</td>
-                <td>{workspace.member_count ?? 0}</td>
-                <td>{workspace.agents_count ?? 0}</td>
-                <td>{workspace.connections_count ?? 0}</td>
-                <td>{workspace.knowledge_count ?? 0}</td>
+                <td className="td-owner">{group.created_by}</td>
+                <td>{group.member_count ?? 0}</td>
+                <td>{group.agents_count ?? 0}</td>
+                <td>{group.connections_count ?? 0}</td>
+                <td>{group.knowledge_count ?? 0}</td>
                 <td className="td-tokens">
-                  {fmt((workspace.tokens_in ?? 0) + (workspace.tokens_out ?? 0))}
+                  {fmt((group.tokens_in ?? 0) + (group.tokens_out ?? 0))}
                 </td>
                 <td>
                   <span
-                    className={`badge ${workspace.status === "disabled" ? "badge--danger" : "badge--ok"}`}
+                    className={`badge ${group.status === "disabled" ? "badge--danger" : "badge--ok"}`}
                   >
-                    {workspace.status === "disabled" ? t("admin.status.disabled") : t("admin.status.active")}
+                    {group.status === "disabled" ? t("admin.status.disabled") : t("admin.status.active")}
                   </span>
                 </td>
                 <td className="td-actions">
                   <button
                     className="btn-icon"
                     title={
-                      workspace.status === "disabled"
+                      group.status === "disabled"
                         ? t("admin.actions.activate")
                         : t("admin.actions.deactivate")
                     }
                     aria-label={
-                      workspace.status === "disabled"
+                      group.status === "disabled"
                         ? t("admin.actions.activate")
                         : t("admin.actions.deactivate")
                     }
                     disabled={action.isPending}
-                    onClick={() => action.mutate({ workspace, kind: "status" })}
+                    onClick={() => action.mutate({ group, kind: "status" })}
                   >
-                    {workspace.status === "disabled" ? <UnblockActionIcon /> : <BlockActionIcon />}
+                    {group.status === "disabled" ? <UnblockActionIcon /> : <BlockActionIcon />}
                   </button>
                   <button
                     className="btn-icon btn-icon--danger"
@@ -510,12 +510,12 @@ export function AdminWorkspacesPanel({
                     onClick={() => {
                       if (
                         confirm(
-                          i18n.t("dynamic.workspace_delete_confirm", {
-                            name: workspace.name,
+                          i18n.t("dynamic.group_delete_confirm", {
+                            name: group.name,
                           }),
                         )
                       )
-                        action.mutate({ workspace, kind: "delete" });
+                        action.mutate({ group, kind: "delete" });
                     }}
                   >
                     <DeleteActionIcon />

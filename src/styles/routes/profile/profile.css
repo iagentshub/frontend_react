@@ -688,8 +688,8 @@
     line-height: 1.4;
 }
 
-/* ── Workspace cards ─────────────────────────────── */
-.profile-ws-card {
+/* ── Group cards ─────────────────────────────── */
+.profile-group-card {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -700,25 +700,25 @@
     margin-bottom: 8px;
 }
 
-.profile-ws-info {
+.profile-group-info {
     display: flex;
     flex-direction: column;
     gap: 2px;
 }
 
-.profile-ws-name {
+.profile-group-name {
     font-size: 0.875rem;
     font-weight: 600;
     color: var(--ink);
 }
 
-.profile-ws-role {
+.profile-group-role {
     font-size: 0.72rem;
     color: var(--ink-3);
 }
 
 /* ── Pending invitation rows (inside modal) ─────── */
-.ws-inv-row {
+.group-inv-row {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -727,17 +727,17 @@
     font-size: 0.85rem;
 }
 
-.ws-inv-row:last-child {
+.group-inv-row:last-child {
     border-bottom: none;
 }
 
-.ws-inv-username {
+.group-inv-username {
     color: var(--ink);
     font-weight: 500;
 }
 
 /* ── Received invitation cards ───────────────────── */
-.ws-inv-received-card {
+.group-inv-received-card {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -749,25 +749,25 @@
     gap: 12px;
 }
 
-.ws-inv-info {
+.group-inv-info {
     display: flex;
     flex-direction: column;
     gap: 3px;
     min-width: 0;
 }
 
-.ws-inv-ws-name {
+.group-inv-group-name {
     font-size: 0.875rem;
     font-weight: 600;
     color: var(--ink);
 }
 
-.ws-inv-from {
+.group-inv-from {
     font-size: 0.78rem;
     color: var(--ink-3);
 }
 
-.ws-inv-actions {
+.group-inv-actions {
     display: flex;
     gap: 6px;
     flex-shrink: 0;

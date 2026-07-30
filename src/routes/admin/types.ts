@@ -26,7 +26,7 @@ export interface AdminUser {
   tokens_out?: number;
 }
 
-export interface AdminWorkspace {
+export interface AdminGroup {
   id: string;
   name: string;
   created_by: string;
@@ -119,7 +119,7 @@ export interface CheckUpdateResult {
 export interface AdminData {
   stats: AdminStats;
   users: AdminUser[];
-  workspaces: AdminWorkspace[];
+  groups: AdminGroup[];
   agents: AdminAgent[];
   connections: AdminConnection[];
   knowledge: AdminKnowledge[];

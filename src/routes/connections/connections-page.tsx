@@ -14,7 +14,7 @@ import type {
   ConnectionTestResult,
   DynamicFieldValue,
   ProviderField,
-  Workspace,
+  Group,
 } from "./types";
 import "../../../assets/components/filter_connections/filter_connections.css";
 import "../../../assets/components/conn-card/conn-card.css";
@@ -346,13 +346,13 @@ function DynamicField({
 function ConnectionEditor({
   connection,
   providers,
-  workspacePersonal,
+  groupPersonal,
   onClose,
   onSaved,
 }: {
   connection: Connection | null;
   providers: ConnectionProvider[];
-  workspacePersonal: boolean;
+  groupPersonal: boolean;
   onClose: () => void;
   onSaved: (text: string) => void;
 }) {
@@ -360,7 +360,7 @@ function ConnectionEditor({
   const initialProvider = providers.find((item) => item.type === connection?.type) ?? providers[0];
   const [type, setType] = useState(initialProvider?.type ?? "");
   const [name, setName] = useState(connection?.name ?? "");
-  const [scope, setScope] = useState(connection?._personal_key ? "personal" : "workspace");
+  const [scope, setScope] = useState(connection?._personal_key ? "personal" : "group");
   const [labels, setLabels] = useState<string[]>(
     connection?.labels?.filter((label) => label !== "public") ?? ["private"],
   );
@@ -482,7 +482,7 @@ function ConnectionEditor({
             </select>
           </div>
 
-          {!workspacePersonal && (
+          {!groupPersonal && (
             <div className="field">
               <label htmlFor="conn-scope-react">{t("connections:modal.field_scope")}</label>
 
@@ -492,7 +492,7 @@ function ConnectionEditor({
                 value={scope}
                 onChange={(event) => setScope(event.target.value)}
               >
-                <option value="workspace">{t("connections:modal.scope_workspace")}</option>
+                <option value="group">{t("connections:modal.scope_group")}</option>
 
                 <option value="personal">{t("connections:modal.scope_personal")}</option>
               </select>
@@ -500,7 +500,7 @@ function ConnectionEditor({
               <span className="input-hint">
                 {scope === "personal"
                   ? t("connections:modal.scope_hint_personal")
-                  : t("connections:modal.scope_hint_workspace")}
+                  : t("connections:modal.scope_hint_group")}
               </span>
             </div>
           )}
@@ -566,17 +566,17 @@ function ConnectionEditor({
 
 function ShareDialog({
   connection,
-  workspaces,
+  groups,
   onClose,
   onSaved,
 }: {
   connection: Connection;
-  workspaces: Workspace[];
+  groups: Group[];
   onClose: () => void;
   onSaved: (text: string) => void;
 }) {
   const { t } = useTranslation();
-  const groups = workspaces.filter((workspace) => workspace.type === "team");
+  const teamGroups = groups.filter((group) => group.type === "team");
   const shared = useQuery({
     queryKey: ["connections", connection.id, "shared-groups"],
     queryFn: ({ signal }) =>
@@ -639,8 +639,8 @@ function ShareDialog({
         )}
 
         <div className="gsd-groups">
-          {groups.length ? (
-            groups.map((group) => (
+          {teamGroups.length ? (
+            teamGroups.map((group) => (
               <label className="gsd-group-row" key={group.id}>
                 <input
                   className="gsd-checkbox"
@@ -687,12 +687,12 @@ function CreateGroupDialog({
   onSaved,
 }: {
   onClose: () => void;
-  onSaved: (workspace: Workspace) => void;
+  onSaved: (group: Group) => void;
 }) {
   const { t } = useTranslation();
   const [name, setName] = useState("");
   const mutation = useMutation({
-    mutationFn: () => api.post<Workspace>("/api/workspaces", { name: name.trim() }),
+    mutationFn: () => api.post<Group>("/api/groups", { name: name.trim() }),
     onSuccess: onSaved,
   });
   return (
@@ -975,9 +975,9 @@ export function ConnectionsPage() {
       ),
   });
   const session = useQuery(sessionQuery);
-  const workspaces = useQuery({
-    queryKey: ["workspaces"],
-    queryFn: ({ signal }) => api.get<Workspace[]>("/api/workspaces", signal).catch(() => []),
+  const groups = useQuery({
+    queryKey: ["groups"],
+    queryFn: ({ signal }) => api.get<Group[]>("/api/groups", signal).catch(() => []),
     staleTime: 60_000,
   });
   const providers = useMemo(() => providersQuery.data ?? [], [providersQuery.data]);
@@ -1324,7 +1324,7 @@ export function ConnectionsPage() {
           <button
             className={`folder-toggle-btn${groupsVisible ? " folder-toggle-btn--on" : ""}`}
             type="button"
-            title={t(groupsVisible ? "common.workspace.hide_groups" : "common.workspace.groups")}
+            title={t(groupsVisible ? "common.group.hide_groups" : "common.group.groups")}
             onClick={() => setGroupsVisible((visible) => !visible)}
           >
             <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
@@ -1376,35 +1376,35 @@ export function ConnectionsPage() {
               <span className="kf-item-name">{t("admin.logs.filter_all")}</span>
             </button>
 
-            {(workspaces.data ?? [])
-              .filter((workspace) => workspace.type === "team")
-              .map((workspace) => (
+            {(groups.data ?? [])
+              .filter((group) => group.type === "team")
+              .map((group) => (
                 <button
-                  className={`kf-item gp-item${groupId === workspace.id ? " kf-item--active" : ""}${dropGroupId === workspace.id ? " conn-group-drop-active" : ""}`}
+                  className={`kf-item gp-item${groupId === group.id ? " kf-item--active" : ""}${dropGroupId === group.id ? " conn-group-drop-active" : ""}`}
                   type="button"
-                  key={workspace.id}
-                  title={i18n.t("dynamic.connection_share_drag", { name: workspace.name })}
+                  key={group.id}
+                  title={i18n.t("dynamic.connection_share_drag", { name: group.name })}
                   onClick={() => {
-                    setGroupId(workspace.id);
+                    setGroupId(group.id);
                     setSelectedTypes([]);
                   }}
                   onDragOver={(event) => {
                     if (draggedId) {
                       event.preventDefault();
-                      setDropGroupId(workspace.id);
+                      setDropGroupId(group.id);
                     }
                   }}
                   onDragLeave={() => setDropGroupId(null)}
                   onDrop={(event) => {
                     event.preventDefault();
-                    void shareByDrop(workspace.id);
+                    void shareByDrop(group.id);
                   }}
                 >
-                  <span className="kf-item-name">{workspace.name}</span>
+                  <span className="kf-item-name">{group.name}</span>
                 </button>
               ))}
 
-            {!(workspaces.data ?? []).some((workspace) => workspace.type === "team") && (
+            {!(groups.data ?? []).some((group) => group.type === "team") && (
               <p className="gp-empty">{t("legacy.text_ecc7c091db60")}</p>
             )}
           </div>
@@ -1481,7 +1481,7 @@ export function ConnectionsPage() {
               categoryOf(provider) ===
               (editor ? categoryOf(providerByType.get(editor.type)) : category),
           )}
-          workspacePersonal={session.data?.workspace_personal !== false}
+          groupPersonal={session.data?.group_personal !== false}
           onClose={() => setEditor(undefined)}
           onSaved={(text) => void saved(text)}
         />
@@ -1489,7 +1489,7 @@ export function ConnectionsPage() {
       {shareTarget && (
         <ShareDialog
           connection={shareTarget}
-          workspaces={workspaces.data ?? []}
+          groups={groups.data ?? []}
           onClose={() => setShareTarget(null)}
           onSaved={(text) => void saved(text)}
         />
@@ -1497,11 +1497,11 @@ export function ConnectionsPage() {
       {createGroup && (
         <CreateGroupDialog
           onClose={() => setCreateGroup(false)}
-          onSaved={(workspace) => {
+          onSaved={(group) => {
             setCreateGroup(false);
-            queryClient.setQueryData<Workspace[]>(["workspaces"], (current = []) => [
+            queryClient.setQueryData<Group[]>(["groups"], (current = []) => [
               ...current,
-              workspace,
+              group,
             ]);
             setGroupsVisible(true);
             setNotice({ kind: "ok", text: "Grupo creado" });

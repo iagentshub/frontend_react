@@ -130,7 +130,7 @@ export function TokensSection() {
 
       {justCreated && (
         <div
-          className="profile-ws-card"
+          className="profile-group-card"
           style={{ flexDirection: "column", alignItems: "stretch", gap: 10 }}
         >
           <div className="section-subtitle" style={{ margin: 0 }}>
