@@ -4,7 +4,7 @@ import { Link, Navigate } from "react-router-dom";
 import { appPath } from "@/app/app-paths";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { api, ApiError } from "@/api/client";
-import { queryKeys } from "@/api/query-client";
+import { platformQuery } from "@/api/public-queries";
 import { Seo } from "@/components/seo";
 import { usePublicNavigation } from "@/i18n/public-paths";
 import { useBodyClass } from "./use-body-class";
@@ -180,11 +180,7 @@ export function PricingPage() {
   useBodyClass("pricing-page");
   const { publicLink, language, switchLanguage } = usePublicNavigation(i18n, "/pricing/");
   // ── Guard: si la facturación está desactivada, no se muestra la página ──
-  const settings = useQuery({
-    queryKey: queryKeys.platform,
-    queryFn: ({ signal }) =>
-      api.get<{ billing_enabled?: boolean }>("/api/settings/platform/public", signal, false),
-  });
+  const settings = useQuery(platformQuery);
 
   // ── Toggle mensual/anual de la página ─────────────────────────────────
   const [annual, setAnnual] = useState(false);

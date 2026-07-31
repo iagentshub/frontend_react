@@ -7,6 +7,11 @@
     "headline": "All your AI in one place",
     "sub": "Build and share AI agents connected to your own providers — Claude, OpenAI, Gemini, Grok, Ollama and more — each with its own knowledge, memory and tools. Self-host it on your own server and keep full control of your data."
   },
+  "stats": {
+    "providers": "Providers",
+    "agents": "Agents",
+    "private": "Private"
+  },
   "overview": {
     "eyebrow": "A complete AI agent platform",
     "title": "Build, orchestrate and share agents without giving up control of your data",

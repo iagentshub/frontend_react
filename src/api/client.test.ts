@@ -56,7 +56,7 @@ describe("api client", () => {
 
     const formData = new FormData();
     formData.set("file", new Blob(["test"]), "test.txt");
-    await api.upload("/api/upload", formData);
+    await api.post("/api/upload", formData);
     const uploadInit = fetchMock.mock.calls[1]?.[1];
     expect(new Headers(uploadInit?.headers).has("Content-Type")).toBe(false);
   });

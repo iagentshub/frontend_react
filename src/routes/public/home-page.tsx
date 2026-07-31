@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { appPath } from "@/app/app-paths";
-import { platformQuery } from "@/auth/queries";
+import { platformQuery } from "@/api/public-queries";
 import { Seo } from "@/components/seo";
 import { usePublicNavigation } from "@/i18n/public-paths";
 import "@/styles/routes/landing.css";
@@ -71,8 +71,8 @@ export function HomePage() {
       <div className="landing-page" style={{ display: "block" }}>
         <header className="landing-header">
           <Link className="landing-logo" to={publicLink("/")}>
-            {t("legacy.text_1fda9fc57a04")}
-            <span>{t("legacy.text_a38df5fc50fb")}</span>
+            {t("common.brand.prefix")}
+            <span>{t("common.brand.suffix")}</span>
           </Link>
 
           <div className="landing-header-spacer" />
@@ -94,21 +94,21 @@ export function HomePage() {
               <span className="landing-hero-stat-num">
                 6<span className="landing-hero-stat-accent">+</span>
               </span>
-              <span className="landing-hero-stat-label">{t("auth.stat_providers")}</span>
+              <span className="landing-hero-stat-label">{t("landing.stats.providers")}</span>
             </div>
 
             <div className="landing-hero-stat">
               <span className="landing-hero-stat-num">
                 <span className="landing-hero-stat-accent">∞</span>
               </span>
-              <span className="landing-hero-stat-label">{t("auth.stat_agents")}</span>
+              <span className="landing-hero-stat-label">{t("landing.stats.agents")}</span>
             </div>
 
             <div className="landing-hero-stat">
               <span className="landing-hero-stat-num">
                 100<span className="landing-hero-stat-accent">%</span>
               </span>
-              <span className="landing-hero-stat-label">{t("auth.stat_private")}</span>
+              <span className="landing-hero-stat-label">{t("landing.stats.private")}</span>
             </div>
           </div>
         </section>
@@ -186,18 +186,18 @@ export function HomePage() {
         </section>
 
         <footer className="landing-footer">
-          <Link to={publicLink("/about")}>{t("auth.about_link")}</Link>
+          <Link to={publicLink("/about")}>{t("common.navigation.about")}</Link>
 
-          <Link to={publicLink("/docs")}>{t("auth.docs_link")}</Link>
+          <Link to={publicLink("/docs")}>{t("common.navigation.docs")}</Link>
 
           {platform.data?.billing_enabled && (
-            <Link to={publicLink("/pricing/")}>{t("auth.pricing_link")}</Link>
+            <Link to={publicLink("/pricing/")}>{t("common.navigation.pricing")}</Link>
           )}
 
-          <Link to={publicLink("/support")}>{t("nav.support")}</Link>
+          <Link to={publicLink("/support")}>{t("common.navigation.support")}</Link>
 
           <a href="https://github.com/iagentshub/iAgents" target="_blank" rel="noopener noreferrer">
-            {t("errors.fields.github")}
+            {t("common.github")}
           </a>
 
           <button className="landing-lang-btn" type="button" onClick={() => void switchLanguage()}>

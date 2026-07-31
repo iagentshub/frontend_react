@@ -7,6 +7,11 @@
     "headline": "Toda tu IA en un solo lugar",
     "sub": "Crea y comparte agentes de IA conectados a tus propios proveedores —Claude, OpenAI, Gemini, Grok, Ollama y más—, cada uno con su propio conocimiento, memoria y herramientas. Despliega en tu propio servidor y mantén el control total de tus datos."
   },
+  "stats": {
+    "providers": "Proveedores",
+    "agents": "Agentes",
+    "private": "Privado"
+  },
   "overview": {
     "eyebrow": "Plataforma completa de agentes de IA",
     "title": "Crea, orquesta y comparte agentes sin ceder el control de tus datos",

@@ -7,7 +7,7 @@ export function RouteLoading() {
   return (
     <main className="page-content route-loading" aria-live="polite">
       <span className="spinner" />
-      {t("admin.logs.loading")}
+      {t("common.status.loading")}
     </main>
   );
 }
@@ -22,12 +22,12 @@ export function RouteErrorBoundary() {
       : t("common.ui.unexpected_error");
   return (
     <main className="route-error" role="alert">
-      <h1>{t("legacy.text_55572737278f")}</h1>
+      <h1>{t("common.status.load_error")}</h1>
 
       <p>{message}</p>
 
       <button className="btn btn-primary" onClick={() => location.reload()}>
-        {t("legacy.text_adec7b4f2351")}
+        {t("common.status.retry")}
       </button>
     </main>
   );
@@ -48,28 +48,10 @@ export function NotFoundPage() {
       />
 
       <h1>404</h1>
-      <p>{t("legacy.text_d7a4db81af0a")}</p>
-      <Link className="btn btn-primary" to="/dashboard/">
-        {t("legacy.text_3d79019a380f")}
+      <p>{t("common.status.not_found")}</p>
+      <Link className="btn btn-primary" to="/">
+        {t("common.status.back_home")}
       </Link>
-    </main>
-  );
-}
-
-export function MigrationPage({ title, subtitle }: { title: string; subtitle?: string }) {
-  const { t } = useTranslation();
-  return (
-    <main className="page-content">
-      <div className="page-header">
-        <div>
-          <h1 className="page-title">{title}</h1>
-          {subtitle && <p className="page-subtitle">{subtitle}</p>}
-        </div>
-      </div>
-
-      <div className="empty-state">
-        <p>{t("legacy.text_62ef77aa6ff7")}</p>
-      </div>
     </main>
   );
 }

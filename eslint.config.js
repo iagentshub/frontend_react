@@ -5,7 +5,20 @@ import reactRefresh from "eslint-plugin-react-refresh";
 import tseslint from "typescript-eslint";
 
 export default tseslint.config(
-  { ignores: ["dist", "coverage", "playwright-report", "test-results", "assets", "pages", "tests", "public/*.js"] },
+  {
+    ignores: [
+      "dist",
+      "coverage",
+      "playwright-report",
+      "test-results",
+      "flutter-web",
+      "app_flutter",
+      "assets",
+      "pages",
+      "tests",
+      "public/*.js",
+    ],
+  },
   js.configs.recommended,
   ...tseslint.configs.recommendedTypeChecked,
   {

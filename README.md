@@ -10,6 +10,10 @@ Production has one domain and three clearly separated areas:
 
 Legacy private URLs such as `/login/` and `/dashboard/` redirect permanently to their `/app/...` equivalents.
 
+The repository intentionally contains no authenticated React application. The
+`public:verify` check prevents private routes, private translations, or former
+application-only dependencies from returning.
+
 ## Local development
 
 ```bash

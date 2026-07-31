@@ -25,7 +25,8 @@
   },
   "creators": {
     "title": "Creators",
-    "role": "Developer"
+    "role": "Developer",
+    "avatar_alt": "Creator avatar"
   },
   "github": {
     "title": "Source code",

@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { appPath } from "@/app/app-paths";
-import { sessionQuery } from "@/auth/queries";
+import { sessionQuery } from "@/api/public-queries";
 import { Seo } from "@/components/seo";
 import { usePublicNavigation } from "@/i18n/public-paths";
 import { useBodyClass } from "./use-body-class";
@@ -55,8 +55,8 @@ export function AboutPage() {
 
       <header className="about-header">
         <Link className="about-logo" to={publicLink("/")}>
-          {t("legacy.text_1fda9fc57a04")}
-          <span>{t("legacy.text_a38df5fc50fb")}</span>
+          {t("common.brand.prefix")}
+          <span>{t("common.brand.suffix")}</span>
         </Link>
 
         <div className="about-header-divider" />
@@ -79,7 +79,7 @@ export function AboutPage() {
 
       <main className="about-main">
         <div className="about-hero">
-          <div className="about-hero-badge">{t("legacy.text_d36622c048bb")}</div>
+          <div className="about-hero-badge">{t("common.brand.full")}</div>
 
           <h1 className="about-hero-title">{t("about.description.title")}</h1>
 
@@ -124,7 +124,7 @@ export function AboutPage() {
                   <img
                     className="about-creator-avatar about-creator-avatar--img"
                     src={`https://avatars.githubusercontent.com/${creator.username}?s=80`}
-                    alt={t("manager.manager.members.table_actions")}
+                    alt={t("about.creators.avatar_alt")}
                   />
                   <div className="about-creator-info">
                     <strong className="about-creator-name">{creator.name}</strong>
@@ -135,7 +135,7 @@ export function AboutPage() {
                     target="_blank"
                     rel="noopener noreferrer"
                     className="about-creator-gh"
-                    title={t("errors.fields.github")}
+                    title={t("common.github")}
                     aria-label={`${creator.name} GitHub`}
                   >
                     <GitHubIcon />

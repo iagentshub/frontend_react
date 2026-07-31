@@ -42,7 +42,7 @@ for (const language of ["es", "en"] as const) {
       for (const [name, path] of publicRoutes) {
         test(`${name} mantiene su referencia visual`, async ({ page }) => {
           await page.goto(path);
-          await expect(page.locator("body")).toBeVisible();
+          await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
           await expect(page).toHaveScreenshot(`${name}-${language}-${theme}.png`, {
             fullPage: true,
             animations: "disabled",

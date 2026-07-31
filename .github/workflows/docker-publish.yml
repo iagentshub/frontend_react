@@ -26,6 +26,7 @@ jobs:
       - run: npm ci
       - run: npm run typecheck
       - run: npm run lint
+      - run: npm run public:verify
       - run: npm run seo:csp-hash
       - run: npm run test
       - run: npx playwright install --with-deps chromium
