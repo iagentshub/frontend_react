@@ -1,7 +1,7 @@
 /* global document */
 import { chromium } from "@playwright/test";
 import { spawn } from "node:child_process";
-import { copyFile, mkdir, writeFile } from "node:fs/promises";
+import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { publicRoutes } from "./public-routes.mjs";
 
@@ -47,12 +47,6 @@ async function freeze(page, target) {
 
 try {
   await waitForServer();
-  // Copia intacta del shell antes de congelar nada: es el fallback de nginx
-  // para las rutas no prerenderizadas. Si se usara index.html (ya congelado con
-  // la landing), /dashboard/ o /login/ pintarían la landing hasta que React
-  // monta, porque el cliente renderiza de cero en vez de hidratar.
-  await copyFile(path.join("dist", "index.html"), path.join("dist", "app.html"));
-
   const browser = await chromium.launch({ headless: true });
   // Locale fijo: el HTML servido declara lang="es", así que el contenido
   // congelado debe estar en español (i18n detecta el idioma del navegador).

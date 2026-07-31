@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
+import { appPath } from "@/app/app-paths";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { api, ApiError } from "@/api/client";
 import { queryKeys } from "@/api/query-client";
@@ -178,8 +179,6 @@ export function PricingPage() {
   const { t, i18n } = useTranslation();
   useBodyClass("pricing-page");
   const { publicLink, language, switchLanguage } = usePublicNavigation(i18n, "/pricing/");
-  const navigate = useNavigate();
-
   // ── Guard: si la facturación está desactivada, no se muestra la página ──
   const settings = useQuery({
     queryKey: queryKeys.platform,
@@ -240,13 +239,15 @@ export function PricingPage() {
 
   const ctaClick = () => {
     if (pmPlan === "free" || pmPlan === "rookie") {
-      void navigate("/register/");
+      location.assign(appPath("/register"));
       return;
     }
     if (pmPlan === "developer" || pmPlan === "business") {
       const interval = pmAnnual ? "year" : "month";
-      void navigate(
-        `/checkout/?tier=${pmPlan}&seats=${pmLicenses}&interval=${interval}&selfHosted=${pmSelfHosted ? "1" : "0"}`,
+      location.assign(
+        appPath(
+          `/checkout?tier=${pmPlan}&seats=${pmLicenses}&interval=${interval}&selfHosted=${pmSelfHosted ? "1" : "0"}`,
+        ),
       );
       return;
     }
@@ -290,13 +291,13 @@ export function PricingPage() {
           {t("pricing.nav_about")}
         </Link>
 
-        <Link to="/login/" className="pr-header-link">
+        <a href={appPath("/login")} className="pr-header-link">
           {t("pricing.nav_login")}
-        </Link>
+        </a>
 
-        <Link to="/register/" className="pr-header-cta">
+        <a href={appPath("/register")} className="pr-header-cta">
           {t("pricing.nav_cta")}
-        </Link>
+        </a>
       </header>
 
       <main className="pr-main">

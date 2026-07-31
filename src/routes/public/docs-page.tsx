@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import type { TFunction } from "i18next";
 import { Link } from "react-router-dom";
+import { appPath } from "@/app/app-paths";
 import { sessionQuery } from "@/auth/queries";
 import { Seo } from "@/components/seo";
 import { usePublicNavigation } from "@/i18n/public-paths";
@@ -59,9 +60,12 @@ export function DocsPage() {
           {language.toUpperCase()}
         </button>
 
-        <Link to={authenticated ? "/dashboard/" : "/login/"} className="docs-header-action">
+        <a
+          href={appPath(authenticated ? "/dashboard" : "/login")}
+          className="docs-header-action"
+        >
           {authenticated ? "← Dashboard" : t("about.header.login")}
-        </Link>
+        </a>
       </header>
 
       <div className="docs-shell">

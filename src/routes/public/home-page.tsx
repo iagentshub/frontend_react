@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { Link, Navigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { appPath } from "@/app/app-paths";
 import { platformQuery } from "@/auth/queries";
 import { Seo } from "@/components/seo";
 import { usePublicNavigation } from "@/i18n/public-paths";
@@ -46,7 +47,10 @@ export function HomePage() {
   const [copied, setCopied] = useState(false);
 
   if (platform.isPending) return null;
-  if (!platform.data?.landing_enabled || platform.isError) return <Navigate to="/login/" replace />;
+  if (!platform.data?.landing_enabled || platform.isError) {
+    location.replace(appPath("/login"));
+    return null;
+  }
 
   const command = buildInstallCommand(frontend, mode, os);
   const copyCommand = async () => {
@@ -73,9 +77,9 @@ export function HomePage() {
 
           <div className="landing-header-spacer" />
 
-          <Link className="btn btn-ghost btn-sm" to="/login/">
+          <a className="btn btn-ghost btn-sm" href={appPath("/login")}>
             {t("about.header.login")}
-          </Link>
+          </a>
         </header>
 
         <section className="landing-hero">

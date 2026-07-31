@@ -16,6 +16,7 @@ LABEL org.iagentshub.version=$GAIA_VERSION
 RUN apk add --no-cache gettext \
     && rm -f /usr/share/nginx/html/index.html /usr/share/nginx/html/50x.html
 COPY --from=build /app/dist/ /usr/share/nginx/html/
+COPY flutter-web/ /usr/share/nginx/html/app/
 COPY nginx.react.conf /etc/nginx/conf.d/default.conf
 COPY docker-entrypoint-react.sh /docker-entrypoint.sh
 # Un checkout con core.autocrlf no debe producir una imagen que Linux no pueda

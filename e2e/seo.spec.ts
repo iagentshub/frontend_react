@@ -61,12 +61,6 @@ for (const entry of pages) {
 }
 
 test("las rutas privadas y la página 404 no se indexan", async ({ page }) => {
-  await page.goto("/login/");
-  await expect(page.locator('head meta[name="robots"]')).toHaveAttribute(
-    "content",
-    "noindex, nofollow",
-  );
-
   await page.goto("/esta-ruta-no-existe");
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("404");
   await expect(page.locator('head meta[name="robots"]')).toHaveAttribute(
