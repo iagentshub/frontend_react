@@ -40,12 +40,14 @@
     "export_body": "Exporta tus agentes al formato nativo de Claude Code, GitHub Copilot u OpenAI Assistants con un clic. Créalos una vez, úsalos donde trabajas."
   },
   "install": {
-    "title": "Instalación",
-    "mode_docker": "Con Docker",
-    "mode_nodocker": "Sin Docker",
-    "os_linux": "Linux",
-    "os_mac": "macOS",
-    "os_windows": "Windows",
+    "title": "Instalación y actualización",
+    "hint": "El mismo comando sirve para instalar y actualizar. En la primera instalación podrás elegir la modalidad.",
+    "unix_label": "Linux / macOS",
+    "windows_label": "Windows (PowerShell)",
+    "docker_label": "Docker:",
+    "docker_body": "descarga desde GitHub Container Registry y activa las actualizaciones automáticas.",
+    "local_label": "Sin Docker:",
+    "local_body": "compila desde GitHub y conserva todas las funcionalidades.",
     "copy": "Copiar",
     "copied": "¡Copiado!"
   }

@@ -7,11 +7,11 @@ import { platformQuery } from "@/api/public-queries";
 import { Seo } from "@/components/seo";
 import { usePublicNavigation } from "@/i18n/public-paths";
 import "@/styles/routes/landing.css";
-type InstallMode = "docker" | "nodocker";
-type InstallOs = "linux" | "mac" | "windows";
 
-const modes: InstallMode[] = ["docker", "nodocker"];
-const operatingSystems: InstallOs[] = ["linux", "mac", "windows"];
+export const INSTALL_COMMAND =
+  "curl -fsSL https://raw.githubusercontent.com/iagentshub/iAgents/main/install.sh | bash";
+export const WINDOWS_INSTALL_COMMAND =
+  "irm https://raw.githubusercontent.com/iagentshub/iAgents/main/install.ps1 | iex";
 const homeFeatures = [
   "multi_agent",
   "providers",
@@ -20,28 +20,13 @@ const homeFeatures = [
   "groups",
   "export",
 ] as const;
-const modeToFlag: Record<InstallMode, string> = { docker: "docker", nodocker: "local" };
-
-function buildInstallCommand(mode: InstallMode, os: InstallOs): string {
-  const modeFlag = modeToFlag[mode];
-  if (os === "windows") {
-    return `$env:IAGENTSHUB_MODE = "${modeFlag}"; irm https://raw.githubusercontent.com/iagentshub/iAgents/main/install.ps1 | iex`;
-  }
-  return `curl -fsSL https://raw.githubusercontent.com/iagentshub/iAgents/main/install.sh | IAGENTSHUB_MODE=${modeFlag} bash`;
-}
-
-function nextValue<T>(values: T[], current: T): T {
-  const index = values.indexOf(current);
-  return values[(index + 1) % values.length] ?? values[0]!;
-}
 
 export function HomePage() {
   const { t, i18n } = useTranslation();
   const platform = useQuery(platformQuery);
   const { language, publicLink, switchLanguage } = usePublicNavigation(i18n, "/");
-  const [mode, setMode] = useState<InstallMode>("docker");
-  const [os, setOs] = useState<InstallOs>("linux");
   const [copied, setCopied] = useState(false);
+  const [copiedWindows, setCopiedWindows] = useState(false);
 
   if (platform.isPending) return null;
   if (!platform.data?.landing_enabled || platform.isError) {
@@ -49,11 +34,15 @@ export function HomePage() {
     return null;
   }
 
-  const command = buildInstallCommand(mode, os);
   const copyCommand = async () => {
-    await navigator.clipboard.writeText(command);
+    await navigator.clipboard.writeText(INSTALL_COMMAND);
     setCopied(true);
     window.setTimeout(() => setCopied(false), 1500);
+  };
+  const copyWindowsCommand = async () => {
+    await navigator.clipboard.writeText(WINDOWS_INSTALL_COMMAND);
+    setCopiedWindows(true);
+    window.setTimeout(() => setCopiedWindows(false), 1500);
   };
 
   return (
@@ -141,35 +130,46 @@ export function HomePage() {
         <section className="landing-section">
           <div className="landing-install">
             <div className="landing-install-title">{t("landing.install.title")}</div>
+            <p className="landing-install-hint">{t("landing.install.hint")}</p>
 
-            <div className="landing-install-toggles">
-              <button
-                className="landing-toggle"
-                type="button"
-                onClick={() => setMode(nextValue(modes, mode))}
-              >
-                {t(`landing.install.mode_${mode}`)}
-              </button>
-
-              <button
-                className="landing-toggle"
-                type="button"
-                onClick={() => setOs(nextValue(operatingSystems, os))}
-              >
-                {t(`landing.install.os_${os}`)}
-              </button>
+            <div className="landing-install-commands">
+              <div>
+                <span className="landing-install-os">{t("landing.install.unix_label")}</span>
+                <div className="landing-install-cmd">
+                  <code className="landing-install-code">{INSTALL_COMMAND}</code>
+                  <button
+                    className="btn btn-ghost btn-sm"
+                    type="button"
+                    onClick={() => void copyCommand()}
+                  >
+                    {copied ? t("landing.install.copied") : t("landing.install.copy")}
+                  </button>
+                </div>
+              </div>
+              <div>
+                <span className="landing-install-os">{t("landing.install.windows_label")}</span>
+                <div className="landing-install-cmd">
+                  <code className="landing-install-code">{WINDOWS_INSTALL_COMMAND}</code>
+                  <button
+                    className="btn btn-ghost btn-sm"
+                    type="button"
+                    onClick={() => void copyWindowsCommand()}
+                  >
+                    {copiedWindows ? t("landing.install.copied") : t("landing.install.copy")}
+                  </button>
+                </div>
+              </div>
             </div>
 
-            <div className="landing-install-cmd">
-              <code className="landing-install-code">{command}</code>
-
-              <button
-                className="btn btn-ghost btn-sm"
-                type="button"
-                onClick={() => void copyCommand()}
-              >
-                {copied ? t("landing.install.copied") : t("landing.install.copy")}
-              </button>
+            <div className="landing-install-modes">
+              <p>
+                <strong>{t("landing.install.docker_label")}</strong>{" "}
+                {t("landing.install.docker_body")}
+              </p>
+              <p>
+                <strong>{t("landing.install.local_label")}</strong>{" "}
+                {t("landing.install.local_body")}
+              </p>
             </div>
           </div>
         </section>

@@ -215,38 +215,40 @@
             font-size: 14px;
         }
 
-        .landing-install-toggles {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
+        .landing-install-hint {
+            color: var(--ink-2);
+            font-size: 13px;
             margin-bottom: 14px;
         }
 
-        /* Botón de ciclo: un único control por dimensión (no una barra con todas
-           las opciones a la vista) — hace clic para pasar al siguiente valor. */
-        .landing-toggle {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: var(--surface-2);
-            border: 1px solid var(--line);
+        .landing-install-modes {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+            margin-top: 14px;
+            color: var(--ink-2);
+            font-size: 12px;
+        }
+
+        .landing-install-modes p {
+            margin: 0;
+        }
+
+        .landing-install-modes strong {
             color: var(--ink);
+        }
+
+        .landing-install-commands {
+            display: grid;
+            gap: 12px;
+        }
+
+        .landing-install-os {
+            display: block;
+            color: var(--ink-2);
             font-size: 12px;
             font-weight: 600;
-            padding: 6px 14px;
-            border-radius: var(--radius);
-            cursor: pointer;
-            transition: background 0.15s, border-color 0.15s;
-        }
-
-        .landing-toggle:hover {
-            background: var(--surface-3);
-        }
-
-        .landing-toggle::after {
-            content: "⇄";
-            color: var(--ink-3);
-            font-size: 11px;
+            margin-bottom: 5px;
         }
 
         .landing-install-cmd {
@@ -265,6 +267,12 @@
             color: var(--ink);
             overflow-x: auto;
             white-space: nowrap;
+        }
+
+        @media (max-width: 640px) {
+            .landing-install-modes {
+                grid-template-columns: 1fr;
+            }
         }
 
         .landing-footer {
