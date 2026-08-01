@@ -9,9 +9,7 @@ import { usePublicNavigation } from "@/i18n/public-paths";
 import "@/styles/routes/landing.css";
 type InstallMode = "docker" | "nodocker";
 type InstallOs = "linux" | "mac" | "windows";
-type InstallFrontend = "vanilla" | "react";
 
-const frontends: InstallFrontend[] = ["vanilla", "react"];
 const modes: InstallMode[] = ["docker", "nodocker"];
 const operatingSystems: InstallOs[] = ["linux", "mac", "windows"];
 const homeFeatures = [
@@ -24,12 +22,12 @@ const homeFeatures = [
 ] as const;
 const modeToFlag: Record<InstallMode, string> = { docker: "docker", nodocker: "local" };
 
-function buildInstallCommand(frontend: InstallFrontend, mode: InstallMode, os: InstallOs): string {
+function buildInstallCommand(mode: InstallMode, os: InstallOs): string {
   const modeFlag = modeToFlag[mode];
   if (os === "windows") {
-    return `$env:IAGENTSHUB_FRONTEND = "${frontend}"; $env:IAGENTSHUB_MODE = "${modeFlag}"; irm https://raw.githubusercontent.com/iagentshub/iAgents/main/install.ps1 | iex`;
+    return `$env:IAGENTSHUB_MODE = "${modeFlag}"; irm https://raw.githubusercontent.com/iagentshub/iAgents/main/install.ps1 | iex`;
   }
-  return `curl -fsSL https://raw.githubusercontent.com/iagentshub/iAgents/main/install.sh | IAGENTSHUB_FRONTEND=${frontend} IAGENTSHUB_MODE=${modeFlag} bash`;
+  return `curl -fsSL https://raw.githubusercontent.com/iagentshub/iAgents/main/install.sh | IAGENTSHUB_MODE=${modeFlag} bash`;
 }
 
 function nextValue<T>(values: T[], current: T): T {
@@ -41,7 +39,6 @@ export function HomePage() {
   const { t, i18n } = useTranslation();
   const platform = useQuery(platformQuery);
   const { language, publicLink, switchLanguage } = usePublicNavigation(i18n, "/");
-  const [frontend, setFrontend] = useState<InstallFrontend>("react");
   const [mode, setMode] = useState<InstallMode>("docker");
   const [os, setOs] = useState<InstallOs>("linux");
   const [copied, setCopied] = useState(false);
@@ -52,7 +49,7 @@ export function HomePage() {
     return null;
   }
 
-  const command = buildInstallCommand(frontend, mode, os);
+  const command = buildInstallCommand(mode, os);
   const copyCommand = async () => {
     await navigator.clipboard.writeText(command);
     setCopied(true);
@@ -146,14 +143,6 @@ export function HomePage() {
             <div className="landing-install-title">{t("landing.install.title")}</div>
 
             <div className="landing-install-toggles">
-              <button
-                className="landing-toggle"
-                type="button"
-                onClick={() => setFrontend(nextValue(frontends, frontend))}
-              >
-                {t(`landing.install.frontend_${frontend}`)}
-              </button>
-
               <button
                 className="landing-toggle"
                 type="button"

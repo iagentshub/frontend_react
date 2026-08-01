@@ -103,8 +103,7 @@ jobs:
           cache-to: type=gha,mode=max
 
   # Imagen unificada (backend + frontend en un solo contenedor) usada por
-  # install.sh / docker-compose.hub.yml — publica el tag `:latest` (variante
-  # React; ver frontend_vanilla/.github/workflows/docker-publish.yml para `:vanilla`).
+  # install.sh / docker-compose.hub.yml — publica el tag estable `:latest`.
   publish-unified:
     if: github.event_name != 'pull_request'
     needs: verify

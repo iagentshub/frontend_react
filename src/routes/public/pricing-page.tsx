@@ -10,7 +10,7 @@ import { usePublicNavigation } from "@/i18n/public-paths";
 import { useBodyClass } from "./use-body-class";
 import "@/styles/routes/pricing/pricing.css";
 
-// ── Cálculo de precios — misma lógica que pricing.js (vanilla) ────────────
+// ── Cálculo de precios ────────────────────────────────────────────────────
 const DEV_PRICE = 9;
 const BIZ_START = 7.5;
 const FLOOR = DEV_PRICE * 0.5; // €4.50

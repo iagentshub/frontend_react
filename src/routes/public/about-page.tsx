@@ -26,7 +26,7 @@ const stack = [
   ["postgresql", "PostgreSQL"],
   ["nginx", "Nginx"],
   ["docker", "Docker"],
-  ["vanillajs", "Vanilla JS"],
+  ["typescript", "TypeScript"],
 ] as const;
 const creators = [
   {
