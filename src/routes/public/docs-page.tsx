@@ -17,7 +17,6 @@ const sections = [
   ["connections", "connections"],
   ["skills", "skills"],
   ["teams", "teams"],
-  ["folders", "folders"],
   ["memory-knowledge", "memory_knowledge"],
   ["best-practices", "best_practices"],
 ] as const;
@@ -182,7 +181,6 @@ function SectionContent({ section, t }: { section: SectionKey; t: TFunction }) {
     connections: ["vs_accounts", "tokens"],
     skills: ["public", "private", "activate"],
     teams: ["create", "invite", "share", "unshare", "badge", "guests"],
-    folders: ["create", "filter", "rename"],
     memory_knowledge: ["memory", "knowledge"],
     best_practices: ["prompt", "model", "skills", "knowledge", "memory", "temp"],
   };

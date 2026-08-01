@@ -10,7 +10,6 @@
     "connections": "Conexiones",
     "skills": "Skills",
     "teams": "Equipos y compartición",
-    "folders": "Carpetas",
     "memory_knowledge": "Memoria y Conocimiento",
     "best_practices": "Buenas prácticas"
   },
@@ -21,7 +20,6 @@
     "connections": "Conexiones",
     "skills": "Skills",
     "teams": "Equipos y compartición de recursos",
-    "folders": "Carpetas y organización",
     "memory_knowledge": "Memoria y Conocimiento",
     "best_practices": "Buenas prácticas con agentes"
   },
@@ -116,15 +114,6 @@
     "badge_body": "Los recursos que otros han compartido contigo aparecen en las secciones correspondientes con el badge «Compartida». Puedes usarlos y abrirlos desde el panel de grupos, pero no editarlos ni exportarlos: la propiedad sigue siendo del creador original.",
     "guests_title": "Restricción para invitados",
     "guests_body": "Los usuarios sin cuenta (modo invitado) no pueden crear ni unirse a grupos. Registra una cuenta para acceder a la colaboración."
-  },
-  "folders": {
-    "intro": "Las carpetas son una herramienta de organización personal. No afectan a la visibilidad, los permisos ni la compartición: solo sirven para ordenar tu propio espacio de trabajo.",
-    "create_title": "Crear carpetas y mover elementos",
-    "create_body": "Desde el panel lateral de cualquier sección (Agentes, Conocimiento) pulsa el botón «+» junto a «Carpetas» para crear una nueva. Arrastra una tarjeta directamente encima de una carpeta para moverla ahí. El cambio es inmediato.",
-    "filter_title": "Filtrar por carpeta",
-    "filter_body": "Al seleccionar una carpeta en el panel lateral, la vista principal muestra solo los elementos que contiene. Pulsa «Todos» para volver a la vista completa.",
-    "rename_title": "Renombrar y eliminar",
-    "rename_body": "Pasa el cursor sobre una carpeta para ver los botones de edición. Puedes renombrarla con el icono de lápiz o eliminarla con el icono de papelera. Al eliminar una carpeta, los elementos que contiene no se borran: vuelven a la vista «Todos»."
   },
   "memory_knowledge": {
     "intro": "iAgents Hub tiene dos formas de dar contexto persistente a un agente: memoria conversacional y base de conocimiento.",
