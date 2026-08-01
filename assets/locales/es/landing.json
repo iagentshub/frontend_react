@@ -48,6 +48,7 @@
     "docker_body": "descarga desde GitHub Container Registry y activa las actualizaciones automáticas.",
     "local_label": "Sin Docker:",
     "local_body": "compila desde GitHub y conserva todas las funcionalidades.",
+    "components": "En ambos modos puedes instalar la aplicación completa, solo el backend o solo el frontend.",
     "copy": "Copiar",
     "copied": "¡Copiado!"
   }

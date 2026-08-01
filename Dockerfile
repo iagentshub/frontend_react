@@ -12,12 +12,13 @@ FROM nginx:1.27-alpine
 ARG GAIA_VERSION=dev
 ENV GAIA_VERSION=$GAIA_VERSION
 LABEL org.iagentshub.version=$GAIA_VERSION
+LABEL org.opencontainers.image.source="https://github.com/iagentshub/frontend_react"
 
 RUN apk add --no-cache gettext \
     && rm -f /usr/share/nginx/html/index.html /usr/share/nginx/html/50x.html
 COPY --from=build /app/dist/ /usr/share/nginx/html/
 COPY flutter-web/ /usr/share/nginx/html/app/
-COPY nginx.react.conf /etc/nginx/conf.d/default.conf
+COPY nginx.react.conf /etc/nginx/templates/default.conf.template
 COPY docker-entrypoint-react.sh /docker-entrypoint.sh
 # Un checkout con core.autocrlf no debe producir una imagen que Linux no pueda
 # ejecutar. La normalización es inocua cuando el fichero ya llega con LF.

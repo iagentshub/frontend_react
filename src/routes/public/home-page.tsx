@@ -171,6 +171,7 @@ export function HomePage() {
                 {t("landing.install.local_body")}
               </p>
             </div>
+            <p className="landing-install-components">{t("landing.install.components")}</p>
           </div>
         </section>
 

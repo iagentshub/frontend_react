@@ -238,6 +238,12 @@
             color: var(--ink);
         }
 
+        .landing-install-components {
+            margin: 12px 0 0;
+            color: var(--ink-2);
+            font-size: 12px;
+        }
+
         .landing-install-commands {
             display: grid;
             gap: 12px;
