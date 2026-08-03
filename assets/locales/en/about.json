@@ -21,7 +21,8 @@
     "postgresql": "Relational database for production",
     "nginx": "Web server and reverse proxy",
     "docker": "Containerisation and deployment",
-    "typescript": "Typed React frontend"
+    "typescript": "Typed React frontend",
+    "flutter": "Cross-platform client (mobile and desktop)"
   },
   "creators": {
     "title": "Creators",

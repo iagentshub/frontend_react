@@ -21,7 +21,8 @@
     "postgresql": "Base de datos relacional para producción",
     "nginx": "Servidor web y proxy inverso",
     "docker": "Contenerización y despliegue",
-    "typescript": "Frontend React tipado"
+    "typescript": "Frontend React tipado",
+    "flutter": "Cliente multiplataforma (móvil y escritorio)"
   },
   "creators": {
     "title": "Creadores",

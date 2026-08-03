@@ -27,6 +27,7 @@ const stack = [
   ["nginx", "Nginx"],
   ["docker", "Docker"],
   ["typescript", "TypeScript"],
+  ["flutter", "Flutter"],
 ] as const;
 const creators = [
   {
@@ -158,7 +159,7 @@ export function AboutPage() {
               <h2 className="about-card-title">{t("about.github.title")}</h2>
               <p className="about-card-body">{t("about.github.body")}</p>
               <a
-                href="https://github.com/iagentshub/iAgents"
+                href="https://github.com/iagentshub"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="about-github-btn"
