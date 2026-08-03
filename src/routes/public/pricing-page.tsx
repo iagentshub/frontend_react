@@ -8,33 +8,15 @@ import { platformQuery } from "@/api/public-queries";
 import { Seo } from "@/components/seo";
 import { usePublicNavigation } from "@/i18n/public-paths";
 import { useBodyClass } from "./use-body-class";
+import {
+  fmt,
+  fmtInt,
+  planForN,
+  totals,
+  type PlanKey,
+  type Tier1,
+} from "./pricing-model";
 import "@/styles/routes/pricing/pricing.css";
-
-// ── Cálculo de precios ────────────────────────────────────────────────────
-const DEV_PRICE = 9;
-const BIZ_START = 7.5;
-const FLOOR = DEV_PRICE * 0.5; // €4.50
-const ENT_THRESHOLD = 100;
-const SH_MONTHLY = 400;
-const SH_ANNUAL = SH_MONTHLY * 10; // €4.000/año
-const MONTHS_ANNUAL = 10;
-const SLOPE = (BIZ_START - FLOOR) / (ENT_THRESHOLD - 1);
-
-function fmt(num: number): string {
-  const r = Math.round(num * 100) / 100;
-  return "€" + (r % 1 === 0 ? r.toFixed(0) : r.toFixed(2).replace(".", ","));
-}
-function fmtInt(num: number): string {
-  return "€" + Math.round(num).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-}
-function ppl(n: number): number {
-  if (n <= 0) return 0;
-  if (n === 1) return DEV_PRICE;
-  return Math.max(FLOOR, BIZ_START - SLOPE * (n - 1));
-}
-
-type PlanKey = "free" | "rookie" | "developer" | "business" | "enterprise";
-type Tier1 = "rookie" | "developer";
 
 const PLANS: Record<
   PlanKey,
@@ -87,13 +69,6 @@ const PLANS: Record<
     ctaType: "plan_ent",
   },
 };
-
-function planForN(n: number, tierAt1: Tier1): PlanKey {
-  if (n <= 0) return "free";
-  if (n === 1) return tierAt1;
-  if (n <= ENT_THRESHOLD) return "business";
-  return "enterprise";
-}
 
 const CARDS: Array<{
   id: "free" | "starter" | "dev" | "biz" | "ent";
@@ -252,14 +227,11 @@ export function PricingPage() {
     setContact({ type: data.ctaType, title: t(`pricing.contact_title_${data.ctaType}`) });
   };
 
-  const shCost = pmSelfHosted ? (pmAnnual ? SH_ANNUAL / MONTHS_ANNUAL : SH_MONTHLY) : 0;
-  const pricePerLic = ppl(pmLicenses);
-  const monthlyBase = pmLicenses * pricePerLic;
-  const monthlyTotal = monthlyBase + shCost;
-  const annualBase = monthlyBase * MONTHS_ANNUAL;
-  const annualSh = pmSelfHosted ? SH_ANNUAL : 0;
-  const annualTotal = annualBase + annualSh;
-  const saving = monthlyTotal * 12 - annualTotal;
+  const { pricePerLic, monthlyTotal, annualTotal, saving } = totals(
+    pmLicenses,
+    pmSelfHosted,
+    pmAnnual,
+  );
 
   if (settings.data && settings.data.billing_enabled === false) return <Navigate to="/" replace />;
 
