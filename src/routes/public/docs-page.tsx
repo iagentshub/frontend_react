@@ -1,12 +1,8 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import type { TFunction } from "i18next";
-import { Link } from "react-router-dom";
-import { appPath } from "@/app/app-paths";
-import { sessionQuery } from "@/api/public-queries";
 import { Seo } from "@/components/seo";
-import { usePublicNavigation } from "@/i18n/public-paths";
+import { PublicHeader } from "@/components/public-header";
 import { useBodyClass } from "./use-body-class";
 import "@/styles/routes/docs/docs.css";
 
@@ -24,11 +20,8 @@ type SectionKey = (typeof sections)[number][1];
 
 export function DocsPage() {
   useBodyClass("docs-page");
-  const { t, i18n } = useTranslation();
-  const session = useQuery(sessionQuery);
-  const { language, publicLink, switchLanguage } = usePublicNavigation(i18n, "/docs");
+  const { t } = useTranslation();
   const [open, setOpen] = useState<string | null>(null);
-  const authenticated = Boolean(session.data?.username);
 
   const openSection = (id: string) => {
     setOpen(id);
@@ -46,26 +39,7 @@ export function DocsPage() {
         localizedPath="/docs"
       />
 
-      <header className="docs-header">
-        <Link className="docs-logo" to={publicLink("/")}>
-          {t("common.brand.prefix")}
-          <span>{t("common.brand.suffix")}</span>
-        </Link>
-        <div className="docs-header-divider" />
-        <span className="docs-header-label">{t("docs.page.title")}</span>
-        <div className="docs-header-spacer" />
-
-        <button className="docs-header-lang" onClick={() => void switchLanguage()}>
-          {language.toUpperCase()}
-        </button>
-
-        <a
-          href={appPath(authenticated ? "/dashboard" : "/login")}
-          className="docs-header-action"
-        >
-          {authenticated ? t("common.navigation.dashboard") : t("about.header.login")}
-        </a>
-      </header>
+      <PublicHeader variant="docs" label={t("docs.page.title")} path="/docs" />
 
       <div className="docs-shell">
         <aside className="docs-aside">

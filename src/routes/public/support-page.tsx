@@ -1,9 +1,7 @@
-import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
-import { appPath } from "@/app/app-paths";
-import { sessionQuery } from "@/api/public-queries";
 import { Seo } from "@/components/seo";
+import { PublicHeader } from "@/components/public-header";
 import { usePublicNavigation } from "@/i18n/public-paths";
 import { useBodyClass } from "./use-body-class";
 import "@/styles/routes/support/support.css";
@@ -13,9 +11,7 @@ const faqs = ["account", "provider", "selfhosted", "response"] as const;
 export function SupportPage() {
   useBodyClass("support-page");
   const { t, i18n } = useTranslation();
-  const session = useQuery(sessionQuery);
-  const { language, publicLink, switchLanguage } = usePublicNavigation(i18n, "/support");
-  const authenticated = Boolean(session.data?.username);
+  const { publicLink } = usePublicNavigation(i18n, "/support");
 
   return (
     <>
@@ -26,29 +22,7 @@ export function SupportPage() {
         localizedPath="/support"
       />
 
-      <header className="support-header">
-        <Link className="support-logo" to={publicLink("/")}>
-          {t("common.brand.prefix")}
-          <span>{t("common.brand.suffix")}</span>
-        </Link>
-
-        <div className="support-header-divider" />
-
-        <span className="support-header-label">{t("support.page.title")}</span>
-
-        <div className="support-header-spacer" />
-
-        <button className="support-header-lang" onClick={() => void switchLanguage()}>
-          {language.toUpperCase()}
-        </button>
-
-        <a
-          href={appPath(authenticated ? "/dashboard" : "/login")}
-          className="support-header-action"
-        >
-          {authenticated ? `← ${t("support.header.dashboard")}` : t("support.header.login")}
-        </a>
-      </header>
+      <PublicHeader variant="support" label={t("support.page.title")} path="/support" />
 
       <main className="support-main">
         <section className="support-hero">

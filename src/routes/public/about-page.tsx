@@ -1,10 +1,7 @@
-import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
-import { appPath } from "@/app/app-paths";
-import { sessionQuery } from "@/api/public-queries";
 import { Seo } from "@/components/seo";
-import { usePublicNavigation } from "@/i18n/public-paths";
+import { PublicHeader } from "@/components/public-header";
 import { useBodyClass } from "./use-body-class";
 import "@/styles/routes/about/about.css";
 
@@ -39,10 +36,7 @@ const creators = [
 
 export function AboutPage() {
   useBodyClass("about-page");
-  const { t, i18n } = useTranslation();
-  const session = useQuery(sessionQuery);
-  const { language, publicLink, switchLanguage } = usePublicNavigation(i18n, "/about");
-  const authenticated = Boolean(session.data?.username);
+  const { t } = useTranslation();
 
   return (
     <>
@@ -53,29 +47,7 @@ export function AboutPage() {
         localizedPath="/about"
       />
 
-      <header className="about-header">
-        <Link className="about-logo" to={publicLink("/")}>
-          {t("common.brand.prefix")}
-          <span>{t("common.brand.suffix")}</span>
-        </Link>
-
-        <div className="about-header-divider" />
-
-        <span className="about-header-label">{t("about.page.title")}</span>
-
-        <div className="about-header-spacer" />
-
-        <button className="about-header-lang" onClick={() => void switchLanguage()}>
-          {language.toUpperCase()}
-        </button>
-
-        <a
-          href={appPath(authenticated ? "/dashboard" : "/login")}
-          className="about-header-action"
-        >
-          {authenticated ? "← Dashboard" : t("about.header.login")}
-        </a>
-      </header>
+      <PublicHeader variant="about" label={t("about.page.title")} path="/about" />
 
       <main className="about-main">
         <div className="about-hero">
