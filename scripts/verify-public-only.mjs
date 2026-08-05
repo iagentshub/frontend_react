@@ -3,7 +3,7 @@ import path from "node:path";
 
 const root = process.cwd();
 const expectedRouteAreas = ["public", "shared"];
-const expectedLocales = ["about.json", "common.json", "docs.json", "landing.json", "pricing.json", "seo.json", "support.json"];
+const expectedLocales = ["about.json", "common.json", "docs.json", "landing.json", "legal.json", "pricing.json", "seo.json", "support.json"];
 const forbiddenDependencies = [
   "@dnd-kit/core",
   "@dnd-kit/sortable",

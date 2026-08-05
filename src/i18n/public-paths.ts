@@ -2,7 +2,15 @@ import type { i18n as I18n } from "i18next";
 import { useNavigate } from "react-router-dom";
 import type { SupportedLanguage } from "./index";
 
-export const publicBasePaths = ["/", "/about", "/pricing/", "/docs", "/support"] as const;
+export const publicBasePaths = [
+  "/",
+  "/about",
+  "/pricing/",
+  "/docs",
+  "/support",
+  "/privacy",
+  "/terms",
+] as const;
 export type PublicBasePath = (typeof publicBasePaths)[number];
 
 export function localizedPublicPath(path: PublicBasePath, language: SupportedLanguage): string {

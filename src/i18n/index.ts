@@ -48,6 +48,7 @@ await i18n.use(initReactI18next).init({
     "docs",
     "support",
     "seo",
+    "legal",
   ],
   interpolation: { escapeValue: false },
   react: { useSuspense: false },

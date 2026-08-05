@@ -43,6 +43,12 @@ const SupportPage = lazy(() =>
 const PricingPage = lazy(() =>
   import("@/routes/public/pricing-page").then((module) => ({ default: module.PricingPage })),
 );
+const PrivacyPage = lazy(() =>
+  import("@/routes/public/legal-page").then((module) => ({ default: module.PrivacyPage })),
+);
+const TermsPage = lazy(() =>
+  import("@/routes/public/legal-page").then((module) => ({ default: module.TermsPage })),
+);
 
 function lazyRoute(element: ReactNode) {
   return <Suspense fallback={<RouteLoading />}>{element}</Suspense>;
@@ -98,6 +104,10 @@ export const router = createBrowserRouter([
   { path: "/en/docs", loader: publicLanguageLoader("en"), element: lazyRoute(<DocsPage />) },
   { path: "/support", loader: publicLanguageLoader("es"), element: lazyRoute(<SupportPage />) },
   { path: "/en/support", loader: publicLanguageLoader("en"), element: lazyRoute(<SupportPage />) },
+  { path: "/privacy", loader: publicLanguageLoader("es"), element: lazyRoute(<PrivacyPage />) },
+  { path: "/en/privacy", loader: publicLanguageLoader("en"), element: lazyRoute(<PrivacyPage />) },
+  { path: "/terms", loader: publicLanguageLoader("es"), element: lazyRoute(<TermsPage />) },
+  { path: "/en/terms", loader: publicLanguageLoader("en"), element: lazyRoute(<TermsPage />) },
   ...LEGACY_PRIVATE_PATHS.map((path) => ({
     path: `/${path}/*`,
     element: <PrivateAppRedirect />,

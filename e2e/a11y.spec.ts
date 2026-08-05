@@ -4,7 +4,7 @@ import { expect, test } from "@playwright/test";
 // @axe-core/playwright llevaba tiempo en package.json sin que lo usara nadie.
 // Estas son las páginas públicas: las privadas viven en Flutter y no se pueden
 // auditar desde aquí.
-const PAGINAS = ["/", "/about", "/pricing/", "/docs", "/support"];
+const PAGINAS = ["/", "/about", "/pricing/", "/docs", "/support", "/privacy", "/terms"];
 
 // Solo se comprueban las reglas normativas (WCAG 2.1 A y AA). Las de
 // "best-practice" de axe incluyen criterios discutibles que convertirían esto

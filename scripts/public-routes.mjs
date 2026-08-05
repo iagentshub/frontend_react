@@ -51,6 +51,24 @@ export const publicPagePairs = [
       en: ["src/routes/public/support-page.tsx", "assets/locales/en/support.json", "assets/locales/en/seo.json"],
     },
   },
+  {
+    key: "privacy",
+    es: "/privacy",
+    en: "/en/privacy",
+    sources: {
+      es: ["src/routes/public/legal-page.tsx", "assets/locales/es/legal.json", "assets/locales/es/seo.json"],
+      en: ["src/routes/public/legal-page.tsx", "assets/locales/en/legal.json", "assets/locales/en/seo.json"],
+    },
+  },
+  {
+    key: "terms",
+    es: "/terms",
+    en: "/en/terms",
+    sources: {
+      es: ["src/routes/public/legal-page.tsx", "assets/locales/es/legal.json", "assets/locales/es/seo.json"],
+      en: ["src/routes/public/legal-page.tsx", "assets/locales/en/legal.json", "assets/locales/en/seo.json"],
+    },
+  },
 ];
 
 /** Una entrada por URL, en el mismo orden estable que usa el sitemap. */

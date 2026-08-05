@@ -186,6 +186,10 @@ export function HomePage() {
 
           <Link to={publicLink("/support")}>{t("common.navigation.support")}</Link>
 
+          <Link to={publicLink("/privacy")}>{t("common.navigation.privacy")}</Link>
+
+          <Link to={publicLink("/terms")}>{t("common.navigation.terms")}</Link>
+
           <a href="https://github.com/iagentshub/iAgents" target="_blank" rel="noopener noreferrer">
             {t("common.github")}
           </a>

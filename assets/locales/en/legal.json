@@ -1,0 +1,206 @@
+{
+  "back": "Back to home",
+  "updated_label": "Last updated",
+  "draft_notice": "Draft pending legal review. The bracketed values must be filled in before publishing.",
+  "privacy": {
+    "page_title": "Privacy",
+    "title": "Privacy policy",
+    "updated": "[PUBLICATION DATE]",
+    "intro": "This policy explains what personal data we process when you use iAgents Hub, why, for how long, and what rights you have over it. It applies to the managed service we offer on this domain. If you installed iAgents Hub on your own infrastructure, you are the controller of the data processed there, not us.",
+    "sections": {
+      "controller": {
+        "title": "1. Data controller",
+        "body": "The controller of your personal data is:",
+        "items": [
+          "Owner: [LEGAL NAME]",
+          "Tax ID: [TAX ID]",
+          "Address: [FULL ADDRESS]",
+          "Contact email: [PRIVACY EMAIL]",
+          "Data Protection Officer: [DPO OR \"not applicable\"]"
+        ]
+      },
+      "data": {
+        "title": "2. Data we process",
+        "body": "We process the following categories of data, depending on how you use the service:",
+        "items": [
+          "Registration data: username, email address and password (always stored hashed, never in plain text).",
+          "Profile data provided at registration: date of birth, gender, country and phone number. Providing them is optional and the service works without them.",
+          "Content you create: agents, prompts, skills, knowledge, conversations, workflows and any files you upload.",
+          "AI provider credentials you configure in your account, stored encrypted and used solely to run the requests you initiate.",
+          "Technical data: IP address, request timestamps, browser type and error logs, generated automatically as you use the service.",
+          "Billing data, if you subscribe to a paid plan: customer identifier, plan, amount and invoice history. Card details are handled directly by the payment provider; we neither receive nor store them.",
+          "Your GitHub account identifier and username, if you choose to sign in with GitHub."
+        ]
+      },
+      "purposes": {
+        "title": "3. Purposes and legal bases",
+        "body": "Each processing activity has a specific purpose and a legal basis:",
+        "items": [
+          "Providing the service, maintaining your account and running the agents you create. Basis: performance of the contract (Art. 6(1)(b) GDPR).",
+          "Collecting payment for paid plans and issuing invoices. Basis: performance of the contract and compliance with tax obligations (Art. 6(1)(b) and 6(1)(c) GDPR).",
+          "Sending essential operational emails: account verification, password recovery, status and billing notices. Basis: performance of the contract.",
+          "Keeping the service secure, preventing abuse and enforcing usage limits. Basis: our legitimate interest in protecting the service and its users (Art. 6(1)(f) GDPR).",
+          "Optional profile data (date of birth, gender, country and phone number) is processed on the basis of your consent, which you may withdraw at any time without affecting your use of the service."
+        ]
+      },
+      "providers": {
+        "title": "4. Artificial intelligence models",
+        "body": "iAgents Hub does not train its own models: it sends your requests to the AI providers you configure. This means the content of your conversations, prompts and attached documents is transmitted to the provider you chose so that it can generate a response.\n\nEach provider applies its own privacy policy and its own retention periods, over which we have no control. Before sending confidential information through an agent, review the terms of the provider you are using. If you would rather no data left your infrastructure, you can use a local model or install iAgents Hub on your own server."
+      },
+      "recipients": {
+        "title": "5. Recipients",
+        "body": "We do not sell your data or share it with third parties for advertising. We rely on providers acting as processors that are necessary to deliver the service:",
+        "items": [
+          "Hosting and infrastructure provider: [HOSTING PROVIDER].",
+          "Payment provider, for subscriptions and invoicing: [PAYMENT PROVIDER].",
+          "Outbound email provider, for operational messages: [SMTP PROVIDER].",
+          "The AI model providers you configure in your account.",
+          "Public authorities and courts, where there is a legal obligation to disclose."
+        ]
+      },
+      "transfers": {
+        "title": "6. International transfers",
+        "body": "Some of the providers above may process data outside the European Economic Area. In those cases the transfer relies on an adequacy decision of the European Commission or, failing that, on standard contractual clauses together with any supplementary measures required. You may request information about the safeguards in place by writing to [PRIVACY EMAIL]."
+      },
+      "retention": {
+        "title": "7. Retention periods",
+        "body": "We keep your data while your account is active. When you request account deletion, permanent erasure is scheduled and you have a window to cancel it before it runs.",
+        "items": [
+          "Account data and content: while the account is active and up to [PERIOD] after deletion.",
+          "Technical and security logs: [PERIOD].",
+          "Accounting and tax records: for the periods required by applicable commercial and tax law."
+        ]
+      },
+      "rights": {
+        "title": "8. Your rights",
+        "body": "You may exercise your rights of access, rectification, erasure, restriction, portability and objection at any time, and withdraw any consent you have given.",
+        "items": [
+          "From your profile you can download a complete copy of your data and request account deletion without contacting us.",
+          "You may also write to [PRIVACY EMAIL], stating which right you wish to exercise.",
+          "If you believe your request was not handled properly, you may lodge a complaint with the Spanish Data Protection Agency (www.aepd.es) or your local supervisory authority."
+        ]
+      },
+      "security": {
+        "title": "9. Security",
+        "body": "We apply technical and organisational measures to protect your data: encrypted traffic in transit, hashed password storage, encrypted provider credentials, role-based access control, request limits to prevent abuse, and logging of relevant activity.\n\nNo system is completely secure. Should a breach occur that poses a risk to your rights, we will inform you and notify the supervisory authority within the deadlines the law requires."
+      },
+      "cookies": {
+        "title": "10. Cookies",
+        "body": "This site uses only strictly necessary technical cookies: the one that keeps you signed in and the one that remembers your active workspace. We use no analytics, advertising or profiling cookies, and we embed no third-party trackers.\n\nBecause they are strictly necessary, these cookies do not require your prior consent. You may delete them from your browser, though doing so will end your session."
+      },
+      "minors": {
+        "title": "11. Minors",
+        "body": "The service is intended for people over [MINIMUM AGE]. We do not knowingly collect data from anyone below that age. If we identify an account that does not meet this requirement, we will delete it along with the associated data."
+      },
+      "changes": {
+        "title": "12. Changes to this policy",
+        "body": "We may update this policy to reflect changes in the service or in applicable law. If a change is substantial we will notify you by email or through a visible notice in the service before it takes effect. The date of the last update appears at the top of this document."
+      },
+      "contact": {
+        "title": "13. Contact",
+        "body": "For any question about this policy or about the processing of your personal data, write to [PRIVACY EMAIL]."
+      }
+    }
+  },
+  "terms": {
+    "page_title": "Terms",
+    "title": "Terms of service",
+    "updated": "[PUBLICATION DATE]",
+    "intro": "These terms govern access to and use of iAgents Hub. By creating an account or subscribing to a plan you agree to be bound by them. If you do not agree, do not use the service.",
+    "sections": {
+      "identification": {
+        "title": "1. Provider details",
+        "body": "In compliance with information society services regulations, the provider's details are:",
+        "items": [
+          "Owner: [LEGAL NAME]",
+          "Tax ID: [TAX ID]",
+          "Address: [FULL ADDRESS]",
+          "Contact email: [CONTACT EMAIL]",
+          "Registry details: [COMPANY REGISTRY DETAILS OR \"not applicable\"]"
+        ]
+      },
+      "object": {
+        "title": "2. Purpose and acceptance",
+        "body": "iAgents Hub is a platform for building, organising and running artificial intelligence agents connected to the model providers the user configures. These terms, together with the privacy policy, form the contract between you and the provider. Registering an account constitutes full acceptance of them."
+      },
+      "service": {
+        "title": "3. Service models",
+        "body": "iAgents Hub is distributed in two models and these terms apply differently to each:",
+        "items": [
+          "Self-hosted: you download and install the software on your own infrastructure. You operate it and you are accountable for the data it processes. We provide no warranty or support for that installation unless you subscribe to a plan that includes it.",
+          "Managed: you access the service hosted by us through a subscription plan. These terms govern that relationship in full."
+        ]
+      },
+      "account": {
+        "title": "4. User account",
+        "body": "To use the service you must create an account with accurate details and keep them up to date. You are responsible for safeguarding your credentials and for all activity carried out from your account.",
+        "items": [
+          "You must be over [MINIMUM AGE] to register.",
+          "You may not transfer, sell or share your account with third parties.",
+          "You must notify us immediately of any unauthorised use of your account.",
+          "We may refuse a registration or close an account that breaches these terms."
+        ]
+      },
+      "acceptable_use": {
+        "title": "5. Acceptable use",
+        "body": "You may not use the service to:",
+        "items": [
+          "Carry out unlawful activities or infringe third-party rights, including intellectual property rights.",
+          "Generate or distribute content that incites hatred, harasses individuals, or constitutes child sexual abuse material.",
+          "Attempt to access other people's accounts, circumvent usage limits or interfere with the operation of the service.",
+          "Extract data automatically beyond what the application programming interface allows.",
+          "Resell the service or present it to third parties as your own, except under express written agreement."
+        ]
+      },
+      "content": {
+        "title": "6. Your content",
+        "body": "You retain ownership of the agents, prompts, documents and conversations you create. You grant us only the technical licence strictly required to host, process and display that content while we provide the service, and to transmit it to the AI providers you configure.\n\nYou are responsible for holding the rights to the content you upload and for ensuring that processing it through the service does not infringe third-party rights."
+      },
+      "ai": {
+        "title": "7. AI-generated content",
+        "body": "Agent responses are produced by third-party language models and may be inaccurate, outdated or unsuitable for your particular case. We do not warrant their accuracy, truthfulness or fitness for purpose.\n\nYou should not make medical, legal, financial or otherwise sensitive decisions based solely on generated output. Reviewing the content before relying on it is your responsibility."
+      },
+      "third_party": {
+        "title": "8. Third-party providers and keys",
+        "body": "The service runs on the API keys you supply for each artificial intelligence provider. Use of those providers is governed by their own terms and billed separately from ours: any usage you incur with them is paid directly by you.\n\nWe are not liable for the availability, price changes, limitations or discontinuation of third-party services."
+      },
+      "plans": {
+        "title": "9. Plans and pricing",
+        "body": "The available plans and their prices are those shown on the pricing page at the time of subscription. Prices are stated in euros and include applicable taxes where indicated.\n\nWe may change prices with reasonable prior notice; changes do not affect a period already paid for and apply from the next renewal."
+      },
+      "billing": {
+        "title": "10. Billing, renewal and cancellation",
+        "body": "Subscriptions are charged in advance for the chosen billing period and renew automatically at the end of each period unless you cancel beforehand.",
+        "items": [
+          "You may cancel at any time from your account. Cancellation takes effect at the end of the period already paid for, during which you keep access.",
+          "Non-payment or a declined charge may result in suspension of access to paid features.",
+          "Refund policy: [REFUND POLICY]."
+        ]
+      },
+      "withdrawal": {
+        "title": "11. Right of withdrawal",
+        "body": "If you subscribe as a consumer, you have fourteen (14) calendar days from subscription to withdraw without giving any reason, by writing to [CONTACT EMAIL].\n\nAs this is a digital service supplied immediately, if you ask to start using it before that period ends you acknowledge that you will lose the right of withdrawal once the service has been fully performed, and that if you withdraw during performance you must pay the proportionate amount for the service already provided."
+      },
+      "availability": {
+        "title": "12. Availability and support",
+        "body": "We work to keep the service continuously available, but we do not guarantee uninterrupted or error-free operation. We may carry out maintenance windows, giving advance notice wherever possible.\n\nSupport scope and response times are those corresponding to your plan, as stated on the pricing page."
+      },
+      "liability": {
+        "title": "13. Liability",
+        "body": "We are liable for damages arising directly from our breach in accordance with applicable law. To the extent permitted by law, our total liability is limited to the amount paid for the service in the twelve months preceding the event giving rise to it.\n\nNothing limits liability for wilful misconduct, gross negligence, or any liability that consumer protection law declares non-waivable."
+      },
+      "termination": {
+        "title": "14. Suspension and termination",
+        "body": "We may suspend or terminate your account if you breach these terms, if your use compromises the security or stability of the service, or where a legal obligation requires it. Unless the severity of the breach or the law prevents it, we will notify you first and give you an opportunity to remedy it.\n\nAfter termination you may download your data for [PERIOD], after which it will be deleted."
+      },
+      "changes": {
+        "title": "15. Changes to these terms",
+        "body": "We may amend these terms due to changes in the service or in applicable law. We will notify you of substantial changes before they take effect. If you do not accept them you may cancel your subscription; continued use of the service constitutes acceptance."
+      },
+      "law": {
+        "title": "16. Governing law and jurisdiction",
+        "body": "These terms are governed by Spanish law. Any dispute shall be submitted to the courts of [CITY], unless consumer protection law establishes a different mandatory venue, in which case that venue prevails.\n\nIf you subscribe as a consumer, you may also use the European online dispute resolution platform at ec.europa.eu/consumers/odr."
+      }
+    }
+  }
+}

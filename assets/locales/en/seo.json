@@ -19,6 +19,14 @@
     "title": "Support · iAgents Hub",
     "description": "iAgents Hub FAQ and contact: accounts, AI providers, self-hosted deployment and response times."
   },
+  "privacy": {
+    "title": "Privacy policy · iAgents Hub",
+    "description": "What personal data iAgents Hub processes, for what purpose and legal basis, how long it is kept and how to exercise your rights."
+  },
+  "terms": {
+    "title": "Terms of service · iAgents Hub",
+    "description": "Terms of use and subscription for iAgents Hub: accounts, plans, billing, withdrawal and liability."
+  },
   "login": {
     "title": "Sign in · iAgents Hub",
     "description": "Sign in to your iAgents Hub account."

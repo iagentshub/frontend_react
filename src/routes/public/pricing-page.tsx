@@ -686,6 +686,8 @@ export function PricingPage() {
         <span>© 2026 iAgentsHub</span>
         <Link to={publicLink("/about")}>{t("pricing.footer_about")}</Link>
         <a href="mailto:hola@iagentshub.com">{t("pricing.footer_contact")}</a>
+        <Link to={publicLink("/privacy")}>{t("common.navigation.privacy")}</Link>
+        <Link to={publicLink("/terms")}>{t("common.navigation.terms")}</Link>
         <button className="pr-lang-btn" type="button" onClick={() => void switchLanguage()}>
           {language.toUpperCase()}
         </button>

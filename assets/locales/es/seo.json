@@ -19,6 +19,14 @@
     "title": "Soporte · iAgents Hub",
     "description": "Preguntas frecuentes y contacto de iAgents Hub: cuenta, proveedores de IA, despliegue self-hosted y tiempos de respuesta."
   },
+  "privacy": {
+    "title": "Política de privacidad · iAgents Hub",
+    "description": "Qué datos personales trata iAgents Hub, con qué finalidad y base legal, cuánto se conservan y cómo ejercer tus derechos."
+  },
+  "terms": {
+    "title": "Términos y condiciones · iAgents Hub",
+    "description": "Condiciones de uso y contratación de iAgents Hub: cuenta, planes, facturación, desistimiento y responsabilidad."
+  },
   "login": {
     "title": "Iniciar sesión · iAgents Hub",
     "description": "Accede a tu cuenta de iAgents Hub."

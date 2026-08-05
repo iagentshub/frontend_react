@@ -1,0 +1,206 @@
+{
+  "back": "Volver al inicio",
+  "updated_label": "Última actualización",
+  "draft_notice": "Documento pendiente de revisión legal. Los datos entre corchetes deben completarse antes de publicar.",
+  "privacy": {
+    "page_title": "Privacidad",
+    "title": "Política de privacidad",
+    "updated": "[FECHA DE PUBLICACIÓN]",
+    "intro": "Esta política explica qué datos personales tratamos cuando usas iAgents Hub, con qué finalidad, durante cuánto tiempo y qué derechos tienes sobre ellos. Se aplica al servicio gestionado que ofrecemos en este dominio. Si has instalado iAgents Hub en tu propia infraestructura, el responsable de los datos que trates en esa instalación eres tú, no nosotros.",
+    "sections": {
+      "controller": {
+        "title": "1. Responsable del tratamiento",
+        "body": "El responsable del tratamiento de tus datos personales es:",
+        "items": [
+          "Titular: [RAZÓN SOCIAL O NOMBRE Y APELLIDOS]",
+          "NIF/CIF: [NIF]",
+          "Domicilio: [DOMICILIO COMPLETO]",
+          "Correo de contacto: [EMAIL DE PRIVACIDAD]",
+          "Delegado de Protección de Datos: [DPO O «no procede»]"
+        ]
+      },
+      "data": {
+        "title": "2. Datos que tratamos",
+        "body": "Tratamos las siguientes categorías de datos, según cómo uses el servicio:",
+        "items": [
+          "Datos de registro: nombre de usuario, dirección de correo electrónico y contraseña (almacenada siempre cifrada, nunca en claro).",
+          "Datos de perfil facilitados en el registro: fecha de nacimiento, género, país y teléfono. Su aportación es voluntaria y el servicio funciona sin ellos.",
+          "Contenido que creas: agentes, prompts, skills, conocimiento, conversaciones, flujos de trabajo y los archivos que subas.",
+          "Credenciales de proveedores de IA que configures en tu cuenta, almacenadas cifradas y utilizadas únicamente para ejecutar las peticiones que tú inicias.",
+          "Datos técnicos: dirección IP, fecha y hora de las peticiones, tipo de navegador y registros de errores, generados automáticamente al usar el servicio.",
+          "Datos de facturación, si contratas un plan de pago: identificador de cliente, plan, importe e historial de facturas. Los datos de la tarjeta los trata directamente el proveedor de pagos y nosotros no los recibimos ni almacenamos.",
+          "Datos de tu cuenta de GitHub (identificador y nombre de usuario) si eliges iniciar sesión con GitHub."
+        ]
+      },
+      "purposes": {
+        "title": "3. Finalidades y bases jurídicas",
+        "body": "Cada tratamiento tiene una finalidad concreta y una base legal que lo ampara:",
+        "items": [
+          "Prestar el servicio, mantener tu cuenta y ejecutar los agentes que crees. Base: ejecución del contrato (art. 6.1.b RGPD).",
+          "Gestionar el cobro de los planes de pago y emitir facturas. Base: ejecución del contrato y cumplimiento de obligaciones legales fiscales (art. 6.1.b y 6.1.c RGPD).",
+          "Enviarte correos operativos imprescindibles: verificación de cuenta, recuperación de contraseña, avisos de estado y de facturación. Base: ejecución del contrato.",
+          "Garantizar la seguridad del servicio, prevenir abusos y aplicar límites de uso. Base: interés legítimo en proteger el servicio y a sus usuarios (art. 6.1.f RGPD).",
+          "Los datos de perfil voluntarios (fecha de nacimiento, género, país y teléfono) se tratan sobre la base de tu consentimiento, que puedes retirar en cualquier momento sin que ello afecte al uso del servicio."
+        ]
+      },
+      "providers": {
+        "title": "4. Modelos de inteligencia artificial",
+        "body": "iAgents Hub no entrena modelos propios: envía tus peticiones a los proveedores de IA que tú configures. Esto significa que el contenido de tus conversaciones, prompts y documentos adjuntos se transmite al proveedor que hayas elegido para que genere la respuesta.\n\nCada proveedor aplica su propia política de privacidad y sus propios plazos de conservación, sobre los que no tenemos control. Antes de enviar información confidencial a través de un agente, revisa las condiciones del proveedor que estés usando. Si prefieres que ningún dato salga de tu infraestructura, puedes usar un modelo local o instalar iAgents Hub en tu propio servidor."
+      },
+      "recipients": {
+        "title": "5. Destinatarios de los datos",
+        "body": "No vendemos tus datos ni los cedemos a terceros con fines publicitarios. Accedemos a proveedores que actúan como encargados del tratamiento y que son necesarios para prestar el servicio:",
+        "items": [
+          "Proveedor de alojamiento e infraestructura: [PROVEEDOR DE HOSTING].",
+          "Proveedor de pagos, para la gestión de suscripciones y facturas: [PROVEEDOR DE PAGOS].",
+          "Proveedor de correo saliente, para los correos operativos: [PROVEEDOR SMTP].",
+          "Proveedores de modelos de inteligencia artificial que tú configures en tu cuenta.",
+          "Administraciones públicas y órganos judiciales, cuando exista obligación legal de facilitar la información."
+        ]
+      },
+      "transfers": {
+        "title": "6. Transferencias internacionales",
+        "body": "Algunos de los proveedores anteriores pueden tratar datos fuera del Espacio Económico Europeo. En esos casos la transferencia se ampara en una decisión de adecuación de la Comisión Europea o, en su defecto, en cláusulas contractuales tipo junto con las medidas complementarias que resulten necesarias. Puedes solicitar información sobre las garantías aplicadas escribiendo a [EMAIL DE PRIVACIDAD]."
+      },
+      "retention": {
+        "title": "7. Plazos de conservación",
+        "body": "Conservamos los datos mientras tu cuenta esté activa. Cuando solicitas la eliminación de tu cuenta, se programa el borrado definitivo y dispones de un plazo para cancelarla antes de que se ejecute.",
+        "items": [
+          "Datos de cuenta y contenido: mientras la cuenta esté activa y hasta [PLAZO] tras su eliminación.",
+          "Registros técnicos y de seguridad: [PLAZO].",
+          "Documentación contable y fiscal: durante los plazos exigidos por la normativa mercantil y tributaria aplicable."
+        ]
+      },
+      "rights": {
+        "title": "8. Tus derechos",
+        "body": "Puedes ejercer en cualquier momento los derechos de acceso, rectificación, supresión, limitación, portabilidad y oposición, así como retirar el consentimiento que hayas prestado.",
+        "items": [
+          "Desde tu perfil puedes descargar una copia completa de tus datos y solicitar la eliminación de tu cuenta sin necesidad de escribirnos.",
+          "También puedes ejercerlos escribiendo a [EMAIL DE PRIVACIDAD], indicando el derecho que deseas ejercer.",
+          "Si consideras que no hemos atendido correctamente tu solicitud, puedes presentar una reclamación ante la Agencia Española de Protección de Datos (www.aepd.es)."
+        ]
+      },
+      "security": {
+        "title": "9. Seguridad",
+        "body": "Aplicamos medidas técnicas y organizativas para proteger tus datos: cifrado del tráfico en tránsito, almacenamiento cifrado de contraseñas y de las credenciales de proveedores, control de acceso por roles, límites de peticiones para prevenir abusos y registro de la actividad relevante.\n\nNingún sistema es completamente seguro. Si se produjera una brecha de seguridad que suponga un riesgo para tus derechos, te lo comunicaremos y lo notificaremos a la autoridad de control en los plazos que exige la normativa."
+      },
+      "cookies": {
+        "title": "10. Cookies",
+        "body": "Este sitio utiliza únicamente cookies técnicas imprescindibles para el funcionamiento del servicio: la que mantiene tu sesión iniciada y la que recuerda el grupo de trabajo activo. No usamos cookies de analítica, de publicidad ni de perfilado, y no incorporamos rastreadores de terceros.\n\nPor tratarse exclusivamente de cookies estrictamente necesarias, no requieren tu consentimiento previo. Puedes borrarlas desde tu navegador, aunque en ese caso se cerrará tu sesión."
+      },
+      "minors": {
+        "title": "11. Menores de edad",
+        "body": "El servicio está dirigido a mayores de [EDAD MÍNIMA] años. No recogemos deliberadamente datos de menores de esa edad. Si detectamos una cuenta que incumple este requisito, la eliminaremos junto con los datos asociados."
+      },
+      "changes": {
+        "title": "12. Cambios en esta política",
+        "body": "Podemos actualizar esta política para reflejar cambios en el servicio o en la normativa aplicable. Si el cambio es sustancial te avisaremos por correo electrónico o mediante un aviso visible en el servicio antes de que surta efecto. La fecha de la última actualización figura al inicio de este documento."
+      },
+      "contact": {
+        "title": "13. Contacto",
+        "body": "Para cualquier cuestión relacionada con esta política o con el tratamiento de tus datos personales, escribe a [EMAIL DE PRIVACIDAD]."
+      }
+    }
+  },
+  "terms": {
+    "page_title": "Términos",
+    "title": "Términos y condiciones del servicio",
+    "updated": "[FECHA DE PUBLICACIÓN]",
+    "intro": "Estos términos regulan el acceso y uso de iAgents Hub. Al crear una cuenta o contratar un plan aceptas quedar vinculado por ellos. Si no estás de acuerdo, no uses el servicio.",
+    "sections": {
+      "identification": {
+        "title": "1. Identificación del prestador",
+        "body": "En cumplimiento de la normativa de servicios de la sociedad de la información, se informa de los datos del prestador:",
+        "items": [
+          "Titular: [RAZÓN SOCIAL O NOMBRE Y APELLIDOS]",
+          "NIF/CIF: [NIF]",
+          "Domicilio: [DOMICILIO COMPLETO]",
+          "Correo de contacto: [EMAIL DE CONTACTO]",
+          "Datos registrales: [DATOS DE INSCRIPCIÓN REGISTRAL O «no procede»]"
+        ]
+      },
+      "object": {
+        "title": "2. Objeto y aceptación",
+        "body": "iAgents Hub es una plataforma para crear, organizar y ejecutar agentes de inteligencia artificial conectados a los proveedores de modelos que el usuario configure. Estos términos, junto con la política de privacidad, forman el contrato entre tú y el prestador. El registro de una cuenta implica su aceptación íntegra."
+      },
+      "service": {
+        "title": "3. Modalidades del servicio",
+        "body": "iAgents Hub se distribuye en dos modalidades y estos términos se aplican de forma distinta a cada una:",
+        "items": [
+          "Autoalojada: descargas e instalas el software en tu propia infraestructura. Eres tú quien lo opera y quien responde de los datos que trate. No prestamos garantía ni soporte sobre esa instalación salvo que contrates un plan que lo incluya.",
+          "Gestionada: accedes al servicio alojado por nosotros mediante un plan de suscripción. Estos términos regulan íntegramente esa relación."
+        ]
+      },
+      "account": {
+        "title": "4. Cuenta de usuario",
+        "body": "Para usar el servicio debes crear una cuenta con datos veraces y mantenerlos actualizados. Eres responsable de la custodia de tus credenciales y de toda la actividad que se realice desde tu cuenta.",
+        "items": [
+          "Debes ser mayor de [EDAD MÍNIMA] años para registrarte.",
+          "No puedes ceder, vender ni compartir tu cuenta con terceros.",
+          "Debes comunicarnos de inmediato cualquier uso no autorizado de tu cuenta.",
+          "Podemos rechazar un registro o cerrar una cuenta que incumpla estos términos."
+        ]
+      },
+      "acceptable_use": {
+        "title": "5. Uso aceptable",
+        "body": "No puedes utilizar el servicio para:",
+        "items": [
+          "Actividades ilícitas o que vulneren derechos de terceros, incluidos los de propiedad intelectual.",
+          "Generar o difundir contenido que incite al odio, acose a personas o constituya material sexual de menores.",
+          "Intentar acceder a cuentas ajenas, eludir los límites de uso o alterar el funcionamiento del servicio.",
+          "Extraer datos de forma automatizada más allá de lo que permita la interfaz de programación.",
+          "Revender el servicio o exponerlo a terceros como si fuera propio, salvo acuerdo expreso por escrito."
+        ]
+      },
+      "content": {
+        "title": "6. Tu contenido",
+        "body": "Conservas la titularidad de los agentes, prompts, documentos y conversaciones que crees. Nos concedes únicamente la licencia técnica imprescindible para alojar, procesar y mostrarte ese contenido mientras prestamos el servicio, así como para transmitirlo a los proveedores de IA que tú configures.\n\nEres responsable de tener derecho sobre el contenido que subes y de que su tratamiento a través del servicio no vulnere derechos de terceros."
+      },
+      "ai": {
+        "title": "7. Contenido generado por inteligencia artificial",
+        "body": "Las respuestas de los agentes las producen modelos de lenguaje de terceros y pueden ser inexactas, estar desactualizadas o resultar inapropiadas para tu caso concreto. No garantizamos su exactitud, veracidad ni idoneidad.\n\nNo debes tomar decisiones médicas, jurídicas, financieras o de cualquier otro ámbito sensible basándote únicamente en el resultado generado. La revisión del contenido antes de usarlo es responsabilidad tuya."
+      },
+      "third_party": {
+        "title": "8. Proveedores y claves de terceros",
+        "body": "El servicio funciona con las claves de API que tú aportas para cada proveedor de inteligencia artificial. El uso de esos proveedores se rige por sus propias condiciones y su facturación es ajena a la nuestra: los consumos que generes frente a ellos los abonas directamente tú.\n\nNo respondemos de la disponibilidad, los cambios de precio, las limitaciones ni la interrupción del servicio de terceros."
+      },
+      "plans": {
+        "title": "9. Planes y precios",
+        "body": "Los planes disponibles y sus precios son los que figuran en la página de precios en el momento de la contratación. Los precios se expresan en euros e incluyen los impuestos aplicables cuando así se indique.\n\nPodemos modificar los precios comunicándolo con antelación suficiente; los cambios no afectan al periodo ya abonado y se aplican a partir de la siguiente renovación."
+      },
+      "billing": {
+        "title": "10. Facturación, renovación y cancelación",
+        "body": "La suscripción se cobra por adelantado según la periodicidad elegida y se renueva automáticamente al final de cada periodo, salvo que la canceles antes.",
+        "items": [
+          "Puedes cancelar en cualquier momento desde tu cuenta. La cancelación surte efecto al final del periodo ya pagado, durante el cual conservas el acceso.",
+          "El impago o el rechazo del cargo puede suponer la suspensión del acceso a las funciones de pago.",
+          "Política de reembolso: [POLÍTICA DE REEMBOLSO]."
+        ]
+      },
+      "withdrawal": {
+        "title": "11. Derecho de desistimiento",
+        "body": "Si contratas como consumidor, dispones de catorce (14) días naturales desde la contratación para desistir sin necesidad de justificación, comunicándolo a [EMAIL DE CONTACTO].\n\nAl tratarse de un servicio digital de ejecución inmediata, si solicitas empezar a usarlo antes de que finalice ese plazo reconoces que perderás el derecho de desistimiento una vez el servicio se haya ejecutado por completo, y que si desistes durante la ejecución deberás abonar la parte proporcional del servicio ya prestado."
+      },
+      "availability": {
+        "title": "12. Disponibilidad y soporte",
+        "body": "Trabajamos para mantener el servicio disponible de forma continuada, pero no garantizamos un funcionamiento ininterrumpido ni libre de errores. Podemos realizar paradas de mantenimiento, avisando con antelación siempre que sea posible.\n\nEl alcance del soporte y los tiempos de respuesta son los que corresponden al plan contratado y figuran en la página de precios."
+      },
+      "liability": {
+        "title": "13. Responsabilidad",
+        "body": "Respondemos de los daños que se deriven directamente de un incumplimiento nuestro conforme a la ley aplicable. En la medida en que la normativa lo permita, nuestra responsabilidad total queda limitada al importe abonado por el servicio en los doce meses anteriores al hecho que la origine.\n\nNo se limita en ningún caso la responsabilidad por dolo, por culpa grave, ni la que la normativa de consumidores declare irrenunciable."
+      },
+      "termination": {
+        "title": "14. Suspensión y terminación",
+        "body": "Podemos suspender o cancelar tu cuenta si incumples estos términos, si tu uso compromete la seguridad o la estabilidad del servicio, o si existe una obligación legal que lo exija. Salvo que la gravedad o la ley lo impidan, te avisaremos previamente y te daremos ocasión de corregir el incumplimiento.\n\nTras la terminación podrás descargar tus datos durante [PLAZO], transcurrido el cual se eliminarán."
+      },
+      "changes": {
+        "title": "15. Modificación de los términos",
+        "body": "Podemos modificar estos términos por cambios en el servicio o en la normativa. Te avisaremos de los cambios sustanciales antes de que entren en vigor. Si no los aceptas, puedes cancelar tu suscripción; el uso posterior del servicio supone su aceptación."
+      },
+      "law": {
+        "title": "16. Ley aplicable y jurisdicción",
+        "body": "Estos términos se rigen por la legislación española. Para cualquier controversia serán competentes los juzgados y tribunales de [CIUDAD], salvo que la normativa de consumidores establezca un fuero distinto de obligado cumplimiento, en cuyo caso prevalecerá este.\n\nSi contratas como consumidor, puedes acudir a la plataforma europea de resolución de litigios en línea en ec.europa.eu/consumers/odr."
+      }
+    }
+  }
+}
