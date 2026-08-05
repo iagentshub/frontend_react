@@ -1,8 +1,32 @@
 /* eslint-disable react-refresh/only-export-components -- route modules intentionally compose lazy components */
-import { lazy, Suspense, type ReactNode } from "react";
+import { lazy, Suspense, useEffect, type ReactNode } from "react";
 import { createBrowserRouter } from "react-router-dom";
 import i18n, { type SupportedLanguage } from "@/i18n";
 import { NotFoundPage, RouteErrorBoundary, RouteLoading } from "@/routes/shared/status-pages";
+import { appPath } from "@/app/app-paths";
+
+const LEGACY_PRIVATE_PATHS = [
+  "admin",
+  "agents",
+  "checkout",
+  "connections",
+  "dashboard",
+  "explore",
+  "forgot-password",
+  "knowledge",
+  "labels",
+  "login",
+  "manager",
+  "memory",
+  "orchestrations",
+  "profile",
+  "register",
+  "reset-password",
+  "u",
+  "verify",
+  "vscode-auth",
+  "workflows",
+] as const;
 
 const HomePage = lazy(() =>
   import("@/routes/public/home-page").then((module) => ({ default: module.HomePage })),
@@ -29,6 +53,20 @@ function publicLanguageLoader(language: SupportedLanguage) {
     if (i18n.resolvedLanguage !== language) await i18n.changeLanguage(language);
     return null;
   };
+}
+
+function PrivateAppRedirect() {
+  const current = `${location.pathname}${location.search}${location.hash}`;
+  const privatePath = location.pathname.startsWith("/app/")
+    ? location.pathname.slice(4)
+    : location.pathname;
+  const target = appPath(`${privatePath}${location.search}${location.hash}`);
+
+  useEffect(() => {
+    if (target !== current) location.replace(target);
+  }, [current, target]);
+
+  return target === current ? <NotFoundPage /> : <RouteLoading />;
 }
 
 export const router = createBrowserRouter([
@@ -60,5 +98,10 @@ export const router = createBrowserRouter([
   { path: "/en/docs", loader: publicLanguageLoader("en"), element: lazyRoute(<DocsPage />) },
   { path: "/support", loader: publicLanguageLoader("es"), element: lazyRoute(<SupportPage />) },
   { path: "/en/support", loader: publicLanguageLoader("en"), element: lazyRoute(<SupportPage />) },
+  ...LEGACY_PRIVATE_PATHS.map((path) => ({
+    path: `/${path}/*`,
+    element: <PrivateAppRedirect />,
+  })),
+  { path: "/app/*", element: <PrivateAppRedirect /> },
   { path: "*", element: <NotFoundPage /> },
 ]);
