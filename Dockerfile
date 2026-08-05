@@ -24,5 +24,30 @@ COPY docker-entrypoint-react.sh /docker-entrypoint.sh
 # ejecutar. La normalización es inocua cuando el fichero ya llega con LF.
 RUN sed -i 's/\r$//' /docker-entrypoint.sh \
     && chmod +x /docker-entrypoint.sh
+
+# Sin privilegios. Aquí no hace falta el baile de entrypoint+setpriv del
+# backend, porque este contenedor no monta ningún volumen: no hay datos ajenos
+# cuya propiedad haya que ceder al actualizar.
+#
+# El puerto SIGUE siendo el 80 a propósito. La alternativa habitual
+# —nginx-unprivileged en el 8080— obligaría a cambiar el "${PORT}:80" de los
+# tres composes y, peor, el de cualquiera que tenga el suyo propio: se
+# quedarían sin frontend al actualizar. No hace falta, porque Docker arranca los
+# contenedores con net.ipv4.ip_unprivileged_port_start=0 y un usuario normal
+# puede atar al 80. Si algún día se despliega en un runtime que no lo haga,
+# nginx fallará al arrancar con "permission denied" en el bind, que es ruidoso
+# y evidente — no un fallo silencioso.
+#
+# Lo que se escribe en cada arranque: la caché de nginx, el pid, sus logs, el
+# default.conf que genera envsubst y el env.js con la config del cliente.
+#
+# env.js se pre-crea para poder cedérselo suelto: dar /usr/share/nginx/html
+# entero dejaría el sitio estático escribible por el proceso que lo sirve, que
+# es justo lo que no interesa. Así el resto sigue siendo de solo lectura.
+RUN touch /var/run/nginx.pid /usr/share/nginx/html/env.js \
+    && chown -R nginx:nginx /var/cache/nginx /var/log/nginx /etc/nginx/conf.d \
+    && chown nginx:nginx /var/run/nginx.pid /usr/share/nginx/html/env.js
+USER nginx
+
 EXPOSE 80
 ENTRYPOINT ["/docker-entrypoint.sh"]
