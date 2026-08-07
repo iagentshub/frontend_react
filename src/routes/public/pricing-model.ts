@@ -19,6 +19,70 @@ export const SLOPE = (BIZ_START - FLOOR) / (ENT_THRESHOLD - 1);
 export type PlanKey = "free" | "rookie" | "developer" | "business" | "enterprise";
 export type Tier1 = "rookie" | "developer";
 
+export interface PlanInfo {
+  nameKey: string;
+  benefits: string[];
+  supportKey: string;
+  ctaType: string;
+}
+
+/**
+ * Metadatos de cada plan para el modal "calcula tu mejor plan".
+ *
+ * Vivía como constante local dentro de pricing-page.tsx, usada tanto por el
+ * modal (para pintar los beneficios del plan recomendado) como por el
+ * gestor de clic en la CTA (para saber qué formulario de contacto abrir).
+ * Al vivir aquí, ambos consumidores comparten una única fuente.
+ */
+export const PLANS: Record<PlanKey, PlanInfo> = {
+  free: {
+    nameKey: "plan_free",
+    benefits: ["svc_managed", "svc_updates"],
+    supportKey: "svc_community",
+    ctaType: "free",
+  },
+  rookie: {
+    nameKey: "plan_starter",
+    benefits: ["svc_managed", "svc_updates", "svc_groups", "svc_training_basic"],
+    supportKey: "svc_community",
+    ctaType: "free",
+  },
+  developer: {
+    nameKey: "plan_dev",
+    benefits: ["svc_managed", "svc_updates", "svc_groups", "svc_backups", "svc_training_mid"],
+    supportKey: "svc_support_direct",
+    ctaType: "plan_dev",
+  },
+  business: {
+    nameKey: "plan_biz",
+    benefits: [
+      "svc_managed",
+      "svc_updates",
+      "svc_groups",
+      "svc_backups",
+      "svc_admin_panel",
+      "svc_onboarding",
+      "svc_discounts_training",
+    ],
+    supportKey: "svc_support_direct",
+    ctaType: "plan_biz",
+  },
+  enterprise: {
+    nameKey: "plan_ent",
+    benefits: [
+      "svc_managed",
+      "svc_updates",
+      "svc_groups",
+      "svc_backups",
+      "svc_admin_panel",
+      "svc_onboarding",
+      "svc_discounts_training",
+    ],
+    supportKey: "svc_support_direct",
+    ctaType: "plan_ent",
+  },
+};
+
 /** Importe con símbolo, en formato español: €9 · €4,50 */
 export function fmt(num: number): string {
   const r = Math.round(num * 100) / 100;
@@ -27,7 +91,12 @@ export function fmt(num: number): string {
 
 /** Importe redondeado a entero, con punto de millares: €4.000 */
 export function fmtInt(num: number): string {
-  return "€" + Math.round(num).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  return (
+    "€" +
+    Math.round(num)
+      .toString()
+      .replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+  );
 }
 
 /**

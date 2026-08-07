@@ -5,6 +5,7 @@ import {
   ENT_THRESHOLD,
   FLOOR,
   MONTHS_ANNUAL,
+  PLANS,
   SH_ANNUAL,
   SH_MONTHLY,
   SLOPE,
@@ -13,6 +14,7 @@ import {
   planForN,
   ppl,
   totals,
+  type PlanKey,
 } from "./pricing-model";
 
 describe("ppl — precio por licencia", () => {
@@ -118,5 +120,27 @@ describe("formato español", () => {
 
   it("el precio del suelo se muestra como €4,50", () => {
     expect(fmt(FLOOR)).toBe("€4,50");
+  });
+});
+
+describe("PLANS — metadatos compartidos por el modal y el CTA", () => {
+  const keys: PlanKey[] = ["free", "rookie", "developer", "business", "enterprise"];
+
+  it("tiene una entrada por cada PlanKey", () => {
+    expect(Object.keys(PLANS).sort()).toEqual([...keys].sort());
+  });
+
+  it("cada plan trae al menos un beneficio", () => {
+    for (const key of keys) {
+      expect(PLANS[key].benefits.length).toBeGreaterThan(0);
+    }
+  });
+
+  it("cada ctaType tiene una clave de traducción de título de contacto salvo los planes gratuitos", () => {
+    for (const key of keys) {
+      const { ctaType } = PLANS[key];
+      if (ctaType === "free") continue;
+      expect(ctaType).toMatch(/^plan_(dev|biz|ent)$/);
+    }
   });
 });
