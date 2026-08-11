@@ -27,9 +27,7 @@ describe("PublicHeader", () => {
 
   it("muestra la etiqueta recibida", () => {
     const { container } = renderHeader();
-    expect(container.querySelector(".about-header-label")).toHaveTextContent(
-      "Sobre nosotros",
-    );
+    expect(container.querySelector(".about-header-label")).toHaveTextContent("Sobre nosotros");
   });
 
   it("no duplica la flecha del enlace a Dashboard", () => {

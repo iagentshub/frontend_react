@@ -40,16 +40,7 @@ await i18n.use(initReactI18next).init({
   defaultNS: "common",
   nsSeparator: ".",
   keySeparator: ".",
-  ns: [
-    "common",
-    "about",
-    "landing",
-    "pricing",
-    "docs",
-    "support",
-    "seo",
-    "legal",
-  ],
+  ns: ["common", "about", "landing", "pricing", "docs", "support", "seo", "legal"],
   interpolation: { escapeValue: false },
   react: { useSuspense: false },
 });
