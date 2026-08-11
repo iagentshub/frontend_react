@@ -4,8 +4,20 @@
   },
   "hero": {
     "badge": "Open source · Self-hosted",
-    "headline": "Toda tu IA en un solo lugar",
-    "sub": "Crea y comparte agentes de IA conectados a tus propios proveedores —Claude, OpenAI, Gemini, Grok, Ollama y más—, cada uno con su propio conocimiento, memoria y herramientas. Despliega en tu propio servidor y mantén el control total de tus datos."
+    "headline": "Tus agentes de IA. Tus claves. Tu servidor.",
+    "sub": "Crea agentes especializados, conéctalos a los modelos que ya pagas y despliégalo todo en tu propia infraestructura. Ni un dato sale a la nube.",
+    "install_label": "O instálalo en tu servidor:",
+    "providers_label": "Compatible con"
+  },
+  "how": {
+    "eyebrow": "Cómo funciona",
+    "title": "De cero a tu primer agente en tres pasos",
+    "install_title": "Instala",
+    "install_body": "Un comando en tu servidor. Elige Docker o compilación directa desde GitHub; el instalador se encarga del resto.",
+    "connect_title": "Conecta tus claves",
+    "connect_body": "Añade las claves de API de los proveedores que ya usas. Se guardan en tu instancia y nunca viajan a ningún sitio.",
+    "build_title": "Crea tus agentes",
+    "build_body": "Dales conocimiento, memoria y skills, compártelos con tu equipo y expórtalos a las herramientas donde ya trabajas."
   },
   "stats": {
     "providers": "Proveedores",

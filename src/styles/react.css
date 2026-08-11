@@ -81,6 +81,16 @@
   /* Texto en acento sobre un fondo --accent-dim: en claro hay que oscurecerlo,
      en oscuro hay que aclararlo. El acento puro se queda en 4.3:1. */
   --public-accent-text: var(--public-accent-solid);
+  /* Banda a sangre completa: en claro invierte el contraste de la página. */
+  --public-band-bg: #16181b;
+  --public-band-ink: #f5f5f7;
+  --public-band-ink-2: rgba(245, 245, 247, 0.76);
+  --public-band-ink-3: rgba(245, 245, 247, 0.62);
+  --public-band-line: rgba(255, 255, 255, 0.12);
+  --public-band-line-strong: rgba(255, 255, 255, 0.2);
+  --public-band-surface: rgba(255, 255, 255, 0.05);
+  --public-band-surface-2: rgba(255, 255, 255, 0.08);
+  --public-band-surface-3: rgba(255, 255, 255, 0.13);
 }
 
 [data-theme^="dark"] :is(body.about-page, body.docs-page, body.legal-page),
@@ -89,6 +99,17 @@
   --ink-3: rgba(242, 242, 242, 0.56);
   --line: rgba(255, 255, 255, 0.09);
   --public-accent-text: var(--accent-2);
+  /* En modo oscuro la página ya es oscura: la banda baja a negro puro y se
+     separa con borde en vez de invertirse. */
+  --public-band-bg: #000;
+  --public-band-ink: var(--ink);
+  --public-band-ink-2: rgba(242, 242, 242, 0.72);
+  --public-band-ink-3: rgba(242, 242, 242, 0.56);
+  --public-band-line: rgba(255, 255, 255, 0.1);
+  --public-band-line-strong: rgba(255, 255, 255, 0.18);
+  --public-band-surface: #101010;
+  --public-band-surface-2: #171717;
+  --public-band-surface-3: #212121;
 }
 
 .public-icon,

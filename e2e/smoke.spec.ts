@@ -27,7 +27,7 @@ test("la landing carga y enlaza con Flutter bajo /app", async ({ page }) => {
   });
   await page.goto("/");
   await expect(page.getByRole("heading", { level: 1 })).toContainText(
-    "Toda tu IA en un solo lugar",
+    "Tus agentes de IA. Tus claves. Tu servidor.",
   );
   await expect(page.locator('a[href="/app/login"]').first()).toBeVisible();
   expect(errors).toEqual([]);
@@ -38,10 +38,12 @@ test("los enlaces públicos abren About y Documentación", async ({ page }) => {
   // la consulta de plataforma está pendiente y rehace el DOM. Sin esperar a que
   // esa petición termine, el clic apunta a un nodo ya reemplazado.
   await page.goto("/", { waitUntil: "networkidle" });
-  await page.locator('a[href="/about"]').click();
+  await page.locator('a[href="/about"]').first().click();
   await expect(page.getByRole("heading", { level: 1 })).toContainText("¿Qué es iAgents Hub?");
 
+  // Documentación sale dos veces desde que la cabecera tiene navegación: en
+  // el nav y en el pie. Vale con la primera.
   await page.goto("/", { waitUntil: "networkidle" });
-  await page.getByRole("link", { name: "Documentación", exact: true }).click();
+  await page.getByRole("link", { name: "Documentación", exact: true }).first().click();
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Documentación");
 });

@@ -52,6 +52,27 @@
   letter-spacing: -0.02em;
 }
 
+/* La cabecera estaba vacía salvo el logo y un botón: una página sin
+   navegación no parece un producto, parece una página suelta. */
+.landing-nav {
+  display: flex;
+  align-items: center;
+  gap: var(--s-6);
+  margin-left: var(--s-8);
+}
+
+.landing-nav a {
+  color: var(--ink-2);
+  font-size: var(--t-small);
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.landing-nav a:hover {
+  color: var(--ink);
+}
+
 .landing-header-spacer {
   flex: 1;
 }
@@ -116,6 +137,64 @@
   max-width: 62ch;
   margin: 0 auto var(--s-8);
   text-align: left;
+}
+
+/* El primer botón de la página estaba a mil cien píxeles de scroll. */
+.landing-hero-actions {
+  display: flex;
+  justify-content: center;
+  gap: var(--s-3);
+  margin-bottom: var(--s-8);
+}
+
+/* Ancho suficiente para que el comando entre entero: cortado a mitad de la
+   URL parece roto, y es justo el dato que se viene a copiar. */
+.landing-hero-install {
+  max-width: 780px;
+  margin: 0 auto var(--s-8);
+  text-align: left;
+}
+
+/* Los nombres de los proveedores dicen de qué va el producto sin leer. */
+.landing-hero-providers {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: var(--s-2) var(--s-4);
+  margin-bottom: var(--s-12);
+}
+
+.landing-hero-providers-label {
+  color: var(--ink-3);
+  font-size: var(--t-label);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.landing-hero-providers ul {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-2) var(--s-4);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.landing-hero-providers li {
+  color: var(--ink-2);
+  font-size: var(--t-body);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.landing-hero-providers li + li::before {
+  content: "·";
+  margin-right: var(--s-4);
+  color: var(--ink-3);
+  font-weight: 400;
 }
 
 /* Cifras del hero: fila de datos, no tarjeta flotante. */
@@ -203,10 +282,34 @@
 /* ── Funcionalidades ──
    Sin min-height: el grid ya iguala las alturas de cada fila. La altura fija
    de 190px dejaba ochenta píxeles muertos en las tarjetas cortas. */
+/* Bento: las filas alternan [ancha, estrecha] y [estrecha, ancha]. Seis
+   tarjetas idénticas se escanean; así el ojo recorre un camino. Las tres
+   filas quedan completas con los hijos 1, 4 y 5 a doble columna. */
 .landing-feature-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: var(--s-3);
+}
+
+.landing-feature-card:nth-child(1),
+.landing-feature-card:nth-child(4),
+.landing-feature-card:nth-child(5) {
+  grid-column: span 2;
+}
+
+.landing-feature-card:nth-child(1) h3,
+.landing-feature-card:nth-child(4) h3,
+.landing-feature-card:nth-child(5) h3 {
+  font-size: 1.375rem;
+  line-height: 1.25;
+  letter-spacing: -0.025em;
+}
+
+.landing-feature-card:nth-child(1) p,
+.landing-feature-card:nth-child(4) p,
+.landing-feature-card:nth-child(5) p {
+  font-size: var(--t-body);
+  max-width: 52ch;
 }
 
 .landing-feature-card {
@@ -248,6 +351,69 @@
   justify-content: center;
   gap: var(--s-3);
   margin-top: var(--s-8);
+}
+
+/* ── Cómo funciona ── */
+.landing-steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--s-8);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  counter-reset: none;
+}
+
+.landing-step {
+  padding-top: var(--s-4);
+  border-top: 2px solid var(--public-edge);
+}
+
+.landing-step-num {
+  display: block;
+  margin-bottom: var(--s-2);
+  color: var(--accent);
+  font-size: 1.5rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+}
+
+.landing-step h3 {
+  margin: 0 0 var(--s-2);
+  font-size: var(--t-h3);
+  letter-spacing: -0.01em;
+}
+
+.landing-step p {
+  margin: 0;
+  color: var(--ink-2);
+  font-size: var(--t-small);
+  line-height: 1.6;
+}
+
+/* ── Banda a sangre completa ──
+   Redefinir aquí los tokens del tema es lo que hace que la tarjeta, los
+   bordes y los botones fantasma de dentro se adapten solos, sin una sola
+   regla por componente. --accent pasa a --accent-2 porque el acento puro
+   no llega a 4.5:1 sobre un fondo tan oscuro. */
+.landing-band {
+  background: var(--public-band-bg);
+  border-block: 1px solid var(--public-band-line);
+  color: var(--ink);
+  max-width: none;
+  margin-top: var(--s-16);
+  padding: var(--s-24) max(var(--gutter), calc((100% - var(--measure)) / 2 + var(--gutter)));
+  --ink: var(--public-band-ink);
+  --ink-2: var(--public-band-ink-2);
+  --ink-3: var(--public-band-ink-3);
+  --line: var(--public-band-line);
+  --line-strong: var(--public-band-line-strong);
+  --surface: var(--public-band-surface);
+  --surface-2: var(--public-band-surface-2);
+  --surface-3: var(--public-band-surface-3);
+  --accent: var(--accent-2);
 }
 
 /* ── Instalación ── */
@@ -415,8 +581,26 @@
 
 /* ── Responsive ── */
 @media (max-width: 900px) {
+  .landing-nav {
+    display: none;
+  }
   .landing-feature-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  /* A dos columnas el bento se deshace: todas ocupan el mismo ancho. */
+  .landing-feature-card:nth-child(1),
+  .landing-feature-card:nth-child(4),
+  .landing-feature-card:nth-child(5) {
+    grid-column: span 2;
+  }
+  .landing-feature-card:nth-child(2),
+  .landing-feature-card:nth-child(3),
+  .landing-feature-card:nth-child(6) {
+    grid-column: span 2;
+  }
+  .landing-steps {
+    grid-template-columns: 1fr;
+    gap: var(--s-6);
   }
   .landing-footer-inner {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -447,9 +631,21 @@
   .landing-feature-grid {
     grid-template-columns: 1fr;
   }
+  .landing-feature-card:nth-child(n) {
+    grid-column: auto;
+  }
+  .landing-feature-card:nth-child(1) h3,
+  .landing-feature-card:nth-child(4) h3,
+  .landing-feature-card:nth-child(5) h3 {
+    font-size: var(--t-h3);
+  }
+  .landing-hero-actions,
   .landing-section-actions {
     align-items: stretch;
     flex-direction: column;
+  }
+  .landing-band {
+    padding: var(--s-16) var(--s-4);
   }
   .landing-install {
     padding: var(--s-6);

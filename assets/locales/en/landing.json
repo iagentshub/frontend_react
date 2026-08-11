@@ -4,8 +4,20 @@
   },
   "hero": {
     "badge": "Open source · Self-hosted",
-    "headline": "All your AI in one place",
-    "sub": "Build and share AI agents connected to your own providers — Claude, OpenAI, Gemini, Grok, Ollama and more — each with its own knowledge, memory and tools. Self-host it on your own server and keep full control of your data."
+    "headline": "Your AI agents. Your keys. Your server.",
+    "sub": "Build specialised agents, connect them to the models you already pay for, and deploy the whole thing on your own infrastructure. Not one byte leaves for the cloud.",
+    "install_label": "Or install it on your server:",
+    "providers_label": "Works with"
+  },
+  "how": {
+    "eyebrow": "How it works",
+    "title": "From zero to your first agent in three steps",
+    "install_title": "Install",
+    "install_body": "One command on your server. Pick Docker or a direct build from GitHub; the installer handles the rest.",
+    "connect_title": "Connect your keys",
+    "connect_body": "Add the API keys of the providers you already use. They stay in your instance and never travel anywhere.",
+    "build_title": "Build your agents",
+    "build_body": "Give them knowledge, memory and skills, share them with your team and export them to the tools you already work in."
   },
   "stats": {
     "providers": "Providers",

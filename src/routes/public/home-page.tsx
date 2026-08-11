@@ -21,6 +21,9 @@ const homeFeatures = [
   "groups",
   "export",
 ] as const;
+/** Nombres de marca: no se traducen, igual que "iAgentsHub". */
+const PROVIDERS = ["Claude", "OpenAI", "Gemini", "Grok", "Ollama"] as const;
+const HOW_STEPS = ["install", "connect", "build"] as const;
 
 export function HomePage() {
   const { t, i18n } = useTranslation();
@@ -62,10 +65,29 @@ export function HomePage() {
             <span>{t("common.brand.suffix")}</span>
           </Link>
 
+          <nav className="landing-nav" aria-label={t("common.footer.product")}>
+            <Link to={publicLink("/docs")}>{t("common.navigation.docs")}</Link>
+            {platform.data?.billing_enabled && (
+              <Link to={publicLink("/pricing/")}>{t("common.navigation.pricing")}</Link>
+            )}
+            <Link to={publicLink("/support")}>{t("common.navigation.support")}</Link>
+            <a
+              href="https://github.com/iagentshub/iAgents"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {t("common.github")}
+            </a>
+          </nav>
+
           <div className="landing-header-spacer" />
 
           <a className="btn btn-ghost btn-sm" href={appPath("/login")}>
             {t("about.header.login")}
+          </a>
+
+          <a className="btn btn-primary btn-sm" href={appPath("/register")}>
+            {t("landing.header.cta_register")}
           </a>
         </header>
 
@@ -75,6 +97,46 @@ export function HomePage() {
           <h1 className="landing-hero-title">{t("landing.hero.headline")}</h1>
 
           <p className="landing-hero-body">{t("landing.hero.sub")}</p>
+
+          <div className="landing-hero-actions">
+            <a className="btn btn-primary" href={appPath("/register")}>
+              {t("landing.header.cta_register")}
+            </a>
+            <Link className="btn btn-ghost" to={publicLink("/docs")}>
+              {t("landing.overview.docs_cta")}
+            </Link>
+          </div>
+
+          {/* El comando es el activo más concreto del producto: se enseña
+              arriba, no enterrado al final de la página. */}
+          <div className="landing-hero-install">
+            <span className="landing-install-os">{t("landing.hero.install_label")}</span>
+            <div className="landing-install-cmd">
+              <code className="landing-install-code" tabIndex={0}>
+                {INSTALL_COMMAND}
+              </code>
+              <button
+                className="btn btn-ghost btn-sm"
+                type="button"
+                onClick={() => void copyCommand()}
+              >
+                {copied ? t("landing.install.copied") : t("landing.install.copy")}
+              </button>
+            </div>
+          </div>
+
+          {/* Los proveedores estaban en la cuarta línea de un párrafo. Aquí
+              dicen de qué va el producto sin necesidad de leer. */}
+          <div className="landing-hero-providers">
+            <span className="landing-hero-providers-label">
+              {t("landing.hero.providers_label")}
+            </span>
+            <ul>
+              {PROVIDERS.map((provider) => (
+                <li key={provider}>{provider}</li>
+              ))}
+            </ul>
+          </div>
 
           <div className="landing-hero-stats">
             <div className="landing-hero-stat">
@@ -131,7 +193,27 @@ export function HomePage() {
           </div>
         </section>
 
-        <section className="landing-section">
+        <section className="landing-section" aria-labelledby="landing-how-title">
+          <div className="landing-section-intro">
+            <span className="landing-section-eyebrow">{t("landing.how.eyebrow")}</span>
+            <h2 id="landing-how-title">{t("landing.how.title")}</h2>
+          </div>
+
+          <ol className="landing-steps">
+            {HOW_STEPS.map((step, index) => (
+              <li className="landing-step" key={step}>
+                <span className="landing-step-num">{index + 1}</span>
+                <h3>{t(`landing.how.${step}_title`)}</h3>
+                <p>{t(`landing.how.${step}_body`)}</p>
+              </li>
+            ))}
+          </ol>
+        </section>
+
+        {/* Banda a sangre completa: un solo cambio de fondo en toda la página
+            rompe tres pantallas del mismo gris. Dentro se redefinen los tokens
+            del tema, así que la tarjeta y los botones se adaptan solos. */}
+        <section className="landing-band">
           <div className="landing-install">
             <div className="landing-install-title">{t("landing.install.title")}</div>
             <p className="landing-install-hint">{t("landing.install.hint")}</p>
