@@ -5,6 +5,9 @@ const publicRoutes = [
   ["about", "/about"],
   ["docs", "/docs"],
   ["pricing", "/pricing/"],
+  ["support", "/support"],
+  ["privacy", "/privacy"],
+  ["terms", "/terms"],
 ] as const;
 
 for (const language of ["es", "en"] as const) {
@@ -12,6 +15,10 @@ for (const language of ["es", "en"] as const) {
     test.describe(`${language}-${theme}`, () => {
       test.beforeEach(async ({ page }) => {
         await page.emulateMedia({ reducedMotion: "reduce" });
+        await page.route("https://fonts.googleapis.com/**", (route) =>
+          route.fulfill({ status: 200, contentType: "text/css", body: "" }),
+        );
+        await page.route("https://fonts.gstatic.com/**", (route) => route.abort());
         await page.addInitScript(
           ({ selectedLanguage, selectedTheme }) => {
             localStorage.setItem("ga-lang", selectedLanguage);
@@ -47,10 +54,10 @@ for (const language of ["es", "en"] as const) {
             fullPage: true,
             animations: "disabled",
             maxDiffPixelRatio: 0.005,
+            timeout: 15_000,
           });
         });
       }
     });
   }
 }
-

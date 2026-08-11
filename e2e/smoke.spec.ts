@@ -34,11 +34,14 @@ test("la landing carga y enlaza con Flutter bajo /app", async ({ page }) => {
 });
 
 test("los enlaces públicos abren About y Documentación", async ({ page }) => {
-  await page.goto("/");
+  // La landing se prerenderiza entera, pero al hidratar devuelve null mientras
+  // la consulta de plataforma está pendiente y rehace el DOM. Sin esperar a que
+  // esa petición termine, el clic apunta a un nodo ya reemplazado.
+  await page.goto("/", { waitUntil: "networkidle" });
   await page.locator('a[href="/about"]').click();
   await expect(page.getByRole("heading", { level: 1 })).toContainText("¿Qué es iAgents Hub?");
 
-  await page.goto("/");
+  await page.goto("/", { waitUntil: "networkidle" });
   await page.getByRole("link", { name: "Documentación", exact: true }).click();
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Documentación");
 });

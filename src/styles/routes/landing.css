@@ -1,315 +1,469 @@
+/* Estilos propios de la landing React, autocontenidos.
+   Usa el sistema de tokens públicos de src/styles/react.css. */
 
-        /* Estilos propios de la landing React, autocontenidos. */
-        .landing-page {
-            display: none;
-        }
+/* El bloque arranca oculto y home-page.tsx lo muestra con estilo en línea:
+   evita el destello de contenido antes de saber si la landing está activa. */
+.landing-page {
+  display: none;
+  min-height: 100vh;
+  background: var(--bg);
+  font-size: var(--t-body);
+  line-height: 1.65;
+}
 
-        .landing-header {
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            padding: 0 28px;
-            height: 56px;
-            max-width: 1100px;
-            margin: 0 auto;
-            background: var(--topbar-bg);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-        }
+/* ── Header ──
+   El padding replica el borde izquierdo del contenido: (ancho - medida)/2
+   más la calle. Antes la cabecera medía 1100px, las secciones 960 y el hero
+   860, y el logo quedaba cien píxeles a la izquierda de las tarjetas. */
+.landing-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  height: 60px;
+  padding-inline: max(var(--gutter), calc((100% - var(--measure)) / 2 + var(--gutter)));
+  background: var(--topbar-bg);
+  border-bottom: 1px solid var(--line);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
 
-        /* Logo de marca: "iAgents" + "Hub" en píldora — idéntico al de
-           /login/ (.login-logo) y al del nav principal (.nav-logo-hub). */
-        .landing-logo {
-            display: inline-flex;
-            align-items: center;
-            font-size: 1rem;
-            font-weight: 700;
-            letter-spacing: -0.03em;
-            color: var(--ink);
-            text-decoration: none;
-            flex-shrink: 0;
-        }
+/* Logo de marca: "iAgents" + "Hub" en píldora — idéntico al de /login/
+   (.login-logo) y al del nav principal (.nav-logo-hub). */
+.landing-logo {
+  display: inline-flex;
+  align-items: center;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+  text-decoration: none;
+  flex-shrink: 0;
+}
 
-        .landing-logo span {
-            color: #fff;
-            background: var(--accent);
-            border-radius: var(--radius-sm);
-            padding: 0.06em 0.3em 0.1em;
-            margin-left: 4px;
-            letter-spacing: -0.02em;
-        }
+.landing-logo span {
+  color: #fff;
+  background: var(--public-accent-solid);
+  border-radius: var(--radius-sm);
+  padding: 0.06em 0.3em 0.1em;
+  margin-left: 4px;
+  letter-spacing: -0.02em;
+}
 
-        .landing-header-spacer {
-            flex: 1;
-        }
+.landing-header-spacer {
+  flex: 1;
+}
 
-        .landing-lang-btn {
-            background: var(--surface-2);
-            border: 1px solid var(--line);
-            color: var(--ink-2);
-            font-size: 11px;
-            font-weight: 700;
-            letter-spacing: 0.06em;
-            padding: 4px 10px;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: background 0.15s, color 0.15s;
-        }
+.landing-lang-btn {
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  color: var(--ink-2);
+  font-size: var(--t-label);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  padding: var(--s-1) var(--s-3);
+  border-radius: 6px;
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    color 0.15s;
+}
 
-        .landing-lang-btn:hover {
-            background: var(--surface-3);
-            color: var(--ink);
-        }
+.landing-lang-btn:hover {
+  background: var(--surface-3);
+  color: var(--ink);
+}
 
-        .landing-hero {
-            max-width: 760px;
-            margin: 0 auto;
-            padding: 64px 32px 40px;
-            text-align: center;
-        }
+/* ── Hero ── */
+.landing-hero {
+  max-width: var(--measure);
+  margin: 0 auto;
+  padding: var(--s-24) var(--gutter) var(--s-16);
+  text-align: center;
+}
 
-        .landing-hero-badge {
-            display: inline-block;
-            padding: 5px 12px;
-            border-radius: 999px;
-            background: var(--accent-dim);
-            color: var(--accent);
-            font-size: 12px;
-            font-weight: 700;
-            letter-spacing: 0.02em;
-            margin-bottom: 20px;
-        }
+.landing-hero-badge {
+  display: inline-block;
+  padding: var(--s-1) var(--s-3);
+  border-radius: 999px;
+  border: 1px solid var(--public-edge);
+  background: var(--accent-dim);
+  color: var(--accent);
+  font-size: var(--t-label);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: var(--s-6);
+}
 
-        .landing-hero-title {
-            font-size: 42px;
-            font-weight: 800;
-            line-height: 1.15;
-            margin-bottom: 16px;
-        }
+.landing-hero-title {
+  font-size: var(--t-display);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.045em;
+  text-wrap: balance;
+  margin-bottom: var(--s-6);
+}
 
-        .landing-hero-body {
-            font-size: 17px;
-            color: var(--ink-2);
-            line-height: 1.6;
-            margin-bottom: 32px;
-        }
+/* Alineado a la izquierda dentro de una columna centrada: el párrafo ocupa
+   tres líneas y centrarlo obliga a buscar el inicio de cada renglón. */
+.landing-hero-body {
+  font-size: 1.0625rem;
+  color: var(--ink-2);
+  line-height: 1.7;
+  max-width: 62ch;
+  margin: 0 auto var(--s-8);
+  text-align: left;
+}
 
-        /* Estadísticas del hero (copiadas de /login/: .login-stats) */
-        .landing-hero-stats {
-            display: flex;
-            justify-content: center;
-            gap: 0;
-        }
+/* Cifras del hero: fila de datos, no tarjeta flotante. */
+.landing-hero-stats {
+  display: flex;
+  justify-content: center;
+  width: fit-content;
+  margin: 0 auto;
+  padding-top: var(--s-6);
+  border-top: 1px solid var(--line);
+}
 
-        .landing-hero-stat {
-            display: flex;
-            flex-direction: column;
-            gap: 3px;
-            padding: 0 28px;
-            border-right: 1px solid var(--line);
-        }
+.landing-hero-stat {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-1);
+  padding: 0 var(--s-8);
+  border-right: 1px solid var(--line);
+}
 
-        .landing-hero-stat:last-child {
-            border-right: none;
-        }
+.landing-hero-stat:last-child {
+  border-right: none;
+}
 
-        .landing-hero-stat-num {
-            font-size: 1.6rem;
-            font-weight: 800;
-            letter-spacing: -0.03em;
-            color: var(--ink);
-        }
+.landing-hero-stat-num {
+  font-size: 1.75rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+}
 
-        .landing-hero-stat-accent {
-            color: var(--accent);
-        }
+.landing-hero-stat-accent {
+  color: var(--accent);
+}
 
-        .landing-hero-stat-label {
-            font-size: 10.5px;
-            color: var(--ink-3);
-            text-transform: uppercase;
-            letter-spacing: 0.07em;
-            font-weight: 600;
-        }
+.landing-hero-stat-label {
+  font-size: var(--t-label);
+  color: var(--ink-3);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+}
 
-        .landing-section {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 24px 32px;
-        }
+/* ── Secciones ── */
+.landing-section {
+  max-width: var(--measure);
+  margin: 0 auto;
+  padding: var(--s-16) var(--gutter);
+}
 
-        .landing-section-intro {
-            max-width: 720px;
-            margin: 0 auto 24px;
-            text-align: center;
-        }
+.landing-section-intro {
+  margin: 0 auto var(--s-8);
+  text-align: center;
+}
 
-        .landing-section-eyebrow {
-            display: block;
-            margin-bottom: 8px;
-            color: var(--accent);
-            font-size: 12px;
-            font-weight: 700;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-        }
+/* Sin píldora: la única de la página es la del hero. Repetirla en cada
+   sección es lo que hace que una página parezca una plantilla. */
+.landing-section-eyebrow {
+  display: block;
+  margin-bottom: var(--s-3);
+  color: var(--accent);
+  font-size: var(--t-label);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
 
-        .landing-section-intro h2 {
-            margin: 0;
-            font-size: clamp(24px, 4vw, 36px);
-            line-height: 1.15;
-        }
+.landing-section-intro h2 {
+  margin: 0;
+  font-size: var(--t-h2);
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 1.15;
+  text-wrap: balance;
+}
 
-        .landing-section-intro p {
-            margin: 12px auto 0;
-            color: var(--ink-2);
-            line-height: 1.7;
-        }
+.landing-section-intro p {
+  margin: var(--s-4) auto 0;
+  max-width: 62ch;
+  color: var(--ink-2);
+  line-height: 1.7;
+  text-align: left;
+}
 
-        .landing-feature-grid {
-            display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 12px;
-        }
+/* ── Funcionalidades ──
+   Sin min-height: el grid ya iguala las alturas de cada fila. La altura fija
+   de 190px dejaba ochenta píxeles muertos en las tarjetas cortas. */
+.landing-feature-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--s-3);
+}
 
-        .landing-feature-card {
-            padding: 20px;
-            border: 1px solid var(--line);
-            border-radius: var(--radius-lg);
-            background: var(--surface);
-        }
+.landing-feature-card {
+  padding: var(--s-6);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  transition: border-color 0.2s ease;
+}
 
-        .landing-feature-card h3 {
-            margin: 0 0 8px;
-            font-size: 15px;
-        }
+.landing-feature-card:hover {
+  border-color: var(--public-edge);
+}
 
-        .landing-feature-card p {
-            margin: 0;
-            color: var(--ink-2);
-            font-size: 13px;
-            line-height: 1.6;
-        }
+.landing-feature-icon {
+  margin-bottom: var(--s-3);
+}
 
-        .landing-section-actions {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 20px;
-        }
+.landing-feature-icon svg {
+  width: 20px;
+  height: 20px;
+}
 
-        .landing-install {
-            background: var(--surface);
-            border: 1px solid var(--line);
-            border-radius: var(--radius-lg);
-            padding: 24px;
-            margin-top: 12px;
-        }
+.landing-feature-card h3 {
+  margin: 0 0 var(--s-2);
+  font-size: var(--t-h3);
+  letter-spacing: -0.01em;
+}
 
-        .landing-install-title {
-            font-weight: 700;
-            margin-bottom: 6px;
-            font-size: 14px;
-        }
+.landing-feature-card p {
+  margin: 0;
+  color: var(--ink-2);
+  font-size: var(--t-small);
+  line-height: 1.6;
+}
 
-        .landing-install-hint {
-            color: var(--ink-2);
-            font-size: 13px;
-            margin-bottom: 14px;
-        }
+.landing-section-actions {
+  display: flex;
+  justify-content: center;
+  gap: var(--s-3);
+  margin-top: var(--s-8);
+}
 
-        .landing-install-modes {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 12px;
-            margin-top: 14px;
-            color: var(--ink-2);
-            font-size: 12px;
-        }
+/* ── Instalación ── */
+.landing-install {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: var(--s-8);
+}
 
-        .landing-install-modes p {
-            margin: 0;
-        }
+.landing-install-title {
+  font-weight: 700;
+  font-size: var(--t-h3);
+  letter-spacing: -0.01em;
+  margin-bottom: var(--s-1);
+}
 
-        .landing-install-modes strong {
-            color: var(--ink);
-        }
+.landing-install-hint {
+  color: var(--ink-2);
+  font-size: var(--t-small);
+  margin-bottom: var(--s-6);
+}
 
-        .landing-install-components {
-            margin: 12px 0 0;
-            color: var(--ink-2);
-            font-size: 12px;
-        }
+.landing-install-modes {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--s-3);
+  margin-top: var(--s-6);
+  color: var(--ink-2);
+  font-size: var(--t-small);
+}
 
-        .landing-install-commands {
-            display: grid;
-            gap: 12px;
-        }
+.landing-install-modes p {
+  margin: 0;
+}
 
-        .landing-install-os {
-            display: block;
-            color: var(--ink-2);
-            font-size: 12px;
-            font-weight: 600;
-            margin-bottom: 5px;
-        }
+.landing-install-modes strong {
+  color: var(--ink);
+}
 
-        .landing-install-cmd {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background: var(--surface-2);
-            border-radius: var(--radius);
-            padding: 12px 14px;
-        }
+.landing-install-components {
+  margin: var(--s-3) 0 0;
+  color: var(--ink-2);
+  font-size: var(--t-small);
+}
 
-        .landing-install-code {
-            flex: 1;
-            font-family: var(--font-mono);
-            font-size: 13px;
-            color: var(--ink);
-            overflow-x: auto;
-            white-space: nowrap;
-        }
+/* Igual que en el código: los hijos de un grid tampoco bajan de su ancho de
+   contenido sin min-width: 0, y el comando de instalación no cabe. */
+.landing-install-commands {
+  display: grid;
+  gap: var(--s-3);
+  min-width: 0;
+}
 
-        @media (max-width: 640px) {
-            .landing-install-modes {
-                grid-template-columns: 1fr;
-            }
-        }
+.landing-install-commands > div {
+  min-width: 0;
+}
 
-        .landing-footer {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 32px 32px 48px;
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            justify-content: center;
-            flex-wrap: wrap;
-            color: var(--ink-2);
-            font-size: 13px;
-        }
+.landing-install-os {
+  display: block;
+  color: var(--ink-2);
+  font-size: var(--t-small);
+  font-weight: 600;
+  margin-bottom: var(--s-1);
+}
 
-        .landing-footer a {
-            color: var(--ink-2);
-        }
+.landing-install-cmd {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  gap: var(--s-3);
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: var(--s-3) var(--s-4);
+  transition: border-color 0.2s ease;
+}
 
-        .landing-footer a:hover {
-            color: var(--accent);
-        }
+.landing-install-cmd:focus-within,
+.landing-install-cmd:hover {
+  border-color: var(--public-edge);
+}
 
-        @media (max-width: 720px) {
-            .landing-feature-grid {
-                grid-template-columns: 1fr;
-            }
+/* min-width: 0 es obligatorio: sin él un hijo flex no baja de su ancho de
+   contenido, y como el comando va en nowrap empujaba la página entera más
+   ancha que la ventana. El overflow: hidden que había antes en .landing-page
+   tapaba el síntoma en vez de arreglarlo. */
+.landing-install-code {
+  flex: 1;
+  min-width: 0;
+  font-family: var(--font-mono);
+  font-size: var(--t-small);
+  color: var(--ink);
+  overflow-x: auto;
+  white-space: nowrap;
+}
 
-            .landing-section-actions {
-                align-items: stretch;
-                flex-direction: column;
-            }
-        }
-    
+/* ── Footer ──
+   Tres columnas con encabezado, no una fila de nueve enlaces centrados. */
+.landing-footer {
+  border-top: 1px solid var(--line);
+  margin-top: var(--s-16);
+}
+
+.landing-footer-inner {
+  max-width: var(--measure);
+  margin: 0 auto;
+  padding: var(--s-16) var(--gutter) var(--s-8);
+  display: grid;
+  grid-template-columns: 1.4fr repeat(3, minmax(0, 1fr));
+  gap: var(--s-8);
+}
+
+.landing-footer-brand {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+  align-items: flex-start;
+}
+
+.landing-footer-tagline {
+  color: var(--ink-3);
+  font-size: var(--t-small);
+  max-width: 30ch;
+}
+
+.landing-footer-col {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+}
+
+.landing-footer-heading {
+  color: var(--ink);
+  font-size: var(--t-label);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: var(--s-1);
+}
+
+.landing-footer-col a {
+  color: var(--ink-2);
+  font-size: var(--t-small);
+  text-decoration: none;
+  width: fit-content;
+}
+
+.landing-footer-col a:hover {
+  color: var(--accent);
+}
+
+.landing-footer-bottom {
+  max-width: var(--measure);
+  margin: 0 auto;
+  padding: var(--s-4) var(--gutter) var(--s-12);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-4);
+  border-top: 1px solid var(--line);
+  color: var(--ink-3);
+  font-size: var(--t-small);
+}
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .landing-feature-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .landing-footer-inner {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--s-8) var(--s-6);
+  }
+}
+
+@media (max-width: 640px) {
+  .landing-header {
+    padding-inline: var(--s-4);
+  }
+  .landing-hero {
+    padding: var(--s-16) var(--s-4) var(--s-12);
+  }
+  .landing-hero-body {
+    font-size: var(--t-body);
+  }
+  .landing-hero-stats {
+    width: 100%;
+  }
+  .landing-hero-stat {
+    flex: 1;
+    padding-inline: var(--s-3);
+  }
+  .landing-section {
+    padding: var(--s-12) var(--s-4);
+  }
+  .landing-feature-grid {
+    grid-template-columns: 1fr;
+  }
+  .landing-section-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+  .landing-install {
+    padding: var(--s-6);
+  }
+  .landing-install-modes {
+    grid-template-columns: 1fr;
+  }
+  .landing-footer-inner {
+    grid-template-columns: 1fr;
+    padding: var(--s-12) var(--s-4) var(--s-6);
+  }
+  .landing-footer-bottom {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: var(--s-4) var(--s-4) var(--s-12);
+  }
+}

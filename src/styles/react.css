@@ -25,3 +25,103 @@
     transform: rotate(360deg);
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   Sistema visual de las páginas públicas.
+
+   Tres escalas y una medida. Todo lo que las seis páginas usan para
+   componerse sale de aquí; los CSS por ruta consumen estos tokens y no
+   inventan valores nuevos. Los colores siguen saliendo del tema activo.
+   ═══════════════════════════════════════════════════════════════════════ */
+:root {
+  /* Medida única: cabecera, contenido y pie de cada página comparten ancho.
+     Antes cada página usaba el suyo (1100/960/860 en la landing sola) y el
+     logo no caía sobre la primera columna del contenido. */
+  --measure: 1080px;
+  /* Precios compara cinco planes en paralelo y necesita más sitio. Es la
+     única excepción, y su cabecera se alinea con esta medida, no con la otra. */
+  --measure-wide: 1280px;
+  --gutter: 24px;
+
+  /* Escala tipográfica: seis pasos. Había once tamaños en uso, con 12.5px y
+     10.5px entre medias. */
+  --t-display: clamp(2.25rem, 5vw, 3.25rem);
+  --t-h2: clamp(1.5rem, 3vw, 1.875rem);
+  --t-h3: 1.0625rem;
+  --t-body: 0.9375rem;
+  --t-small: 0.8125rem;
+  --t-label: 0.6875rem;
+
+  /* Espaciado en múltiplos de 4. Entre secciones --s-24, dentro de sección
+     --s-6, dentro de tarjeta --s-3. */
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-6: 24px;
+  --s-8: 32px;
+  --s-12: 48px;
+  --s-16: 64px;
+  --s-24: 96px;
+
+  --public-edge: color-mix(in srgb, var(--accent) 24%, var(--line));
+  /* El acento puro sobre blanco se queda en 3.6:1 con el azul oscuro. Al 62%
+     los ocho temas pasan de 4.5:1. */
+  --public-accent-solid: color-mix(in srgb, var(--accent) 62%, #000);
+}
+
+/* Los grises apagados del tema (--ink-2 al 0.54, --ink-3 al 0.32) no llegan a
+   4.5:1 en ninguno de los dos modos. Se refuerzan solo dentro de las páginas
+   públicas para no alterar la app privada, que tiene otro contexto de uso. */
+[data-theme^="light"] :is(body.about-page, body.docs-page, body.legal-page),
+[data-theme^="light"] :is(body.support-page, body.pricing-page, .landing-page) {
+  --ink-2: rgba(28, 28, 30, 0.74);
+  --ink-3: rgba(28, 28, 30, 0.64);
+  --line: rgba(0, 0, 0, 0.1);
+  /* Texto en acento sobre un fondo --accent-dim: en claro hay que oscurecerlo,
+     en oscuro hay que aclararlo. El acento puro se queda en 4.3:1. */
+  --public-accent-text: var(--public-accent-solid);
+}
+
+[data-theme^="dark"] :is(body.about-page, body.docs-page, body.legal-page),
+[data-theme^="dark"] :is(body.support-page, body.pricing-page, .landing-page) {
+  --ink-2: rgba(242, 242, 242, 0.72);
+  --ink-3: rgba(242, 242, 242, 0.56);
+  --line: rgba(255, 255, 255, 0.09);
+  --public-accent-text: var(--accent-2);
+}
+
+.public-icon,
+.landing-feature-icon,
+.about-feature-icon,
+.docs-summary-icon,
+.legal-title-icon {
+  display: inline-grid;
+  place-items: center;
+  color: var(--accent);
+}
+
+.public-icon svg,
+.landing-feature-icon svg,
+.about-feature-icon svg,
+.docs-summary-icon svg,
+.legal-title-icon svg {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+:where(a, button, summary, input, textarea, select):focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

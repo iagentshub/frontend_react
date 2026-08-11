@@ -2,6 +2,7 @@ import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { Seo } from "@/components/seo";
 import { PublicHeader } from "@/components/public-header";
+import { PublicIcon } from "@/components/public-icons";
 import { usePublicNavigation } from "@/i18n/public-paths";
 import { hasPlaceholders, LEGAL_DOCUMENTS, type LegalDocument } from "./legal-model";
 import { useBodyClass } from "./use-body-class";
@@ -51,7 +52,12 @@ export function LegalPage({ document }: { document: LegalDocument }) {
 
       <main className="legal-main">
         <article className="legal-doc">
-          <h1 className="legal-title">{t(key("title"))}</h1>
+          <h1 className="legal-title">
+            <span className="legal-title-icon">
+              <PublicIcon name="legal" />
+            </span>
+            {t(key("title"))}
+          </h1>
 
           <p className="legal-updated">
             {t("legal.updated_label")}: {t(key("updated"))}
@@ -89,9 +95,7 @@ export function LegalPage({ document }: { document: LegalDocument }) {
           })}
 
           <nav className="legal-nav">
-            <Link to={publicLink(LEGAL_DOCUMENTS[other].path)}>
-              {t(`legal.${other}.title`)}
-            </Link>
+            <Link to={publicLink(LEGAL_DOCUMENTS[other].path)}>{t(`legal.${other}.title`)}</Link>
             <Link to={publicLink("/")}>{t("legal.back")}</Link>
           </nav>
         </article>

@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import type { TFunction } from "i18next";
 import { Seo } from "@/components/seo";
 import { PublicHeader } from "@/components/public-header";
+import { PublicIcon } from "@/components/public-icons";
 import { useBodyClass } from "./use-body-class";
 import "@/styles/routes/docs/docs.css";
 
@@ -75,7 +76,14 @@ export function DocsPage() {
                     if (event.currentTarget.open) setOpen(id);
                   }}
                 >
-                  <summary>{t(`docs.sections.${key}`)}</summary>
+                  <summary>
+                    <span className="docs-summary-label">
+                      <span className="docs-summary-icon">
+                        <PublicIcon name={key} />
+                      </span>
+                      {t(`docs.sections.${key}`)}
+                    </span>
+                  </summary>
                   <div className="docs-section-body">
                     <SectionContent section={key} t={t} />
                   </div>

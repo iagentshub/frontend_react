@@ -19,8 +19,8 @@ html body.pricing-page {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 0 28px;
-  height: 56px;
+  padding-inline: max(var(--gutter), calc((100% - var(--measure-wide)) / 2 + var(--gutter)));
+  height: 60px;
   background: var(--topbar-bg);
   border-bottom: 1px solid var(--line);
   backdrop-filter: blur(12px);
@@ -37,7 +37,7 @@ html body.pricing-page {
 }
 
 .pr-logo span {
-  background: var(--accent);
+  background: var(--public-accent-solid);
   color: #fff;
   border-radius: 5px;
   padding: 0.05em 0.28em 0.08em;
@@ -91,7 +91,7 @@ html body.pricing-page {
   text-decoration: none;
   padding: 7px 16px;
   border-radius: 8px;
-  background: var(--accent);
+  background: var(--public-accent-solid);
   transition: opacity 0.15s;
   white-space: nowrap;
   flex-shrink: 0;
@@ -103,9 +103,9 @@ html body.pricing-page {
 
 /* ── Main ── */
 .pr-main {
-  max-width: 1320px;
+  max-width: var(--measure-wide);
   margin: 0 auto;
-  padding: 56px 24px 80px;
+  padding: var(--s-16) var(--gutter) var(--s-24);
 }
 
 /* ── Hero ── */
@@ -228,9 +228,9 @@ html body.pricing-page {
 
 .pr-oss-cta {
   flex-shrink: 0;
-  font-size: 12px;
+  font-size: var(--t-small);
   font-weight: 600;
-  color: var(--accent);
+  color: var(--public-accent-text);
   text-decoration: none;
   white-space: nowrap;
   padding: 6px 12px;
@@ -338,7 +338,7 @@ html body.pricing-page {
   padding: 10px 16px;
   border-radius: 9px;
   border: none;
-  background: var(--accent);
+  background: var(--public-accent-solid);
   color: #fff;
   font-size: 13px;
   font-weight: 600;
@@ -447,7 +447,7 @@ html body.pricing-page {
 .pr-support-tag--hi {
   background: color-mix(in srgb, var(--accent) 8%, transparent);
   border-color: color-mix(in srgb, var(--accent) 30%, transparent);
-  color: var(--accent);
+  color: var(--public-accent-text);
 }
 
 .pr-calc-tbtn.active {
@@ -695,7 +695,9 @@ html body.pricing-page {
   padding: 4px 10px;
   border-radius: 6px;
   cursor: pointer;
-  transition: background 0.15s, color 0.15s;
+  transition:
+    background 0.15s,
+    color 0.15s;
 }
 
 .pr-lang-btn:hover {
@@ -1459,5 +1461,105 @@ html body.pricing-page {
   }
   .pr-hero-title {
     font-size: 1.9rem;
+  }
+}
+
+/* Visual refresh */
+html body.pricing-page {
+  background: var(--bg);
+}
+.pr-main {
+  padding-top: 72px;
+}
+.pr-hero {
+  position: relative;
+  margin-bottom: 44px;
+}
+.pr-hero-title {
+  font-size: clamp(2.35rem, 5vw, 3.8rem);
+  text-wrap: balance;
+}
+.pr-toggle {
+  box-shadow: var(--shadow);
+}
+.pr-oss {
+  border-color: var(--public-edge);
+  background: var(--surface);
+}
+.pr-oss svg {
+  color: var(--accent);
+}
+.pr-grid {
+  gap: 18px;
+}
+.pr-card {
+  position: relative;
+  border-radius: var(--radius-xl);
+  transition: border-color 0.22s ease;
+}
+.pr-card:hover {
+  border-color: var(--public-edge);
+}
+
+/* Plan destacado: cinco columnas idénticas obligan a leerlas todas para
+   decidir. El borde marcado y la etiqueta dan un punto de entrada. */
+.pr-card--featured {
+  border-color: var(--public-edge);
+  border-width: 1.5px;
+}
+
+.pr-card-badge {
+  position: absolute;
+  top: 0;
+  right: var(--s-6);
+  transform: translateY(-50%);
+  padding: 3px var(--s-2);
+  border-radius: 999px;
+  color: #fff;
+  background: var(--public-accent-solid);
+  font-size: var(--t-label);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.pr-plan-name {
+  font-size: 17px;
+}
+.pr-price {
+  color: var(--ink);
+}
+.pr-service-list li::before {
+  content: "✓";
+  width: 16px;
+  display: grid;
+  place-items: center;
+  color: var(--accent);
+  font-size: 10px;
+  font-weight: 800;
+}
+.pr-support-row {
+  border: 1px solid var(--line);
+}
+.pr-extras,
+.pr-byok,
+.pr-faq-list {
+  box-shadow: var(--shadow);
+}
+.pr-extra-icon {
+  color: var(--accent);
+}
+.pr-faq-item {
+  transition:
+    background 0.18s ease,
+    border-color 0.18s ease;
+}
+.pr-faq-item[open] {
+  background: var(--accent-dim);
+  border-color: var(--public-edge);
+}
+@media (max-width: 580px) {
+  .pr-main {
+    padding-top: 48px;
   }
 }

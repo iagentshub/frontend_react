@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { appPath } from "@/app/app-paths";
 import { platformQuery } from "@/api/public-queries";
 import { Seo } from "@/components/seo";
+import { PublicIcon } from "@/components/public-icons";
 import { usePublicNavigation } from "@/i18n/public-paths";
 import "@/styles/routes/landing.css";
 
@@ -108,7 +109,10 @@ export function HomePage() {
 
           <div className="landing-feature-grid">
             {homeFeatures.map((feature) => (
-              <article className="landing-feature-card" key={feature}>
+              <article className="landing-feature-card" key={feature} data-feature={feature}>
+                <span className="landing-feature-icon">
+                  <PublicIcon name={feature} />
+                </span>
                 <h3>{t(`landing.features.${feature}_title`)}</h3>
                 <p>{t(`landing.features.${feature}_body`)}</p>
               </article>
@@ -136,7 +140,12 @@ export function HomePage() {
               <div>
                 <span className="landing-install-os">{t("landing.install.unix_label")}</span>
                 <div className="landing-install-cmd">
-                  <code className="landing-install-code">{INSTALL_COMMAND}</code>
+                  {/* El comando desborda en pantallas estrechas y se
+                      desplaza en horizontal: WCAG exige que esa región se
+                      pueda alcanzar con el teclado. */}
+                  <code className="landing-install-code" tabIndex={0}>
+                    {INSTALL_COMMAND}
+                  </code>
                   <button
                     className="btn btn-ghost btn-sm"
                     type="button"
@@ -149,7 +158,9 @@ export function HomePage() {
               <div>
                 <span className="landing-install-os">{t("landing.install.windows_label")}</span>
                 <div className="landing-install-cmd">
-                  <code className="landing-install-code">{WINDOWS_INSTALL_COMMAND}</code>
+                  <code className="landing-install-code" tabIndex={0}>
+                    {WINDOWS_INSTALL_COMMAND}
+                  </code>
                   <button
                     className="btn btn-ghost btn-sm"
                     type="button"
@@ -176,27 +187,53 @@ export function HomePage() {
         </section>
 
         <footer className="landing-footer">
-          <Link to={publicLink("/about")}>{t("common.navigation.about")}</Link>
+          <div className="landing-footer-inner">
+            <div className="landing-footer-brand">
+              <Link className="landing-logo" to={publicLink("/")}>
+                {t("common.brand.prefix")}
+                <span>{t("common.brand.suffix")}</span>
+              </Link>
+              <p className="landing-footer-tagline">{t("landing.hero.badge")}</p>
+            </div>
 
-          <Link to={publicLink("/docs")}>{t("common.navigation.docs")}</Link>
+            <nav className="landing-footer-col" aria-label={t("common.footer.product")}>
+              <span className="landing-footer-heading">{t("common.footer.product")}</span>
+              <Link to={publicLink("/about")}>{t("common.navigation.about")}</Link>
+              <Link to={publicLink("/docs")}>{t("common.navigation.docs")}</Link>
+              {platform.data?.billing_enabled && (
+                <Link to={publicLink("/pricing/")}>{t("common.navigation.pricing")}</Link>
+              )}
+            </nav>
 
-          {platform.data?.billing_enabled && (
-            <Link to={publicLink("/pricing/")}>{t("common.navigation.pricing")}</Link>
-          )}
+            <nav className="landing-footer-col" aria-label={t("common.footer.resources")}>
+              <span className="landing-footer-heading">{t("common.footer.resources")}</span>
+              <Link to={publicLink("/support")}>{t("common.navigation.support")}</Link>
+              <a
+                href="https://github.com/iagentshub/iAgents"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {t("common.github")}
+              </a>
+            </nav>
 
-          <Link to={publicLink("/support")}>{t("common.navigation.support")}</Link>
+            <nav className="landing-footer-col" aria-label={t("common.footer.legal")}>
+              <span className="landing-footer-heading">{t("common.footer.legal")}</span>
+              <Link to={publicLink("/privacy")}>{t("common.navigation.privacy")}</Link>
+              <Link to={publicLink("/terms")}>{t("common.navigation.terms")}</Link>
+            </nav>
+          </div>
 
-          <Link to={publicLink("/privacy")}>{t("common.navigation.privacy")}</Link>
-
-          <Link to={publicLink("/terms")}>{t("common.navigation.terms")}</Link>
-
-          <a href="https://github.com/iagentshub/iAgents" target="_blank" rel="noopener noreferrer">
-            {t("common.github")}
-          </a>
-
-          <button className="landing-lang-btn" type="button" onClick={() => void switchLanguage()}>
-            {language.toUpperCase()}
-          </button>
+          <div className="landing-footer-bottom">
+            <span>{t("common.footer.rights")}</span>
+            <button
+              className="landing-lang-btn"
+              type="button"
+              onClick={() => void switchLanguage()}
+            >
+              {language.toUpperCase()}
+            </button>
+          </div>
         </footer>
       </div>
     </>

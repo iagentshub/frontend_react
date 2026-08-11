@@ -27,6 +27,8 @@ const CARDS: Array<{
   perMonthKey?: string;
   perYearKey?: string;
   from?: boolean;
+  /** Plan destacado. Cinco columnas idénticas no orientan a nadie. */
+  featured?: boolean;
 }> = [
   {
     id: "free",
@@ -60,6 +62,7 @@ const CARDS: Array<{
     annual: "€90",
     perMonthKey: "per_month",
     perYearKey: "per_year",
+    featured: true,
   },
   {
     id: "biz",
@@ -218,7 +221,9 @@ export function PricingPage() {
 
         <div className="pr-grid">
           {CARDS.map((card) => (
-            <div className="pr-card" key={card.id}>
+            <div className={`pr-card${card.featured ? " pr-card--featured" : ""}`} key={card.id}>
+              {card.featured && <span className="pr-card-badge">{t("pricing.recommended")}</span>}
+
               <div className="pr-card-head">
                 <div className="pr-plan-name">{t(`pricing.${card.nameKey}`)}</div>
 

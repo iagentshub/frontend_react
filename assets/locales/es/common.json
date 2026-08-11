@@ -13,6 +13,12 @@
     "terms": "Términos",
     "dashboard": "← Dashboard"
   },
+  "footer": {
+    "product": "Producto",
+    "resources": "Recursos",
+    "legal": "Legal",
+    "rights": "iAgentsHub — proyecto open source con licencia MIT"
+  },
   "github": "GitHub",
   "ui": {
     "unexpected_error": "Error inesperado"

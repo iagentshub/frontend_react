@@ -2,6 +2,7 @@ import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { Seo } from "@/components/seo";
 import { PublicHeader } from "@/components/public-header";
+import { PublicIcon, type PublicIconName } from "@/components/public-icons";
 import { useBodyClass } from "./use-body-class";
 import "@/styles/routes/about/about.css";
 
@@ -60,12 +61,17 @@ export function AboutPage() {
         </div>
 
         <div className="about-sections">
-          <section className="about-card">
-            <h2 className="about-card-title">{t("about.features.title")}</h2>
+          {/* Estas tres secciones no van en tarjeta: su contenido ya son
+              tarjetas. Una caja dentro de otra caja no aporta jerarquía. */}
+          <section className="about-section">
+            <h2 className="about-section-title">{t("about.features.title")}</h2>
 
             <div className="about-features-grid">
               {features.map((feature) => (
                 <div className="about-feature" key={feature}>
+                  <span className="about-feature-icon">
+                    <PublicIcon name={feature as PublicIconName} />
+                  </span>
                   <div className="about-feature-title">
                     {t(`landing.features.${feature}_title`)}
                   </div>
@@ -75,8 +81,8 @@ export function AboutPage() {
             </div>
           </section>
 
-          <section className="about-card">
-            <h2 className="about-card-title">{t("about.stack.title")}</h2>
+          <section className="about-section">
+            <h2 className="about-section-title">{t("about.stack.title")}</h2>
 
             <div className="about-stack-grid">
               {stack.map(([key, label]) => (
@@ -88,8 +94,8 @@ export function AboutPage() {
             </div>
           </section>
 
-          <section className="about-card">
-            <h2 className="about-card-title">{t("about.creators.title")}</h2>
+          <section className="about-section">
+            <h2 className="about-section-title">{t("about.creators.title")}</h2>
 
             <div className="about-creators-grid">
               {creators.map((creator) => (
