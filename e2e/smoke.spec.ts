@@ -27,8 +27,14 @@ test("la landing carga y enlaza con Flutter bajo /app", async ({ page }) => {
   });
   await page.goto("/");
   await expect(page.getByRole("heading", { level: 1 })).toContainText(
-    "Toda tu IA en un solo lugar",
+    "Agentes de IA que trabajan como un equipo",
   );
+  await expect(
+    page.getByRole("heading", {
+      level: 2,
+      name: "Un grupo de trabajo es mucho más que una carpeta compartida",
+    }),
+  ).toBeVisible();
   await expect(page.locator('a[href="/app/login"]').first()).toBeVisible();
   expect(errors).toEqual([]);
 });
@@ -39,11 +45,20 @@ test("los enlaces públicos abren About y Documentación", async ({ page }) => {
   // esa petición termine, el clic apunta a un nodo ya reemplazado.
   await page.goto("/", { waitUntil: "networkidle" });
   await page.locator('a[href="/about"]').first().click();
-  await expect(page.getByRole("heading", { level: 1 })).toContainText("¿Qué es iAgents Hub?");
+  await expect(page.getByRole("heading", { level: 1 })).toContainText(
+    "La IA de tu organización, trabajando en grupo",
+  );
 
   // Documentación sale dos veces desde que la cabecera tiene navegación: en
   // el nav y en el pie. Vale con la primera.
   await page.goto("/", { waitUntil: "networkidle" });
   await page.getByRole("link", { name: "Documentación", exact: true }).first().click();
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Documentación");
+});
+
+test("la documentación abre grupos desde el enlace contextual", async ({ page }) => {
+  await page.goto("/docs#teams");
+  const groups = page.locator("#teams details");
+  await expect(groups).toHaveAttribute("open", "");
+  await expect(groups).toContainText("orquestaciones LLM");
 });

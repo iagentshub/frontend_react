@@ -3,9 +3,9 @@
     "cta_register": "Create free account"
   },
   "hero": {
-    "badge": "Open source · Self-hosted",
-    "headline": "All your AI in one place",
-    "sub": "Build specialised agents, connect them to the models you already pay for, and deploy the whole thing on your own infrastructure. Not one byte leaves for the cloud.",
+    "badge": "Work groups · Open source · Self-hosted",
+    "headline": "AI agents that work as a team",
+    "sub": "Create a shared workspace where people and agents collaborate with the same knowledge, connections, workflows and access rules. Everything stays under your organisation's control.",
     "install_label": "Or install it on your server:",
     "providers_label": "Works with"
   },
@@ -25,9 +25,9 @@
     "private": "Private"
   },
   "overview": {
-    "eyebrow": "A complete AI agent platform",
-    "title": "Build, orchestrate and share agents without giving up control of your data",
-    "body": "Bring models, knowledge, memory, skills and teams together in an open source platform you can deploy on your own infrastructure.",
+    "eyebrow": "Your team's AI infrastructure",
+    "title": "Move from isolated agents to a coordinated work group",
+    "body": "Bring agents, people, models, knowledge, tools and workflows into a workspace with traceable ownership, permissions and usage.",
     "docs_cta": "Explore the documentation",
     "pricing_cta": "View plans"
   },
@@ -37,7 +37,7 @@
     "providers_title": "Provider connections",
     "providers_body": "Connect Claude, OpenAI, Gemini, Grok and Ollama with your own API keys. Switch providers without touching a line of your agents.",
     "groups_title": "Work groups",
-    "groups_body": "Share agents, knowledge and connections with your team through work groups, without duplicating anything or losing control.",
+    "groups_body": "Each group is an operational workspace: it brings together members, agents, connections, LLM orchestrations, workflows, knowledge, prompts, skills and tools without duplicating them.",
     "selfhosted_title": "Self-hosted",
     "selfhosted_body": "Your data never leaves your server. Deploy on your own infrastructure with a single command, with no external dependencies.",
     "knowledge_title": "Knowledge",
@@ -50,6 +50,23 @@
     "centinel_body": "An admin panel with a built-in test suite: verify your instance's health with one click before every deployment.",
     "export_title": "Export to local tools",
     "export_body": "Export your agents to the native format of Claude Code, GitHub Copilot or OpenAI Assistants. Build once, use them wherever you work."
+  },
+  "groups": {
+    "eyebrow": "What sets iAgents Hub apart",
+    "title": "A work group is far more than a shared folder",
+    "body": "It is a team's operating context. Resources keep their owner, members receive only the access they need, and everything can be used without copying settings or credentials.",
+    "ownership": "Clear ownership and permissions for every resource.",
+    "cascade": "Agents and workflows cascade-share the dependencies they need.",
+    "credentials": "Connections remain private even when a group can use them.",
+    "cta": "See how groups work",
+    "node": "Work group",
+    "members": "People + agents",
+    "resources": {
+      "agents": "Agents",
+      "knowledge": "Knowledge",
+      "connections": "Models & connections",
+      "workflows": "Workflows"
+    }
   },
   "install": {
     "title": "Install and update",

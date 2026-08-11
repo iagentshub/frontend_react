@@ -3,13 +3,15 @@ import { Link } from "react-router-dom";
 import { Seo } from "@/components/seo";
 import { PublicHeader } from "@/components/public-header";
 import { PublicIcon, type PublicIconName } from "@/components/public-icons";
+import { AgentNetwork } from "@/components/agent-network";
+import { PublicShell, Reveal, Stagger } from "@/components/public-motion";
 import { useBodyClass } from "./use-body-class";
 import "@/styles/routes/about/about.css";
 
 const features = [
+  "groups",
   "multi_agent",
   "providers",
-  "groups",
   "selfhosted",
   "knowledge",
   "skills",
@@ -49,111 +51,122 @@ export function AboutPage() {
         localizedPath="/about"
       />
 
-      <PublicHeader variant="about" label={t("about.page.title")} path="/about" />
+      <PublicShell>
+        <PublicHeader variant="about" label={t("about.page.title")} path="/about" />
 
-      <main className="about-main">
-        <div className="about-hero">
-          <div className="about-hero-badge">{t("common.brand.full")}</div>
+        <main className="about-main">
+          <div className="about-hero">
+            <Reveal className="about-hero-copy">
+              <div className="about-hero-badge">{t("common.brand.full")}</div>
 
-          <h1 className="about-hero-title">{t("about.description.title")}</h1>
+              <h1 className="about-hero-title">{t("about.description.title")}</h1>
 
-          <p className="about-hero-body">{t("about.description.body")}</p>
-        </div>
+              <p className="about-hero-body">{t("about.description.body")}</p>
+            </Reveal>
 
-        <div className="about-sections">
-          {/* Estas tres secciones no van en tarjeta: su contenido ya son
-              tarjetas. Una caja dentro de otra caja no aporta jerarquía. */}
-          <section className="about-section">
-            <h2 className="about-section-title">{t("about.features.title")}</h2>
-
-            <div className="about-features-grid">
-              {features.map((feature) => (
-                <div className="about-feature" key={feature}>
-                  <span className="about-feature-icon">
-                    <PublicIcon name={feature as PublicIconName} />
-                  </span>
-                  <div className="about-feature-title">
-                    {t(`landing.features.${feature}_title`)}
-                  </div>
-                  <div className="about-feature-body">{t(`landing.features.${feature}_body`)}</div>
-                </div>
-              ))}
-            </div>
-          </section>
-
-          <section className="about-section">
-            <h2 className="about-section-title">{t("about.stack.title")}</h2>
-
-            <div className="about-stack-grid">
-              {stack.map(([key, label]) => (
-                <div className="about-stack-item" key={key}>
-                  <strong className="about-stack-name">{label}</strong>
-                  <span className="about-stack-desc">{t(`about.stack.${key}`)}</span>
-                </div>
-              ))}
-            </div>
-          </section>
-
-          <section className="about-section">
-            <h2 className="about-section-title">{t("about.creators.title")}</h2>
-
-            <div className="about-creators-grid">
-              {creators.map((creator) => (
-                <div className="about-creator" key={creator.username}>
-                  <img
-                    className="about-creator-avatar about-creator-avatar--img"
-                    src={`https://avatars.githubusercontent.com/${creator.username}?s=80`}
-                    alt={t("about.creators.avatar_alt")}
-                  />
-                  <div className="about-creator-info">
-                    <strong className="about-creator-name">{creator.name}</strong>
-                    <span className="about-creator-role">{t("about.creators.role")}</span>
-                  </div>
-                  <a
-                    href={creator.github}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="about-creator-gh"
-                    title={t("common.github")}
-                    aria-label={`${creator.name} GitHub`}
-                  >
-                    <GitHubIcon />
-                  </a>
-                </div>
-              ))}
-            </div>
-          </section>
-
-          <section className="about-card about-card-contact">
-            <h2 className="about-card-title">{t("about.contact.title")}</h2>
-            <p className="about-card-body">{t("about.contact.body")}</p>
-            <Link className="about-contact-btn" to="/support">
-              <span>{t("about.contact.btn")}</span>
-            </Link>
-          </section>
-
-          <div className="about-bottom-row">
-            <section className="about-card about-card-github">
-              <h2 className="about-card-title">{t("about.github.title")}</h2>
-              <p className="about-card-body">{t("about.github.body")}</p>
-              <a
-                href="https://github.com/iagentshub"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="about-github-btn"
-              >
-                <GitHubIcon />
-                <span>{t("about.github.label")}</span>
-              </a>
-            </section>
-
-            <section className="about-card about-card-license">
-              <h2 className="about-card-title">{t("about.license.title")}</h2>
-              <p className="about-card-body">{t("about.license.body")}</p>
-            </section>
+            <Reveal className="about-hero-network" delay={0.12} offset={16}>
+              <AgentNetwork compact />
+            </Reveal>
           </div>
-        </div>
-      </main>
+
+          <div className="about-sections">
+            {/* Estas tres secciones no van en tarjeta: su contenido ya son
+              tarjetas. Una caja dentro de otra caja no aporta jerarquía. */}
+            <section className="about-section">
+              <h2 className="about-section-title">{t("about.features.title")}</h2>
+              <p className="about-section-lead">{t("about.features.body")}</p>
+
+              <Stagger className="about-features-grid">
+                {features.map((feature) => (
+                  <div className="about-feature" key={feature}>
+                    <span className="about-feature-icon">
+                      <PublicIcon name={feature as PublicIconName} />
+                    </span>
+                    <div className="about-feature-title">
+                      {t(`landing.features.${feature}_title`)}
+                    </div>
+                    <div className="about-feature-body">
+                      {t(`landing.features.${feature}_body`)}
+                    </div>
+                  </div>
+                ))}
+              </Stagger>
+            </section>
+
+            <section className="about-section">
+              <h2 className="about-section-title">{t("about.stack.title")}</h2>
+
+              <Stagger className="about-stack-grid" step={0.04}>
+                {stack.map(([key, label]) => (
+                  <div className="about-stack-item" key={key}>
+                    <strong className="about-stack-name">{label}</strong>
+                    <span className="about-stack-desc">{t(`about.stack.${key}`)}</span>
+                  </div>
+                ))}
+              </Stagger>
+            </section>
+
+            <section className="about-section">
+              <h2 className="about-section-title">{t("about.creators.title")}</h2>
+
+              <div className="about-creators-grid">
+                {creators.map((creator) => (
+                  <div className="about-creator" key={creator.username}>
+                    <img
+                      className="about-creator-avatar about-creator-avatar--img"
+                      src={`https://avatars.githubusercontent.com/${creator.username}?s=80`}
+                      alt={t("about.creators.avatar_alt")}
+                    />
+                    <div className="about-creator-info">
+                      <strong className="about-creator-name">{creator.name}</strong>
+                      <span className="about-creator-role">{t("about.creators.role")}</span>
+                    </div>
+                    <a
+                      href={creator.github}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="about-creator-gh"
+                      title={t("common.github")}
+                      aria-label={`${creator.name} GitHub`}
+                    >
+                      <GitHubIcon />
+                    </a>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            <section className="about-card about-card-contact">
+              <h2 className="about-card-title">{t("about.contact.title")}</h2>
+              <p className="about-card-body">{t("about.contact.body")}</p>
+              <Link className="about-contact-btn" to="/support">
+                <span>{t("about.contact.btn")}</span>
+              </Link>
+            </section>
+
+            <div className="about-bottom-row">
+              <section className="about-card about-card-github">
+                <h2 className="about-card-title">{t("about.github.title")}</h2>
+                <p className="about-card-body">{t("about.github.body")}</p>
+                <a
+                  href="https://github.com/iagentshub"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="about-github-btn"
+                >
+                  <GitHubIcon />
+                  <span>{t("about.github.label")}</span>
+                </a>
+              </section>
+
+              <section className="about-card about-card-license">
+                <h2 className="about-card-title">{t("about.license.title")}</h2>
+                <p className="about-card-body">{t("about.license.body")}</p>
+              </section>
+            </div>
+          </div>
+        </main>
+      </PublicShell>
     </>
   );
 }

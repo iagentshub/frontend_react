@@ -3,9 +3,9 @@
     "cta_register": "Crear cuenta gratis"
   },
   "hero": {
-    "badge": "Open source · Self-hosted",
-    "headline": "Toda tu IA en un solo lugar",
-    "sub": "Crea agentes especializados, conéctalos a los modelos que ya pagas y despliégalo todo en tu propia infraestructura. Ni un dato sale a la nube.",
+    "badge": "Grupos de trabajo · Open source · Self-hosted",
+    "headline": "Agentes de IA que trabajan como un equipo",
+    "sub": "Crea un espacio compartido donde personas y agentes colaboran con el mismo conocimiento, conexiones, workflows y reglas de acceso. Todo permanece bajo el control de tu organización.",
     "install_label": "O instálalo en tu servidor:",
     "providers_label": "Compatible con"
   },
@@ -25,9 +25,9 @@
     "private": "Privado"
   },
   "overview": {
-    "eyebrow": "Plataforma completa de agentes de IA",
-    "title": "Crea, orquesta y comparte agentes sin ceder el control de tus datos",
-    "body": "Centraliza modelos, conocimiento, memoria, skills y equipos en una plataforma open source que puedes desplegar en tu propia infraestructura.",
+    "eyebrow": "La infraestructura de IA de tu equipo",
+    "title": "Del agente aislado a un grupo de trabajo coordinado",
+    "body": "Combina agentes, personas, modelos, conocimiento, herramientas y workflows dentro de un espacio con propiedad, permisos y consumo trazables.",
     "docs_cta": "Explorar la documentación",
     "pricing_cta": "Ver planes"
   },
@@ -37,7 +37,7 @@
     "providers_title": "Conexión con proveedores",
     "providers_body": "Conecta Claude, OpenAI, Gemini, Grok y Ollama con tus propias claves de API. Cambia de proveedor sin tocar una línea de tus agentes.",
     "groups_title": "Grupos de trabajo",
-    "groups_body": "Comparte agentes, conocimiento y conexiones con tu equipo mediante grupos de trabajo, sin duplicar nada ni perder el control.",
+    "groups_body": "Cada grupo es un espacio operativo: reúne miembros, agentes, conexiones, orquestaciones LLM, workflows, conocimiento, prompts, skills y herramientas sin duplicarlos.",
     "selfhosted_title": "Self-hosted",
     "selfhosted_body": "Tus datos nunca salen de tu servidor. Despliega en tu propia infraestructura con un solo comando, sin dependencias externas.",
     "knowledge_title": "Conocimiento",
@@ -50,6 +50,23 @@
     "centinel_body": "Panel de administración con batería de tests integrada: verifica la salud de tu instancia con un clic antes de cada despliegue.",
     "export_title": "Exportación a herramientas locales",
     "export_body": "Exporta tus agentes al formato nativo de Claude Code, GitHub Copilot u OpenAI Assistants. Créalos una vez, úsalos donde trabajas."
+  },
+  "groups": {
+    "eyebrow": "La diferencia de iAgents Hub",
+    "title": "Un grupo de trabajo es mucho más que una carpeta compartida",
+    "body": "Es el contexto operativo de un equipo. Los recursos conservan su propietario, los miembros reciben solo el acceso necesario y todo se puede usar sin copiar configuraciones ni credenciales.",
+    "ownership": "Propiedad y permisos claros para cada recurso.",
+    "cascade": "Agentes y workflows comparten en cascada sus dependencias necesarias.",
+    "credentials": "Las conexiones siguen siendo privadas aunque el grupo pueda utilizarlas.",
+    "cta": "Ver cómo trabajan los grupos",
+    "node": "Grupo de trabajo",
+    "members": "Personas + agentes",
+    "resources": {
+      "agents": "Agentes",
+      "knowledge": "Conocimiento",
+      "connections": "Modelos y conexiones",
+      "workflows": "Workflows"
+    }
   },
   "install": {
     "title": "Instalación y actualización",

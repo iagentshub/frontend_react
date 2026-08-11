@@ -36,25 +36,28 @@ export function PublicHeader({
   const authenticated = Boolean(session.data?.username);
 
   return (
-    <header className={`${variant}-header`}>
-      <Link className={`${variant}-logo`} to={publicLink("/")}>
+    <header className={`public-header ${variant}-header`}>
+      <Link className={`public-logo ${variant}-logo`} to={publicLink("/")}>
         {t("common.brand.prefix")}
         <span>{t("common.brand.suffix")}</span>
       </Link>
 
-      <div className={`${variant}-header-divider`} />
+      <div className={`public-header-divider ${variant}-header-divider`} />
 
-      <span className={`${variant}-header-label`}>{label}</span>
+      <span className={`public-header-label ${variant}-header-label`}>{label}</span>
 
-      <div className={`${variant}-header-spacer`} />
+      <div className={`public-header-spacer ${variant}-header-spacer`} />
 
-      <button className={`${variant}-header-lang`} onClick={() => void switchLanguage()}>
+      <button
+        className={`public-header-lang ${variant}-header-lang`}
+        onClick={() => void switchLanguage()}
+      >
         {language.toUpperCase()}
       </button>
 
       <a
         href={appPath(authenticated ? "/dashboard" : "/login")}
-        className={`${variant}-header-action`}
+        className={`public-header-action ${variant}-header-action`}
       >
         {/* La flecha viene dentro de la traducción ("← Dashboard"), no se añade aquí. */}
         {authenticated ? t("common.navigation.dashboard") : t("about.header.login")}

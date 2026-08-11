@@ -110,15 +110,28 @@ html body.about-page {
 
 /* ── Main ── */
 .about-main {
-  max-width: var(--measure);
+  max-width: var(--measure-wide);
   margin: 0 auto;
   padding: var(--s-16) var(--gutter) var(--s-24);
 }
 
 /* ── Hero ── */
 .about-hero {
-  text-align: center;
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(420px, 1.1fr);
+  align-items: center;
+  gap: clamp(40px, 7vw, 96px);
+  text-align: left;
   margin-bottom: var(--s-16);
+}
+
+.about-hero-copy,
+.about-hero-network {
+  min-width: 0;
+}
+
+.about-hero-network .agent-network {
+  transform: rotate(1.5deg);
 }
 
 .about-hero-badge {
@@ -152,7 +165,7 @@ html body.about-page {
   color: var(--ink-2);
   line-height: 1.7;
   max-width: 62ch;
-  margin: 0 auto;
+  margin: 0;
   text-align: left;
 }
 
@@ -185,6 +198,14 @@ html body.about-page {
   background: var(--accent);
 }
 
+.about-section-lead {
+  max-width: 68ch;
+  margin: calc(var(--s-2) * -1) 0 var(--s-6);
+  color: var(--ink-2);
+  font-size: 1.05rem;
+  line-height: 1.7;
+}
+
 /* ── Tarjetas de texto (contacto, GitHub, licencia) ── */
 .about-card {
   background: var(--surface);
@@ -214,16 +235,35 @@ html body.about-page {
   gap: var(--s-3);
 }
 
+.about-features-grid > div,
+.about-stack-grid > div {
+  min-width: 0;
+  height: 100%;
+}
+
+.about-features-grid > div:nth-child(1),
+.about-features-grid > div:nth-child(4),
+.about-features-grid > div:nth-child(8) {
+  grid-column: span 2;
+}
+
 .about-feature {
+  position: relative;
+  height: 100%;
   background: var(--surface);
   border: 1px solid var(--line);
   border-radius: var(--radius);
   padding: var(--s-6);
-  transition: border-color 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    transform 0.22s ease,
+    box-shadow 0.22s ease;
 }
 
 .about-feature:hover {
   border-color: var(--public-edge);
+  transform: translateY(-3px);
+  box-shadow: 0 16px 38px color-mix(in srgb, var(--accent) 8%, transparent);
 }
 
 .about-feature-icon {
@@ -266,11 +306,15 @@ html body.about-page {
   background: var(--surface);
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  transition: border-color 0.2s ease;
+  height: 100%;
+  transition:
+    border-color 0.2s ease,
+    transform 0.2s ease;
 }
 
 .about-stack-item:hover {
   border-color: var(--public-edge);
+  transform: translateY(-2px);
 }
 
 .about-stack-name {
@@ -416,8 +460,16 @@ html body.about-page {
 
 /* ── Móvil ── */
 @media (max-width: 900px) {
+  .about-hero {
+    grid-template-columns: 1fr;
+    max-width: 720px;
+    margin-inline: auto;
+  }
   .about-features-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .about-features-grid > div:nth-child(n) {
+    grid-column: auto;
   }
   .about-stack-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -435,6 +487,9 @@ html body.about-page {
   .about-creators-grid,
   .about-bottom-row {
     grid-template-columns: 1fr;
+  }
+  .about-hero-network {
+    width: 100%;
   }
   .about-stack-grid {
     grid-template-columns: 1fr 1fr;

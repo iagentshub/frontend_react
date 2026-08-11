@@ -1,15 +1,18 @@
 {
   "page": {
     "title": "Documentación",
-    "subtitle": "Guías y referencia de iAgents Hub"
+    "subtitle": "Guías actualizadas para grupos, agentes, orquestación LLM y recursos"
   },
   "nav": {
     "keywords": "Palabras clave",
     "getting_started": "Primeros pasos",
     "agents": "Agentes",
     "connections": "Conexiones",
+    "llm_orchestration": "Orquestación LLM",
     "skills": "Skills",
     "teams": "Equipos y compartición",
+    "workflows": "Workflows",
+    "official_resources": "Recursos oficiales",
     "memory_knowledge": "Memoria y Conocimiento",
     "best_practices": "Buenas prácticas"
   },
@@ -18,8 +21,11 @@
     "getting_started": "Primeros pasos",
     "agents": "Agentes",
     "connections": "Conexiones",
+    "llm_orchestration": "Balanceo y failover de LLM",
     "skills": "Skills",
     "teams": "Equipos y compartición de recursos",
+    "workflows": "Workflows de agentes",
+    "official_resources": "Catálogo y herramientas oficiales",
     "memory_knowledge": "Memoria y Conocimiento",
     "best_practices": "Buenas prácticas con agentes"
   },
@@ -28,6 +34,14 @@
     "agent_body": "Asistente de IA configurado para una función concreta. Puede responder preguntas, redactar, analizar o automatizar tareas, siempre dentro de los límites que tú defines.",
     "llm_title": "LLM (Modelo de lenguaje)",
     "llm_body": "El motor de inteligencia artificial que procesa texto y genera respuestas. Es la tecnología de fondo —Claude, GPT-4o, Gemini…— que el agente utiliza para funcionar.",
+    "llm_orchestration_title": "Orquestación LLM",
+    "llm_orchestration_body": "Una conexión virtual que agrupa entre 2 y 20 conexiones LLM. Puede recorrerlas en un orden fijo o usar un modelo enrutador para ordenarlas según cada tarea, con failover antes de emitir el primer token.",
+    "work_group_title": "Grupo de trabajo",
+    "work_group_body": "Espacio operativo compartido por miembros y agentes. Reúne recursos con permisos, propiedad y acceso controlados sin copiarlos ni transferir sus credenciales.",
+    "workflow_title": "Workflow",
+    "workflow_body": "Grafo de ejecución que coordina varios agentes y pasos. Permite encadenar trabajo, abrir ramas y controlar la continuación mediante gates.",
+    "official_resource_title": "Recurso oficial",
+    "official_resource_body": "Agente, skill, prompt, conocimiento, herramienta o workflow publicado desde una fuente revisada. Se identifica como oficial, es de solo lectura y puede enlazarse o reutilizarse desde el catálogo.",
     "prompt_title": "Prompt (instrucciones del sistema)",
     "prompt_body": "El texto que define el rol, el tono y las reglas de comportamiento del agente. Es lo que transforma un asistente genérico en uno especializado para tu caso de uso.",
     "connection_title": "Conexión",
@@ -49,7 +63,7 @@
     "hallucination_title": "Alucinación",
     "hallucination_body": "Cuando el modelo genera información incorrecta o inventada con total confianza. No es un fallo puntual: es una limitación inherente a todos los LLM. Por eso es crítico revisar las respuestas en contextos de alto riesgo.",
     "tools_title": "Tools (herramientas)",
-    "tools_body": "Capacidades que el agente puede invocar para actuar en el mundo real: buscar en internet, consultar una base de datos, llamar a una API externa o ejecutar código. Son lo que diferencia un agente que solo responde de uno que también hace.",
+    "tools_body": "Recursos catalogados en Python o shell que pueden formar parte de un agente y llegar desde fuentes oficiales. Actualmente iAgents Hub permite importarlos, sincronizarlos, asignarlos y compartirlos; la ejecución autónoma de esas herramientas todavía no forma parte del runtime.",
     "rag_title": "RAG",
     "rag_body": "Retrieval-Augmented Generation. Técnica que permite al agente buscar en documentos propios antes de responder, en lugar de depender solo de lo que el modelo aprendió durante su entrenamiento. Es lo que hay detrás de la base de conocimiento.",
     "fine_tuning_title": "Fine-tuning",
@@ -91,6 +105,21 @@
     "tokens_title": "Uso de tokens",
     "tokens_body": "Los LLM cobran por tokens: unidades de texto de aproximadamente 4 caracteres. Cada conexión acumula el total de tokens de entrada y salida consumidos. Puedes consultarlo en el Dashboard y en la lista de Conexiones."
   },
+  "llm_orchestration": {
+    "intro": "Una orquestación LLM reúne varias conexiones compatibles en una conexión virtual que puede asignarse a agentes y ejecutarse también dentro de workflows.",
+    "modes_title": "Dos modos de enrutado",
+    "modes_body": "Cada orquestación admite de 2 a 20 candidatas. El modo Stack respeta el orden configurado; el modo Balanceado utiliza una conexión enrutadora para clasificar todas las candidatas según el agente y el mensaje actual.",
+    "balanced_title": "Modo Balanceado",
+    "balanced_body": "El modelo enrutador no responde a la tarea: devuelve un ranking JSON de las conexiones candidatas y una razón breve. La ejecución comienza con la opción mejor situada para ese mensaje.",
+    "stack_title": "Modo Stack",
+    "stack_body": "Prueba las conexiones en el orden que tú defines. Es adecuado cuando quieres una prioridad estable —por coste, privacidad, latencia o proveedor— sin gastar tokens en una decisión previa.",
+    "failover_title": "Failover sin romper el streaming",
+    "failover_body": "Si una conexión está inactiva, falla o devuelve una respuesta vacía antes del primer token, se intenta la siguiente. Una vez empezado el streaming no se cambia de modelo, evitando mezclar respuestas parciales.",
+    "usage_title": "Consumo trazable por conexión",
+    "usage_body": "La respuesta final incluye la conexión elegida, las conexiones intentadas y el uso de tokens por conexión. En modo Balanceado también se contabiliza el consumo del modelo enrutador.",
+    "sharing_title": "Disponible para todo el grupo",
+    "sharing_body": "Las orquestaciones pueden pertenecer a un grupo o compartirse con él. Al compartirlas, el sistema concede acceso a las conexiones necesarias sin duplicarlas y sin convertir las credenciales en recursos públicos."
+  },
   "skills": {
     "intro": "Las skills son bloques de instrucciones reutilizables que se inyectan en el system prompt del agente cuando están activas. Su categoría se elige de un catálogo cerrado; no admiten tags libres.",
     "public_title": "Skills públicas",
@@ -101,19 +130,43 @@
     "activate_body": "Al editar un agente, en la pestaña Skills verás la lista de skills disponibles. Activa las que quieras incluir en el agente."
   },
   "teams": {
-    "intro": "Los grupos permiten compartir recursos privados —agentes, skills, conexiones y conocimiento— con otros usuarios de forma controlada. Solo el propietario decide qué comparte y con quién.",
+    "intro": "Los grupos de trabajo son el núcleo colaborativo de iAgents Hub. Reúnen miembros, agentes, conexiones, orquestaciones LLM, workflows, skills, prompts, herramientas y conocimiento con acceso controlado y propiedad explícita.",
     "create_title": "Crear un grupo",
     "create_body": "Ve a Perfil → Grupos y pulsa «Crear grupo». Al crearlo, quedas automáticamente como propietario. Solo las cuentas registradas pueden crear grupos; los invitados no tienen acceso a esta función.",
     "invite_title": "Invitar miembros",
     "invite_body": "Desde el grupo, pulsa «Invitar» e introduce el username público del usuario. Recibirá una notificación para aceptar o rechazar la invitación. Los propietarios y administradores del grupo pueden invitar y expulsar miembros.",
     "share_title": "Compartir recursos",
-    "share_body": "Tienes dos formas de compartir un recurso con un grupo: usar el botón de compartir en la card del recurso y seleccionar el grupo; o arrastrar la tarjeta directamente sobre el nombre del grupo en el panel lateral — al soltarla, el recurso queda compartido al instante. Para los agentes, el sistema comparte en cascada también sus skills privadas y bases de conocimiento asociadas.",
+    "share_body": "Puedes compartir desde la tarjeta del recurso o arrastrarla sobre el grupo en el panel lateral. Los agentes comparten en cascada sus skills, prompts y conocimiento privados; los workflows, sus agentes y dependencias; y las orquestaciones LLM, las conexiones necesarias. Los secretos no se copian ni cambian de propietario.",
     "unshare_title": "Retirar el acceso",
     "unshare_body": "Solo pueden retirar un recurso de un grupo: el propietario original del recurso, el propietario del grupo y los administradores de plataforma. El resto de miembros pueden usar el recurso pero no pueden descompartirlo.",
     "badge_title": "Recursos compartidos contigo",
     "badge_body": "Los recursos que otros han compartido contigo aparecen en las secciones correspondientes con el badge «Compartida». Puedes usarlos y abrirlos desde el panel de grupos, pero no editarlos ni exportarlos: la propiedad sigue siendo del creador original.",
     "guests_title": "Restricción para invitados",
     "guests_body": "Los usuarios sin cuenta (modo invitado) no pueden crear ni unirse a grupos. Registra una cuenta para acceder a la colaboración."
+  },
+  "workflows": {
+    "intro": "Los workflows coordinan agentes como un grafo de ejecución reutilizable y pueden usar conexiones normales u orquestaciones LLM.",
+    "graph_title": "Diseño como grafo",
+    "graph_body": "Cada nodo representa un paso de agente y las conexiones expresan dependencias y orden. La validación detecta grafos desconectados y definiciones que no pueden ejecutarse de forma segura.",
+    "execution_title": "Ejecución y seguimiento",
+    "execution_body": "Cada ejecución conserva su estado y el resultado de los pasos. Los agentes reciben el contenido del flujo y responden mediante streaming, igual que en un chat normal.",
+    "gates_title": "Gates y ramas",
+    "gates_body": "Los gates permiten aprobar, rechazar o repetir una rama concreta sin volver a ejecutar pasos hermanos ya aprobados, haciendo posible incorporar revisión humana al proceso.",
+    "groups_title": "Workflows de equipo",
+    "groups_body": "Un workflow puede pertenecer a un grupo o compartirse con otro. Al compartirlo se conceden también los accesos necesarios a sus agentes propios y a las dependencias privadas asociadas."
+  },
+  "official_resources": {
+    "intro": "El catálogo oficial incorpora paquetes revisados como recursos normales de la plataforma, marcados con origen oficial para que puedan buscarse, enlazarse y mantenerse actualizados.",
+    "catalog_title": "Más que agentes y skills",
+    "catalog_body": "Las fuentes oficiales pueden aportar agentes, skills, prompts o comandos, conocimiento, herramientas y workflows. Las dependencias declaradas se importan primero y se enlazan con el recurso que las necesita.",
+    "sources_title": "Fuentes oficiales versionadas",
+    "sources_body": "Los administradores pueden seguir una release o una rama de un repositorio GitHub. Cada recurso conserva la fuente y el componente de origen, lo que permite actualizar o retirar un paquete de forma coherente.",
+    "tools_title": "Herramientas oficiales incorporadas",
+    "tools_body": "Las herramientas Python y shell de una fuente compatible se materializan en el catálogo, quedan marcadas como oficiales y pueden asignarse como dependencia de un agente. Su ejecución automática todavía no está habilitada en el runtime.",
+    "safety_title": "Importación revisada y limitada",
+    "safety_body": "La importación restringe licencias, tamaños, rutas y tipos de archivo; rechaza ciclos o dependencias ausentes y señala patrones peligrosos para revisión antes de materializar contenido.",
+    "updates_title": "Enlazar, bifurcar o actualizar",
+    "updates_body": "Los recursos oficiales son de solo lectura. Puedes enlazarlos para seguir su origen, crear una copia editable cuando necesites personalizarlos y sincronizar las actualizaciones disponibles."
   },
   "memory_knowledge": {
     "intro": "iAgents Hub tiene dos formas de dar contexto persistente a un agente: memoria conversacional y base de conocimiento.",

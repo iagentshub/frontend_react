@@ -6,6 +6,8 @@ import { appPath } from "@/app/app-paths";
 import { platformQuery } from "@/api/public-queries";
 import { Seo } from "@/components/seo";
 import { PublicIcon } from "@/components/public-icons";
+import { AgentNetwork } from "@/components/agent-network";
+import { PublicShell, Reveal, Stagger } from "@/components/public-motion";
 import { usePublicNavigation } from "@/i18n/public-paths";
 import { useCountUp, useRotatingIndex } from "./use-hero-motion";
 import "@/styles/routes/landing.css";
@@ -15,13 +17,14 @@ export const INSTALL_COMMAND =
 export const WINDOWS_INSTALL_COMMAND =
   "irm https://raw.githubusercontent.com/iagentshub/iAgents/main/install.ps1 | iex";
 const homeFeatures = [
+  "groups",
   "multi_agent",
   "providers",
-  "selfhosted",
   "knowledge",
-  "groups",
+  "selfhosted",
   "export",
 ] as const;
+const GROUP_RESOURCES = ["agents", "knowledge", "connections", "workflows"] as const;
 /** Nombres de marca: no se traducen, igual que "iAgentsHub". */
 const PROVIDERS = ["Claude", "OpenAI", "Gemini", "Grok", "Ollama"] as const;
 const HOW_STEPS = ["install", "connect", "build"] as const;
@@ -62,8 +65,8 @@ export function HomePage() {
         localizedPath="/"
       />
 
-      <div className="landing-page" style={{ display: "block" }}>
-        <header className="landing-header">
+      <PublicShell className="landing-page">
+        <header className="public-header landing-header">
           <Link className="landing-logo" to={publicLink("/")}>
             {t("common.brand.prefix")}
             <span>{t("common.brand.suffix")}</span>
@@ -96,92 +99,133 @@ export function HomePage() {
         </header>
 
         <section className="landing-hero">
-          <span className="landing-hero-badge">{t("landing.hero.badge")}</span>
+          <div className="landing-hero-copy">
+            <span className="landing-hero-badge">{t("landing.hero.badge")}</span>
 
-          <h1 className="landing-hero-title">{t("landing.hero.headline")}</h1>
+            <h1 className="landing-hero-title">{t("landing.hero.headline")}</h1>
 
-          <p className="landing-hero-body">{t("landing.hero.sub")}</p>
+            <p className="landing-hero-body">{t("landing.hero.sub")}</p>
 
-          <div className="landing-hero-actions">
-            <a className="btn btn-primary" href={appPath("/register")}>
-              {t("landing.header.cta_register")}
-            </a>
-            <Link className="btn btn-ghost" to={publicLink("/docs")}>
-              {t("landing.overview.docs_cta")}
-            </Link>
-          </div>
-
-          {/* El comando es el activo más concreto del producto: se enseña
-              arriba, no enterrado al final de la página. */}
-          <div className="landing-hero-install">
-            <span className="landing-install-os">{t("landing.hero.install_label")}</span>
-            <div className="landing-install-cmd">
-              <code className="landing-install-code" tabIndex={0}>
-                {INSTALL_COMMAND}
-              </code>
-              <button
-                className="btn btn-ghost btn-sm"
-                type="button"
-                onClick={() => void copyCommand()}
-              >
-                {copied ? t("landing.install.copied") : t("landing.install.copy")}
-              </button>
+            <div className="landing-hero-actions">
+              <a className="btn btn-primary" href={appPath("/register")}>
+                {t("landing.header.cta_register")}
+              </a>
+              <Link className="btn btn-ghost" to={publicLink("/docs")}>
+                {t("landing.overview.docs_cta")}
+              </Link>
             </div>
-          </div>
 
-          {/* Los proveedores estaban en la cuarta línea de un párrafo. El
+            {/* El comando es el activo más concreto del producto: se enseña
+              arriba, no enterrado al final de la página. */}
+            <div className="landing-hero-install">
+              <span className="landing-install-os">{t("landing.hero.install_label")}</span>
+              <div className="landing-install-cmd">
+                <code className="landing-install-code" tabIndex={0}>
+                  {INSTALL_COMMAND}
+                </code>
+                <button
+                  className="btn btn-ghost btn-sm"
+                  type="button"
+                  onClick={() => void copyCommand()}
+                >
+                  {copied ? t("landing.install.copied") : t("landing.install.copy")}
+                </button>
+              </div>
+            </div>
+
+            {/* Los proveedores estaban en la cuarta línea de un párrafo. El
               nombre va rotando: el ojo se va solo a lo que se mueve, y de paso
               dice de qué va el producto sin que haya que leer nada. */}
-          <p className="landing-hero-providers">
-            <span className="landing-hero-providers-label">
-              {t("landing.hero.providers_label")}
-            </span>
-            {/* El lector de pantalla recibe la lista entera de una vez; la
+            <p className="landing-hero-providers">
+              <span className="landing-hero-providers-label">
+                {t("landing.hero.providers_label")}
+              </span>
+              {/* El lector de pantalla recibe la lista entera de una vez; la
                 palabra que rota no le sirve de nada. */}
-            <span className="sr-only">{PROVIDERS.join(", ")}</span>
-            <span className="landing-hero-provider" aria-hidden="true">
-              {PROVIDERS.map((provider, index) => (
-                <span key={provider} className={index === providerIndex ? "is-active" : undefined}>
-                  {provider}
-                </span>
-              ))}
-            </span>
-          </p>
+              <span className="sr-only">{PROVIDERS.join(", ")}</span>
+              <span className="landing-hero-provider" aria-hidden="true">
+                {PROVIDERS.map((provider, index) => (
+                  <span
+                    key={provider}
+                    className={index === providerIndex ? "is-active" : undefined}
+                  >
+                    {provider}
+                  </span>
+                ))}
+              </span>
+            </p>
 
-          <div className="landing-hero-stats">
-            <div className="landing-hero-stat">
-              <span className="landing-hero-stat-num">
-                {/* La cifra va en su propio nodo: el contador le escribe el
+            <div className="landing-hero-stats">
+              <div className="landing-hero-stat">
+                <span className="landing-hero-stat-num">
+                  {/* La cifra va en su propio nodo: el contador le escribe el
                     textContent y no debe llevarse por delante el signo. */}
-                <span ref={providersCount}>6</span>
-                <span className="landing-hero-stat-accent">+</span>
-              </span>
-              <span className="landing-hero-stat-label">{t("landing.stats.providers")}</span>
-            </div>
+                  <span ref={providersCount}>6</span>
+                  <span className="landing-hero-stat-accent">+</span>
+                </span>
+                <span className="landing-hero-stat-label">{t("landing.stats.providers")}</span>
+              </div>
 
-            <div className="landing-hero-stat">
-              <span className="landing-hero-stat-num">
-                <span className="landing-hero-stat-accent">∞</span>
-              </span>
-              <span className="landing-hero-stat-label">{t("landing.stats.agents")}</span>
-            </div>
+              <div className="landing-hero-stat">
+                <span className="landing-hero-stat-num">
+                  <span className="landing-hero-stat-accent">∞</span>
+                </span>
+                <span className="landing-hero-stat-label">{t("landing.stats.agents")}</span>
+              </div>
 
-            <div className="landing-hero-stat">
-              <span className="landing-hero-stat-num">
-                <span ref={privacyCount}>100</span>
-                <span className="landing-hero-stat-accent">%</span>
-              </span>
-              <span className="landing-hero-stat-label">{t("landing.stats.private")}</span>
+              <div className="landing-hero-stat">
+                <span className="landing-hero-stat-num">
+                  <span ref={privacyCount}>100</span>
+                  <span className="landing-hero-stat-accent">%</span>
+                </span>
+                <span className="landing-hero-stat-label">{t("landing.stats.private")}</span>
+              </div>
             </div>
           </div>
+
+          <Reveal className="landing-hero-network" delay={0.12} offset={16}>
+            <AgentNetwork />
+          </Reveal>
+        </section>
+
+        <section className="landing-groups" aria-labelledby="landing-groups-title">
+          <Reveal className="landing-groups-copy">
+            <span className="landing-section-eyebrow">{t("landing.groups.eyebrow")}</span>
+            <h2 id="landing-groups-title">{t("landing.groups.title")}</h2>
+            <p>{t("landing.groups.body")}</p>
+            <ul className="landing-groups-benefits">
+              {["ownership", "cascade", "credentials"].map((benefit) => (
+                <li key={benefit}>{t(`landing.groups.${benefit}`)}</li>
+              ))}
+            </ul>
+            <Link className="btn btn-primary" to={`${publicLink("/docs")}#teams`}>
+              {t("landing.groups.cta")}
+            </Link>
+          </Reveal>
+
+          <Reveal className="landing-groups-map" delay={0.1} offset={16}>
+            <div className="landing-group-core">
+              <PublicIcon name="groups" />
+              <strong>{t("landing.groups.node")}</strong>
+              <span>{t("landing.groups.members")}</span>
+            </div>
+            <Stagger className="landing-group-resources" step={0.06}>
+              {GROUP_RESOURCES.map((resource) => (
+                <div className="landing-group-resource" key={resource}>
+                  <span aria-hidden="true" />
+                  <strong>{t(`landing.groups.resources.${resource}`)}</strong>
+                </div>
+              ))}
+            </Stagger>
+          </Reveal>
         </section>
 
         <section className="landing-section" aria-labelledby="landing-capabilities-title">
-          <div className="landing-section-intro">
+          <Reveal className="landing-section-intro">
             <span className="landing-section-eyebrow">{t("landing.overview.eyebrow")}</span>
             <h2 id="landing-capabilities-title">{t("landing.overview.title")}</h2>
             <p>{t("landing.overview.body")}</p>
-          </div>
+          </Reveal>
 
           <div className="landing-feature-grid">
             {homeFeatures.map((feature) => (
@@ -208,10 +252,10 @@ export function HomePage() {
         </section>
 
         <section className="landing-section" aria-labelledby="landing-how-title">
-          <div className="landing-section-intro">
+          <Reveal className="landing-section-intro">
             <span className="landing-section-eyebrow">{t("landing.how.eyebrow")}</span>
             <h2 id="landing-how-title">{t("landing.how.title")}</h2>
-          </div>
+          </Reveal>
 
           <ol className="landing-steps">
             {HOW_STEPS.map((step, index) => (
@@ -331,7 +375,7 @@ export function HomePage() {
             </button>
           </div>
         </footer>
-      </div>
+      </PublicShell>
     </>
   );
 }

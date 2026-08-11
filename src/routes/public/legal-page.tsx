@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Seo } from "@/components/seo";
 import { PublicHeader } from "@/components/public-header";
 import { PublicIcon } from "@/components/public-icons";
+import { PublicShell, Reveal } from "@/components/public-motion";
 import { usePublicNavigation } from "@/i18n/public-paths";
 import { hasPlaceholders, LEGAL_DOCUMENTS, type LegalDocument } from "./legal-model";
 import { useBodyClass } from "./use-body-class";
@@ -48,58 +49,64 @@ export function LegalPage({ document }: { document: LegalDocument }) {
         localizedPath={path}
       />
 
-      <PublicHeader variant="legal" label={t(key("page_title"))} path={path} />
+      <PublicShell intensity="quiet">
+        <PublicHeader variant="legal" label={t(key("page_title"))} path={path} />
 
-      <main className="legal-main">
-        <article className="legal-doc">
-          <h1 className="legal-title">
-            <span className="legal-title-icon">
-              <PublicIcon name="legal" />
-            </span>
-            {t(key("title"))}
-          </h1>
+        <main className="legal-main">
+          <article className="legal-doc">
+            <Reveal offset={12}>
+              <h1 className="legal-title">
+                <span className="legal-title-icon">
+                  <PublicIcon name="legal" />
+                </span>
+                {t(key("title"))}
+              </h1>
 
-          <p className="legal-updated">
-            {t("legal.updated_label")}: {t(key("updated"))}
-          </p>
+              <p className="legal-updated">
+                {t("legal.updated_label")}: {t(key("updated"))}
+              </p>
 
-          {hasPlaceholders(everyString) && (
-            <p className="legal-draft" role="note">
-              {t("legal.draft_notice")}
-            </p>
-          )}
+              {hasPlaceholders(everyString) && (
+                <p className="legal-draft" role="note">
+                  {t("legal.draft_notice")}
+                </p>
+              )}
 
-          <p className="legal-intro">{t(key("intro"))}</p>
+              <p className="legal-intro">{t(key("intro"))}</p>
+            </Reveal>
 
-          {sections.map((section) => {
-            const items = itemsOf(section);
-            return (
-              <section className="legal-section" key={section}>
-                <h2 className="legal-section-title">{t(key(`sections.${section}.title`))}</h2>
+            {sections.map((section) => {
+              const items = itemsOf(section);
+              return (
+                <section className="legal-section" key={section}>
+                  <Reveal offset={12}>
+                    <h2 className="legal-section-title">{t(key(`sections.${section}.title`))}</h2>
 
-                {paragraphs(t(key(`sections.${section}.body`))).map((paragraph) => (
-                  <p className="legal-body" key={paragraph.slice(0, 40)}>
-                    {paragraph}
-                  </p>
-                ))}
-
-                {items.length > 0 && (
-                  <ul className="legal-list">
-                    {items.map((item) => (
-                      <li key={item.slice(0, 40)}>{item}</li>
+                    {paragraphs(t(key(`sections.${section}.body`))).map((paragraph) => (
+                      <p className="legal-body" key={paragraph.slice(0, 40)}>
+                        {paragraph}
+                      </p>
                     ))}
-                  </ul>
-                )}
-              </section>
-            );
-          })}
 
-          <nav className="legal-nav">
-            <Link to={publicLink(LEGAL_DOCUMENTS[other].path)}>{t(`legal.${other}.title`)}</Link>
-            <Link to={publicLink("/")}>{t("legal.back")}</Link>
-          </nav>
-        </article>
-      </main>
+                    {items.length > 0 && (
+                      <ul className="legal-list">
+                        {items.map((item) => (
+                          <li key={item.slice(0, 40)}>{item}</li>
+                        ))}
+                      </ul>
+                    )}
+                  </Reveal>
+                </section>
+              );
+            })}
+
+            <nav className="legal-nav">
+              <Link to={publicLink(LEGAL_DOCUMENTS[other].path)}>{t(`legal.${other}.title`)}</Link>
+              <Link to={publicLink("/")}>{t("legal.back")}</Link>
+            </nav>
+          </article>
+        </main>
+      </PublicShell>
     </>
   );
 }

@@ -24,6 +24,9 @@ export type PublicIconName =
   | "skills"
   | "dashboard"
   | "centinel"
+  | "llm_orchestration"
+  | "workflows"
+  | "official_resources"
   // Secciones de documentación
   | "keywords"
   | "getting_started"
@@ -103,6 +106,30 @@ const PATHS: Record<PublicIconName, ReactNode> = {
     <>
       <path d="M12 2.5 5 5.3v5.9c0 4.6 2.8 8.4 7 10.3 4.2-1.9 7-5.7 7-10.3V5.3l-7-2.8Z" />
       <path d="m8.6 12 2.2 2.2 4.6-4.8" />
+    </>
+  ),
+
+  llm_orchestration: (
+    <>
+      <circle cx="5" cy="12" r="2.2" />
+      <circle cx="19" cy="6" r="2.2" />
+      <circle cx="19" cy="18" r="2.2" />
+      <path d="M7.2 12h3.3a3 3 0 0 0 2.5-1.4l2.4-3.2M13 13.4l2.4 3.2" />
+    </>
+  ),
+
+  workflows: (
+    <>
+      <rect x="3" y="3" width="6" height="6" rx="1.5" />
+      <rect x="15" y="15" width="6" height="6" rx="1.5" />
+      <path d="M9 6h3a3 3 0 0 1 3 3v6M12 12h3" />
+    </>
+  ),
+
+  official_resources: (
+    <>
+      <path d="M12 2.8 19 6v5.2c0 4.5-2.8 8.1-7 10-4.2-1.9-7-5.5-7-10V6l7-3.2Z" />
+      <path d="m8.7 12 2.1 2.1 4.5-4.6" />
     </>
   ),
 

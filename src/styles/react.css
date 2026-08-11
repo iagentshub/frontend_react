@@ -68,13 +68,209 @@
   /* El acento puro sobre blanco se queda en 3.6:1 con el azul oscuro. Al 62%
      los ocho temas pasan de 4.5:1. */
   --public-accent-solid: color-mix(in srgb, var(--accent) 62%, #000);
+  --public-heading-font: "Space Grotesk", var(--font);
+}
+
+/* Shared futuristic public-page canvas. Route styles still own layout, while
+   this layer makes every page feel like the same product. */
+.public-shell {
+  position: relative;
+  min-height: 100vh;
+  overflow: clip;
+  isolation: isolate;
+  background: var(--bg);
+}
+
+.public-shell-content {
+  position: relative;
+  z-index: 1;
+}
+
+.public-shell-grid,
+.public-shell-glow {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.public-shell-grid {
+  opacity: 0.3;
+  background-image:
+    linear-gradient(var(--line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--line) 1px, transparent 1px);
+  background-size: 72px 72px;
+  mask-image: linear-gradient(to bottom, #000 0, transparent 62rem);
+}
+
+.public-shell--quiet .public-shell-grid {
+  opacity: 0.14;
+  background-size: 96px 96px;
+}
+
+.public-shell-glow {
+  background:
+    radial-gradient(
+      circle at 76% 9%,
+      color-mix(in srgb, var(--accent) 15%, transparent),
+      transparent 28rem
+    ),
+    radial-gradient(
+      circle at 8% 42%,
+      color-mix(in srgb, var(--accent) 7%, transparent),
+      transparent 24rem
+    );
+}
+
+.public-shell--quiet .public-shell-glow {
+  opacity: 0.35;
+}
+
+:is(
+  .landing-hero-title,
+  .about-hero-title,
+  .pr-hero-title,
+  .support-hero h1,
+  .docs-hero h1,
+  .legal-title,
+  .landing-section-intro h2
+) {
+  font-family: var(--public-heading-font);
+}
+
+.public-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  min-height: 64px;
+  border-bottom: 1px solid var(--line);
+  background: color-mix(in srgb, var(--bg) 82%, transparent);
+  backdrop-filter: blur(18px) saturate(1.25);
+  -webkit-backdrop-filter: blur(18px) saturate(1.25);
+}
+
+.public-logo {
+  font-family: var(--public-heading-font);
+}
+
+.agent-network {
+  position: relative;
+  width: min(100%, 620px);
+  aspect-ratio: 1.22;
+  border: 1px solid var(--public-edge);
+  border-radius: 32px;
+  overflow: hidden;
+  background:
+    linear-gradient(
+      145deg,
+      color-mix(in srgb, var(--surface) 92%, transparent),
+      color-mix(in srgb, var(--accent) 5%, var(--surface))
+    ),
+    var(--surface);
+  box-shadow:
+    0 40px 90px color-mix(in srgb, var(--accent) 11%, transparent),
+    inset 0 1px color-mix(in srgb, var(--accent) 24%, transparent);
+}
+
+.agent-network::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(color-mix(in srgb, var(--accent) 8%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--accent) 8%, transparent) 1px, transparent 1px);
+  background-size: 34px 34px;
+  mask-image: radial-gradient(circle at center, #000, transparent 74%);
+}
+
+.agent-network svg {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.agent-network-orbits ellipse {
+  fill: none;
+  stroke: color-mix(in srgb, var(--accent) 16%, transparent);
+  stroke-dasharray: 4 12;
+}
+
+.agent-network-edges line {
+  stroke: var(--accent);
+  stroke-width: 1.4;
+}
+
+.agent-network-node-ring {
+  fill: color-mix(in srgb, var(--accent) 6%, transparent);
+  stroke: color-mix(in srgb, var(--accent) 32%, transparent);
+  stroke-width: 1;
+}
+
+.agent-network-node-dot {
+  fill: color-mix(in srgb, var(--surface) 86%, var(--accent));
+  stroke: color-mix(in srgb, var(--accent) 70%, var(--line));
+  stroke-width: 1.5;
+  filter: drop-shadow(0 8px 18px color-mix(in srgb, var(--accent) 24%, transparent));
+}
+
+.agent-network-core-halo {
+  fill: url(#network-core);
+}
+
+.agent-network-node text {
+  fill: var(--ink);
+  font: 700 13px var(--font);
+  letter-spacing: -0.02em;
+}
+
+.agent-network-node--core text {
+  font: 700 16px var(--public-heading-font);
+}
+
+.agent-network-status {
+  position: absolute;
+  left: 22px;
+  bottom: 18px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--ink-2);
+  font-size: var(--t-label);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.agent-network-status i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 14px var(--accent);
+}
+
+@media (max-width: 700px) {
+  .public-shell-grid {
+    background-size: 48px 48px;
+    opacity: 0.18;
+  }
+
+  .agent-network {
+    border-radius: 22px;
+  }
+
+  .agent-network-status {
+    left: 16px;
+    bottom: 14px;
+  }
 }
 
 /* Los grises apagados del tema (--ink-2 al 0.54, --ink-3 al 0.32) no llegan a
    4.5:1 en ninguno de los dos modos. Se refuerzan solo dentro de las páginas
    públicas para no alterar la app privada, que tiene otro contexto de uso. */
-[data-theme^="light"] :is(body.about-page, body.docs-page, body.legal-page),
-[data-theme^="light"] :is(body.support-page, body.pricing-page, .landing-page) {
+html[data-theme^="light"] .public-shell {
   --ink-2: rgba(28, 28, 30, 0.74);
   --ink-3: rgba(28, 28, 30, 0.64);
   --line: rgba(0, 0, 0, 0.1);
@@ -93,8 +289,7 @@
   --public-band-surface-3: rgba(255, 255, 255, 0.13);
 }
 
-[data-theme^="dark"] :is(body.about-page, body.docs-page, body.legal-page),
-[data-theme^="dark"] :is(body.support-page, body.pricing-page, .landing-page) {
+html[data-theme^="dark"] .public-shell {
   --ink-2: rgba(242, 242, 242, 0.72);
   --ink-3: rgba(242, 242, 242, 0.56);
   --line: rgba(255, 255, 255, 0.09);

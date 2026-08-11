@@ -4,7 +4,7 @@
 /* El bloque arranca oculto y home-page.tsx lo muestra con estilo en línea:
    evita el destello de contenido antes de saber si la landing está activa. */
 .landing-page {
-  display: none;
+  display: block;
   min-height: 100vh;
   background: var(--bg);
   font-size: var(--t-body);
@@ -99,10 +99,18 @@
 
 /* ── Hero ── */
 .landing-hero {
-  max-width: var(--measure);
+  display: grid;
+  grid-template-columns: minmax(0, 0.94fr) minmax(420px, 1.06fr);
+  align-items: center;
+  gap: clamp(40px, 6vw, 88px);
+  max-width: var(--measure-wide);
   margin: 0 auto;
   padding: var(--s-24) var(--gutter) var(--s-16);
-  text-align: center;
+  text-align: left;
+}
+
+.landing-hero-copy {
+  min-width: 0;
 }
 
 .landing-hero-badge {
@@ -120,10 +128,11 @@
 }
 
 .landing-hero-title {
+  font-family: "Space Grotesk", var(--font);
   font-size: var(--t-display);
-  font-weight: 800;
-  line-height: 1.05;
-  letter-spacing: -0.045em;
+  font-weight: 700;
+  line-height: 1.02;
+  letter-spacing: -0.055em;
   text-wrap: balance;
   margin-bottom: var(--s-6);
 }
@@ -135,14 +144,14 @@
   color: var(--ink-2);
   line-height: 1.7;
   max-width: 62ch;
-  margin: 0 auto var(--s-8);
+  margin: 0 0 var(--s-8);
   text-align: left;
 }
 
 /* El primer botón de la página estaba a mil cien píxeles de scroll. */
 .landing-hero-actions {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   gap: var(--s-3);
   margin-bottom: var(--s-8);
 }
@@ -151,7 +160,7 @@
    URL parece roto, y es justo el dato que se viene a copiar. */
 .landing-hero-install {
   max-width: 780px;
-  margin: 0 auto var(--s-8);
+  margin: 0 0 var(--s-8);
   text-align: left;
 }
 
@@ -159,10 +168,10 @@
 .landing-hero-providers {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   flex-wrap: wrap;
   gap: var(--s-2) var(--s-4);
-  margin-bottom: var(--s-12);
+  margin-bottom: var(--s-8);
 }
 
 .landing-hero-providers-label {
@@ -209,9 +218,9 @@
 /* Cifras del hero: fila de datos, no tarjeta flotante. */
 .landing-hero-stats {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   width: fit-content;
-  margin: 0 auto;
+  margin: 0;
   padding-top: var(--s-6);
   border-top: 1px solid var(--line);
 }
@@ -226,6 +235,15 @@
 
 .landing-hero-stat:last-child {
   border-right: none;
+}
+
+.landing-hero-stat:first-child {
+  padding-left: 0;
+}
+
+.landing-hero-network {
+  min-width: 0;
+  perspective: 1000px;
 }
 
 .landing-hero-stat-num {
@@ -288,6 +306,175 @@
   text-align: left;
 }
 
+/* ── Grupos de trabajo ── */
+.landing-groups {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(420px, 1.1fr);
+  gap: clamp(var(--s-8), 7vw, var(--s-16));
+  align-items: center;
+  max-width: var(--measure);
+  margin: var(--s-8) auto;
+  padding: clamp(var(--s-8), 7vw, var(--s-16)) var(--gutter);
+  border-block: 1px solid var(--public-edge);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--accent) 5%, var(--surface)) 50%,
+    transparent
+  );
+}
+
+.landing-groups-copy h2 {
+  max-width: 14ch;
+  margin: 0;
+  font-size: var(--t-h2);
+  line-height: 1.08;
+  letter-spacing: -0.04em;
+  text-wrap: balance;
+}
+
+.landing-groups-copy > p {
+  max-width: 58ch;
+  margin: var(--s-4) 0 0;
+  color: var(--ink-2);
+  line-height: 1.7;
+}
+
+.landing-groups-benefits {
+  display: grid;
+  gap: var(--s-3);
+  margin: var(--s-6) 0;
+  padding: 0;
+  list-style: none;
+}
+
+.landing-groups-benefits li {
+  position: relative;
+  padding-left: var(--s-6);
+  color: var(--ink-2);
+  line-height: 1.5;
+}
+
+.landing-groups-benefits li::before {
+  content: "";
+  position: absolute;
+  top: 0.55em;
+  left: 0;
+  width: 10px;
+  height: 10px;
+  border: 2px solid var(--accent);
+  border-radius: 50%;
+  box-shadow: 0 0 12px color-mix(in srgb, var(--accent) 45%, transparent);
+}
+
+.landing-groups-map {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 420px;
+  isolation: isolate;
+}
+
+.landing-groups-map::before,
+.landing-groups-map::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  border: 1px solid color-mix(in srgb, var(--accent) 24%, transparent);
+  border-radius: 50%;
+}
+
+.landing-groups-map::before {
+  width: 330px;
+  height: 330px;
+}
+
+.landing-groups-map::after {
+  width: 250px;
+  height: 250px;
+  box-shadow: 0 0 70px color-mix(in srgb, var(--accent) 12%, transparent);
+}
+
+.landing-group-core {
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 160px;
+  min-height: 160px;
+  padding: var(--s-5);
+  border: 1px solid color-mix(in srgb, var(--accent) 55%, var(--line));
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--accent) 9%, var(--surface));
+  box-shadow:
+    0 0 0 12px color-mix(in srgb, var(--accent) 4%, transparent),
+    0 18px 48px color-mix(in srgb, var(--accent) 18%, transparent);
+  text-align: center;
+}
+
+.landing-group-core svg {
+  width: 28px;
+  height: 28px;
+  color: var(--accent);
+}
+
+.landing-group-core strong {
+  font-family: var(--font-public-display);
+  font-size: 1.05rem;
+}
+
+.landing-group-core span {
+  color: var(--ink-3);
+  font-size: var(--t-small);
+}
+
+.landing-group-resources {
+  position: absolute;
+  inset: 0;
+}
+
+.landing-group-resources > div {
+  position: absolute;
+}
+
+.landing-group-resource {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  min-width: 150px;
+  padding: var(--s-3) var(--s-4);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  box-shadow: 0 12px 32px color-mix(in srgb, var(--ink) 7%, transparent);
+  backdrop-filter: blur(12px);
+}
+
+.landing-group-resource span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--accent) 70%, transparent);
+}
+
+.landing-group-resources > div:nth-child(1) {
+  top: 5%;
+  left: 3%;
+}
+.landing-group-resources > div:nth-child(2) {
+  top: 8%;
+  right: 0;
+}
+.landing-group-resources > div:nth-child(3) {
+  bottom: 7%;
+  left: 0;
+}
+.landing-group-resources > div:nth-child(4) {
+  right: 2%;
+  bottom: 4%;
+}
+
 /* ── Funcionalidades ──
    Sin min-height: el grid ya iguala las alturas de cada fila. La altura fija
    de 190px dejaba ochenta píxeles muertos en las tarjetas cortas. */
@@ -322,15 +509,39 @@
 }
 
 .landing-feature-card {
+  position: relative;
+  overflow: hidden;
   padding: var(--s-6);
   border: 1px solid var(--line);
   border-radius: var(--radius-lg);
   background: var(--surface);
-  transition: border-color 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    transform 0.24s ease,
+    box-shadow 0.24s ease;
+}
+
+.landing-feature-card::after {
+  content: "";
+  position: absolute;
+  right: -48px;
+  bottom: -64px;
+  width: 140px;
+  height: 140px;
+  border: 1px solid color-mix(in srgb, var(--accent) 14%, transparent);
+  border-radius: 50%;
+  box-shadow: 0 0 0 26px color-mix(in srgb, var(--accent) 3%, transparent);
+  transition: transform 0.3s ease;
 }
 
 .landing-feature-card:hover {
   border-color: var(--public-edge);
+  transform: translateY(-4px);
+  box-shadow: 0 18px 44px color-mix(in srgb, var(--accent) 9%, transparent);
+}
+
+.landing-feature-card:hover::after {
+  transform: scale(1.12);
 }
 
 .landing-feature-icon {
@@ -593,6 +804,24 @@
   .landing-nav {
     display: none;
   }
+  .landing-hero {
+    grid-template-columns: 1fr;
+    max-width: 760px;
+  }
+  .landing-hero-network {
+    width: min(100%, 620px);
+    margin: 0 auto;
+  }
+  .landing-groups {
+    grid-template-columns: 1fr;
+  }
+  .landing-groups-copy h2 {
+    max-width: 18ch;
+  }
+  .landing-groups-map {
+    width: min(100%, 620px);
+    margin: 0 auto;
+  }
   .landing-feature-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -624,6 +853,9 @@
   .landing-hero {
     padding: var(--s-16) var(--s-4) var(--s-12);
   }
+  .landing-hero-network {
+    margin-top: var(--s-2);
+  }
   .landing-hero-body {
     font-size: var(--t-body);
   }
@@ -636,6 +868,31 @@
   }
   .landing-section {
     padding: var(--s-12) var(--s-4);
+  }
+  .landing-groups {
+    margin-block: 0;
+    padding: var(--s-12) var(--s-4);
+  }
+  .landing-groups-map {
+    min-height: 390px;
+  }
+  .landing-groups-map::before {
+    width: 280px;
+    height: 280px;
+  }
+  .landing-groups-map::after {
+    width: 205px;
+    height: 205px;
+  }
+  .landing-group-core {
+    width: 138px;
+    min-height: 138px;
+  }
+  .landing-group-resource {
+    min-width: 132px;
+    max-width: 155px;
+    padding: var(--s-3);
+    font-size: var(--t-small);
   }
   .landing-feature-grid {
     grid-template-columns: 1fr;

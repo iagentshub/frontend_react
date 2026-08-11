@@ -1,7 +1,7 @@
 {
   "home": {
-    "title": "iAgents Hub — Self-hosted AI agent platform",
-    "description": "Build AI agents with your own Claude, OpenAI, Gemini or Ollama keys. Open source and self-hosted: your data never leaves your server."
+    "title": "iAgents Hub — Work groups with AI agents",
+    "description": "Coordinate people, agents, models, knowledge and workflows in self-hosted work groups with permissions and data under your control."
   },
   "about": {
     "title": "About · iAgents Hub",
@@ -9,7 +9,7 @@
   },
   "docs": {
     "title": "Documentation · iAgents Hub",
-    "description": "iAgents Hub guide: installation, agents, provider connections, skills, groups, memory and knowledge."
+    "description": "iAgents Hub guide: work groups, agents, LLM balancing, failover, workflows, official tools, memory and knowledge."
   },
   "pricing": {
     "title": "Pricing and plans · iAgents Hub",

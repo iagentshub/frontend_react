@@ -2,6 +2,8 @@ import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { Seo } from "@/components/seo";
 import { PublicHeader } from "@/components/public-header";
+import { AgentNetwork } from "@/components/agent-network";
+import { PublicShell, Reveal, Stagger } from "@/components/public-motion";
 import { usePublicNavigation } from "@/i18n/public-paths";
 import { useBodyClass } from "./use-body-class";
 import "@/styles/routes/support/support.css";
@@ -22,75 +24,82 @@ export function SupportPage() {
         localizedPath="/support"
       />
 
-      <PublicHeader variant="support" label={t("support.page.title")} path="/support" />
+      <PublicShell>
+        <PublicHeader variant="support" label={t("support.page.title")} path="/support" />
 
-      <main className="support-main">
-        <section className="support-hero">
-          <span className="support-eyebrow">{t("support.page.eyebrow")}</span>
+        <main className="support-main">
+          <section className="support-hero">
+            <Reveal className="support-hero-copy">
+              <span className="support-eyebrow">{t("support.page.eyebrow")}</span>
 
-          <h1>{t("support.page.heading")}</h1>
+              <h1>{t("support.page.heading")}</h1>
 
-          <p>{t("support.page.subtitle")}</p>
-        </section>
+              <p>{t("support.page.subtitle")}</p>
+            </Reveal>
+            <Reveal className="support-hero-network" delay={0.1} offset={16}>
+              <AgentNetwork compact />
+            </Reveal>
+          </section>
 
-        <section aria-labelledby="support-channels-title">
-          <h2 className="support-section-title" id="support-channels-title">
-            {t("support.channels.title")}
-          </h2>
+          <section aria-labelledby="support-channels-title">
+            <h2 className="support-section-title" id="support-channels-title">
+              {t("support.channels.title")}
+            </h2>
 
-          <div className="support-channel-grid">
-            <SupportCard
-              icon="docs"
-              title={t("support.channels.docs_title")}
-              body={t("support.channels.docs_body")}
-              action={t("support.channels.docs_action")}
-              to={publicLink("/docs")}
-            />
+            <Stagger className="support-channel-grid">
+              <SupportCard
+                icon="docs"
+                title={t("support.channels.docs_title")}
+                body={t("support.channels.docs_body")}
+                action={t("support.channels.docs_action")}
+                to={publicLink("/docs")}
+              />
 
-            <SupportCard
-              icon="email"
-              title={t("support.channels.email_title")}
-              body={t("support.channels.email_body")}
-              action={t("support.channels.email_action")}
-              href="mailto:hola@iagentshub.com?subject=Soporte%20iAgents%20Hub"
-            />
+              <SupportCard
+                icon="email"
+                title={t("support.channels.email_title")}
+                body={t("support.channels.email_body")}
+                action={t("support.channels.email_action")}
+                href="mailto:hola@iagentshub.com?subject=Soporte%20iAgents%20Hub"
+              />
 
-            <SupportCard
-              icon="github"
-              title={t("support.channels.github_title")}
-              body={t("support.channels.github_body")}
-              action={t("support.channels.github_action")}
-              href="https://github.com/iagentshub/iAgents/issues"
-              external
-            />
-          </div>
-        </section>
+              <SupportCard
+                icon="github"
+                title={t("support.channels.github_title")}
+                body={t("support.channels.github_body")}
+                action={t("support.channels.github_action")}
+                href="https://github.com/iagentshub/iAgents/issues"
+                external
+              />
+            </Stagger>
+          </section>
 
-        <aside className="support-notice">
-          <SupportIcon kind="shield" />
+          <aside className="support-notice">
+            <SupportIcon kind="shield" />
 
-          <div>
-            <strong>{t("support.before.title")}</strong>
-            <p>{t("support.before.body")}</p>
-          </div>
-        </aside>
+            <div>
+              <strong>{t("support.before.title")}</strong>
+              <p>{t("support.before.body")}</p>
+            </div>
+          </aside>
 
-        <section aria-labelledby="support-faq-title">
-          <h2 className="support-section-title" id="support-faq-title">
-            {t("support.faq.title")}
-          </h2>
+          <section aria-labelledby="support-faq-title">
+            <h2 className="support-section-title" id="support-faq-title">
+              {t("support.faq.title")}
+            </h2>
 
-          <div className="support-faq">
-            {faqs.map((item) => (
-              <details key={item}>
-                <summary>{t(`support.faq.${item}_q`)}</summary>
+            <div className="support-faq">
+              {faqs.map((item) => (
+                <details key={item}>
+                  <summary>{t(`support.faq.${item}_q`)}</summary>
 
-                <p>{t(`support.faq.${item}_a`)}</p>
-              </details>
-            ))}
-          </div>
-        </section>
-      </main>
+                  <p>{t(`support.faq.${item}_a`)}</p>
+                </details>
+              ))}
+            </div>
+          </section>
+        </main>
+      </PublicShell>
     </>
   );
 }

@@ -1473,11 +1473,26 @@ html body.pricing-page {
 }
 .pr-hero {
   position: relative;
-  margin-bottom: 44px;
+  display: grid;
+  grid-template-columns: minmax(0, 0.92fr) minmax(420px, 1.08fr);
+  align-items: center;
+  gap: clamp(40px, 7vw, 96px);
+  margin-bottom: 64px;
+  text-align: left;
+}
+.pr-hero-copy,
+.pr-hero-network {
+  min-width: 0;
+}
+.pr-hero-network .agent-network {
+  transform: rotate(1deg);
 }
 .pr-hero-title {
   font-size: clamp(2.35rem, 5vw, 3.8rem);
   text-wrap: balance;
+}
+.pr-hero-subtitle {
+  margin-inline: 0;
 }
 .pr-toggle {
   box-shadow: var(--shadow);
@@ -1495,10 +1510,15 @@ html body.pricing-page {
 .pr-card {
   position: relative;
   border-radius: var(--radius-xl);
-  transition: border-color 0.22s ease;
+  transition:
+    border-color 0.22s ease,
+    transform 0.22s ease,
+    box-shadow 0.22s ease;
 }
 .pr-card:hover {
   border-color: var(--public-edge);
+  transform: translateY(-4px);
+  box-shadow: 0 20px 52px color-mix(in srgb, var(--accent) 9%, transparent);
 }
 
 /* Plan destacado: cinco columnas idénticas obligan a leerlas todas para
@@ -1506,6 +1526,11 @@ html body.pricing-page {
 .pr-card--featured {
   border-color: var(--public-edge);
   border-width: 1.5px;
+  transform: translateY(-8px);
+  box-shadow: 0 22px 58px color-mix(in srgb, var(--accent) 13%, transparent);
+}
+.pr-card--featured:hover {
+  transform: translateY(-12px);
 }
 
 .pr-card-badge {
@@ -1558,8 +1583,22 @@ html body.pricing-page {
   background: var(--accent-dim);
   border-color: var(--public-edge);
 }
+@media (max-width: 900px) {
+  .pr-hero {
+    grid-template-columns: 1fr;
+    max-width: 720px;
+    margin-inline: auto;
+  }
+  .pr-hero-network {
+    width: 100%;
+  }
+}
 @media (max-width: 580px) {
   .pr-main {
     padding-top: 48px;
+  }
+  .pr-card--featured,
+  .pr-card--featured:hover {
+    transform: none;
   }
 }

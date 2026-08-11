@@ -4,6 +4,7 @@ import type { TFunction } from "i18next";
 import { Seo } from "@/components/seo";
 import { PublicHeader } from "@/components/public-header";
 import { PublicIcon } from "@/components/public-icons";
+import { PublicShell, Reveal } from "@/components/public-motion";
 import { useBodyClass } from "./use-body-class";
 import "@/styles/routes/docs/docs.css";
 
@@ -12,8 +13,11 @@ const sections = [
   ["getting-started", "getting_started"],
   ["agents", "agents"],
   ["connections", "connections"],
+  ["llm-orchestration", "llm_orchestration"],
   ["skills", "skills"],
   ["teams", "teams"],
+  ["workflows", "workflows"],
+  ["official-resources", "official_resources"],
   ["memory-knowledge", "memory_knowledge"],
   ["best-practices", "best_practices"],
 ] as const;
@@ -22,7 +26,9 @@ type SectionKey = (typeof sections)[number][1];
 export function DocsPage() {
   useBodyClass("docs-page");
   const { t } = useTranslation();
-  const [open, setOpen] = useState<string | null>(null);
+  const [open, setOpen] = useState<string | null>(() =>
+    typeof window === "undefined" ? null : window.location.hash.slice(1) || null,
+  );
 
   const openSection = (id: string) => {
     setOpen(id);
@@ -40,59 +46,62 @@ export function DocsPage() {
         localizedPath="/docs"
       />
 
-      <PublicHeader variant="docs" label={t("docs.page.title")} path="/docs" />
+      <PublicShell intensity="quiet">
+        <PublicHeader variant="docs" label={t("docs.page.title")} path="/docs" />
 
-      <div className="docs-shell">
-        <aside className="docs-aside">
-          <nav>
-            {sections.map(([id, key]) => (
-              <a
-                key={id}
-                href={`#${id}`}
-                className={`docs-nav-link${open === id ? " active" : ""}`}
-                onClick={(event) => {
-                  event.preventDefault();
-                  openSection(id);
-                }}
-              >
-                {t(`docs.nav.${key}`)}
-              </a>
-            ))}
-          </nav>
-        </aside>
-
-        <main className="docs-main">
-          <div className="docs-hero">
-            <h1>{t("docs.page.title")}</h1>
-            <p>{t("docs.page.subtitle")}</p>
-          </div>
-
-          <div className="docs-content">
-            {sections.map(([id, key]) => (
-              <section className="docs-section" id={id} key={id}>
-                <details
-                  open={open === id}
-                  onToggle={(event) => {
-                    if (event.currentTarget.open) setOpen(id);
+        <div className="docs-shell">
+          <aside className="docs-aside">
+            <nav>
+              {sections.map(([id, key]) => (
+                <a
+                  key={id}
+                  href={`#${id}`}
+                  className={`docs-nav-link${open === id ? " active" : ""}`}
+                  aria-current={open === id ? "location" : undefined}
+                  onClick={(event) => {
+                    event.preventDefault();
+                    openSection(id);
                   }}
                 >
-                  <summary>
-                    <span className="docs-summary-label">
-                      <span className="docs-summary-icon">
-                        <PublicIcon name={key} />
+                  {t(`docs.nav.${key}`)}
+                </a>
+              ))}
+            </nav>
+          </aside>
+
+          <main className="docs-main">
+            <Reveal className="docs-hero" offset={16}>
+              <h1>{t("docs.page.title")}</h1>
+              <p>{t("docs.page.subtitle")}</p>
+            </Reveal>
+
+            <div className="docs-content">
+              {sections.map(([id, key]) => (
+                <section className="docs-section" id={id} key={id}>
+                  <details
+                    open={open === id}
+                    onToggle={(event) => {
+                      if (event.currentTarget.open) setOpen(id);
+                    }}
+                  >
+                    <summary>
+                      <span className="docs-summary-label">
+                        <span className="docs-summary-icon">
+                          <PublicIcon name={key} />
+                        </span>
+                        {t(`docs.sections.${key}`)}
                       </span>
-                      {t(`docs.sections.${key}`)}
-                    </span>
-                  </summary>
-                  <div className="docs-section-body">
-                    <SectionContent section={key} t={t} />
-                  </div>
-                </details>
-              </section>
-            ))}
-          </div>
-        </main>
-      </div>
+                    </summary>
+                    <div className="docs-section-body">
+                      <SectionContent section={key} t={t} />
+                    </div>
+                  </details>
+                </section>
+              ))}
+            </div>
+          </main>
+        </div>
+      </PublicShell>
     </>
   );
 }
@@ -102,6 +111,10 @@ function SectionContent({ section, t }: { section: SectionKey; t: TFunction }) {
     const terms = [
       "agent",
       "llm",
+      "llm_orchestration",
+      "work_group",
+      "workflow",
+      "official_resource",
       "prompt",
       "connection",
       "provider",
@@ -161,8 +174,11 @@ function SectionContent({ section, t }: { section: SectionKey; t: TFunction }) {
   const definitions: Record<Exclude<SectionKey, "keywords" | "getting_started">, string[]> = {
     agents: ["test", "export", "config", "memory", "routines"],
     connections: ["vs_accounts", "tokens"],
+    llm_orchestration: ["modes", "balanced", "stack", "failover", "usage", "sharing"],
     skills: ["public", "private", "activate"],
     teams: ["create", "invite", "share", "unshare", "badge", "guests"],
+    workflows: ["graph", "execution", "gates", "groups"],
+    official_resources: ["catalog", "sources", "tools", "safety", "updates"],
     memory_knowledge: ["memory", "knowledge"],
     best_practices: ["prompt", "model", "skills", "knowledge", "memory", "temp"],
   };
