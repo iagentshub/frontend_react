@@ -1,5 +1,9 @@
 
 
+# -- Capturas de referencia de Playwright
+# Se regeneran por plataforma con `npm run test:e2e:update`.
+e2e/__snapshots__/
+
 # -- Otros
 .DS_Store
 node_modules
