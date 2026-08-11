@@ -4,7 +4,7 @@
   },
   "hero": {
     "badge": "Open source · Self-hosted",
-    "headline": "Your AI agents. Your keys. Your server.",
+    "headline": "All your AI in one place",
     "sub": "Build specialised agents, connect them to the models you already pay for, and deploy the whole thing on your own infrastructure. Not one byte leaves for the cloud.",
     "install_label": "Or install it on your server:",
     "providers_label": "Works with"

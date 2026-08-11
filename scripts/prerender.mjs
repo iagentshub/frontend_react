@@ -50,7 +50,10 @@ try {
   const browser = await chromium.launch({ headless: true });
   // Locale fijo: el HTML servido declara lang="es", así que el contenido
   // congelado debe estar en español (i18n detecta el idioma del navegador).
-  const context = await browser.newContext({ locale: "es-ES" });
+  // reducedMotion: el HTML congelado debe recoger el estado final, no un
+  // fotograma intermedio. Sin esto, el contador del hero se serializaba a
+  // mitad de la cuenta y el HTML servido decia "5 proveedores" y "88 %".
+  const context = await browser.newContext({ locale: "es-ES", reducedMotion: "reduce" });
   const page = await context.newPage();
   await page.route("**/api/settings/platform/public", (route) =>
     route.fulfill({

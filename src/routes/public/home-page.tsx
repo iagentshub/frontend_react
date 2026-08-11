@@ -7,6 +7,7 @@ import { platformQuery } from "@/api/public-queries";
 import { Seo } from "@/components/seo";
 import { PublicIcon } from "@/components/public-icons";
 import { usePublicNavigation } from "@/i18n/public-paths";
+import { useCountUp, useRotatingIndex } from "./use-hero-motion";
 import "@/styles/routes/landing.css";
 
 export const INSTALL_COMMAND =
@@ -31,6 +32,9 @@ export function HomePage() {
   const { language, publicLink, switchLanguage } = usePublicNavigation(i18n, "/");
   const [copied, setCopied] = useState(false);
   const [copiedWindows, setCopiedWindows] = useState(false);
+  const providerIndex = useRotatingIndex(PROVIDERS.length, 2200);
+  const providersCount = useCountUp(6, 900);
+  const privacyCount = useCountUp(100, 900);
 
   if (platform.isPending) return null;
   if (!platform.data?.landing_enabled || platform.isError) {
@@ -125,23 +129,32 @@ export function HomePage() {
             </div>
           </div>
 
-          {/* Los proveedores estaban en la cuarta línea de un párrafo. Aquí
-              dicen de qué va el producto sin necesidad de leer. */}
-          <div className="landing-hero-providers">
+          {/* Los proveedores estaban en la cuarta línea de un párrafo. El
+              nombre va rotando: el ojo se va solo a lo que se mueve, y de paso
+              dice de qué va el producto sin que haya que leer nada. */}
+          <p className="landing-hero-providers">
             <span className="landing-hero-providers-label">
               {t("landing.hero.providers_label")}
             </span>
-            <ul>
-              {PROVIDERS.map((provider) => (
-                <li key={provider}>{provider}</li>
+            {/* El lector de pantalla recibe la lista entera de una vez; la
+                palabra que rota no le sirve de nada. */}
+            <span className="sr-only">{PROVIDERS.join(", ")}</span>
+            <span className="landing-hero-provider" aria-hidden="true">
+              {PROVIDERS.map((provider, index) => (
+                <span key={provider} className={index === providerIndex ? "is-active" : undefined}>
+                  {provider}
+                </span>
               ))}
-            </ul>
-          </div>
+            </span>
+          </p>
 
           <div className="landing-hero-stats">
             <div className="landing-hero-stat">
               <span className="landing-hero-stat-num">
-                6<span className="landing-hero-stat-accent">+</span>
+                {/* La cifra va en su propio nodo: el contador le escribe el
+                    textContent y no debe llevarse por delante el signo. */}
+                <span ref={providersCount}>6</span>
+                <span className="landing-hero-stat-accent">+</span>
               </span>
               <span className="landing-hero-stat-label">{t("landing.stats.providers")}</span>
             </div>
@@ -155,7 +168,8 @@ export function HomePage() {
 
             <div className="landing-hero-stat">
               <span className="landing-hero-stat-num">
-                100<span className="landing-hero-stat-accent">%</span>
+                <span ref={privacyCount}>100</span>
+                <span className="landing-hero-stat-accent">%</span>
               </span>
               <span className="landing-hero-stat-label">{t("landing.stats.private")}</span>
             </div>

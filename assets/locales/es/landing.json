@@ -4,7 +4,7 @@
   },
   "hero": {
     "badge": "Open source · Self-hosted",
-    "headline": "Tus agentes de IA. Tus claves. Tu servidor.",
+    "headline": "Toda tu IA en un solo lugar",
     "sub": "Crea agentes especializados, conéctalos a los modelos que ya pagas y despliégalo todo en tu propia infraestructura. Ni un dato sale a la nube.",
     "install_label": "O instálalo en tu servidor:",
     "providers_label": "Compatible con"
