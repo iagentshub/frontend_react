@@ -121,28 +121,6 @@ export function HomePage() {
               </div>
             </div>
 
-            {/* Los proveedores estaban en la cuarta línea de un párrafo. El
-              nombre va rotando: el ojo se va solo a lo que se mueve, y de paso
-              dice de qué va el producto sin que haya que leer nada. */}
-            <p className="landing-hero-providers">
-              <span className="landing-hero-providers-label">
-                {t("landing.hero.providers_label")}
-              </span>
-              {/* El lector de pantalla recibe la lista entera de una vez; la
-                palabra que rota no le sirve de nada. */}
-              <span className="sr-only">{PROVIDERS.join(", ")}</span>
-              <span className="landing-hero-provider" aria-hidden="true">
-                {PROVIDERS.map((provider, index) => (
-                  <span
-                    key={provider}
-                    className={index === providerIndex ? "is-active" : undefined}
-                  >
-                    {provider}
-                  </span>
-                ))}
-              </span>
-            </p>
-
             <div className="landing-hero-stats">
               <div className="landing-hero-stat">
                 <span className="landing-hero-stat-num">
@@ -175,6 +153,18 @@ export function HomePage() {
             <AgentNetwork />
           </Reveal>
         </section>
+
+        <div className="landing-hero-providers">
+          <span className="landing-hero-providers-label">{t("landing.hero.providers_label")}</span>
+          <span className="sr-only">{PROVIDERS.join(", ")}</span>
+          <span className="landing-hero-provider" aria-hidden="true">
+            {PROVIDERS.map((provider, index) => (
+              <span key={provider} className={index === providerIndex ? "is-active" : undefined}>
+                {provider}
+              </span>
+            ))}
+          </span>
+        </div>
 
         <section className="landing-groups" aria-labelledby="landing-groups-title">
           <Reveal className="landing-groups-copy">
