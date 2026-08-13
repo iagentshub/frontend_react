@@ -1,21 +1,37 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { render, within } from "@testing-library/react";
+import { cleanup, render, screen, within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import type { ComponentProps } from "react";
 import { MemoryRouter } from "react-router-dom";
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it } from "vitest";
+import i18n from "@/i18n";
 import { PublicHeader } from "./public-header";
 
-function renderHeader() {
+function renderHeader({
+  variant = "about",
+  path = "/about",
+  billingEnabled = true,
+}: {
+  variant?: ComponentProps<typeof PublicHeader>["variant"];
+  path?: ComponentProps<typeof PublicHeader>["path"];
+  billingEnabled?: boolean;
+} = {}) {
   const client = new QueryClient({
     defaultOptions: { queries: { retry: false } },
   });
   return render(
     <QueryClientProvider client={client}>
-      <MemoryRouter initialEntries={["/about"]}>
-        <PublicHeader variant="about" path="/about" />
+      <MemoryRouter initialEntries={[path]}>
+        <PublicHeader variant={variant} path={path} billingEnabled={billingEnabled} />
       </MemoryRouter>
     </QueryClientProvider>,
   );
 }
+
+afterEach(async () => {
+  cleanup();
+  await i18n.changeLanguage("es");
+});
 
 describe("PublicHeader", () => {
   it("usa el prefijo de clase de la página para no cambiar sus estilos", () => {
@@ -54,5 +70,35 @@ describe("PublicHeader", () => {
     const { container } = renderHeader();
     const accion = container.querySelector(".about-header-action");
     expect(accion?.textContent ?? "").not.toMatch(/←\s*←/);
+  });
+
+  it("conserva las acciones específicas de landing y pricing", () => {
+    const landing = renderHeader({ variant: "landing", path: "/" });
+    expect(landing.container.querySelector(".landing-header")).not.toBeNull();
+    expect(landing.container.querySelector('[href="/app/register"]')).not.toBeNull();
+    landing.unmount();
+
+    const pricing = renderHeader({ variant: "pr", path: "/pricing/" });
+    expect(pricing.container.querySelector(".pr-header")).not.toBeNull();
+    expect(pricing.container.querySelector(".pr-header-cta")).not.toBeNull();
+  });
+
+  it("respeta billing_enabled sin perder el estado activo", () => {
+    const { container } = renderHeader({ billingEnabled: false });
+    const navigation = within(container).getByRole("navigation");
+
+    expect(within(navigation).queryByRole("link", { name: "Precios" })).not.toBeInTheDocument();
+    expect(within(navigation).getByRole("link", { name: "Acerca de" })).toHaveAttribute(
+      "aria-current",
+      "page",
+    );
+  });
+
+  it("cambia de idioma desde una pagina interior", async () => {
+    renderHeader();
+
+    await userEvent.click(screen.getByRole("button", { name: "Cambiar idioma" }));
+
+    expect(await screen.findByRole("button", { name: "Change language" })).toHaveTextContent("EN");
   });
 });

@@ -35,7 +35,8 @@ test("la landing carga y enlaza con Flutter bajo /app", async ({ page }) => {
       name: "Un grupo de trabajo es mucho más que una carpeta compartida",
     }),
   ).toBeVisible();
-  await expect(page.locator('a[href="/app/login"]').first()).toBeVisible();
+  await expect(page.locator('a[href="/app/login"]').first()).toHaveAttribute("href", "/app/login");
+  await expect(page.locator('a[href="/app/register"]').first()).toBeVisible();
   expect(errors).toEqual([]);
 });
 
@@ -44,15 +45,14 @@ test("los enlaces públicos abren About y Documentación", async ({ page }) => {
   // la consulta de plataforma está pendiente y rehace el DOM. Sin esperar a que
   // esa petición termine, el clic apunta a un nodo ya reemplazado.
   await page.goto("/", { waitUntil: "networkidle" });
-  await page.locator('a[href="/about"]').first().click();
+  await page.locator('.public-footer a[href="/about"]').click();
   await expect(page.getByRole("heading", { level: 1 })).toContainText(
     "La IA de tu organización, trabajando en grupo",
   );
 
-  // Documentación sale dos veces desde que la cabecera tiene navegación: en
-  // el nav y en el pie. Vale con la primera.
+  // El footer es visible también cuando la navegación principal se compacta.
   await page.goto("/", { waitUntil: "networkidle" });
-  await page.getByRole("link", { name: "Documentación", exact: true }).first().click();
+  await page.locator('.public-footer a[href="/docs"]').click();
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Documentación");
 });
 

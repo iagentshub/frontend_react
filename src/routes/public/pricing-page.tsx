@@ -5,7 +5,7 @@ import { appPath } from "@/app/app-paths";
 import { useQuery } from "@tanstack/react-query";
 import { platformQuery } from "@/api/public-queries";
 import { Seo } from "@/components/seo";
-import { PublicNavigation } from "@/components/public-header";
+import { PublicHeader } from "@/components/public-header";
 import { PublicShell, Reveal } from "@/components/public-motion";
 import { usePublicNavigation } from "@/i18n/public-paths";
 import { useBodyClass } from "./use-body-class";
@@ -145,23 +145,7 @@ export function PricingPage() {
       />
 
       <PublicShell>
-        <header className="public-header pr-header">
-          <Link className="pr-logo" to={publicLink("/")}>
-            iAgents<span>Hub</span>
-          </Link>
-
-          <PublicNavigation />
-
-          <div className="pr-header-spacer" />
-
-          <a href={appPath("/login")} className="pr-header-link">
-            {t("pricing.nav_login")}
-          </a>
-
-          <a href={appPath("/register")} className="pr-header-cta">
-            {t("pricing.nav_cta")}
-          </a>
-        </header>
+        <PublicHeader variant="pr" path="/pricing/" />
 
         <main className="pr-main">
           <div className="pr-hero">

@@ -6,20 +6,20 @@
 .public-shell.landing-page {
   --measure: 1200px;
   --measure-wide: 1240px;
-  --bg: var(--landing-canvas);
-  --surface: var(--landing-card);
-  --surface-2: var(--landing-elevated);
+  --bg: var(--public-canvas);
+  --surface: var(--public-surface);
+  --surface-2: var(--public-surface-elevated);
   --surface-3: #1c1d1f;
-  --ink: var(--landing-ink);
-  --ink-2: var(--landing-ink-muted);
+  --ink: var(--public-text);
+  --ink-2: var(--public-text-secondary);
   --ink-3: #74777e;
-  --line: var(--landing-border);
+  --line: var(--public-border);
   --line-strong: #34363b;
-  --accent: var(--landing-coral);
+  --accent: var(--public-coral);
   --accent-2: #ff7a76;
-  --accent-dim: var(--landing-coral-dark);
+  --accent-dim: var(--public-coral-surface);
   --public-accent-solid: #b94044;
-  --public-edge: var(--landing-border);
+  --public-edge: var(--public-border);
   --t-display: clamp(4rem, 5.3vw, 4.5rem);
   --t-h2: clamp(2.5rem, 3.4vw, 2.75rem);
   --t-body: 1rem;
@@ -140,26 +140,6 @@
   flex: 1;
 }
 
-.landing-lang-btn {
-  background: var(--surface-2);
-  border: 1px solid var(--line);
-  color: var(--ink-2);
-  font-size: var(--t-label);
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  padding: var(--s-1) var(--s-3);
-  border-radius: 6px;
-  cursor: pointer;
-  transition:
-    background 0.15s,
-    color 0.15s;
-}
-
-.landing-lang-btn:hover {
-  background: var(--surface-3);
-  color: var(--ink);
-}
-
 /* ── Hero ── */
 .landing-hero {
   display: grid;
@@ -231,7 +211,7 @@
   text-align: left;
 }
 
-.landing-hero-install .landing-install-os {
+.landing-hero-install .public-code-block-label {
   font-family: var(--font-mono);
   font-size: 0.6875rem;
   font-weight: 500;
@@ -904,130 +884,6 @@
   min-width: 0;
 }
 
-.landing-install-os {
-  display: block;
-  color: var(--ink-2);
-  font-family: var(--font-mono);
-  font-size: 0.6875rem;
-  font-weight: 500;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  margin-bottom: var(--s-2);
-}
-
-.landing-install-cmd {
-  display: flex;
-  align-items: center;
-  min-width: 0;
-  gap: var(--s-3);
-  background: var(--surface-2);
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  padding: var(--s-3) var(--s-4);
-  transition:
-    border-color 180ms ease,
-    background-color 180ms ease;
-}
-
-.landing-install-cmd:focus-within,
-.landing-install-cmd:hover {
-  border-color: var(--line-strong);
-}
-
-/* min-width: 0 es obligatorio: sin él un hijo flex no baja de su ancho de
-   contenido, y como el comando va en nowrap empujaba la página entera más
-   ancha que la ventana. El overflow: hidden que había antes en .landing-page
-   tapaba el síntoma en vez de arreglarlo. */
-.landing-install-code {
-  flex: 1;
-  min-width: 0;
-  font-family: var(--font-mono);
-  font-size: var(--t-small);
-  color: var(--ink);
-  overflow-x: auto;
-  white-space: nowrap;
-  scrollbar-width: thin;
-}
-
-.landing-install-code:focus-visible {
-  outline: 2px solid var(--landing-coral);
-  outline-offset: 4px;
-}
-
-/* ── Footer ──
-   Tres columnas con encabezado, no una fila de nueve enlaces centrados. */
-.landing-footer {
-  border-top: 1px solid var(--line);
-  margin-top: 0;
-  background: #08090a;
-}
-
-.landing-footer-inner {
-  max-width: var(--measure);
-  margin: 0 auto;
-  padding: 80px var(--gutter) 56px;
-  display: grid;
-  grid-template-columns: 1.4fr repeat(3, minmax(0, 1fr));
-  gap: clamp(40px, 6vw, 88px);
-}
-
-.landing-footer-brand {
-  display: flex;
-  flex-direction: column;
-  gap: var(--s-2);
-  align-items: flex-start;
-}
-
-.landing-footer-tagline {
-  color: var(--ink-3);
-  font-size: 0.75rem;
-  line-height: 1.6;
-  max-width: 30ch;
-}
-
-.landing-footer-col {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.landing-footer-heading {
-  color: var(--ink);
-  font-size: var(--t-label);
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  font-family: var(--font-mono);
-  font-weight: 500;
-  margin-bottom: var(--s-2);
-}
-
-.landing-footer-col a {
-  color: var(--ink-3);
-  font-size: 0.75rem;
-  line-height: 1.5;
-  text-decoration: none;
-  width: fit-content;
-  transition: color 180ms ease;
-}
-
-.landing-footer-col a:hover {
-  color: var(--ink);
-}
-
-.landing-footer-bottom {
-  max-width: var(--measure);
-  margin: 0 auto;
-  padding: 24px var(--gutter) 48px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--s-4);
-  border-top: 1px solid var(--line);
-  color: var(--ink-3);
-  font-size: var(--t-small);
-}
-
 /* ── Responsive ── */
 @media (max-width: 900px) {
   .landing-nav {
@@ -1097,10 +953,6 @@
   }
   .landing-install-commands {
     grid-template-columns: 1fr;
-  }
-  .landing-footer-inner {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: var(--s-8) var(--s-6);
   }
 }
 
@@ -1209,14 +1061,5 @@
   }
   .landing-install-modes {
     grid-template-columns: 1fr;
-  }
-  .landing-footer-inner {
-    grid-template-columns: 1fr;
-    padding: var(--s-12) var(--s-4) var(--s-6);
-  }
-  .landing-footer-bottom {
-    flex-direction: column;
-    align-items: flex-start;
-    padding: var(--s-4) var(--s-4) var(--s-12);
   }
 }

@@ -5,6 +5,8 @@ import { appPath } from "@/app/app-paths";
 import { sessionQuery } from "@/api/public-queries";
 import { usePublicNavigation, type PublicBasePath } from "@/i18n/public-paths";
 
+type PublicHeaderVariant = "about" | "docs" | "landing" | "legal" | "pr" | "support";
+
 const publicNavigation = [
   ["/", "home"],
   ["/about", "about"],
@@ -19,14 +21,23 @@ function comparablePath(path: string): string {
   return withoutLanguage.replace(/\/$/, "");
 }
 
-export function PublicNavigation({ billingEnabled = true }: { billingEnabled?: boolean }) {
+export function PublicNavigation({
+  billingEnabled = true,
+  className = "",
+}: {
+  billingEnabled?: boolean;
+  className?: string;
+}) {
   const { t, i18n } = useTranslation();
   const location = useLocation();
   const { publicLink } = usePublicNavigation(i18n, "/");
   const currentPath = comparablePath(location.pathname);
 
   return (
-    <nav className="public-header-nav" aria-label={t("common.footer.product")}>
+    <nav
+      className={`public-header-nav${className ? ` ${className}` : ""}`}
+      aria-label={t("common.footer.product")}
+    >
       {publicNavigation.map(([path, key]) => {
         if (path === "/pricing/" && !billingEnabled) return null;
         const active = comparablePath(path) === currentPath;
@@ -44,29 +55,22 @@ export function PublicNavigation({ billingEnabled = true }: { billingEnabled?: b
 }
 
 /**
- * Cabecera de las páginas públicas con selector de idioma.
- *
- * about, docs y support tenían este mismo bloque copiado, idéntico salvo el
- * prefijo de clase y la etiqueta. El prefijo se mantiene como prop porque el
- * CSS de las tres páginas NO es intercambiable —about es sticky, support tiene
- * otra altura y otro borde—, así que unificar también los estilos sería
- * rediseñarlas, no deduplicarlas.
- *
- * pricing y landing quedan fuera a propósito: su cabecera tiene otra forma
- * (pricing no lleva selector de idioma y sí tres enlaces; landing es solo logo
- * y acceso). Meterlas aquí exigiría un componente con más variantes que uso.
+ * Única estructura de cabecera pública. Las variantes conservan únicamente
+ * las diferencias reales de acción entre páginas interiores, landing y
+ * pricing; la navegación, marca y semántica permanecen compartidas.
  */
 export function PublicHeader({
   variant,
   path,
+  billingEnabled = true,
 }: {
-  /** Prefijo de clase CSS de la página: "about" | "docs" | "support". */
-  variant: string;
-  /** Ruta pública de la página, para que el cambio de idioma vuelva a ella. */
+  variant: PublicHeaderVariant;
   path: PublicBasePath;
+  billingEnabled?: boolean;
 }) {
   const { t, i18n } = useTranslation();
-  const session = useQuery(sessionQuery);
+  const usesSessionAction = variant !== "landing" && variant !== "pr";
+  const session = useQuery({ ...sessionQuery, enabled: usesSessionAction });
   const { language, publicLink, switchLanguage } = usePublicNavigation(i18n, path);
   const authenticated = Boolean(session.data?.username);
 
@@ -77,24 +81,49 @@ export function PublicHeader({
         <span>{t("common.brand.suffix")}</span>
       </Link>
 
-      <PublicNavigation />
+      <PublicNavigation billingEnabled={billingEnabled} className={`${variant}-nav`} />
 
-      <div className={`public-header-spacer ${variant}-header-spacer`} />
+      <div
+        className={`${usesSessionAction ? "public-header-spacer " : ""}${variant}-header-spacer`}
+      />
 
-      <button
-        className={`public-header-lang ${variant}-header-lang`}
-        onClick={() => void switchLanguage()}
-      >
-        {language.toUpperCase()}
-      </button>
+      {variant === "landing" ? (
+        <>
+          <a className="btn btn-ghost btn-sm" href={appPath("/login")}>
+            {t("about.header.login")}
+          </a>
+          <a className="btn btn-primary btn-sm" href={appPath("/register")}>
+            {t("landing.header.cta_register")}
+          </a>
+        </>
+      ) : variant === "pr" ? (
+        <>
+          <a href={appPath("/login")} className="pr-header-link">
+            {t("pricing.nav_login")}
+          </a>
+          <a href={appPath("/register")} className="pr-header-cta">
+            {t("pricing.nav_cta")}
+          </a>
+        </>
+      ) : (
+        <>
+          <button
+            className={`public-header-lang ${variant}-header-lang`}
+            type="button"
+            onClick={() => void switchLanguage()}
+            aria-label={t("common.footer.change_language")}
+          >
+            {language.toUpperCase()}
+          </button>
 
-      <a
-        href={appPath(authenticated ? "/dashboard" : "/login")}
-        className={`public-header-action ${variant}-header-action`}
-      >
-        {/* La flecha viene dentro de la traducción ("← Dashboard"), no se añade aquí. */}
-        {authenticated ? t("common.navigation.dashboard") : t("about.header.login")}
-      </a>
+          <a
+            href={appPath(authenticated ? "/dashboard" : "/login")}
+            className={`public-header-action ${variant}-header-action`}
+          >
+            {authenticated ? t("common.navigation.dashboard") : t("about.header.login")}
+          </a>
+        </>
+      )}
     </header>
   );
 }

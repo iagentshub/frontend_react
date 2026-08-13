@@ -85,6 +85,52 @@
 /* Shared futuristic public-page canvas. Route styles still own layout, while
    this layer makes every page feel like the same product. */
 .public-shell {
+  /* Sistema semántico público. Los aliases antiguos siguen disponibles para
+     migrar cada ruta de forma incremental sin afectar Flutter ni la app. */
+  --public-canvas: #08090a;
+  --public-surface: #0f1011;
+  --public-surface-elevated: #161718;
+  --public-border: #26272b;
+  --public-border-strong: #34363b;
+  --public-text: #f5f5f3;
+  --public-text-secondary: #989ba2;
+  --public-text-tertiary: #777a81;
+  --public-coral: #ff6363;
+  --public-coral-surface: #452324;
+  --public-success: #58c98d;
+  --public-error: #ff7474;
+  --public-font: "Geist Variable", "Inter", "Segoe UI", system-ui, sans-serif;
+  --public-font-mono: "Geist Mono Variable", "JetBrains Mono", "Fira Code", ui-monospace, monospace;
+  --public-text-display: clamp(4rem, 5.3vw, 4.5rem);
+  --public-text-h2: clamp(2.5rem, 3.4vw, 2.75rem);
+  --public-text-h3: 1.25rem;
+  --public-text-body: 1rem;
+  --public-text-small: 0.8125rem;
+  --public-text-label: 0.6875rem;
+  --public-space-1: 8px;
+  --public-space-2: 16px;
+  --public-space-3: 24px;
+  --public-space-4: 32px;
+  --public-space-6: 48px;
+  --public-space-8: 64px;
+  --public-space-12: 96px;
+  --public-space-15: 120px;
+  --public-radius-control: 8px;
+  --public-radius-card: 12px;
+  --public-radius-panel: 16px;
+  --public-container: 1200px;
+  --public-container-wide: 1240px;
+  --public-reading-width: 760px;
+  --public-duration-fast: 180ms;
+  --public-ease-standard: cubic-bezier(0.22, 1, 0.36, 1);
+  --landing-canvas: var(--public-canvas);
+  --landing-card: var(--public-surface);
+  --landing-elevated: var(--public-surface-elevated);
+  --landing-border: var(--public-border);
+  --landing-ink: var(--public-text);
+  --landing-ink-muted: var(--public-text-secondary);
+  --landing-coral: var(--public-coral);
+  --landing-coral-dark: var(--public-coral-surface);
   --font: "Geist Variable", "Inter", "Segoe UI", system-ui, sans-serif;
   --font-mono: "Geist Mono Variable", "JetBrains Mono", "Fira Code", ui-monospace, monospace;
   --public-heading-font: var(--font);
@@ -95,6 +141,182 @@
   overflow: clip;
   isolation: isolate;
   background: var(--bg);
+}
+
+/* Primitivas públicas deliberadamente acotadas: no alteran los componentes de
+   la aplicación privada ni fuerzan aún la migración visual de cada ruta. */
+.public-shell .public-container,
+.public-shell .public-container-wide,
+.public-shell .public-reading-width {
+  width: min(100%, var(--public-container));
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.public-shell .public-container-wide {
+  width: min(100%, var(--public-container-wide));
+}
+
+.public-shell .public-reading-width {
+  width: min(100%, var(--public-reading-width));
+}
+
+.public-shell .public-page-header {
+  max-width: var(--public-reading-width);
+  padding-block: var(--public-space-8) var(--public-space-6);
+}
+
+.public-shell .public-page-header h1 {
+  color: var(--public-text);
+  font-size: clamp(2.5rem, 5vw, 3.25rem);
+  font-weight: 520;
+  line-height: 1.02;
+  letter-spacing: -0.035em;
+}
+
+.public-shell .public-page-header p {
+  margin-top: var(--public-space-2);
+  color: var(--public-text-secondary);
+  font-size: var(--public-text-body);
+  line-height: 1.65;
+}
+
+.public-shell .public-surface,
+.public-shell .public-surface-elevated {
+  border: 1px solid var(--public-border);
+  border-radius: var(--public-radius-card);
+  background: var(--public-surface);
+}
+
+.public-shell .public-surface-elevated {
+  border-radius: var(--public-radius-panel);
+  background: var(--public-surface-elevated);
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.035);
+}
+
+.public-shell .public-technical-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding-inline: 10px;
+  border: 1px solid color-mix(in srgb, var(--public-coral) 34%, var(--public-border));
+  border-radius: 999px;
+  color: var(--public-coral);
+  background: color-mix(in srgb, var(--public-coral-surface) 72%, transparent);
+  font: 500 var(--public-text-label) / 1 var(--public-font-mono);
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.public-shell .public-callout {
+  padding: var(--public-space-2) var(--public-space-3);
+  border: 1px solid var(--public-border);
+  border-left: 3px solid var(--public-text-secondary);
+  border-radius: var(--public-radius-control);
+  color: var(--public-text-secondary);
+  background: var(--public-surface);
+}
+
+.public-shell .public-callout--info {
+  border-left-color: var(--public-coral);
+}
+
+.public-shell .public-callout--success {
+  border-left-color: var(--public-success);
+}
+
+.public-shell .public-callout--error {
+  border-left-color: var(--public-error);
+}
+
+.public-shell .public-field {
+  display: grid;
+  gap: var(--public-space-1);
+}
+
+.public-shell .public-field-label {
+  color: var(--public-text);
+  font-size: var(--public-text-small);
+  font-weight: 550;
+}
+
+.public-shell .public-field-control {
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid var(--public-border);
+  border-radius: var(--public-radius-control);
+  color: var(--public-text);
+  background: var(--public-surface-elevated);
+  font: inherit;
+  transition:
+    border-color var(--public-duration-fast) var(--public-ease-standard),
+    background-color var(--public-duration-fast) var(--public-ease-standard);
+}
+
+.public-shell .public-field-control:focus {
+  border-color: var(--public-coral);
+  outline: 2px solid color-mix(in srgb, var(--public-coral) 30%, transparent);
+  outline-offset: 2px;
+}
+
+.public-shell .public-field-help,
+.public-shell .public-field-error {
+  color: var(--public-text-secondary);
+  font-size: var(--public-text-small);
+}
+
+.public-shell .public-field-error {
+  color: var(--public-error);
+}
+
+.public-shell .public-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 9px 16px;
+  border: 1px solid transparent;
+  border-radius: var(--public-radius-control);
+  color: var(--public-canvas);
+  background: var(--public-coral);
+  font: 550 var(--public-text-small) / 1 var(--public-font);
+  cursor: pointer;
+  transition:
+    color var(--public-duration-fast) var(--public-ease-standard),
+    background-color var(--public-duration-fast) var(--public-ease-standard),
+    border-color var(--public-duration-fast) var(--public-ease-standard),
+    opacity var(--public-duration-fast) var(--public-ease-standard);
+}
+
+.public-shell .public-button--secondary {
+  border-color: var(--public-border);
+  color: var(--public-text);
+  background: var(--public-surface-elevated);
+}
+
+.public-shell .public-button:hover {
+  filter: brightness(1.04);
+}
+
+.public-shell .public-button--secondary:hover {
+  border-color: var(--public-border-strong);
+  background: var(--public-surface);
+}
+
+.public-shell .public-button:disabled,
+.public-shell .public-button[aria-disabled="true"] {
+  opacity: 0.42;
+  cursor: not-allowed;
+}
+
+.public-shell .public-empty-state {
+  padding: var(--public-space-6);
+  border: 1px dashed var(--public-border-strong);
+  border-radius: var(--public-radius-card);
+  color: var(--public-text-secondary);
+  background: var(--public-surface);
+  text-align: center;
 }
 
 .public-shell-content {
@@ -154,6 +376,197 @@
   font-family: var(--public-heading-font);
 }
 
+.public-footer {
+  margin-top: 0;
+  border-top: 1px solid var(--public-border);
+  color: var(--public-text);
+  background: var(--public-canvas);
+}
+
+.public-footer-inner {
+  max-width: var(--public-container);
+  margin: 0 auto;
+  padding: 80px var(--gutter) 56px;
+  display: grid;
+  grid-template-columns: 1.4fr repeat(3, minmax(0, 1fr));
+  gap: clamp(40px, 6vw, 88px);
+}
+
+.public-footer-brand {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+  align-items: flex-start;
+}
+
+.public-footer-logo {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  color: var(--public-text);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  text-decoration: none;
+}
+
+.public-footer-logo span {
+  margin-left: 4px;
+  padding: 0.06em 0.3em 0.1em;
+  border-radius: 6px;
+  color: #fff;
+  background: #b94044;
+  letter-spacing: -0.02em;
+}
+
+.public-footer-tagline {
+  max-width: 30ch;
+  color: var(--public-text-tertiary);
+  font-size: 0.75rem;
+  line-height: 1.6;
+}
+
+.public-footer-column {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.public-footer-heading {
+  margin-bottom: var(--s-2);
+  color: var(--public-text);
+  font: 500 var(--public-text-label) / 1 var(--public-font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.public-footer-column a {
+  width: fit-content;
+  color: var(--public-text-tertiary);
+  font-size: 0.75rem;
+  line-height: 1.5;
+  text-decoration: none;
+  transition: color var(--public-duration-fast) ease;
+}
+
+.public-footer-column a:hover {
+  color: var(--public-text);
+}
+
+.public-footer-bottom {
+  max-width: var(--public-container);
+  margin: 0 auto;
+  padding: 24px var(--gutter) 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-4);
+  border-top: 1px solid var(--public-border);
+  color: var(--public-text-tertiary);
+  font-size: var(--t-small);
+}
+
+.public-footer-language {
+  padding: var(--s-1) var(--s-3);
+  border: 1px solid var(--public-border);
+  border-radius: 6px;
+  color: var(--public-text-secondary);
+  background: var(--public-surface-elevated);
+  font: 700 var(--public-text-label) / 1 var(--public-font);
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition:
+    color 150ms ease,
+    background-color 150ms ease;
+}
+
+.public-footer-language:hover {
+  color: var(--public-text);
+  background: #1c1d1f;
+}
+
+.public-code-block-label {
+  display: block;
+  margin-bottom: var(--s-2);
+  color: var(--ink-2);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.public-code-block {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  gap: var(--s-3);
+  padding: var(--s-3) var(--s-4);
+  border: 1px solid var(--line);
+  border-radius: var(--public-radius-control);
+  background: var(--surface-2);
+  transition:
+    border-color var(--public-duration-fast) ease,
+    background-color var(--public-duration-fast) ease;
+}
+
+.public-code-block:focus-within,
+.public-code-block:hover {
+  border-color: var(--line-strong);
+}
+
+.public-code-block-code {
+  flex: 1;
+  min-width: 0;
+  overflow-x: auto;
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: var(--t-small);
+  white-space: nowrap;
+  scrollbar-width: thin;
+}
+
+.public-code-block-code:focus-visible {
+  outline: 2px solid var(--public-coral);
+  outline-offset: 4px;
+}
+
+.public-status-shell {
+  --bg: var(--public-canvas);
+  --surface: var(--public-surface);
+  --surface-2: var(--public-surface-elevated);
+  --ink: var(--public-text);
+  --ink-2: var(--public-text-secondary);
+  --line: var(--public-border);
+  --line-strong: var(--public-border-strong);
+  --accent: var(--public-coral);
+}
+
+.public-status-shell .route-loading,
+.public-status-shell .route-error {
+  min-height: 100vh;
+}
+
+@media (max-width: 900px) {
+  .public-footer-inner {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--s-8) var(--s-6);
+  }
+}
+
+@media (max-width: 640px) {
+  .public-footer-inner {
+    grid-template-columns: 1fr;
+    padding: var(--s-12) var(--s-4) var(--s-6);
+  }
+
+  .public-footer-bottom {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: var(--s-4) var(--s-4) var(--s-12);
+  }
+}
+
 .public-header-nav {
   display: flex;
   align-items: center;
@@ -205,16 +618,20 @@
 @media (max-width: 640px) {
   .public-header {
     gap: var(--s-2);
+    flex-wrap: wrap;
+  }
+
+  .public-header-nav {
+    order: 3;
+    flex-basis: 100%;
   }
 
   .public-header-nav a {
     padding-inline: 7px;
   }
 
-  .public-header-action,
-  .public-header > .btn-ghost,
-  .pr-header-link {
-    display: none;
+  .public-header > .pr-header-link {
+    display: inline-flex;
   }
 }
 

@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
@@ -7,7 +6,9 @@ import { platformQuery } from "@/api/public-queries";
 import { Seo } from "@/components/seo";
 import { PublicIcon } from "@/components/public-icons";
 import { AgentNetwork } from "@/components/agent-network";
-import { PublicNavigation } from "@/components/public-header";
+import { PublicHeader } from "@/components/public-header";
+import { PublicFooter } from "@/components/public-footer";
+import { PublicCodeBlock } from "@/components/public-code-block";
 import { PublicShell, Reveal, Stagger } from "@/components/public-motion";
 import { usePublicNavigation } from "@/i18n/public-paths";
 import { useCountUp, useRotatingIndex } from "./use-hero-motion";
@@ -33,9 +34,7 @@ const HOW_STEPS = ["install", "connect", "build"] as const;
 export function HomePage() {
   const { t, i18n } = useTranslation();
   const platform = useQuery(platformQuery);
-  const { language, publicLink, switchLanguage } = usePublicNavigation(i18n, "/");
-  const [copied, setCopied] = useState(false);
-  const [copiedWindows, setCopiedWindows] = useState(false);
+  const { publicLink } = usePublicNavigation(i18n, "/");
   const providerIndex = useRotatingIndex(PROVIDERS.length, 2200);
   const providersCount = useCountUp(6, 900);
   const privacyCount = useCountUp(100, 900);
@@ -45,17 +44,6 @@ export function HomePage() {
     location.replace(appPath("/login"));
     return null;
   }
-
-  const copyCommand = async () => {
-    await navigator.clipboard.writeText(INSTALL_COMMAND);
-    setCopied(true);
-    window.setTimeout(() => setCopied(false), 1500);
-  };
-  const copyWindowsCommand = async () => {
-    await navigator.clipboard.writeText(WINDOWS_INSTALL_COMMAND);
-    setCopiedWindows(true);
-    window.setTimeout(() => setCopiedWindows(false), 1500);
-  };
 
   return (
     <>
@@ -67,24 +55,7 @@ export function HomePage() {
       />
 
       <PublicShell className="landing-page">
-        <header className="public-header landing-header">
-          <Link className="landing-logo" to={publicLink("/")}>
-            {t("common.brand.prefix")}
-            <span>{t("common.brand.suffix")}</span>
-          </Link>
-
-          <PublicNavigation billingEnabled={platform.data?.billing_enabled} />
-
-          <div className="landing-header-spacer" />
-
-          <a className="btn btn-ghost btn-sm" href={appPath("/login")}>
-            {t("about.header.login")}
-          </a>
-
-          <a className="btn btn-primary btn-sm" href={appPath("/register")}>
-            {t("landing.header.cta_register")}
-          </a>
-        </header>
+        <PublicHeader variant="landing" path="/" billingEnabled={platform.data?.billing_enabled} />
 
         <section className="landing-hero">
           <div className="landing-hero-copy">
@@ -106,19 +77,14 @@ export function HomePage() {
             {/* El comando es el activo más concreto del producto: se enseña
               arriba, no enterrado al final de la página. */}
             <div className="landing-hero-install">
-              <span className="landing-install-os">{t("landing.hero.install_label")}</span>
-              <div className="landing-install-cmd">
-                <code className="landing-install-code" tabIndex={0}>
-                  {INSTALL_COMMAND}
-                </code>
-                <button
-                  className="btn btn-ghost btn-sm"
-                  type="button"
-                  onClick={() => void copyCommand()}
-                >
-                  {copied ? t("landing.install.copied") : t("landing.install.copy")}
-                </button>
-              </div>
+              <PublicCodeBlock
+                variant="compact"
+                label={t("landing.hero.install_label")}
+                command={INSTALL_COMMAND}
+                copyLabel={t("landing.install.copy")}
+                copiedLabel={t("landing.install.copied")}
+                copyFailedLabel={t("common.status.copy_failed")}
+              />
             </div>
 
             <div className="landing-hero-stats">
@@ -254,37 +220,22 @@ export function HomePage() {
 
               <div className="landing-install-commands">
                 <div>
-                  <span className="landing-install-os">{t("landing.install.unix_label")}</span>
-                  <div className="landing-install-cmd">
-                    {/* El comando desborda en pantallas estrechas y se
-                      desplaza en horizontal: WCAG exige que esa región se
-                      pueda alcanzar con el teclado. */}
-                    <code className="landing-install-code" tabIndex={0}>
-                      {INSTALL_COMMAND}
-                    </code>
-                    <button
-                      className="btn btn-ghost btn-sm"
-                      type="button"
-                      onClick={() => void copyCommand()}
-                    >
-                      {copied ? t("landing.install.copied") : t("landing.install.copy")}
-                    </button>
-                  </div>
+                  <PublicCodeBlock
+                    label={t("landing.install.unix_label")}
+                    command={INSTALL_COMMAND}
+                    copyLabel={t("landing.install.copy")}
+                    copiedLabel={t("landing.install.copied")}
+                    copyFailedLabel={t("common.status.copy_failed")}
+                  />
                 </div>
                 <div>
-                  <span className="landing-install-os">{t("landing.install.windows_label")}</span>
-                  <div className="landing-install-cmd">
-                    <code className="landing-install-code" tabIndex={0}>
-                      {WINDOWS_INSTALL_COMMAND}
-                    </code>
-                    <button
-                      className="btn btn-ghost btn-sm"
-                      type="button"
-                      onClick={() => void copyWindowsCommand()}
-                    >
-                      {copiedWindows ? t("landing.install.copied") : t("landing.install.copy")}
-                    </button>
-                  </div>
+                  <PublicCodeBlock
+                    label={t("landing.install.windows_label")}
+                    command={WINDOWS_INSTALL_COMMAND}
+                    copyLabel={t("landing.install.copy")}
+                    copiedLabel={t("landing.install.copied")}
+                    copyFailedLabel={t("common.status.copy_failed")}
+                  />
                 </div>
               </div>
 
@@ -303,55 +254,7 @@ export function HomePage() {
           </div>
         </section>
 
-        <footer className="landing-footer">
-          <div className="landing-footer-inner">
-            <div className="landing-footer-brand">
-              <Link className="landing-logo" to={publicLink("/")}>
-                {t("common.brand.prefix")}
-                <span>{t("common.brand.suffix")}</span>
-              </Link>
-              <p className="landing-footer-tagline">{t("landing.hero.badge")}</p>
-            </div>
-
-            <nav className="landing-footer-col" aria-label={t("common.footer.product")}>
-              <span className="landing-footer-heading">{t("common.footer.product")}</span>
-              <Link to={publicLink("/about")}>{t("common.navigation.about")}</Link>
-              <Link to={publicLink("/docs")}>{t("common.navigation.docs")}</Link>
-              {platform.data?.billing_enabled && (
-                <Link to={publicLink("/pricing/")}>{t("common.navigation.pricing")}</Link>
-              )}
-            </nav>
-
-            <nav className="landing-footer-col" aria-label={t("common.footer.resources")}>
-              <span className="landing-footer-heading">{t("common.footer.resources")}</span>
-              <Link to={publicLink("/support")}>{t("common.navigation.support")}</Link>
-              <a
-                href="https://github.com/iagentshub/iAgents"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {t("common.github")}
-              </a>
-            </nav>
-
-            <nav className="landing-footer-col" aria-label={t("common.footer.legal")}>
-              <span className="landing-footer-heading">{t("common.footer.legal")}</span>
-              <Link to={publicLink("/privacy")}>{t("common.navigation.privacy")}</Link>
-              <Link to={publicLink("/terms")}>{t("common.navigation.terms")}</Link>
-            </nav>
-          </div>
-
-          <div className="landing-footer-bottom">
-            <span>{t("common.footer.rights")}</span>
-            <button
-              className="landing-lang-btn"
-              type="button"
-              onClick={() => void switchLanguage()}
-            >
-              {language.toUpperCase()}
-            </button>
-          </div>
-        </footer>
+        <PublicFooter path="/" billingEnabled={platform.data?.billing_enabled} />
       </PublicShell>
     </>
   );

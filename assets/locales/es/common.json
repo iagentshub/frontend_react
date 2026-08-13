@@ -18,7 +18,8 @@
     "product": "Producto",
     "resources": "Recursos",
     "legal": "Legal",
-    "rights": "iAgentsHub — proyecto open source con licencia MIT"
+    "rights": "iAgentsHub — proyecto open source con licencia MIT",
+    "change_language": "Cambiar idioma"
   },
   "github": "GitHub",
   "ui": {
@@ -28,6 +29,7 @@
     "loading": "Cargando…",
     "load_error": "No se pudo cargar esta pantalla",
     "retry": "Reintentar",
+    "copy_failed": "No se pudo copiar",
     "not_found": "La página solicitada no existe.",
     "back_home": "Volver al inicio"
   }

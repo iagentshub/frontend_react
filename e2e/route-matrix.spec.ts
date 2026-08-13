@@ -11,6 +11,10 @@ const publicRoutes = [
   "/en/docs",
   "/support",
   "/en/support",
+  "/privacy",
+  "/en/privacy",
+  "/terms",
+  "/en/terms",
 ] as const;
 
 test.beforeEach(async ({ page }) => {
