@@ -8,6 +8,7 @@
   },
   "scripts": {
     "dev": "vite --host 0.0.0.0",
+    "dev:public": "vite --host 0.0.0.0 --mode public-preview",
     "build": "tsc -b && vite build",
     "sitemap": "node scripts/sitemap.mjs",
     "prerender": "npm run sitemap && npm run build && node scripts/prerender.mjs",
@@ -26,6 +27,8 @@
     "check": "npm run typecheck && npm run lint && npm run public:verify && npm run seo:csp-hash && npm run test && npm run prerender && npm run seo:verify"
   },
   "dependencies": {
+    "@fontsource-variable/geist": "5.3.0",
+    "@fontsource-variable/geist-mono": "5.3.0",
     "@tanstack/react-query": "5.101.2",
     "i18next": "26.3.6",
     "motion": "12.43.0",

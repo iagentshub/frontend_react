@@ -5,7 +5,8 @@
     "full": "iAgentsHub"
   },
   "navigation": {
-    "about": "¿Qué es esto?",
+    "home": "Inicio",
+    "about": "Acerca de",
     "docs": "Documentación",
     "pricing": "Precios",
     "support": "Soporte",

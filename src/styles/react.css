@@ -68,12 +68,18 @@
   /* El acento puro sobre blanco se queda en 3.6:1 con el azul oscuro. Al 62%
      los ocho temas pasan de 4.5:1. */
   --public-accent-solid: color-mix(in srgb, var(--accent) 62%, #000);
-  --public-heading-font: "Space Grotesk", var(--font);
+  --public-heading-font: var(--font);
 }
 
 /* Shared futuristic public-page canvas. Route styles still own layout, while
    this layer makes every page feel like the same product. */
 .public-shell {
+  --font: "Geist Variable", "Inter", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "Geist Mono Variable", "JetBrains Mono", "Fira Code",
+    ui-monospace, monospace;
+  --public-heading-font: var(--font);
+  --font-public-display: var(--public-heading-font);
+  font-family: var(--font);
   position: relative;
   min-height: 100vh;
   overflow: clip;
@@ -86,26 +92,11 @@
   z-index: 1;
 }
 
-.public-shell-grid,
 .public-shell-glow {
   position: fixed;
   inset: 0;
   pointer-events: none;
   z-index: 0;
-}
-
-.public-shell-grid {
-  opacity: 0.3;
-  background-image:
-    linear-gradient(var(--line) 1px, transparent 1px),
-    linear-gradient(90deg, var(--line) 1px, transparent 1px);
-  background-size: 72px 72px;
-  mask-image: linear-gradient(to bottom, #000 0, transparent 62rem);
-}
-
-.public-shell--quiet .public-shell-grid {
-  opacity: 0.14;
-  background-size: 96px 96px;
 }
 
 .public-shell-glow {
@@ -151,6 +142,70 @@
 
 .public-logo {
   font-family: var(--public-heading-font);
+}
+
+.public-header-nav {
+  display: flex;
+  align-items: center;
+  gap: var(--s-1);
+  min-width: 0;
+  margin-left: var(--s-2);
+  white-space: nowrap;
+}
+
+.public-header-nav a {
+  padding: 5px 9px;
+  border-radius: 7px;
+  color: var(--ink-2);
+  font-size: var(--t-small);
+  font-weight: 500;
+  text-decoration: none;
+  transition:
+    color 0.15s,
+    background 0.15s;
+}
+
+.public-header-nav a:hover {
+  color: var(--ink);
+  background: var(--surface-2);
+}
+
+.public-header-nav a[aria-current="page"] {
+  color: var(--ink);
+  background: color-mix(in srgb, var(--accent) 10%, var(--surface-2));
+}
+
+@media (max-width: 1000px) {
+  .public-header-spacer {
+    display: none;
+  }
+
+  .public-header-nav {
+    flex: 1;
+    overflow-x: auto;
+    margin-left: 0;
+    scrollbar-width: none;
+  }
+
+  .public-header-nav::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .public-header {
+    gap: var(--s-2);
+  }
+
+  .public-header-nav a {
+    padding-inline: 7px;
+  }
+
+  .public-header-action,
+  .public-header > .btn-ghost,
+  .pr-header-link {
+    display: none;
+  }
 }
 
 .agent-network {
@@ -252,11 +307,6 @@
 }
 
 @media (max-width: 700px) {
-  .public-shell-grid {
-    background-size: 48px 48px;
-    opacity: 0.18;
-  }
-
   .agent-network {
     border-radius: 22px;
   }

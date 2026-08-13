@@ -5,7 +5,7 @@ import { appPath } from "@/app/app-paths";
 import { useQuery } from "@tanstack/react-query";
 import { platformQuery } from "@/api/public-queries";
 import { Seo } from "@/components/seo";
-import { AgentNetwork } from "@/components/agent-network";
+import { PublicNavigation } from "@/components/public-header";
 import { PublicShell, Reveal } from "@/components/public-motion";
 import { usePublicNavigation } from "@/i18n/public-paths";
 import { useBodyClass } from "./use-body-class";
@@ -150,15 +150,9 @@ export function PricingPage() {
             iAgents<span>Hub</span>
           </Link>
 
-          <div className="pr-header-divider" />
-
-          <span className="pr-header-label">{t("pricing.badge")}</span>
+          <PublicNavigation />
 
           <div className="pr-header-spacer" />
-
-          <Link to={publicLink("/about")} className="pr-header-link">
-            {t("pricing.nav_about")}
-          </Link>
 
           <a href={appPath("/login")} className="pr-header-link">
             {t("pricing.nav_login")}
@@ -195,8 +189,22 @@ export function PricingPage() {
                 </button>
               </div>
             </Reveal>
-            <Reveal className="pr-hero-network" delay={0.1} offset={16}>
-              <AgentNetwork compact />
+            <Reveal className="pr-choice-guide" delay={0.1} offset={16}>
+              <span className="pr-choice-eyebrow">{t("pricing.guide.eyebrow")}</span>
+              <h2>{t("pricing.guide.title")}</h2>
+              <p>{t("pricing.guide.body")}</p>
+              <div className="pr-choice-list">
+                {["selfhosted", "managed", "byok"].map((item, index) => (
+                  <div className="pr-choice-item" key={item}>
+                    <span>{String(index + 1).padStart(2, "0")}</span>
+                    <div>
+                      <strong>{t(`pricing.guide.${item}_title`)}</strong>
+                      <p>{t(`pricing.guide.${item}_body`)}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <a href="#plans">{t("pricing.guide.action")} ↓</a>
             </Reveal>
           </div>
 
@@ -227,7 +235,7 @@ export function PricingPage() {
             </a>
           </div>
 
-          <div className="pr-grid">
+          <div className="pr-grid" id="plans">
             {CARDS.map((card) => (
               <div className={`pr-card${card.featured ? " pr-card--featured" : ""}`} key={card.id}>
                 {card.featured && <span className="pr-card-badge">{t("pricing.recommended")}</span>}

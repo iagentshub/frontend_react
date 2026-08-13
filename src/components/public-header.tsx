@@ -1,9 +1,47 @@
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { appPath } from "@/app/app-paths";
 import { sessionQuery } from "@/api/public-queries";
 import { usePublicNavigation, type PublicBasePath } from "@/i18n/public-paths";
+
+const publicNavigation = [
+  ["/", "home"],
+  ["/about", "about"],
+  ["/docs", "docs"],
+  ["/pricing/", "pricing"],
+  ["/support", "support"],
+] as const satisfies ReadonlyArray<readonly [PublicBasePath, string]>;
+
+function comparablePath(path: string): string {
+  const withoutLanguage = path.replace(/^\/en(?=\/)/, "");
+  if (withoutLanguage === "/") return withoutLanguage;
+  return withoutLanguage.replace(/\/$/, "");
+}
+
+export function PublicNavigation({ billingEnabled = true }: { billingEnabled?: boolean }) {
+  const { t, i18n } = useTranslation();
+  const location = useLocation();
+  const { publicLink } = usePublicNavigation(i18n, "/");
+  const currentPath = comparablePath(location.pathname);
+
+  return (
+    <nav className="public-header-nav" aria-label={t("common.footer.product")}>
+      {publicNavigation.map(([path, key]) => {
+        if (path === "/pricing/" && !billingEnabled) return null;
+        const active = comparablePath(path) === currentPath;
+        return (
+          <Link key={path} to={publicLink(path)} aria-current={active ? "page" : undefined}>
+            {t(`common.navigation.${key}`)}
+          </Link>
+        );
+      })}
+      <a href="https://github.com/iagentshub/iAgents" target="_blank" rel="noopener noreferrer">
+        {t("common.github")}
+      </a>
+    </nav>
+  );
+}
 
 /**
  * Cabecera de las páginas públicas con selector de idioma.
@@ -20,13 +58,10 @@ import { usePublicNavigation, type PublicBasePath } from "@/i18n/public-paths";
  */
 export function PublicHeader({
   variant,
-  label,
   path,
 }: {
   /** Prefijo de clase CSS de la página: "about" | "docs" | "support". */
   variant: string;
-  /** Texto de la etiqueta junto al logo (ya traducido). */
-  label: string;
   /** Ruta pública de la página, para que el cambio de idioma vuelva a ella. */
   path: PublicBasePath;
 }) {
@@ -42,9 +77,7 @@ export function PublicHeader({
         <span>{t("common.brand.suffix")}</span>
       </Link>
 
-      <div className={`public-header-divider ${variant}-header-divider`} />
-
-      <span className={`public-header-label ${variant}-header-label`}>{label}</span>
+      <PublicNavigation />
 
       <div className={`public-header-spacer ${variant}-header-spacer`} />
 

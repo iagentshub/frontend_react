@@ -6,6 +6,8 @@ import { App } from "@/app/app";
 import { queryClient } from "@/api/query-client";
 import i18n from "@/i18n";
 import { installChunkRecovery } from "@/app/chunk-recovery";
+import "@fontsource-variable/geist";
+import "@fontsource-variable/geist-mono";
 import "../assets/css/variables.css";
 import "../assets/themes/themes.css";
 import "../assets/css/base.css";

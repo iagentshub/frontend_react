@@ -128,7 +128,7 @@
 }
 
 .landing-hero-title {
-  font-family: "Space Grotesk", var(--font);
+  font-family: var(--public-heading-font);
   font-size: var(--t-display);
   font-weight: 700;
   line-height: 1.02;

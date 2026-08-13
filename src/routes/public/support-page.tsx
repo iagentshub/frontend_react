@@ -2,7 +2,6 @@ import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { Seo } from "@/components/seo";
 import { PublicHeader } from "@/components/public-header";
-import { AgentNetwork } from "@/components/agent-network";
 import { PublicShell, Reveal, Stagger } from "@/components/public-motion";
 import { usePublicNavigation } from "@/i18n/public-paths";
 import { useBodyClass } from "./use-body-class";
@@ -25,7 +24,7 @@ export function SupportPage() {
       />
 
       <PublicShell>
-        <PublicHeader variant="support" label={t("support.page.title")} path="/support" />
+        <PublicHeader variant="support" path="/support" />
 
         <main className="support-main">
           <section className="support-hero">
@@ -36,8 +35,21 @@ export function SupportPage() {
 
               <p>{t("support.page.subtitle")}</p>
             </Reveal>
-            <Reveal className="support-hero-network" delay={0.1} offset={16}>
-              <AgentNetwork compact />
+            <Reveal className="support-triage" delay={0.1} offset={16}>
+              <span className="support-triage-eyebrow">{t("support.triage.eyebrow")}</span>
+              <h2>{t("support.triage.title")}</h2>
+              <ol>
+                {["scope", "evidence", "channel"].map((item, index) => (
+                  <li key={item}>
+                    <span>{index + 1}</span>
+                    <div>
+                      <strong>{t(`support.triage.${item}_title`)}</strong>
+                      <p>{t(`support.triage.${item}_body`)}</p>
+                    </div>
+                  </li>
+                ))}
+              </ol>
+              <p className="support-triage-note">{t("support.triage.note")}</p>
             </Reveal>
           </section>
 

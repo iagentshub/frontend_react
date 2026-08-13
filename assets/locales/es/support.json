@@ -5,6 +5,17 @@
     "heading": "¿Cómo podemos ayudarte?",
     "subtitle": "Consulta la documentación, escríbenos o informa de un problema técnico. Elige la vía que mejor encaje con tu consulta."
   },
+  "triage": {
+    "eyebrow": "Diagnóstico rápido",
+    "title": "Prepara una consulta útil",
+    "scope_title": "Localiza el alcance",
+    "scope_body": "Cuenta, proveedor, instalación propia o fallo general de la aplicación.",
+    "evidence_title": "Recoge la evidencia",
+    "evidence_body": "Versión, entorno, pasos para reproducir y mensaje de error exacto.",
+    "channel_title": "Elige el canal",
+    "channel_body": "Documentación para dudas, GitHub para errores públicos y email para datos privados.",
+    "note": "No compartas claves API, tokens, contraseñas ni información personal."
+  },
   "header": {
     "login": "Iniciar sesión",
     "dashboard": "Volver al Dashboard"

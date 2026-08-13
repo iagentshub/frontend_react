@@ -2,6 +2,18 @@
   "badge": "Pricing",
   "title": "Pay for the service,\nnot the software.",
   "subtitle": "The code is open source. Deploy it yourself for free, or let us manage it for you.",
+  "guide": {
+    "eyebrow": "Before choosing",
+    "title": "Choose by management level",
+    "body": "Every plan starts with the same product. The difference is who operates the infrastructure, how many people collaborate, and the support you need.",
+    "selfhosted_title": "Self-hosted",
+    "selfhosted_body": "You host and maintain the open-source project. No platform subscription.",
+    "managed_title": "Managed service",
+    "managed_body": "We handle deployment, updates, and availability.",
+    "byok_title": "Your AI providers",
+    "byok_body": "Connect your own keys and pay usage directly to each provider.",
+    "action": "Compare plans"
+  },
   "recommended": "Recommended",
   "toggle_monthly": "Monthly",
   "toggle_annual": "Annual",

@@ -5,6 +5,17 @@
     "heading": "How can we help?",
     "subtitle": "Browse the documentation, contact us, or report a technical problem. Choose the channel that best fits your request."
   },
+  "triage": {
+    "eyebrow": "Quick diagnosis",
+    "title": "Prepare a useful request",
+    "scope_title": "Identify the scope",
+    "scope_body": "Account, provider, self-hosted installation, or a general application failure.",
+    "evidence_title": "Collect evidence",
+    "evidence_body": "Version, environment, reproduction steps, and the exact error message.",
+    "channel_title": "Choose the channel",
+    "channel_body": "Docs for questions, GitHub for public bugs, and email for private information.",
+    "note": "Never share API keys, tokens, passwords, or personal information."
+  },
   "header": {
     "login": "Sign in",
     "dashboard": "Back to Dashboard"

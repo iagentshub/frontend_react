@@ -52,7 +52,7 @@ export function AboutPage() {
       />
 
       <PublicShell>
-        <PublicHeader variant="about" label={t("about.page.title")} path="/about" />
+        <PublicHeader variant="about" path="/about" />
 
         <main className="about-main">
           <div className="about-hero">

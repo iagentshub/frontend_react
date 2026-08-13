@@ -50,7 +50,7 @@ export function LegalPage({ document }: { document: LegalDocument }) {
       />
 
       <PublicShell intensity="quiet">
-        <PublicHeader variant="legal" label={t(key("page_title"))} path={path} />
+        <PublicHeader variant="legal" path={path} />
 
         <main className="legal-main">
           <article className="legal-doc">

@@ -71,7 +71,6 @@ export function PublicShell({
 }) {
   return (
     <div className={`public-shell public-shell--${intensity}${className ? ` ${className}` : ""}`}>
-      <div className="public-shell-grid" aria-hidden="true" />
       <div className="public-shell-glow" aria-hidden="true" />
       <div className="public-shell-content">{children}</div>
     </div>

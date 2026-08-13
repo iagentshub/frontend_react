@@ -1481,11 +1481,74 @@ html body.pricing-page {
   text-align: left;
 }
 .pr-hero-copy,
-.pr-hero-network {
+.pr-choice-guide {
   min-width: 0;
 }
-.pr-hero-network .agent-network {
-  transform: rotate(1deg);
+.pr-choice-guide {
+  padding: clamp(24px, 4vw, 38px);
+  border: 1px solid var(--line-strong);
+  border-radius: 24px;
+  background: linear-gradient(
+    145deg,
+    color-mix(in srgb, var(--surface) 94%, var(--accent)),
+    var(--surface)
+  );
+  box-shadow: var(--shadow);
+}
+.pr-choice-eyebrow {
+  color: var(--accent);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.pr-choice-guide h2 {
+  margin: 10px 0 8px;
+  color: var(--ink);
+  font-size: clamp(22px, 3vw, 31px);
+  letter-spacing: -0.035em;
+}
+.pr-choice-guide > p {
+  margin: 0 0 24px;
+  color: var(--ink-2);
+  line-height: 1.55;
+}
+.pr-choice-list {
+  display: grid;
+  gap: 0;
+  border-top: 1px solid var(--line);
+}
+.pr-choice-item {
+  display: grid;
+  grid-template-columns: 34px 1fr;
+  gap: 12px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--line);
+}
+.pr-choice-item > span {
+  color: var(--accent);
+  font: 800 11px/1.5 var(--font);
+}
+.pr-choice-item strong {
+  color: var(--ink);
+  font-size: 14px;
+}
+.pr-choice-item p {
+  margin: 4px 0 0;
+  color: var(--ink-2);
+  font-size: 12px;
+  line-height: 1.5;
+}
+.pr-choice-guide > a {
+  display: inline-block;
+  margin-top: 20px;
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 750;
+  text-decoration: none;
+}
+.pr-grid {
+  scroll-margin-top: 90px;
 }
 .pr-hero-title {
   font-size: clamp(2.35rem, 5vw, 3.8rem);
@@ -1589,7 +1652,7 @@ html body.pricing-page {
     max-width: 720px;
     margin-inline: auto;
   }
-  .pr-hero-network {
+  .pr-choice-guide {
     width: 100%;
   }
 }

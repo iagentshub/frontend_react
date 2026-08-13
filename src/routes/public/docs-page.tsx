@@ -1,41 +1,98 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import type { TFunction } from "i18next";
 import { Seo } from "@/components/seo";
 import { PublicHeader } from "@/components/public-header";
-import { PublicIcon } from "@/components/public-icons";
+import { PublicIcon, type PublicIconName } from "@/components/public-icons";
 import { PublicShell, Reveal } from "@/components/public-motion";
 import { useBodyClass } from "./use-body-class";
 import "@/styles/routes/docs/docs.css";
 
 const sections = [
-  ["keywords", "keywords"],
-  ["getting-started", "getting_started"],
-  ["agents", "agents"],
-  ["connections", "connections"],
-  ["llm-orchestration", "llm_orchestration"],
-  ["skills", "skills"],
-  ["teams", "teams"],
-  ["workflows", "workflows"],
-  ["official-resources", "official_resources"],
-  ["memory-knowledge", "memory_knowledge"],
-  ["best-practices", "best_practices"],
-] as const;
-type SectionKey = (typeof sections)[number][1];
+  { id: "getting-started", key: "getting_started", icon: "getting_started" },
+  { id: "installation", key: "installation", icon: "selfhosted" },
+  { id: "agents", key: "agents", icon: "agents" },
+  { id: "connections", key: "connections", icon: "connections" },
+  { id: "llm-orchestration", key: "llm_orchestration", icon: "llm_orchestration" },
+  { id: "skills", key: "skills", icon: "skills" },
+  { id: "teams", key: "teams", icon: "teams" },
+  { id: "workflows", key: "workflows", icon: "workflows" },
+  { id: "official-resources", key: "official_resources", icon: "official_resources" },
+  { id: "memory-knowledge", key: "memory_knowledge", icon: "memory_knowledge" },
+  { id: "operations", key: "operations", icon: "dashboard" },
+  { id: "troubleshooting", key: "troubleshooting", icon: "best_practices" },
+  { id: "best-practices", key: "best_practices", icon: "best_practices" },
+  { id: "keywords", key: "keywords", icon: "keywords" },
+] as const satisfies ReadonlyArray<{ id: string; key: string; icon: PublicIconName }>;
+
+type SectionKey = (typeof sections)[number]["key"];
+
+const definitions: Record<Exclude<SectionKey, "keywords" | "getting_started">, string[]> = {
+  installation: ["requirements", "docker", "windows", "modes"],
+  agents: ["test", "export", "config", "memory", "routines"],
+  connections: ["vs_accounts", "tokens"],
+  llm_orchestration: ["modes", "balanced", "stack", "failover", "usage", "sharing"],
+  skills: ["public", "private", "activate"],
+  teams: ["create", "invite", "share", "unshare", "badge", "guests"],
+  workflows: ["graph", "execution", "gates", "groups"],
+  official_resources: ["catalog", "sources", "tools", "safety", "updates"],
+  memory_knowledge: ["memory", "knowledge"],
+  operations: ["commands", "updates", "data", "health"],
+  troubleshooting: ["first_checks", "logs", "providers", "security"],
+  best_practices: ["prompt", "model", "skills", "knowledge", "memory", "temp"],
+};
+
+const glossaryTerms = [
+  "agent",
+  "llm",
+  "llm_orchestration",
+  "work_group",
+  "workflow",
+  "official_resource",
+  "prompt",
+  "connection",
+  "provider",
+  "skill",
+  "memory",
+  "knowledge",
+  "token",
+  "temperature",
+  "context_window",
+  "hallucination",
+  "tools",
+  "rag",
+  "fine_tuning",
+  "multimodal",
+];
 
 export function DocsPage() {
   useBodyClass("docs-page");
-  const { t } = useTranslation();
-  const [open, setOpen] = useState<string | null>(() =>
-    typeof window === "undefined" ? null : window.location.hash.slice(1) || null,
-  );
+  const { t, i18n } = useTranslation();
+  const [query, setQuery] = useState("");
 
-  const openSection = (id: string) => {
-    setOpen(id);
-    requestAnimationFrame(() =>
-      document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" }),
+  const visibleSections = useMemo(() => {
+    const needle = query.trim().toLocaleLowerCase(i18n.language);
+    if (!needle) return sections;
+    return sections.filter(({ key }) =>
+      sectionSearchText(key, t).toLocaleLowerCase(i18n.language).includes(needle),
     );
-  };
+  }, [i18n.language, query, t]);
+
+  const docsLanguage = i18n.language.startsWith("es") ? "es" : "en";
+  const resources = [
+    [
+      "deployment",
+      `https://github.com/iagentshub/iAgents/blob/main/docs/${docsLanguage}/operations.md`,
+    ],
+    [
+      "backend",
+      `https://github.com/iagentshub/iAgents/blob/main/backend_fastapi/docs/${docsLanguage}/api.md`,
+    ],
+    [
+      "client",
+      `https://github.com/iagentshub/iAgents/blob/main/app_flutter/docs/${docsLanguage}/index.md`,
+    ],
+  ] as const;
 
   return (
     <>
@@ -45,24 +102,14 @@ export function DocsPage() {
         path="/docs"
         localizedPath="/docs"
       />
-
       <PublicShell intensity="quiet">
-        <PublicHeader variant="docs" label={t("docs.page.title")} path="/docs" />
-
+        <PublicHeader variant="docs" path="/docs" />
         <div className="docs-shell">
-          <aside className="docs-aside">
+          <aside className="docs-aside" aria-label={t("docs.page.index_label")}>
+            <span className="docs-aside-title">{t("docs.page.index_label")}</span>
             <nav>
-              {sections.map(([id, key]) => (
-                <a
-                  key={id}
-                  href={`#${id}`}
-                  className={`docs-nav-link${open === id ? " active" : ""}`}
-                  aria-current={open === id ? "location" : undefined}
-                  onClick={(event) => {
-                    event.preventDefault();
-                    openSection(id);
-                  }}
-                >
+              {sections.map(({ id, key }) => (
+                <a key={id} href={`#${id}`}>
                   {t(`docs.nav.${key}`)}
                 </a>
               ))}
@@ -71,26 +118,47 @@ export function DocsPage() {
 
           <main className="docs-main">
             <Reveal className="docs-hero" offset={16}>
+              <span className="docs-eyebrow">{t("docs.page.eyebrow")}</span>
               <h1>{t("docs.page.title")}</h1>
               <p>{t("docs.page.subtitle")}</p>
+              <label className="docs-search">
+                <span className="sr-only">{t("docs.page.search_label")}</span>
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <circle cx="11" cy="11" r="7" />
+                  <path d="m16.2 16.2 4.3 4.3" />
+                </svg>
+                <input
+                  value={query}
+                  onChange={(event) => setQuery(event.target.value)}
+                  placeholder={t("docs.page.search_placeholder")}
+                  type="search"
+                />
+              </label>
             </Reveal>
 
-            <div className="docs-content">
-              {sections.map(([id, key]) => (
+            {!query && (
+              <section className="docs-quick" aria-labelledby="docs-quick-title">
+                <h2 id="docs-quick-title">{t("docs.quick.title")}</h2>
+                <div className="docs-quick-grid">
+                  {["getting_started", "installation", "agents", "troubleshooting"].map((key) => (
+                    <a key={key} href={`#${key.replace("_", "-")}`}>
+                      <strong>{t(`docs.quick.${key}_title`)}</strong>
+                      <span>{t(`docs.quick.${key}_body`)}</span>
+                    </a>
+                  ))}
+                </div>
+              </section>
+            )}
+
+            <div className="docs-content" aria-live="polite">
+              {visibleSections.map(({ id, key, icon }) => (
                 <section className="docs-section" id={id} key={id}>
-                  <details
-                    open={open === id}
-                    onToggle={(event) => {
-                      if (event.currentTarget.open) setOpen(id);
-                    }}
-                  >
+                  <details open>
                     <summary>
-                      <span className="docs-summary-label">
-                        <span className="docs-summary-icon">
-                          <PublicIcon name={key} />
-                        </span>
-                        {t(`docs.sections.${key}`)}
+                      <span className="docs-summary-icon">
+                        <PublicIcon name={icon} />
                       </span>
+                      <span>{t(`docs.sections.${key}`)}</span>
                     </summary>
                     <div className="docs-section-body">
                       <SectionContent section={key} t={t} />
@@ -98,7 +166,26 @@ export function DocsPage() {
                   </details>
                 </section>
               ))}
+              {visibleSections.length === 0 && (
+                <p className="docs-empty">{t("docs.page.no_results")}</p>
+              )}
             </div>
+
+            {!query && (
+              <section className="docs-resources" aria-labelledby="docs-resources-title">
+                <h2 id="docs-resources-title">{t("docs.resources.title")}</h2>
+                <p>{t("docs.resources.subtitle")}</p>
+                <div className="docs-resource-grid">
+                  {resources.map(([key, href]) => (
+                    <a href={href} key={key} target="_blank" rel="noreferrer">
+                      <strong>{t(`docs.resources.${key}_title`)}</strong>
+                      <span>{t(`docs.resources.${key}_body`)}</span>
+                      <small>{t("docs.resources.action")} ↗</small>
+                    </a>
+                  ))}
+                </div>
+              </section>
+            )}
           </main>
         </div>
       </PublicShell>
@@ -106,48 +193,45 @@ export function DocsPage() {
   );
 }
 
+function sectionSearchText(section: SectionKey, t: TFunction) {
+  const base = [t(`docs.nav.${section}`), t(`docs.sections.${section}`)];
+  if (section === "keywords")
+    glossaryTerms.forEach((term) =>
+      base.push(t(`docs.keywords.${term}_title`), t(`docs.keywords.${term}_body`)),
+    );
+  else if (section === "getting_started") {
+    base.push(t("docs.getting_started.intro"));
+    [1, 2, 3].forEach((step) =>
+      base.push(
+        t(`docs.getting_started.step${step}_title`),
+        t(`docs.getting_started.step${step}_body`),
+      ),
+    );
+  } else
+    definitions[section].forEach((item) =>
+      base.push(t(`docs.${section}.${item}_title`), t(`docs.${section}.${item}_body`)),
+    );
+  return base.join(" ");
+}
+
 function SectionContent({ section, t }: { section: SectionKey; t: TFunction }) {
-  if (section === "keywords") {
-    const terms = [
-      "agent",
-      "llm",
-      "llm_orchestration",
-      "work_group",
-      "workflow",
-      "official_resource",
-      "prompt",
-      "connection",
-      "provider",
-      "skill",
-      "memory",
-      "knowledge",
-      "token",
-      "temperature",
-      "context_window",
-      "hallucination",
-      "tools",
-      "rag",
-      "fine_tuning",
-      "multimodal",
-    ];
+  if (section === "keywords")
     return (
       <div className="docs-glossary">
-        {terms.map((term) => (
-          <div className="docs-term" key={term}>
-            <strong>{t(`docs.keywords.${term}_title`)}</strong>
-            <p>{t(`docs.keywords.${term}_body`)}</p>
-          </div>
+        {glossaryTerms.map((term) => (
+          <Item
+            key={term}
+            title={t(`docs.keywords.${term}_title`)}
+            body={t(`docs.keywords.${term}_body`)}
+          />
         ))}
       </div>
     );
-  }
   if (section === "getting_started")
     return (
       <>
         <div className="docs-accounts">
-          <strong className="docs-accounts-title">
-            {t("docs.getting_started.accounts_title")}
-          </strong>
+          <strong>{t("docs.getting_started.accounts_title")}</strong>
           <Account
             type="registered"
             title={t("docs.getting_started.accounts_registered_title")}
@@ -164,6 +248,7 @@ function SectionContent({ section, t }: { section: SectionKey; t: TFunction }) {
           {[1, 2, 3].map((step) => (
             <Step
               key={step}
+              number={step}
               title={t(`docs.getting_started.step${step}_title`)}
               body={t(`docs.getting_started.step${step}_body`)}
             />
@@ -171,28 +256,27 @@ function SectionContent({ section, t }: { section: SectionKey; t: TFunction }) {
         </div>
       </>
     );
-  const definitions: Record<Exclude<SectionKey, "keywords" | "getting_started">, string[]> = {
-    agents: ["test", "export", "config", "memory", "routines"],
-    connections: ["vs_accounts", "tokens"],
-    llm_orchestration: ["modes", "balanced", "stack", "failover", "usage", "sharing"],
-    skills: ["public", "private", "activate"],
-    teams: ["create", "invite", "share", "unshare", "badge", "guests"],
-    workflows: ["graph", "execution", "gates", "groups"],
-    official_resources: ["catalog", "sources", "tools", "safety", "updates"],
-    memory_knowledge: ["memory", "knowledge"],
-    best_practices: ["prompt", "model", "skills", "knowledge", "memory", "temp"],
-  };
-  const items = definitions[section];
   return (
     <>
       <p className="docs-intro">{t(`docs.${section}.intro`)}</p>
-      {items.map((item) => (
-        <Item
-          key={item}
-          title={t(`docs.${section}.${item}_title`)}
-          body={t(`docs.${section}.${item}_body`)}
-        />
-      ))}
+      {section === "installation" && (
+        <div className="docs-code">
+          <span>{t("docs.installation.command_label")}</span>
+          <code>
+            git clone https://github.com/iagentshub/iAgents.git{`\n`}cd iAgents{`\n`}python gaia.py
+            install
+          </code>
+        </div>
+      )}
+      <div className="docs-items">
+        {definitions[section].map((item) => (
+          <Item
+            key={item}
+            title={t(`docs.${section}.${item}_title`)}
+            body={t(`docs.${section}.${item}_body`)}
+          />
+        ))}
+      </div>
     </>
   );
 }
@@ -205,11 +289,14 @@ function Item({ title, body }: { title: string; body: string }) {
     </div>
   );
 }
-function Step({ title, body }: { title: string; body: string }) {
+function Step({ number, title, body }: { number: number; title: string; body: string }) {
   return (
     <div className="docs-step">
-      <strong>{title}</strong>
-      <p>{body}</p>
+      <span>{number}</span>
+      <div>
+        <strong>{title}</strong>
+        <p>{body}</p>
+      </div>
     </div>
   );
 }
@@ -224,9 +311,7 @@ function Account({
 }) {
   return (
     <div className={`docs-account docs-account--${type}`}>
-      <span className="docs-account-icon" aria-hidden="true">
-        ○
-      </span>
+      <span aria-hidden="true">{type === "registered" ? "✓" : "○"}</span>
       <div>
         <strong>{title}</strong>
         <p>{body}</p>

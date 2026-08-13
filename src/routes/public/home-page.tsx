@@ -7,6 +7,7 @@ import { platformQuery } from "@/api/public-queries";
 import { Seo } from "@/components/seo";
 import { PublicIcon } from "@/components/public-icons";
 import { AgentNetwork } from "@/components/agent-network";
+import { PublicNavigation } from "@/components/public-header";
 import { PublicShell, Reveal, Stagger } from "@/components/public-motion";
 import { usePublicNavigation } from "@/i18n/public-paths";
 import { useCountUp, useRotatingIndex } from "./use-hero-motion";
@@ -72,20 +73,7 @@ export function HomePage() {
             <span>{t("common.brand.suffix")}</span>
           </Link>
 
-          <nav className="landing-nav" aria-label={t("common.footer.product")}>
-            <Link to={publicLink("/docs")}>{t("common.navigation.docs")}</Link>
-            {platform.data?.billing_enabled && (
-              <Link to={publicLink("/pricing/")}>{t("common.navigation.pricing")}</Link>
-            )}
-            <Link to={publicLink("/support")}>{t("common.navigation.support")}</Link>
-            <a
-              href="https://github.com/iagentshub/iAgents"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {t("common.github")}
-            </a>
-          </nav>
+          <PublicNavigation billingEnabled={platform.data?.billing_enabled} />
 
           <div className="landing-header-spacer" />
 

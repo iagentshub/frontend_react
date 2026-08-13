@@ -1,11 +1,17 @@
 {
   "page": {
     "title": "Documentation",
-    "subtitle": "Up-to-date guides for groups, agents, LLM orchestration and resources"
+    "eyebrow": "Product guide",
+    "subtitle": "Learn how to install iAgents, configure agents and providers, collaborate with a team, and operate your deployment safely.",
+    "index_label": "On this page",
+    "search_label": "Search the documentation",
+    "search_placeholder": "Search agents, installation, providers…",
+    "no_results": "No section matches your search. Try a different term."
   },
   "nav": {
     "keywords": "Key terms",
     "getting_started": "Getting started",
+    "installation": "Installation and deployment",
     "agents": "Agents",
     "connections": "Connections",
     "llm_orchestration": "LLM orchestration",
@@ -14,11 +20,14 @@
     "workflows": "Workflows",
     "official_resources": "Official resources",
     "memory_knowledge": "Memory & Knowledge",
+    "operations": "Operations and maintenance",
+    "troubleshooting": "Troubleshooting",
     "best_practices": "Best practices"
   },
   "sections": {
     "keywords": "Key terms",
     "getting_started": "Getting started",
+    "installation": "Installation and deployment modes",
     "agents": "Agents",
     "connections": "Connections",
     "llm_orchestration": "LLM balancing & failover",
@@ -27,7 +36,65 @@
     "workflows": "Agent workflows",
     "official_resources": "Official catalog & tools",
     "memory_knowledge": "Memory & Knowledge",
+    "operations": "Operations and maintenance",
+    "troubleshooting": "Troubleshooting",
     "best_practices": "Agent best practices"
+  },
+  "quick": {
+    "title": "Start here",
+    "getting_started_title": "Learn the product",
+    "getting_started_body": "Create your account and configure your first agent.",
+    "installation_title": "Install iAgents",
+    "installation_body": "Requirements, Docker, and deployment modes.",
+    "agents_title": "Configure agents",
+    "agents_body": "Models, instructions, memory, and testing.",
+    "troubleshooting_title": "Resolve an issue",
+    "troubleshooting_body": "Checks, logs, and safe details for support."
+  },
+  "installation": {
+    "intro": "Use the managed service or deploy the open project on your own infrastructure. The installer coordinates the backend, Flutter client, and required services.",
+    "command_label": "Install from the repository",
+    "requirements_title": "Prerequisites",
+    "requirements_body": "You need Git, Python 3, and Docker with Compose. On Windows, run PowerShell with permission to use Docker Desktop.",
+    "docker_title": "Assisted installation",
+    "docker_body": "Clone the repository and run python gaia.py install. The assistant validates dependencies, prepares configuration, and starts the containers.",
+    "windows_title": "Windows and local development",
+    "windows_body": "The flow works from PowerShell. For focused development, run React, FastAPI, or Flutter separately without changing production deployment.",
+    "modes_title": "Runtime modes",
+    "modes_body": "production prioritises stability; dev enables development; hub connects managed services; local keeps the environment on your machine. Choose the mode before generating configuration."
+  },
+  "operations": {
+    "intro": "Daily operations should be repeatable: check health, review logs, update carefully, and protect persistent data.",
+    "commands_title": "Management commands",
+    "commands_body": "Use gaia.py to start, stop, inspect, and manage the deployment from a single entry point.",
+    "updates_title": "Controlled updates",
+    "updates_body": "Review release notes, back up configuration and data, update the image or repository, and validate health before reopening traffic.",
+    "data_title": "Data and backups",
+    "data_body": "Keep the database, uploaded files, and secrets outside containers. Regularly verify that backups can be restored.",
+    "health_title": "Health and observability",
+    "health_body": "Check backend, database, and client health. When something fails, identify the affected service first and inspect its recent logs."
+  },
+  "troubleshooting": {
+    "intro": "Isolate the problem before changing configuration. A useful report states where it fails, how to reproduce it, and what happened immediately beforehand.",
+    "first_checks_title": "Initial checks",
+    "first_checks_body": "Confirm the URL, port, runtime mode, and that services are running. Try a private window to rule out cache or session state.",
+    "logs_title": "Collect evidence",
+    "logs_body": "Record version, operating system, exact steps, approximate time, and error message. Attach only logs from the affected service.",
+    "providers_title": "Provider errors",
+    "providers_body": "Verify the API key, base URL, available model, quota, and permissions. Run the connection test before changing the agent.",
+    "security_title": "Protect sensitive information",
+    "security_body": "Never publish keys, tokens, passwords, email addresses, or private content. Replace them with placeholders before sharing screenshots or logs."
+  },
+  "resources": {
+    "title": "Technical reference",
+    "subtitle": "Guides maintained alongside the code for installations, integrations, and development.",
+    "deployment_title": "Deployment and operations",
+    "deployment_body": "Installation, modes, commands, and stack maintenance.",
+    "backend_title": "Backend and API",
+    "backend_body": "FastAPI architecture, endpoints, and server contracts.",
+    "client_title": "Flutter client",
+    "client_body": "Screens, builds, and application architecture.",
+    "action": "Open technical guide"
   },
   "keywords": {
     "agent_title": "Agent",

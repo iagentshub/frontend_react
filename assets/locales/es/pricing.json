@@ -2,6 +2,18 @@
   "badge": "Precios",
   "title": "Pagas el servicio,\nno el software.",
   "subtitle": "El código es open source. Despliégalo tú mismo gratis, o deja que lo gestionemos nosotros.",
+  "guide": {
+    "eyebrow": "Antes de elegir",
+    "title": "Elige por nivel de gestión",
+    "body": "Todos los planes parten del mismo producto. La diferencia está en quién opera la infraestructura, cuántas personas colaboran y el soporte que necesitas.",
+    "selfhosted_title": "Autogestionado",
+    "selfhosted_body": "Tú alojas y mantienes el proyecto open source. Sin cuota de plataforma.",
+    "managed_title": "Servicio gestionado",
+    "managed_body": "Nos ocupamos del despliegue, las actualizaciones y la disponibilidad.",
+    "byok_title": "Tus proveedores de IA",
+    "byok_body": "Conectas tus propias claves y pagas el consumo directamente al proveedor.",
+    "action": "Comparar planes"
+  },
   "recommended": "Recomendado",
   "toggle_monthly": "Mensual",
   "toggle_annual": "Anual",
