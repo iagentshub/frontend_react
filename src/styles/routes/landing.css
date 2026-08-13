@@ -41,6 +41,12 @@
 .landing-page .btn {
   border-radius: 8px;
   font-weight: 550;
+  transition:
+    color 180ms ease,
+    background-color 180ms ease,
+    border-color 180ms ease,
+    filter 180ms ease,
+    box-shadow 180ms ease;
 }
 
 .landing-page .btn-primary {
@@ -61,6 +67,11 @@
 .landing-page .btn-ghost:hover {
   background: #1c1d1f;
   border-color: #45474d;
+}
+
+.landing-page :where(a, button):focus-visible {
+  outline: 2px solid var(--landing-coral);
+  outline-offset: 3px;
 }
 
 /* ── Header ──
@@ -635,6 +646,9 @@
 .landing-feature-card:hover {
   border-color: var(--line-strong);
   background: linear-gradient(145deg, var(--surface), var(--surface-2));
+  box-shadow:
+    inset 0 1px rgba(255, 255, 255, 0.055),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.015);
 }
 
 .landing-feature-card:first-child {
@@ -729,11 +743,45 @@
   margin-top: var(--s-8);
 }
 
-/* ── Cómo funciona ── */
+/* ── Cómo funciona: pausa editorial clara ── */
+.landing-how-shell {
+  margin-top: var(--s-24);
+  padding: 120px 0;
+  color: #111;
+  background: #f2f1ed;
+}
+
+.landing-how-content {
+  max-width: var(--measure);
+  margin: 0 auto;
+  padding-inline: var(--gutter);
+}
+
+.landing-how-intro {
+  max-width: 920px;
+  margin: 0 0 72px;
+  text-align: left;
+}
+
+.landing-how-intro .landing-section-eyebrow {
+  color: #a63f40;
+  font-family: var(--font-mono);
+  font-weight: 500;
+}
+
+.landing-how-intro h2 {
+  max-width: 18ch;
+  color: #111;
+  font-size: clamp(2.75rem, 4.5vw, 3.75rem);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+
 .landing-steps {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--s-8);
+  gap: 0;
   list-style: none;
   margin: 0;
   padding: 0;
@@ -741,76 +789,83 @@
 }
 
 .landing-step {
-  padding-top: var(--s-4);
-  border-top: 2px solid var(--public-edge);
+  min-width: 0;
+  padding: 0 40px 8px;
+  border-left: 1px solid #cfcec9;
+}
+
+.landing-step:first-child {
+  padding-left: 0;
+  border-left: 0;
+}
+
+.landing-step:last-child {
+  padding-right: 0;
 }
 
 .landing-step-num {
   display: block;
-  margin-bottom: var(--s-2);
-  color: var(--accent);
-  font-size: 1.5rem;
-  font-weight: 800;
+  margin-bottom: 48px;
+  color: #111;
+  font-family: var(--font-mono);
+  font-size: clamp(3rem, 5vw, 4.5rem);
+  font-weight: 400;
   line-height: 1;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.06em;
   font-variant-numeric: tabular-nums;
 }
 
 .landing-step h3 {
-  margin: 0 0 var(--s-2);
-  font-size: var(--t-h3);
-  letter-spacing: -0.01em;
+  margin: 0 0 var(--s-3);
+  color: #111;
+  font-size: 1.25rem;
+  font-weight: 550;
+  letter-spacing: -0.02em;
 }
 
 .landing-step p {
+  max-width: 34ch;
   margin: 0;
-  color: var(--ink-2);
-  font-size: var(--t-small);
-  line-height: 1.6;
+  color: #5f5f5b;
+  font-size: 0.9375rem;
+  line-height: 1.65;
 }
 
-/* ── Banda a sangre completa ──
-   Redefinir aquí los tokens del tema es lo que hace que la tarjeta, los
-   bordes y los botones fantasma de dentro se adapten solos, sin una sola
-   regla por componente. --accent pasa a --accent-2 porque el acento puro
-   no llega a 4.5:1 sobre un fondo tan oscuro. */
+/* Consola oscura integrada en la pausa clara. */
 .landing-band {
-  background: var(--public-band-bg);
-  border-block: 1px solid var(--public-band-line);
-  color: var(--ink);
-  max-width: none;
-  margin-top: var(--s-16);
-  padding: var(--s-24) max(var(--gutter), calc((100% - var(--measure)) / 2 + var(--gutter)));
-  --ink: var(--public-band-ink);
-  --ink-2: var(--public-band-ink-2);
-  --ink-3: var(--public-band-ink-3);
-  --line: var(--public-band-line);
-  --line-strong: var(--public-band-line-strong);
-  --surface: var(--public-band-surface);
-  --surface-2: var(--public-band-surface-2);
-  --surface-3: var(--public-band-surface-3);
-  --accent: var(--accent-2);
+  max-width: var(--measure);
+  margin: 96px auto 0;
+  padding-inline: var(--gutter);
 }
 
 /* ── Instalación ── */
 .landing-install {
+  --ink: #f5f5f3;
+  --ink-2: #a3a5aa;
+  --line: #2b2d31;
+  --line-strong: #414349;
+  --surface: #0f1011;
+  --surface-2: #161718;
+  color: var(--ink);
   background: var(--surface);
   border: 1px solid var(--line);
-  border-radius: var(--radius-lg);
-  padding: var(--s-8);
+  border-radius: 16px;
+  padding: clamp(32px, 4vw, 48px);
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.035);
 }
 
 .landing-install-title {
-  font-weight: 700;
-  font-size: var(--t-h3);
-  letter-spacing: -0.01em;
-  margin-bottom: var(--s-1);
+  margin-bottom: var(--s-2);
+  font-size: 1.5rem;
+  font-weight: 520;
+  letter-spacing: -0.025em;
 }
 
 .landing-install-hint {
   color: var(--ink-2);
-  font-size: var(--t-small);
-  margin-bottom: var(--s-6);
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  margin-bottom: var(--s-8);
 }
 
 .landing-install-modes {
@@ -840,7 +895,8 @@
    contenido sin min-width: 0, y el comando de instalación no cabe. */
 .landing-install-commands {
   display: grid;
-  gap: var(--s-3);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--s-4);
   min-width: 0;
 }
 
@@ -851,9 +907,12 @@
 .landing-install-os {
   display: block;
   color: var(--ink-2);
-  font-size: var(--t-small);
-  font-weight: 600;
-  margin-bottom: var(--s-1);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: var(--s-2);
 }
 
 .landing-install-cmd {
@@ -863,14 +922,16 @@
   gap: var(--s-3);
   background: var(--surface-2);
   border: 1px solid var(--line);
-  border-radius: var(--radius);
+  border-radius: 8px;
   padding: var(--s-3) var(--s-4);
-  transition: border-color 0.2s ease;
+  transition:
+    border-color 180ms ease,
+    background-color 180ms ease;
 }
 
 .landing-install-cmd:focus-within,
 .landing-install-cmd:hover {
-  border-color: var(--public-edge);
+  border-color: var(--line-strong);
 }
 
 /* min-width: 0 es obligatorio: sin él un hijo flex no baja de su ancho de
@@ -885,22 +946,29 @@
   color: var(--ink);
   overflow-x: auto;
   white-space: nowrap;
+  scrollbar-width: thin;
+}
+
+.landing-install-code:focus-visible {
+  outline: 2px solid var(--landing-coral);
+  outline-offset: 4px;
 }
 
 /* ── Footer ──
    Tres columnas con encabezado, no una fila de nueve enlaces centrados. */
 .landing-footer {
   border-top: 1px solid var(--line);
-  margin-top: var(--s-16);
+  margin-top: 0;
+  background: #08090a;
 }
 
 .landing-footer-inner {
   max-width: var(--measure);
   margin: 0 auto;
-  padding: var(--s-16) var(--gutter) var(--s-8);
+  padding: 80px var(--gutter) 56px;
   display: grid;
   grid-template-columns: 1.4fr repeat(3, minmax(0, 1fr));
-  gap: var(--s-8);
+  gap: clamp(40px, 6vw, 88px);
 }
 
 .landing-footer-brand {
@@ -912,14 +980,15 @@
 
 .landing-footer-tagline {
   color: var(--ink-3);
-  font-size: var(--t-small);
+  font-size: 0.75rem;
+  line-height: 1.6;
   max-width: 30ch;
 }
 
 .landing-footer-col {
   display: flex;
   flex-direction: column;
-  gap: var(--s-2);
+  gap: 10px;
 }
 
 .landing-footer-heading {
@@ -928,24 +997,28 @@
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  margin-bottom: var(--s-1);
+  font-family: var(--font-mono);
+  font-weight: 500;
+  margin-bottom: var(--s-2);
 }
 
 .landing-footer-col a {
-  color: var(--ink-2);
-  font-size: var(--t-small);
+  color: var(--ink-3);
+  font-size: 0.75rem;
+  line-height: 1.5;
   text-decoration: none;
   width: fit-content;
+  transition: color 180ms ease;
 }
 
 .landing-footer-col a:hover {
-  color: var(--accent);
+  color: var(--ink);
 }
 
 .landing-footer-bottom {
   max-width: var(--measure);
   margin: 0 auto;
-  padding: var(--s-4) var(--gutter) var(--s-12);
+  padding: 24px var(--gutter) 48px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -995,7 +1068,35 @@
   }
   .landing-steps {
     grid-template-columns: 1fr;
-    gap: var(--s-6);
+    gap: 0;
+  }
+  .landing-how-shell {
+    padding-block: 88px;
+  }
+  .landing-how-intro {
+    margin-bottom: 48px;
+  }
+  .landing-step,
+  .landing-step:first-child,
+  .landing-step:last-child {
+    display: grid;
+    grid-template-columns: 88px minmax(0, 1fr);
+    column-gap: var(--s-6);
+    padding: var(--s-8) 0;
+    border-top: 1px solid #cfcec9;
+    border-left: 0;
+  }
+  .landing-step-num {
+    grid-row: 1 / span 2;
+    margin: 0;
+    font-size: 3rem;
+  }
+  .landing-step h3,
+  .landing-step p {
+    grid-column: 2;
+  }
+  .landing-install-commands {
+    grid-template-columns: 1fr;
   }
   .landing-footer-inner {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1033,6 +1134,26 @@
   }
   .landing-section {
     padding: var(--s-12) var(--s-4);
+  }
+  .landing-how-shell {
+    margin-top: var(--s-16);
+    padding-block: 72px;
+  }
+  .landing-how-content {
+    padding-inline: var(--s-4);
+  }
+  .landing-how-intro h2 {
+    font-size: 2.5rem;
+  }
+  .landing-step,
+  .landing-step:first-child,
+  .landing-step:last-child {
+    grid-template-columns: 64px minmax(0, 1fr);
+    column-gap: var(--s-4);
+    padding-block: var(--s-6);
+  }
+  .landing-step-num {
+    font-size: 2.25rem;
   }
   .landing-groups {
     margin-block: 0;
@@ -1080,7 +1201,8 @@
     flex-direction: column;
   }
   .landing-band {
-    padding: var(--s-16) var(--s-4);
+    margin-top: 56px;
+    padding-inline: var(--s-4);
   }
   .landing-install {
     padding: var(--s-6);

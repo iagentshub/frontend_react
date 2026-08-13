@@ -229,78 +229,77 @@ export function HomePage() {
           </div>
         </section>
 
-        <section className="landing-section" aria-labelledby="landing-how-title">
-          <Reveal className="landing-section-intro">
-            <span className="landing-section-eyebrow">{t("landing.how.eyebrow")}</span>
-            <h2 id="landing-how-title">{t("landing.how.title")}</h2>
-          </Reveal>
+        <section className="landing-how-shell" aria-labelledby="landing-how-title">
+          <div className="landing-how-content">
+            <Reveal className="landing-section-intro landing-how-intro">
+              <span className="landing-section-eyebrow">{t("landing.how.eyebrow")}</span>
+              <h2 id="landing-how-title">{t("landing.how.title")}</h2>
+            </Reveal>
 
-          <ol className="landing-steps">
-            {HOW_STEPS.map((step, index) => (
-              <li className="landing-step" key={step}>
-                <span className="landing-step-num">{index + 1}</span>
-                <h3>{t(`landing.how.${step}_title`)}</h3>
-                <p>{t(`landing.how.${step}_body`)}</p>
-              </li>
-            ))}
-          </ol>
-        </section>
+            <ol className="landing-steps">
+              {HOW_STEPS.map((step, index) => (
+                <li className="landing-step" key={step}>
+                  <span className="landing-step-num">{String(index + 1).padStart(2, "0")}</span>
+                  <h3>{t(`landing.how.${step}_title`)}</h3>
+                  <p>{t(`landing.how.${step}_body`)}</p>
+                </li>
+              ))}
+            </ol>
+          </div>
 
-        {/* Banda a sangre completa: un solo cambio de fondo en toda la página
-            rompe tres pantallas del mismo gris. Dentro se redefinen los tokens
-            del tema, así que la tarjeta y los botones se adaptan solos. */}
-        <section className="landing-band">
-          <div className="landing-install">
-            <div className="landing-install-title">{t("landing.install.title")}</div>
-            <p className="landing-install-hint">{t("landing.install.hint")}</p>
+          <div className="landing-band">
+            <div className="landing-install">
+              <div className="landing-install-title">{t("landing.install.title")}</div>
+              <p className="landing-install-hint">{t("landing.install.hint")}</p>
 
-            <div className="landing-install-commands">
-              <div>
-                <span className="landing-install-os">{t("landing.install.unix_label")}</span>
-                <div className="landing-install-cmd">
-                  {/* El comando desborda en pantallas estrechas y se
+              <div className="landing-install-commands">
+                <div>
+                  <span className="landing-install-os">{t("landing.install.unix_label")}</span>
+                  <div className="landing-install-cmd">
+                    {/* El comando desborda en pantallas estrechas y se
                       desplaza en horizontal: WCAG exige que esa región se
                       pueda alcanzar con el teclado. */}
-                  <code className="landing-install-code" tabIndex={0}>
-                    {INSTALL_COMMAND}
-                  </code>
-                  <button
-                    className="btn btn-ghost btn-sm"
-                    type="button"
-                    onClick={() => void copyCommand()}
-                  >
-                    {copied ? t("landing.install.copied") : t("landing.install.copy")}
-                  </button>
+                    <code className="landing-install-code" tabIndex={0}>
+                      {INSTALL_COMMAND}
+                    </code>
+                    <button
+                      className="btn btn-ghost btn-sm"
+                      type="button"
+                      onClick={() => void copyCommand()}
+                    >
+                      {copied ? t("landing.install.copied") : t("landing.install.copy")}
+                    </button>
+                  </div>
+                </div>
+                <div>
+                  <span className="landing-install-os">{t("landing.install.windows_label")}</span>
+                  <div className="landing-install-cmd">
+                    <code className="landing-install-code" tabIndex={0}>
+                      {WINDOWS_INSTALL_COMMAND}
+                    </code>
+                    <button
+                      className="btn btn-ghost btn-sm"
+                      type="button"
+                      onClick={() => void copyWindowsCommand()}
+                    >
+                      {copiedWindows ? t("landing.install.copied") : t("landing.install.copy")}
+                    </button>
+                  </div>
                 </div>
               </div>
-              <div>
-                <span className="landing-install-os">{t("landing.install.windows_label")}</span>
-                <div className="landing-install-cmd">
-                  <code className="landing-install-code" tabIndex={0}>
-                    {WINDOWS_INSTALL_COMMAND}
-                  </code>
-                  <button
-                    className="btn btn-ghost btn-sm"
-                    type="button"
-                    onClick={() => void copyWindowsCommand()}
-                  >
-                    {copiedWindows ? t("landing.install.copied") : t("landing.install.copy")}
-                  </button>
-                </div>
-              </div>
-            </div>
 
-            <div className="landing-install-modes">
-              <p>
-                <strong>{t("landing.install.docker_label")}</strong>{" "}
-                {t("landing.install.docker_body")}
-              </p>
-              <p>
-                <strong>{t("landing.install.local_label")}</strong>{" "}
-                {t("landing.install.local_body")}
-              </p>
+              <div className="landing-install-modes">
+                <p>
+                  <strong>{t("landing.install.docker_label")}</strong>{" "}
+                  {t("landing.install.docker_body")}
+                </p>
+                <p>
+                  <strong>{t("landing.install.local_label")}</strong>{" "}
+                  {t("landing.install.local_body")}
+                </p>
+              </div>
+              <p className="landing-install-components">{t("landing.install.components")}</p>
             </div>
-            <p className="landing-install-components">{t("landing.install.components")}</p>
           </div>
         </section>
 
