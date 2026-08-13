@@ -1,7 +1,9 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import type { TFunction } from "i18next";
 import { Seo } from "@/components/seo";
+import { PublicCodeBlock } from "@/components/public-code-block";
+import { PublicFooter } from "@/components/public-footer";
 import { PublicHeader } from "@/components/public-header";
 import { PublicIcon, type PublicIconName } from "@/components/public-icons";
 import { PublicShell, Reveal } from "@/components/public-motion";
@@ -69,6 +71,24 @@ export function DocsPage() {
   useBodyClass("docs-page");
   const { t, i18n } = useTranslation();
   const [query, setQuery] = useState("");
+  const [activeSection, setActiveSection] = useState<string>(sections[0].id);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
+        if (visible?.target.id) setActiveSection(visible.target.id);
+      },
+      { rootMargin: "-20% 0px -68%", threshold: 0 },
+    );
+    sections.forEach(({ id }) => {
+      const element = document.getElementById(id);
+      if (element) observer.observe(element);
+    });
+    return () => observer.disconnect();
+  }, [query]);
 
   const visibleSections = useMemo(() => {
     const needle = query.trim().toLocaleLowerCase(i18n.language);
@@ -107,16 +127,15 @@ export function DocsPage() {
         <div className="docs-shell">
           <aside className="docs-aside" aria-label={t("docs.page.index_label")}>
             <span className="docs-aside-title">{t("docs.page.index_label")}</span>
-            <nav>
-              {sections.map(({ id, key }) => (
-                <a key={id} href={`#${id}`}>
-                  {t(`docs.nav.${key}`)}
-                </a>
-              ))}
-            </nav>
+            <DocsIndex activeSection={activeSection} t={t} />
           </aside>
 
           <main className="docs-main">
+            <details className="docs-mobile-index">
+              <summary>{t("docs.page.index_label")}</summary>
+              <DocsIndex activeSection={activeSection} t={t} />
+            </details>
+
             <Reveal className="docs-hero" offset={16}>
               <span className="docs-eyebrow">{t("docs.page.eyebrow")}</span>
               <h1>{t("docs.page.title")}</h1>
@@ -188,6 +207,7 @@ export function DocsPage() {
             )}
           </main>
         </div>
+        <PublicFooter path="/docs" />
       </PublicShell>
     </>
   );
@@ -260,13 +280,17 @@ function SectionContent({ section, t }: { section: SectionKey; t: TFunction }) {
     <>
       <p className="docs-intro">{t(`docs.${section}.intro`)}</p>
       {section === "installation" && (
-        <div className="docs-code">
-          <span>{t("docs.installation.command_label")}</span>
-          <code>
-            git clone https://github.com/iagentshub/iAgents.git{`\n`}cd iAgents{`\n`}python gaia.py
-            install
-          </code>
-        </div>
+        <PublicCodeBlock
+          command={
+            "git clone https://github.com/iagentshub/iAgents.git\ncd iAgents\npython gaia.py install"
+          }
+          label={t("docs.installation.command_label")}
+          copyLabel={t("landing.install.copy")}
+          copiedLabel={t("landing.install.copied")}
+          copyFailedLabel={t("common.status.copy_failed")}
+          variant="console"
+          multiline
+        />
       )}
       <div className="docs-items">
         {definitions[section].map((item) => (
@@ -278,6 +302,18 @@ function SectionContent({ section, t }: { section: SectionKey; t: TFunction }) {
         ))}
       </div>
     </>
+  );
+}
+
+function DocsIndex({ activeSection, t }: { activeSection: string; t: TFunction }) {
+  return (
+    <nav>
+      {sections.map(({ id, key }) => (
+        <a key={id} href={`#${id}`} aria-current={activeSection === id ? "location" : undefined}>
+          {t(`docs.nav.${key}`)}
+        </a>
+      ))}
+    </nav>
   );
 }
 

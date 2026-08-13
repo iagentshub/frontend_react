@@ -37,6 +37,7 @@ export function PublicCodeBlock({
   copiedLabel,
   copyFailedLabel,
   variant = "console",
+  multiline = false,
 }: {
   command: string;
   label?: string;
@@ -44,6 +45,7 @@ export function PublicCodeBlock({
   copiedLabel: string;
   copyFailedLabel: string;
   variant?: "compact" | "console";
+  multiline?: boolean;
 }) {
   const [copyState, setCopyState] = useState<CopyState>("idle");
   const resetTimer = useRef<number | undefined>(undefined);
@@ -68,7 +70,10 @@ export function PublicCodeBlock({
     <>
       {label && <span className="public-code-block-label">{label}</span>}
       <div className={`public-code-block public-code-block--${variant}`}>
-        <code className="public-code-block-code" tabIndex={0}>
+        <code
+          className={`public-code-block-code${multiline ? " public-code-block-code--multiline" : ""}`}
+          tabIndex={0}
+        >
           {command}
         </code>
         <button

@@ -531,6 +531,11 @@
   outline-offset: 4px;
 }
 
+.public-code-block-code--multiline {
+  white-space: pre;
+  line-height: 1.7;
+}
+
 .public-status-shell {
   --bg: var(--public-canvas);
   --surface: var(--public-surface);

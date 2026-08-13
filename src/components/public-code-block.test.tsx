@@ -58,4 +58,10 @@ describe("PublicCodeBlock", () => {
     expect(screen.getByRole("button", { name: "No se pudo copiar" })).toBeInTheDocument();
     expect(screen.getByText(props.command)).toHaveAttribute("tabindex", "0");
   });
+
+  it("conserva comandos multilínea para documentación", () => {
+    render(<PublicCodeBlock {...props} command={"uno\ndos"} multiline />);
+
+    expect(screen.getByText(/uno/)).toHaveClass("public-code-block-code--multiline");
+  });
 });

@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { Seo } from "@/components/seo";
+import { PublicFooter } from "@/components/public-footer";
 import { PublicHeader } from "@/components/public-header";
 import { PublicIcon } from "@/components/public-icons";
 import { PublicShell, Reveal } from "@/components/public-motion";
@@ -106,6 +107,7 @@ export function LegalPage({ document }: { document: LegalDocument }) {
             </nav>
           </article>
         </main>
+        <PublicFooter path={path} />
       </PublicShell>
     </>
   );
