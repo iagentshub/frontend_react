@@ -37,7 +37,32 @@ test("la cabecera y los comandos no desbordan en los anchos de referencia", asyn
     }));
 
     expect(layout.page, `overflow horizontal a ${width}px`).toBe(layout.viewport);
-    expect(layout.codeBlocks).toHaveLength(3);
+    expect(layout.codeBlocks).toHaveLength(2);
     expect(layout.codeBlocks.every(({ client, scroll }) => scroll >= client)).toBe(true);
   }
+});
+
+test("la instalación permite elegir Linux, macOS y Windows", async ({ page }) => {
+  await page.goto("/", { waitUntil: "networkidle" });
+
+  const platforms = page.getByRole("group", { name: "Elige tu plataforma" });
+  const linux = platforms.getByRole("button", { name: "Linux" });
+  const macos = platforms.getByRole("button", { name: "macOS" });
+  const windows = platforms.getByRole("button", { name: "Windows" });
+  const command = page.locator("#landing-install-command code");
+
+  await expect(linux).toHaveAttribute("aria-pressed", "true");
+  await expect(linux.locator("svg")).toBeVisible();
+  await expect(macos.locator("svg")).toBeVisible();
+  await expect(windows.locator("svg")).toBeVisible();
+  await expect(command).toContainText("install.sh");
+
+  await windows.click();
+  await expect(windows).toHaveAttribute("aria-pressed", "true");
+  await expect(command).toContainText("install.ps1");
+
+  await macos.focus();
+  await page.keyboard.press("Enter");
+  await expect(macos).toHaveAttribute("aria-pressed", "true");
+  await expect(command).toContainText("install.sh");
 });

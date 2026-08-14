@@ -725,21 +725,39 @@
 
 /* ── Cómo funciona: pausa editorial clara ── */
 .landing-how-shell {
+  position: relative;
   margin-top: var(--s-24);
-  padding: 120px 0;
+  padding: 112px 0 0;
   color: #111;
   background: #f2f1ed;
+  overflow: hidden;
+}
+
+.landing-how-shell::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 152px;
+  background: var(--public-canvas);
 }
 
 .landing-how-content {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.78fr) minmax(480px, 1.22fr);
+  align-items: start;
+  gap: clamp(72px, 10vw, 152px);
   max-width: var(--measure);
   margin: 0 auto;
   padding-inline: var(--gutter);
 }
 
 .landing-how-intro {
-  max-width: 920px;
-  margin: 0 0 72px;
+  position: sticky;
+  top: 112px;
+  max-width: 480px;
+  margin: 0;
   text-align: left;
 }
 
@@ -750,18 +768,17 @@
 }
 
 .landing-how-intro h2 {
-  max-width: 18ch;
+  max-width: 10ch;
   color: #111;
-  font-size: clamp(2.75rem, 4.5vw, 3.75rem);
+  font-size: clamp(2.75rem, 4.25vw, 3.5rem);
   font-weight: 500;
   line-height: 1;
   letter-spacing: -0.04em;
 }
 
 .landing-steps {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0;
+  display: flex;
+  flex-direction: column;
   list-style: none;
   margin: 0;
   padding: 0;
@@ -769,42 +786,55 @@
 }
 
 .landing-step {
+  position: relative;
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr);
+  column-gap: var(--s-5);
   min-width: 0;
-  padding: 0 40px 8px;
-  border-left: 1px solid #cfcec9;
+  padding: 32px 0;
+  border-top: 1px solid #cfcec9;
 }
 
 .landing-step:first-child {
-  padding-left: 0;
-  border-left: 0;
+  padding-top: 0;
+  border-top: 0;
 }
 
 .landing-step:last-child {
-  padding-right: 0;
+  padding-bottom: 0;
 }
 
 .landing-step-num {
-  display: block;
-  margin-bottom: 48px;
-  color: #111;
+  grid-row: 1 / span 2;
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 32px;
+  margin: 0;
+  border: 1px solid #cfcec9;
+  border-radius: 999px;
+  color: #a63f40;
+  background: rgba(255, 255, 255, 0.38);
   font-family: var(--font-mono);
-  font-size: clamp(3rem, 5vw, 4.5rem);
-  font-weight: 400;
+  font-size: 0.75rem;
+  font-weight: 550;
   line-height: 1;
-  letter-spacing: -0.06em;
+  letter-spacing: 0.04em;
   font-variant-numeric: tabular-nums;
 }
 
 .landing-step h3 {
-  margin: 0 0 var(--s-3);
+  grid-column: 2;
+  margin: 2px 0 var(--s-2);
   color: #111;
-  font-size: 1.25rem;
+  font-size: 1.375rem;
   font-weight: 550;
   letter-spacing: -0.02em;
 }
 
 .landing-step p {
-  max-width: 34ch;
+  grid-column: 2;
+  max-width: 48ch;
   margin: 0;
   color: #5f5f5b;
   font-size: 0.9375rem;
@@ -813,9 +843,11 @@
 
 /* Consola oscura integrada en la pausa clara. */
 .landing-band {
+  position: relative;
+  z-index: 1;
   max-width: var(--measure);
-  margin: 96px auto 0;
-  padding-inline: var(--gutter);
+  margin: 88px auto 0;
+  padding: 0 var(--gutter) 88px;
 }
 
 /* ── Instalación ── */
@@ -830,8 +862,20 @@
   background: var(--surface);
   border: 1px solid var(--line);
   border-radius: 16px;
-  padding: clamp(32px, 4vw, 48px);
+  padding: clamp(28px, 4vw, 44px);
   box-shadow: inset 0 1px rgba(255, 255, 255, 0.035);
+}
+
+.landing-install-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--s-6);
+  margin-bottom: var(--s-6);
+}
+
+.landing-install-header > div:first-child {
+  max-width: 560px;
 }
 
 .landing-install-title {
@@ -845,7 +889,84 @@
   color: var(--ink-2);
   font-size: 0.9375rem;
   line-height: 1.6;
-  margin-bottom: var(--s-8);
+  margin: 0;
+}
+
+.landing-install-platforms {
+  flex: 0 0 auto;
+  display: inline-flex;
+  gap: 8px;
+  padding: 5px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #0b0c0d;
+}
+
+.landing-install-platform {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 112px;
+  min-height: 44px;
+  padding: 7px 12px 7px 8px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  color: var(--ink-2);
+  background: transparent;
+  font: 550 0.75rem/1 var(--font);
+  cursor: pointer;
+  transition:
+    color var(--public-duration-fast) var(--public-ease-standard),
+    border-color var(--public-duration-fast) var(--public-ease-standard),
+    background-color var(--public-duration-fast) var(--public-ease-standard);
+}
+
+.landing-install-platform-icon {
+  width: 30px;
+  height: 30px;
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  color: #c4c6ca;
+  background: var(--surface);
+}
+
+.landing-install-platform-icon svg {
+  width: 17px;
+  height: 17px;
+  fill: currentColor;
+}
+
+.landing-install-platform:first-child svg {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.45;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.landing-install-platform:hover {
+  color: var(--ink);
+  background: var(--surface-2);
+}
+
+.landing-install-platform[aria-pressed="true"] {
+  border-color: var(--line-strong);
+  color: var(--ink);
+  background: var(--surface-2);
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.04);
+}
+
+.landing-install-platform[aria-pressed="true"] .landing-install-platform-icon {
+  border-color: color-mix(in srgb, var(--public-coral) 42%, var(--line));
+  color: var(--public-coral);
+  background: color-mix(in srgb, var(--public-coral) 8%, var(--surface));
+}
+
+.landing-install-command {
+  min-width: 0;
 }
 
 .landing-install-modes {
@@ -873,17 +994,6 @@
 
 /* Igual que en el código: los hijos de un grid tampoco bajan de su ancho de
    contenido sin min-width: 0, y el comando de instalación no cabe. */
-.landing-install-commands {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--s-4);
-  min-width: 0;
-}
-
-.landing-install-commands > div {
-  min-width: 0;
-}
-
 /* ── Responsive ── */
 @media (max-width: 900px) {
   .landing-nav {
@@ -923,36 +1033,49 @@
     min-height: 300px;
   }
   .landing-steps {
-    grid-template-columns: 1fr;
-    gap: 0;
+    width: 100%;
   }
   .landing-how-shell {
-    padding-block: 88px;
+    padding-top: 88px;
+  }
+  .landing-how-content {
+    grid-template-columns: 1fr;
+    gap: 56px;
   }
   .landing-how-intro {
-    margin-bottom: 48px;
+    position: static;
+    max-width: 680px;
   }
   .landing-step,
   .landing-step:first-child,
   .landing-step:last-child {
     display: grid;
-    grid-template-columns: 88px minmax(0, 1fr);
+    grid-template-columns: 72px minmax(0, 1fr);
     column-gap: var(--s-6);
-    padding: var(--s-8) 0;
+    padding: var(--s-6) 0;
     border-top: 1px solid #cfcec9;
-    border-left: 0;
+  }
+  .landing-step:first-child {
+    border-top: 0;
   }
   .landing-step-num {
     grid-row: 1 / span 2;
     margin: 0;
-    font-size: 3rem;
+    font-size: 0.75rem;
   }
   .landing-step h3,
   .landing-step p {
     grid-column: 2;
   }
-  .landing-install-commands {
-    grid-template-columns: 1fr;
+  .landing-install-header {
+    flex-direction: column;
+  }
+  .landing-install-platforms {
+    align-self: stretch;
+  }
+  .landing-install-platform {
+    flex: 1;
+    justify-content: center;
   }
 }
 
@@ -989,7 +1112,7 @@
   }
   .landing-how-shell {
     margin-top: var(--s-16);
-    padding-block: 72px;
+    padding-top: 72px;
   }
   .landing-how-content {
     padding-inline: var(--s-4);
@@ -1000,12 +1123,13 @@
   .landing-step,
   .landing-step:first-child,
   .landing-step:last-child {
-    grid-template-columns: 64px minmax(0, 1fr);
+    grid-template-columns: 56px minmax(0, 1fr);
     column-gap: var(--s-4);
     padding-block: var(--s-6);
   }
   .landing-step-num {
-    font-size: 2.25rem;
+    width: 48px;
+    font-size: 0.6875rem;
   }
   .landing-groups {
     margin-block: 0;
@@ -1054,12 +1178,26 @@
   }
   .landing-band {
     margin-top: 56px;
-    padding-inline: var(--s-4);
+    padding: 0 var(--s-4) 72px;
   }
   .landing-install {
     padding: var(--s-6);
   }
   .landing-install-modes {
     grid-template-columns: 1fr;
+  }
+  .landing-install-platforms {
+    gap: 5px;
+  }
+  .landing-install-platform {
+    min-width: 0;
+    padding: 6px;
+  }
+  .landing-install-platform-icon {
+    width: 28px;
+    height: 28px;
+  }
+  .landing-install-platform span:last-child {
+    font-size: 0.6875rem;
   }
 }

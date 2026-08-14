@@ -177,7 +177,7 @@ body.legal-page {
   color: var(--public-coral);
 }
 
-.legal-nav {
+.legal-document-nav {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
@@ -186,7 +186,7 @@ body.legal-page {
   border-top: 1px solid var(--public-border);
 }
 
-.legal-nav a {
+.legal-document-nav a {
   padding: 9px 13px;
   border: 1px solid var(--public-border);
   border-radius: var(--public-radius-control);
@@ -201,7 +201,7 @@ body.legal-page {
     background-color var(--public-duration-fast) var(--public-ease-standard);
 }
 
-.legal-nav a:hover {
+.legal-document-nav a:hover {
   border-color: var(--public-border-strong);
   color: var(--public-text);
   background: var(--public-surface-elevated);
@@ -238,7 +238,7 @@ body.legal-page {
 @media (prefers-reduced-motion: reduce) {
   .legal-header-lang,
   .legal-header-action,
-  .legal-nav a {
+  .legal-document-nav a {
     transition-duration: 0.01ms;
   }
 }

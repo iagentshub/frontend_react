@@ -101,7 +101,7 @@ export function LegalPage({ document }: { document: LegalDocument }) {
               );
             })}
 
-            <nav className="legal-nav">
+            <nav className="legal-document-nav">
               <Link to={publicLink(LEGAL_DOCUMENTS[other].path)}>{t(`legal.${other}.title`)}</Link>
               <Link to={publicLink("/")}>{t("legal.back")}</Link>
             </nav>

@@ -1,13 +1,13 @@
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
-import { Link, Navigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import { appPath } from "@/app/app-paths";
 import { useQuery } from "@tanstack/react-query";
 import { platformQuery } from "@/api/public-queries";
 import { Seo } from "@/components/seo";
+import { PublicFooter } from "@/components/public-footer";
 import { PublicHeader } from "@/components/public-header";
 import { PublicShell, Reveal } from "@/components/public-motion";
-import { usePublicNavigation } from "@/i18n/public-paths";
 import { useBodyClass } from "./use-body-class";
 import { PLANS } from "./pricing-model";
 import { usePriceMatrix } from "./use-price-matrix";
@@ -99,9 +99,8 @@ const CARDS: Array<{
 ];
 
 export function PricingPage() {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   useBodyClass("pricing-page");
-  const { publicLink, language, switchLanguage } = usePublicNavigation(i18n, "/pricing/");
   // ── Guard: si la facturación está desactivada, no se muestra la página ──
   const settings = useQuery(platformQuery);
 
@@ -417,16 +416,7 @@ export function PricingPage() {
           />
         )}
 
-        <footer className="pr-footer">
-          <span>© 2026 iAgentsHub</span>
-          <Link to={publicLink("/about")}>{t("pricing.footer_about")}</Link>
-          <a href="mailto:hola@iagentshub.com">{t("pricing.footer_contact")}</a>
-          <Link to={publicLink("/privacy")}>{t("common.navigation.privacy")}</Link>
-          <Link to={publicLink("/terms")}>{t("common.navigation.terms")}</Link>
-          <button className="pr-lang-btn" type="button" onClick={() => void switchLanguage()}>
-            {language.toUpperCase()}
-          </button>
-        </footer>
+        <PublicFooter path="/pricing/" />
       </PublicShell>
     </>
   );

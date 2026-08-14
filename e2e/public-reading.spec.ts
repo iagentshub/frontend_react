@@ -42,3 +42,26 @@ for (const path of ["/docs", "/privacy", "/terms"]) {
     expect(violations).toEqual([]);
   });
 }
+
+for (const path of ["/privacy", "/terms"]) {
+  test(`${path} mantiene la navegación alineada dentro de la cabecera`, async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto(path);
+    await expect(page.locator(".legal-title")).toBeVisible();
+
+    const layout = await page.evaluate(() => {
+      const header = document.querySelector<HTMLElement>(".legal-header")!.getBoundingClientRect();
+      const logo = document.querySelector<HTMLElement>(".legal-logo")!.getBoundingClientRect();
+      const navigation = document.querySelector<HTMLElement>(".legal-nav")!.getBoundingClientRect();
+      return {
+        headerHeight: header.height,
+        logoCenter: logo.top + logo.height / 2,
+        navigationCenter: navigation.top + navigation.height / 2,
+      };
+    });
+
+    expect(layout.headerHeight).toBeLessThanOrEqual(72);
+    expect(Math.abs(layout.logoCenter - layout.navigationCenter)).toBeLessThanOrEqual(2);
+    await expect(page.locator(".legal-document-nav")).toBeVisible();
+  });
+}

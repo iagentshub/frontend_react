@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { appPath } from "@/app/app-paths";
 import { platformQuery } from "@/api/public-queries";
@@ -30,9 +31,39 @@ const GROUP_RESOURCES = ["agents", "knowledge", "connections", "workflows"] as c
 /** Nombres de marca: no se traducen, igual que "iAgentsHub". */
 const PROVIDERS = ["Claude", "OpenAI", "Gemini", "Grok", "Ollama"] as const;
 const HOW_STEPS = ["install", "connect", "build"] as const;
+const INSTALL_PLATFORMS = ["linux", "macos", "windows"] as const;
+type InstallPlatform = (typeof INSTALL_PLATFORMS)[number];
+
+function PlatformIcon({ platform }: { platform: InstallPlatform }) {
+  if (platform === "windows") {
+    return (
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M3 5.2 10.5 4v7.2H3V5.2Zm8.6-1.4L21 2.4v8.8h-9.4V3.8ZM3 12.3h7.5v7.3L3 18.5v-6.2Zm8.6 0H21v9.3l-9.4-1.4v-7.9Z" />
+      </svg>
+    );
+  }
+
+  if (platform === "macos") {
+    return (
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M16.8 12.8c0-2.3 1.9-3.5 2-3.6a4.3 4.3 0 0 0-3.4-1.8c-1.4-.1-2.8.8-3.5.8-.8 0-2-0.8-3.2-.8-1.7 0-3.3 1-4.2 2.5-1.8 3.1-.5 7.6 1.3 10.1.9 1.2 1.9 2.6 3.3 2.5 1.3-.1 1.9-.9 3.5-.9 1.7 0 2.1.9 3.5.9 1.5 0 2.4-1.2 3.3-2.5 1-1.4 1.4-2.9 1.4-3-.1 0-4-1.5-4-4.2ZM14.5 5.9c.8-1 1.3-2.4 1.2-3.7-1.2.1-2.6.8-3.5 1.8-.7.8-1.3 2.2-1.1 3.5 1.3.1 2.6-.6 3.4-1.6Z" />
+      </svg>
+    );
+  }
+
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M12 2.7c-2.7 0-4.3 2.5-4.3 5.6 0 1.5.3 2.7.9 3.7-1.6 1.5-2.5 3.5-2.5 5.8 0 1.2.3 2.4.8 3.4h10.2c.5-1 .8-2.2.8-3.4 0-2.3-.9-4.3-2.5-5.8.6-1 .9-2.2.9-3.7 0-3.1-1.6-5.6-4.3-5.6Z" />
+      <circle cx="10.2" cy="7.8" r=".6" fill="currentColor" stroke="none" />
+      <circle cx="13.8" cy="7.8" r=".6" fill="currentColor" stroke="none" />
+      <path d="m11 9.5 1 .7 1-.7M9 13.2c.8.8 1.8 1.2 3 1.2s2.2-.4 3-1.2M7.4 17.7l-3 1.8M16.6 17.7l3 1.8" />
+    </svg>
+  );
+}
 
 export function HomePage() {
   const { t, i18n } = useTranslation();
+  const [installPlatform, setInstallPlatform] = useState<InstallPlatform>("linux");
   const platform = useQuery(platformQuery);
   const { publicLink } = usePublicNavigation(i18n, "/");
   const providerIndex = useRotatingIndex(PROVIDERS.length, 2200);
@@ -215,28 +246,49 @@ export function HomePage() {
 
           <div className="landing-band">
             <div className="landing-install">
-              <div className="landing-install-title">{t("landing.install.title")}</div>
-              <p className="landing-install-hint">{t("landing.install.hint")}</p>
+              <div className="landing-install-header">
+                <div>
+                  <div className="landing-install-title">{t("landing.install.title")}</div>
+                  <p className="landing-install-hint">{t("landing.install.hint")}</p>
+                </div>
 
-              <div className="landing-install-commands">
-                <div>
-                  <PublicCodeBlock
-                    label={t("landing.install.unix_label")}
-                    command={INSTALL_COMMAND}
-                    copyLabel={t("landing.install.copy")}
-                    copiedLabel={t("landing.install.copied")}
-                    copyFailedLabel={t("common.status.copy_failed")}
-                  />
+                <div
+                  className="landing-install-platforms"
+                  role="group"
+                  aria-label={t("landing.install.platform_selector_label")}
+                >
+                  {INSTALL_PLATFORMS.map((item) => (
+                    <button
+                      className="landing-install-platform"
+                      type="button"
+                      aria-pressed={installPlatform === item}
+                      key={item}
+                      onClick={() => setInstallPlatform(item)}
+                    >
+                      <span className="landing-install-platform-icon">
+                        <PlatformIcon platform={item} />
+                      </span>
+                      <span>{t(`landing.install.${item}_label`)}</span>
+                    </button>
+                  ))}
                 </div>
-                <div>
-                  <PublicCodeBlock
-                    label={t("landing.install.windows_label")}
-                    command={WINDOWS_INSTALL_COMMAND}
-                    copyLabel={t("landing.install.copy")}
-                    copiedLabel={t("landing.install.copied")}
-                    copyFailedLabel={t("common.status.copy_failed")}
-                  />
-                </div>
+              </div>
+
+              <div
+                className="landing-install-command"
+                id="landing-install-command"
+                aria-live="polite"
+              >
+                <PublicCodeBlock
+                  key={installPlatform}
+                  label={t(`landing.install.${installPlatform}_command_label`)}
+                  command={
+                    installPlatform === "windows" ? WINDOWS_INSTALL_COMMAND : INSTALL_COMMAND
+                  }
+                  copyLabel={t("landing.install.copy")}
+                  copiedLabel={t("landing.install.copied")}
+                  copyFailedLabel={t("common.status.copy_failed")}
+                />
               </div>
 
               <div className="landing-install-modes">
