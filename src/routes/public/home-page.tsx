@@ -33,6 +33,95 @@ const PROVIDERS = ["Claude", "OpenAI", "Gemini", "Grok", "Ollama"] as const;
 const HOW_STEPS = ["install", "connect", "build"] as const;
 const INSTALL_PLATFORMS = ["linux", "macos", "windows"] as const;
 type InstallPlatform = (typeof INSTALL_PLATFORMS)[number];
+type HomeFeature = (typeof homeFeatures)[number];
+
+function FeatureVisual({ feature }: { feature: HomeFeature }) {
+  if (feature === "groups") {
+    return (
+      <div className="landing-feature-visual landing-feature-visual--groups" aria-hidden="true">
+        <span className="landing-viz-ring landing-viz-ring--outer" />
+        <span className="landing-viz-ring landing-viz-ring--inner" />
+        <span className="landing-viz-core">
+          <PublicIcon name="groups" />
+        </span>
+        <span className="landing-viz-node landing-viz-node--one" />
+        <span className="landing-viz-node landing-viz-node--two" />
+        <span className="landing-viz-node landing-viz-node--three" />
+      </div>
+    );
+  }
+
+  if (feature === "multi_agent") {
+    return (
+      <div className="landing-feature-visual landing-feature-visual--agents" aria-hidden="true">
+        {[0, 1, 2].map((agent) => (
+          <span className="landing-viz-agent" key={agent}>
+            <PublicIcon name="multi_agent" />
+            <i />
+          </span>
+        ))}
+      </div>
+    );
+  }
+
+  if (feature === "providers") {
+    return (
+      <div className="landing-feature-visual landing-feature-visual--providers" aria-hidden="true">
+        <span className="landing-viz-provider-line" />
+        {PROVIDERS.slice(0, 4).map((provider) => (
+          <span className="landing-viz-provider" key={provider}>
+            {provider.slice(0, 1)}
+          </span>
+        ))}
+      </div>
+    );
+  }
+
+  if (feature === "knowledge") {
+    return (
+      <div className="landing-feature-visual landing-feature-visual--knowledge" aria-hidden="true">
+        {(["PDF", "URL", "MD"] as const).map((format) => (
+          <span className="landing-viz-document" key={format}>
+            {format}
+          </span>
+        ))}
+        <span className="landing-viz-knowledge-core">
+          <PublicIcon name="knowledge" />
+        </span>
+      </div>
+    );
+  }
+
+  if (feature === "selfhosted") {
+    return (
+      <div className="landing-feature-visual landing-feature-visual--server" aria-hidden="true">
+        <span className="landing-viz-server-row">
+          <i />
+          <b />
+          <b />
+        </span>
+        <span className="landing-viz-server-row">
+          <i />
+          <b />
+          <b />
+        </span>
+        <span className="landing-viz-server-status">
+          <i /> LOCAL
+        </span>
+      </div>
+    );
+  }
+
+  return (
+    <div className="landing-feature-visual landing-feature-visual--export" aria-hidden="true">
+      <span>Claude</span>
+      <i>→</i>
+      <span>Copilot</span>
+      <i>→</i>
+      <span>OpenAI</span>
+    </div>
+  );
+}
 
 function PlatformIcon({ platform }: { platform: InstallPlatform }) {
   if (platform === "windows") {
@@ -208,6 +297,7 @@ export function HomePage() {
                 <span className="landing-feature-icon">
                   <PublicIcon name={feature} />
                 </span>
+                <FeatureVisual feature={feature} />
                 <h3>{t(`landing.features.${feature}_title`)}</h3>
                 <p>{t(`landing.features.${feature}_body`)}</p>
               </article>

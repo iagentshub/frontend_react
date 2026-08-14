@@ -66,3 +66,57 @@ test("la instalación permite elegir Linux, macOS y Windows", async ({ page }) =
   await expect(macos).toHaveAttribute("aria-pressed", "true");
   await expect(command).toContainText("install.sh");
 });
+
+test("el bento representa visualmente cada funcionalidad", async ({ page }) => {
+  await page.goto("/", { waitUntil: "networkidle" });
+
+  const cards = page.locator(".landing-feature-card");
+  const visuals = page.locator(".landing-feature-visual");
+  await expect(cards).toHaveCount(6);
+  await expect(visuals).toHaveCount(6);
+
+  for (const feature of [
+    "groups",
+    "multi_agent",
+    "providers",
+    "knowledge",
+    "selfhosted",
+    "export",
+  ]) {
+    const card = page.locator(`.landing-feature-card[data-feature="${feature}"]`);
+    await expect(card).toBeVisible();
+    await expect(card.locator(".landing-feature-visual")).toHaveAttribute("aria-hidden", "true");
+  }
+});
+
+test("acerca de representa visualmente sus funcionalidades", async ({ page }) => {
+  for (const width of widths) {
+    await page.setViewportSize({ width, height: width <= 390 ? 844 : 900 });
+    await page.goto("/about", { waitUntil: "networkidle" });
+
+    await expect(page.locator(".about-feature")).toHaveCount(9);
+    await expect(page.locator(".about-feature-visual")).toHaveCount(9);
+
+    const layout = await page.evaluate(() => ({
+      viewport: document.documentElement.clientWidth,
+      page: document.documentElement.scrollWidth,
+    }));
+    expect(layout.page, `overflow horizontal en Acerca de a ${width}px`).toBe(layout.viewport);
+  }
+
+  for (const feature of [
+    "groups",
+    "multi_agent",
+    "providers",
+    "selfhosted",
+    "knowledge",
+    "skills",
+    "dashboard",
+    "centinel",
+    "export",
+  ]) {
+    const card = page.locator(`.about-feature[data-feature="${feature}"]`);
+    await expect(card).toBeVisible();
+    await expect(card.locator(".about-feature-visual")).toHaveAttribute("aria-hidden", "true");
+  }
+});

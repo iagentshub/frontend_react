@@ -20,7 +20,118 @@ const features = [
   "dashboard",
   "centinel",
   "export",
-];
+] as const satisfies ReadonlyArray<PublicIconName>;
+type AboutFeature = (typeof features)[number];
+
+function AboutFeatureVisual({ feature }: { feature: AboutFeature }) {
+  if (feature === "groups") {
+    return (
+      <span className="about-feature-visual about-feature-visual--groups" aria-hidden="true">
+        <i className="about-viz-link" />
+        <i className="about-viz-node about-viz-node--one" />
+        <i className="about-viz-node about-viz-node--two" />
+        <i className="about-viz-node about-viz-node--three" />
+      </span>
+    );
+  }
+
+  if (feature === "multi_agent") {
+    return (
+      <span className="about-feature-visual about-feature-visual--agents" aria-hidden="true">
+        {[0, 1, 2].map((agent) => (
+          <i className="about-viz-agent" key={agent}>
+            <PublicIcon name="multi_agent" />
+          </i>
+        ))}
+      </span>
+    );
+  }
+
+  if (feature === "providers") {
+    return (
+      <span className="about-feature-visual about-feature-visual--providers" aria-hidden="true">
+        <i />
+        <i />
+        <i />
+        <b />
+      </span>
+    );
+  }
+
+  if (feature === "selfhosted") {
+    return (
+      <span className="about-feature-visual about-feature-visual--server" aria-hidden="true">
+        <i>
+          <b />
+        </i>
+        <i>
+          <b />
+        </i>
+        <em />
+      </span>
+    );
+  }
+
+  if (feature === "knowledge") {
+    return (
+      <span className="about-feature-visual about-feature-visual--knowledge" aria-hidden="true">
+        <i />
+        <i />
+        <i />
+        <b>
+          <PublicIcon name="knowledge" />
+        </b>
+      </span>
+    );
+  }
+
+  if (feature === "skills") {
+    return (
+      <span className="about-feature-visual about-feature-visual--skills" aria-hidden="true">
+        <i>
+          <PublicIcon name="skills" />
+        </i>
+        <b />
+        <i>
+          <PublicIcon name="skills" />
+        </i>
+      </span>
+    );
+  }
+
+  if (feature === "dashboard") {
+    return (
+      <span className="about-feature-visual about-feature-visual--dashboard" aria-hidden="true">
+        <i />
+        <i />
+        <i />
+        <i />
+      </span>
+    );
+  }
+
+  if (feature === "centinel") {
+    return (
+      <span className="about-feature-visual about-feature-visual--centinel" aria-hidden="true">
+        <i />
+        <b>
+          <PublicIcon name="centinel" />
+        </b>
+        <i />
+      </span>
+    );
+  }
+
+  return (
+    <span className="about-feature-visual about-feature-visual--export" aria-hidden="true">
+      <i />
+      <b>→</b>
+      <i />
+      <b>→</b>
+      <i />
+    </span>
+  );
+}
 const stack = [
   ["python", "Python"],
   ["fastapi", "FastAPI"],
@@ -81,10 +192,11 @@ export function AboutPage() {
 
               <Stagger className="about-features-grid">
                 {features.map((feature) => (
-                  <div className="about-feature" key={feature}>
+                  <div className="about-feature" data-feature={feature} key={feature}>
                     <span className="about-feature-icon">
-                      <PublicIcon name={feature as PublicIconName} />
+                      <PublicIcon name={feature} />
                     </span>
+                    <AboutFeatureVisual feature={feature} />
                     <div className="about-feature-title">
                       {t(`landing.features.${feature}_title`)}
                     </div>

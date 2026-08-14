@@ -189,6 +189,9 @@ body.about-page {
 }
 
 .about-feature {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
   min-height: 208px;
   padding: var(--s-4);
   border-radius: var(--public-radius-card);
@@ -209,6 +212,356 @@ body.about-page {
 .about-feature-icon svg {
   width: 18px;
   height: 18px;
+}
+
+.about-feature-visual {
+  position: absolute;
+  z-index: 0;
+  top: 24px;
+  right: 24px;
+  width: 116px;
+  height: 62px;
+  color: var(--public-text-secondary);
+  opacity: 0.68;
+  pointer-events: none;
+  transform: translateY(0);
+  transition:
+    opacity var(--public-duration-fast) var(--public-ease-standard),
+    transform var(--public-duration-fast) var(--public-ease-standard);
+}
+
+.about-feature:hover .about-feature-visual {
+  opacity: 1;
+  transform: translateY(-2px);
+}
+
+.about-feature-icon,
+.about-feature-title,
+.about-feature-body {
+  position: relative;
+  z-index: 1;
+}
+
+.about-feature-visual--groups .about-viz-link {
+  position: absolute;
+  inset: 12px 14px 10px;
+  border: 1px solid color-mix(in srgb, var(--public-coral) 25%, var(--public-border));
+  border-radius: 50%;
+  transform: rotate(-8deg);
+}
+
+.about-viz-node {
+  position: absolute;
+  width: 13px;
+  height: 13px;
+  border: 3px solid var(--public-surface);
+  border-radius: 50%;
+  background: var(--public-text-secondary);
+  box-shadow: 0 0 0 1px var(--public-border-strong);
+}
+
+.about-viz-node--one {
+  top: 4px;
+  left: 48px;
+  background: var(--public-coral);
+}
+
+.about-viz-node--two {
+  right: 6px;
+  bottom: 7px;
+}
+
+.about-viz-node--three {
+  bottom: 2px;
+  left: 10px;
+}
+
+.about-feature-visual--agents {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+.about-viz-agent {
+  width: 31px;
+  height: 37px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--public-border);
+  border-radius: 7px;
+  background: var(--public-surface-elevated);
+}
+
+.about-viz-agent:nth-child(2) {
+  margin-top: 10px;
+  border-color: color-mix(in srgb, var(--public-coral) 38%, var(--public-border));
+  color: var(--public-coral);
+}
+
+.about-viz-agent:nth-child(3) {
+  margin-top: 20px;
+}
+
+.about-viz-agent svg {
+  width: 14px;
+  height: 14px;
+}
+
+.about-feature-visual--providers {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 7px;
+}
+
+.about-feature-visual--providers::before {
+  content: "";
+  position: absolute;
+  right: 7px;
+  left: 15px;
+  height: 1px;
+  background: var(--public-border-strong);
+}
+
+.about-feature-visual--providers i,
+.about-feature-visual--providers b {
+  position: relative;
+  width: 22px;
+  height: 22px;
+  border: 1px solid var(--public-border);
+  border-radius: 50%;
+  background: var(--public-surface-elevated);
+}
+
+.about-feature-visual--providers b {
+  width: 28px;
+  height: 28px;
+  border-color: color-mix(in srgb, var(--public-coral) 42%, var(--public-border));
+  background: color-mix(in srgb, var(--public-coral-surface) 58%, var(--public-surface));
+}
+
+.about-feature-visual--server {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-left: 18px;
+}
+
+.about-feature-visual--server > i {
+  position: relative;
+  height: 20px;
+  border: 1px solid var(--public-border);
+  border-radius: 5px;
+  background: var(--public-surface-elevated);
+}
+
+.about-feature-visual--server > i::before {
+  content: "";
+  position: absolute;
+  top: 7px;
+  left: 7px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--public-coral);
+}
+
+.about-feature-visual--server > i b {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 30px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--public-border-strong);
+}
+
+.about-feature-visual--server > em {
+  position: absolute;
+  right: 1px;
+  bottom: 2px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--public-coral);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--public-coral) 9%, transparent);
+}
+
+.about-feature-visual--knowledge {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.about-feature-visual--knowledge > i {
+  width: 28px;
+  height: 37px;
+  margin-right: -11px;
+  border: 1px solid var(--public-border);
+  border-radius: 5px;
+  background: var(--public-surface-elevated);
+  transform: rotate(-6deg);
+}
+
+.about-feature-visual--knowledge > i:nth-child(2) {
+  transform: translateY(4px);
+}
+
+.about-feature-visual--knowledge > i:nth-child(3) {
+  transform: rotate(6deg);
+}
+
+.about-feature-visual--knowledge > b {
+  position: relative;
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  margin-left: 17px;
+  border: 1px solid color-mix(in srgb, var(--public-coral) 40%, var(--public-border));
+  border-radius: 50%;
+  color: var(--public-coral);
+  background: var(--public-surface);
+}
+
+.about-feature-visual--knowledge > b::before {
+  content: "";
+  position: absolute;
+  right: 100%;
+  width: 17px;
+  height: 1px;
+  background: color-mix(in srgb, var(--public-coral) 32%, var(--public-border));
+}
+
+.about-feature-visual--knowledge svg {
+  width: 14px;
+  height: 14px;
+}
+
+.about-feature-visual--skills {
+  display: grid;
+  grid-template-columns: 34px 1fr 34px;
+  align-items: center;
+}
+
+.about-feature-visual--skills i {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--public-border);
+  border-radius: 8px;
+  background: var(--public-surface-elevated);
+}
+
+.about-feature-visual--skills i:last-child {
+  border-color: color-mix(in srgb, var(--public-coral) 40%, var(--public-border));
+  color: var(--public-coral);
+}
+
+.about-feature-visual--skills b {
+  height: 1px;
+  background: var(--public-border-strong);
+}
+
+.about-feature-visual--skills svg {
+  width: 14px;
+  height: 14px;
+}
+
+.about-feature-visual--dashboard {
+  display: flex;
+  align-items: end;
+  justify-content: flex-end;
+  gap: 7px;
+  padding: 8px 9px;
+  border: 1px solid var(--public-border);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--public-surface-elevated) 78%, transparent);
+}
+
+.about-feature-visual--dashboard i {
+  width: 14px;
+  height: 24%;
+  border-radius: 3px 3px 1px 1px;
+  background: var(--public-border-strong);
+}
+
+.about-feature-visual--dashboard i:nth-child(2) {
+  height: 56%;
+}
+
+.about-feature-visual--dashboard i:nth-child(3) {
+  height: 84%;
+  background: var(--public-coral);
+}
+
+.about-feature-visual--dashboard i:nth-child(4) {
+  height: 46%;
+}
+
+.about-feature-visual--centinel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.about-feature-visual--centinel b {
+  position: relative;
+  z-index: 1;
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border: 1px solid color-mix(in srgb, var(--public-coral) 42%, var(--public-border));
+  border-radius: 50%;
+  color: var(--public-coral);
+  background: var(--public-surface-elevated);
+}
+
+.about-feature-visual--centinel b::before {
+  content: "";
+  position: absolute;
+  inset: -8px;
+  border: 1px dashed color-mix(in srgb, var(--public-coral) 22%, var(--public-border));
+  border-radius: 50%;
+}
+
+.about-feature-visual--centinel svg {
+  width: 17px;
+  height: 17px;
+}
+
+.about-feature-visual--centinel > i {
+  width: 26px;
+  height: 1px;
+  background: var(--public-border-strong);
+}
+
+.about-feature-visual--export {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 5px;
+}
+
+.about-feature-visual--export i {
+  width: 24px;
+  height: 24px;
+  border: 1px solid var(--public-border);
+  border-radius: 6px;
+  background: var(--public-surface-elevated);
+}
+
+.about-feature-visual--export i:last-child {
+  border-color: color-mix(in srgb, var(--public-coral) 40%, var(--public-border));
+  background: color-mix(in srgb, var(--public-coral-surface) 58%, var(--public-surface));
+}
+
+.about-feature-visual--export b {
+  color: var(--public-coral);
+  font: 500 0.6875rem/1 var(--public-font-mono);
 }
 
 .about-feature-title {
@@ -454,7 +807,7 @@ body.about-page {
   }
 
   .about-feature {
-    min-height: 0;
+    min-height: 208px;
   }
 
   .about-card-contact {
@@ -470,6 +823,7 @@ body.about-page {
   .about-header-lang,
   .about-header-action,
   .about-feature,
+  .about-feature-visual,
   .about-stack-item,
   .about-creator,
   .about-card,
