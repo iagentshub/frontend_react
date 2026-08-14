@@ -1,10 +1,12 @@
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { Seo } from "@/components/seo";
+import { PublicFooter } from "@/components/public-footer";
 import { PublicHeader } from "@/components/public-header";
 import { PublicIcon, type PublicIconName } from "@/components/public-icons";
 import { AgentNetwork } from "@/components/agent-network";
 import { PublicShell, Reveal, Stagger } from "@/components/public-motion";
+import { usePublicNavigation } from "@/i18n/public-paths";
 import { useBodyClass } from "./use-body-class";
 import "@/styles/routes/about/about.css";
 
@@ -40,7 +42,8 @@ const creators = [
 
 export function AboutPage() {
   useBodyClass("about-page");
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const { publicLink } = usePublicNavigation(i18n, "/about");
 
   return (
     <>
@@ -139,7 +142,7 @@ export function AboutPage() {
             <section className="about-card about-card-contact">
               <h2 className="about-card-title">{t("about.contact.title")}</h2>
               <p className="about-card-body">{t("about.contact.body")}</p>
-              <Link className="about-contact-btn" to="/support">
+              <Link className="about-contact-btn" to={publicLink("/support")}>
                 <span>{t("about.contact.btn")}</span>
               </Link>
             </section>
@@ -166,6 +169,7 @@ export function AboutPage() {
             </div>
           </div>
         </main>
+        <PublicFooter path="/about" />
       </PublicShell>
     </>
   );

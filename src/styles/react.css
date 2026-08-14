@@ -376,6 +376,10 @@
   font-family: var(--public-heading-font);
 }
 
+.public-header > .public-logo span {
+  background: #b94044;
+}
+
 .public-footer {
   margin-top: 0;
   border-top: 1px solid var(--public-border);
@@ -600,7 +604,7 @@
 
 .public-header-nav a[aria-current="page"] {
   color: var(--ink);
-  background: color-mix(in srgb, var(--accent) 10%, var(--surface-2));
+  background: color-mix(in srgb, var(--public-coral) 10%, var(--surface-2));
 }
 
 @media (max-width: 1000px) {

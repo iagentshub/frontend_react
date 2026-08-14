@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { Seo } from "@/components/seo";
+import { PublicFooter } from "@/components/public-footer";
 import { PublicHeader } from "@/components/public-header";
 import { PublicShell, Reveal, Stagger } from "@/components/public-motion";
 import { usePublicNavigation } from "@/i18n/public-paths";
@@ -111,6 +112,7 @@ export function SupportPage() {
             </div>
           </section>
         </main>
+        <PublicFooter path="/support" />
       </PublicShell>
     </>
   );
