@@ -1,8 +1,10 @@
 
 
 # -- Capturas de referencia de Playwright
-# Se regeneran por plataforma con `npm run test:e2e:update`.
-e2e/__snapshots__/
+# Las referencias Linux se versionan porque GitHub Actions compara contra ellas.
+# Las capturas de otras plataformas se mantienen locales.
+e2e/__snapshots__/**/*-win32.png
+e2e/__snapshots__/**/*-darwin.png
 
 # -- Otros
 .DS_Store
