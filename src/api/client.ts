@@ -43,6 +43,20 @@ function currentLanguage(): string {
   return document.documentElement.lang || localStorage.getItem("ga-lang") || "es";
 }
 
+const SAFE_METHODS = new Set(["GET", "HEAD", "OPTIONS"]);
+
+/**
+ * Token anti-CSRF que el backend deja en una cookie legible por JS.
+ *
+ * Es la segunda capa: `SameSite=Lax` no cubre un subdominio comprometido, que
+ * para el navegador es «el mismo sitio». Una web atacante no puede leer
+ * nuestras cookies, así que no puede poner esta cabecera.
+ */
+function csrfToken(): string | null {
+  const value = document.cookie.match(/(?:^|;\s*)ga_csrf=([^;]*)/)?.[1];
+  return value ? decodeURIComponent(value) : null;
+}
+
 function loginUrl(): string {
   const current = `${location.pathname}${location.search}${location.hash}`;
   if (location.pathname.startsWith("/app/login")) return "/app/login";
@@ -58,6 +72,12 @@ async function request<T>(url: string, options: RequestOptions = {}): Promise<T>
   const { body: sourceBody, authRedirect = true, signal, ...requestOptions } = options;
   const headers = new Headers(requestOptions.headers);
   headers.set("Accept-Language", currentLanguage());
+
+  const method = (requestOptions.method ?? "GET").toUpperCase();
+  if (!SAFE_METHODS.has(method)) {
+    const token = csrfToken();
+    if (token) headers.set("X-CSRF-Token", token);
+  }
 
   let body: BodyInit | undefined;
   if (

@@ -60,4 +60,46 @@ describe("api client", () => {
     const uploadInit = fetchMock.mock.calls[1]?.[1];
     expect(new Headers(uploadInit?.headers).has("Content-Type")).toBe(false);
   });
+
+  it("reenvía el token anti-CSRF solo en métodos con efectos", async () => {
+    document.cookie = "ga_csrf=tok3n-de-prueba";
+    const fetchMock = vi.fn<typeof fetch>().mockImplementation(() =>
+      Promise.resolve(
+        new Response(JSON.stringify({ ok: true }), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        }),
+      ),
+    );
+    vi.stubGlobal("fetch", fetchMock);
+
+    await api.post("/api/example", { name: "Gaia" });
+    expect(new Headers(fetchMock.mock.calls[0]?.[1]?.headers).get("X-CSRF-Token")).toBe(
+      "tok3n-de-prueba",
+    );
+
+    // En un GET sobra: el backend no lo mira y mandarlo solo lo expone más.
+    await api.get("/api/example");
+    expect(new Headers(fetchMock.mock.calls[1]?.[1]?.headers).has("X-CSRF-Token")).toBe(
+      false,
+    );
+  });
+
+  it("sin cookie no inventa la cabecera", async () => {
+    document.cookie = "ga_csrf=; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+    const fetchMock = vi.fn<typeof fetch>().mockImplementation(() =>
+      Promise.resolve(
+        new Response(JSON.stringify({ ok: true }), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        }),
+      ),
+    );
+    vi.stubGlobal("fetch", fetchMock);
+
+    await api.post("/api/example", { name: "Gaia" });
+    expect(new Headers(fetchMock.mock.calls[0]?.[1]?.headers).has("X-CSRF-Token")).toBe(
+      false,
+    );
+  });
 });
