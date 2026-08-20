@@ -188,13 +188,13 @@
     "sharing_body": "Las orquestaciones pueden pertenecer a un grupo o compartirse con él. Al compartirlas, el sistema concede acceso a las conexiones necesarias sin duplicarlas y sin convertir las credenciales en recursos públicos."
   },
   "skills": {
-    "intro": "Las skills son bloques de instrucciones reutilizables que se inyectan en el system prompt del agente cuando están activas. Su categoría se elige de un catálogo cerrado; no admiten tags libres.",
+    "intro": "Las skills son bloques de instrucciones reutilizables que se inyectan en el system prompt de los agentes que las tienen vinculadas. Su categoría se elige de un catálogo cerrado; no admiten tags libres.",
     "public_title": "Skills públicas",
     "public_body": "Incluyen las skills oficiales de solo lectura y las que publican usuarios registrados. Todos, incluidos los invitados, pueden consultarlas.",
     "private_title": "Skills privadas",
     "private_body": "Puedes crear skills propias desde la sección Skills y decidir si serán privadas o públicas. En modo invitado son privadas, temporales y solo viven en memoria durante la sesión.",
-    "activate_title": "Activar una skill",
-    "activate_body": "Al editar un agente, en la pestaña Skills verás la lista de skills disponibles. Activa las que quieras incluir en el agente."
+    "link_title": "Vincular una skill",
+    "link_body": "Al editar un agente verás la lista de skills disponibles. Selecciona las que quieras incluir; para dejar de usar una, desvincúlala del agente."
   },
   "teams": {
     "intro": "Los grupos de trabajo son el núcleo colaborativo de iAgents Hub. Reúnen miembros, agentes, conexiones, orquestaciones LLM, workflows, skills, prompts, herramientas y conocimiento con acceso controlado y propiedad explícita.",

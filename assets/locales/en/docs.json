@@ -188,13 +188,13 @@
     "sharing_body": "Orchestrations can belong to a group or be shared with it. Sharing grants access to the required connections without duplicating them or turning credentials into public resources."
   },
   "skills": {
-    "intro": "Skills are reusable instruction blocks that are injected into the agent's system prompt when active. Their category comes from a closed catalog; free-form tags are not supported.",
+    "intro": "Skills are reusable instruction blocks injected into the system prompt of agents they are linked to. Their category comes from a closed catalog; free-form tags are not supported.",
     "public_title": "Public skills",
     "public_body": "They include read-only official skills and skills published by registered users. Everyone, including guests, can browse them.",
     "private_title": "Private skills",
     "private_body": "You can create skills in the Skills section and choose whether they are private or public. In guest mode they are private, temporary, and kept only in session memory.",
-    "activate_title": "Activating a skill",
-    "activate_body": "When editing an agent, the Skills tab shows the list of available skills. Enable the ones you want to include in the agent."
+    "link_title": "Linking a skill",
+    "link_body": "When editing an agent, select the skills you want to include. To stop using one, unlink it from the agent."
   },
   "teams": {
     "intro": "Work groups are the collaborative core of iAgents Hub. They bring members, agents, connections, LLM orchestrations, workflows, skills, prompts, tools and knowledge together with controlled access and explicit ownership.",

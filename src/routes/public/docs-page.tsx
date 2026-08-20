@@ -34,7 +34,7 @@ const definitions: Record<Exclude<SectionKey, "keywords" | "getting_started">, s
   agents: ["test", "export", "config", "memory", "routines"],
   connections: ["vs_accounts", "tokens"],
   llm_orchestration: ["modes", "balanced", "stack", "failover", "usage", "sharing"],
-  skills: ["public", "private", "activate"],
+  skills: ["public", "private", "link"],
   teams: ["create", "invite", "share", "unshare", "badge", "guests"],
   workflows: ["graph", "execution", "gates", "groups"],
   official_resources: ["catalog", "sources", "tools", "safety", "updates"],
