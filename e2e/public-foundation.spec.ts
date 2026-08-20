@@ -108,13 +108,15 @@ test("la cinta de proveedores enseña los siete y no se apoya en el movimiento",
   );
 });
 
-test("acerca de representa visualmente sus funcionalidades", async ({ page }) => {
+test("acerca de lista sus nueve funcionalidades sin desbordar", async ({ page }) => {
   for (const width of widths) {
     await page.setViewportSize({ width, height: width <= 390 ? 844 : 900 });
     await page.goto("/about", { waitUntil: "networkidle" });
 
     await expect(page.locator(".about-feature")).toHaveCount(9);
-    await expect(page.locator(".about-feature-visual")).toHaveCount(9);
+    // Los nueve visuales decorativos se retiraron: eran dibujos abstractos
+    // que competían con el texto de la tarjeta sin explicar nada.
+    await expect(page.locator(".about-feature-visual")).toHaveCount(0);
 
     const layout = await page.evaluate(() => ({
       viewport: document.documentElement.clientWidth,
@@ -136,6 +138,6 @@ test("acerca de representa visualmente sus funcionalidades", async ({ page }) =>
   ]) {
     const card = page.locator(`.about-feature[data-feature="${feature}"]`);
     await expect(card).toBeVisible();
-    await expect(card.locator(".about-feature-visual")).toHaveAttribute("aria-hidden", "true");
+    await expect(card.locator(".about-feature-icon svg")).toBeVisible();
   }
 });

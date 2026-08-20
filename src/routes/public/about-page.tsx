@@ -21,126 +21,16 @@ const features = [
   "centinel",
   "export",
 ] as const satisfies ReadonlyArray<PublicIconName>;
-type AboutFeature = (typeof features)[number];
 
-function AboutFeatureVisual({ feature }: { feature: AboutFeature }) {
-  if (feature === "groups") {
-    return (
-      <span className="about-feature-visual about-feature-visual--groups" aria-hidden="true">
-        <i className="about-viz-link" />
-        <i className="about-viz-node about-viz-node--one" />
-        <i className="about-viz-node about-viz-node--two" />
-        <i className="about-viz-node about-viz-node--three" />
-      </span>
-    );
-  }
-
-  if (feature === "multi_agent") {
-    return (
-      <span className="about-feature-visual about-feature-visual--agents" aria-hidden="true">
-        {[0, 1, 2].map((agent) => (
-          <i className="about-viz-agent" key={agent}>
-            <PublicIcon name="multi_agent" />
-          </i>
-        ))}
-      </span>
-    );
-  }
-
-  if (feature === "providers") {
-    return (
-      <span className="about-feature-visual about-feature-visual--providers" aria-hidden="true">
-        <i />
-        <i />
-        <i />
-        <b />
-      </span>
-    );
-  }
-
-  if (feature === "selfhosted") {
-    return (
-      <span className="about-feature-visual about-feature-visual--server" aria-hidden="true">
-        <i>
-          <b />
-        </i>
-        <i>
-          <b />
-        </i>
-        <em />
-      </span>
-    );
-  }
-
-  if (feature === "knowledge") {
-    return (
-      <span className="about-feature-visual about-feature-visual--knowledge" aria-hidden="true">
-        <i />
-        <i />
-        <i />
-        <b>
-          <PublicIcon name="knowledge" />
-        </b>
-      </span>
-    );
-  }
-
-  if (feature === "skills") {
-    return (
-      <span className="about-feature-visual about-feature-visual--skills" aria-hidden="true">
-        <i>
-          <PublicIcon name="skills" />
-        </i>
-        <b />
-        <i>
-          <PublicIcon name="skills" />
-        </i>
-      </span>
-    );
-  }
-
-  if (feature === "dashboard") {
-    return (
-      <span className="about-feature-visual about-feature-visual--dashboard" aria-hidden="true">
-        <i />
-        <i />
-        <i />
-        <i />
-      </span>
-    );
-  }
-
-  if (feature === "centinel") {
-    return (
-      <span className="about-feature-visual about-feature-visual--centinel" aria-hidden="true">
-        <i />
-        <b>
-          <PublicIcon name="centinel" />
-        </b>
-        <i />
-      </span>
-    );
-  }
-
-  return (
-    <span className="about-feature-visual about-feature-visual--export" aria-hidden="true">
-      <i />
-      <b>→</b>
-      <i />
-      <b>→</b>
-      <i />
-    </span>
-  );
-}
+/**
+ * Ocho tarjetas sueltas no dicen cómo está montado esto. Agrupadas por capa
+ * sí: se lee la arquitectura de un vistazo en vez de una lista de logos.
+ */
 const stack = [
-  ["python", "Python"],
-  ["fastapi", "FastAPI"],
-  ["sqlite", "SQLite"],
-  ["postgresql", "PostgreSQL"],
-  ["nginx", "Nginx"],
-  ["docker", "Docker"],
-  ["typescript", "TypeScript"],
-  ["flutter", "Flutter"],
+  ["backend", [["python", "Python"], ["fastapi", "FastAPI"]]],
+  ["data", [["sqlite", "SQLite"], ["postgresql", "PostgreSQL"]]],
+  ["infra", [["nginx", "Nginx"], ["docker", "Docker"]]],
+  ["client", [["typescript", "TypeScript"], ["flutter", "Flutter"]]],
 ] as const;
 const creators = [
   {
@@ -171,7 +61,10 @@ export function AboutPage() {
         <main className="about-main">
           <div className="about-hero">
             <Reveal className="about-hero-copy">
-              <div className="about-hero-badge">{t("common.brand.full")}</div>
+              {/* La píldora repetía la marca que está en la cabecera a 40px de
+                distancia. Esta línea dice tres cosas que no están en ningún
+                otro sitio de la página. */}
+              <div className="about-hero-kicker">{t("about.description.kicker")}</div>
 
               <h1 className="about-hero-title">{t("about.description.title")}</h1>
 
@@ -196,7 +89,6 @@ export function AboutPage() {
                     <span className="about-feature-icon">
                       <PublicIcon name={feature} />
                     </span>
-                    <AboutFeatureVisual feature={feature} />
                     <div className="about-feature-title">
                       {t(`landing.features.${feature}_title`)}
                     </div>
@@ -212,10 +104,17 @@ export function AboutPage() {
               <h2 className="about-section-title">{t("about.stack.title")}</h2>
 
               <Stagger className="about-stack-grid" step={0.04}>
-                {stack.map(([key, label]) => (
-                  <div className="about-stack-item" key={key}>
-                    <strong className="about-stack-name">{label}</strong>
-                    <span className="about-stack-desc">{t(`about.stack.${key}`)}</span>
+                {stack.map(([group, items]) => (
+                  <div className="about-stack-group" key={group}>
+                    <span className="about-stack-group-name">
+                      {t(`about.stack.groups.${group}`)}
+                    </span>
+                    {items.map(([key, label]) => (
+                      <div className="about-stack-item" key={key}>
+                        <strong className="about-stack-name">{label}</strong>
+                        <span className="about-stack-desc">{t(`about.stack.${key}`)}</span>
+                      </div>
+                    ))}
                   </div>
                 ))}
               </Stagger>
@@ -251,18 +150,21 @@ export function AboutPage() {
               </div>
             </section>
 
-            <section className="about-card about-card-contact">
-              <h2 className="about-card-title">{t("about.contact.title")}</h2>
-              <p className="about-card-body">{t("about.contact.body")}</p>
-              <Link className="about-contact-btn" to={publicLink("/support")}>
-                <span>{t("about.contact.btn")}</span>
-              </Link>
-            </section>
+            {/* Contacto, código y licencia ocupaban tres cajas y cuatrocientos
+              píxeles para decir tres frases. Un cierre con las tres salidas
+              en fila cabe en uno. */}
+            <section className="about-closing">
+              <div className="about-closing-item">
+                <h2 className="about-closing-title">{t("about.contact.title")}</h2>
+                <p className="about-closing-body">{t("about.contact.body")}</p>
+                <Link className="about-contact-btn" to={publicLink("/support")}>
+                  <span>{t("about.contact.btn")}</span>
+                </Link>
+              </div>
 
-            <div className="about-bottom-row">
-              <section className="about-card about-card-github">
-                <h2 className="about-card-title">{t("about.github.title")}</h2>
-                <p className="about-card-body">{t("about.github.body")}</p>
+              <div className="about-closing-item">
+                <h2 className="about-closing-title">{t("about.github.title")}</h2>
+                <p className="about-closing-body">{t("about.github.body")}</p>
                 <a
                   href="https://github.com/iagentshub"
                   target="_blank"
@@ -272,13 +174,22 @@ export function AboutPage() {
                   <GitHubIcon />
                   <span>{t("about.github.label")}</span>
                 </a>
-              </section>
+              </div>
 
-              <section className="about-card about-card-license">
-                <h2 className="about-card-title">{t("about.license.title")}</h2>
-                <p className="about-card-body">{t("about.license.body")}</p>
-              </section>
-            </div>
+              <div className="about-closing-item">
+                <h2 className="about-closing-title">{t("about.license.title")}</h2>
+                <p className="about-closing-body">{t("about.license.body")}</p>
+                {/* Afirmar la licencia sin enlazarla obliga a fiarse. */}
+                <a
+                  href="https://github.com/iagentshub/iAgents/blob/main/LICENSE"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="about-github-btn"
+                >
+                  <span>{t("about.license.link")}</span>
+                </a>
+              </div>
+            </section>
           </div>
         </main>
         <PublicFooter path="/about" />

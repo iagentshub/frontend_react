@@ -758,12 +758,35 @@
   text-transform: uppercase;
 }
 
+/* Decía «live orchestration» junto a un punto inmóvil. Las aristas y los
+   nodos del diagrama ya se animan desde agent-network.tsx; el indicador de
+   estado era lo único quieto, que es justo lo contrario de lo que promete. */
+@keyframes agent-network-latido {
+  0%,
+  100% {
+    opacity: 1;
+    box-shadow: 0 0 14px var(--accent);
+  }
+
+  50% {
+    opacity: 0.4;
+    box-shadow: 0 0 3px var(--accent);
+  }
+}
+
 .agent-network-status i {
   width: 7px;
   height: 7px;
   border-radius: 50%;
   background: var(--accent);
   box-shadow: 0 0 14px var(--accent);
+  animation: agent-network-latido 1.6s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .agent-network-status i {
+    animation: none;
+  }
 }
 
 @media (max-width: 700px) {

@@ -8,7 +8,8 @@
   },
   "description": {
     "title": "Your organisation's AI, working as a group",
-    "body": "iAgents Hub turns agents, people and resources into coordinated work groups. Each group brings together models, LLM orchestrations, workflows, knowledge, prompts, skills and tools with clear ownership and permissions, on a self-hosted platform that keeps you in control of your data."
+    "body": "iAgents Hub turns agents, people and resources into coordinated work groups. Each group brings together models, LLM orchestrations, workflows, knowledge, prompts, skills and tools with clear ownership and permissions, on a self-hosted platform that keeps you in control of your data.",
+    "kicker": "Open source · MIT licence · Self-hosted"
   },
   "features": {
     "title": "An ecosystem built around the group",
@@ -23,7 +24,13 @@
     "nginx": "Web server and reverse proxy",
     "docker": "Containerisation and deployment",
     "typescript": "Typed React frontend",
-    "flutter": "Cross-platform client (mobile and desktop)"
+    "flutter": "Cross-platform client (mobile and desktop)",
+    "groups": {
+      "backend": "Backend",
+      "data": "Data",
+      "infra": "Infrastructure",
+      "client": "Client"
+    }
   },
   "creators": {
     "title": "Creators",
@@ -43,6 +50,7 @@
   },
   "license": {
     "title": "License",
-    "body": "MIT License — free to use, modify and distribute."
+    "body": "MIT License — free to use, modify and distribute.",
+    "link": "View the LICENSE"
   }
 }
