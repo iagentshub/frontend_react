@@ -48,14 +48,28 @@ export function PublicFooter({
       </div>
 
       <div className="public-footer-bottom">
-        <span>{t("common.footer.rights")}</span>
+        {/* Afirmar la licencia sin enlazarla obliga a fiarse: el enlace lleva
+          al LICENSE del repositorio. */}
+        <span>
+          {t("common.footer.rights")} ·{" "}
+          <a
+            href="https://github.com/iagentshub/iAgents/blob/main/LICENSE"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {t("common.footer.license")}
+          </a>
+        </span>
+        {/* Un «ES» suelto se lee como etiqueta, no como control. Con las dos
+          opciones a la vista se ve que se puede pulsar. */}
         <button
           className="public-footer-language"
           type="button"
           onClick={() => void switchLanguage()}
           aria-label={t("common.footer.change_language")}
         >
-          {language.toUpperCase()}
+          <span className={language === "es" ? "is-active" : undefined}>ES</span>
+          <span className={language === "en" ? "is-active" : undefined}>EN</span>
         </button>
       </div>
     </footer>

@@ -4,10 +4,16 @@
   },
   "hero": {
     "badge": "Grupos de trabajo · Open source · Self-hosted",
-    "headline": "Toda tu IA en un solo lugar",
+    "headline": "Tu equipo y sus agentes, en el mismo espacio",
     "sub": "Crea un espacio compartido donde personas y agentes colaboran con el mismo conocimiento, conexiones, workflows y reglas de acceso. Todo permanece bajo el control de tu organización.",
     "install_label": "O instálalo en tu servidor:",
-    "providers_label": "Compatible con"
+    "providers_label": "Compatible con",
+    "panel": {
+      "group": "Grupo · Producto",
+      "shared": "Compartido",
+      "private": "Privado",
+      "tokens": "Consumo del mes"
+    }
   },
   "how": {
     "eyebrow": "Cómo funciona",
@@ -18,11 +24,6 @@
     "connect_body": "Añade las claves de API de los proveedores que ya usas. Se guardan en tu instancia y nunca viajan a ningún sitio.",
     "build_title": "Crea tus agentes",
     "build_body": "Dales conocimiento, memoria y skills, compártelos con tu equipo y expórtalos a las herramientas donde ya trabajas."
-  },
-  "stats": {
-    "providers": "Proveedores",
-    "agents": "Agentes",
-    "private": "Privado"
   },
   "overview": {
     "eyebrow": "La infraestructura de IA de tu equipo",
@@ -66,6 +67,14 @@
       "knowledge": "Conocimiento",
       "connections": "Modelos y conexiones",
       "workflows": "Workflows"
+    },
+    "panel": {
+      "members": "Miembros",
+      "resources": "Recursos",
+      "owner": "Propiedad",
+      "editor": "Edición",
+      "viewer": "Lectura",
+      "note": "Rubén puede usar la conexión de María sin ver ni exportar su clave de API."
     }
   },
   "install": {
@@ -85,5 +94,10 @@
     "components": "En ambos modos puedes instalar la aplicación completa, solo el backend o solo el frontend.",
     "copy": "Copiar",
     "copied": "¡Copiado!"
+  },
+  "close": {
+    "title": "Monta tu primer grupo de trabajo esta tarde",
+    "body": "Cuenta gratuita en el hub gestionado, o un comando si prefieres tu propio servidor.",
+    "repo": "Ver el repositorio"
   }
 }

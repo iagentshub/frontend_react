@@ -2,7 +2,7 @@
   "brand": {
     "prefix": "iAgents",
     "suffix": "Hub",
-    "full": "iAgentsHub"
+    "full": "iAgents Hub"
   },
   "navigation": {
     "home": "Inicio",
@@ -18,8 +18,9 @@
     "product": "Producto",
     "resources": "Recursos",
     "legal": "Legal",
-    "rights": "iAgentsHub — proyecto open source con licencia MIT",
-    "change_language": "Cambiar idioma"
+    "rights": "iAgents Hub — proyecto open source",
+    "change_language": "Cambiar idioma",
+    "license": "licencia MIT"
   },
   "github": "GitHub",
   "ui": {

@@ -4,10 +4,16 @@
   },
   "hero": {
     "badge": "Work groups · Open source · Self-hosted",
-    "headline": "All your AI in one place",
+    "headline": "Your team and its agents, in the same space",
     "sub": "Create a shared workspace where people and agents collaborate with the same knowledge, connections, workflows and access rules. Everything stays under your organisation's control.",
     "install_label": "Or install it on your server:",
-    "providers_label": "Works with"
+    "providers_label": "Works with",
+    "panel": {
+      "group": "Group · Product",
+      "shared": "Shared",
+      "private": "Private",
+      "tokens": "This month's usage"
+    }
   },
   "how": {
     "eyebrow": "How it works",
@@ -18,11 +24,6 @@
     "connect_body": "Add the API keys of the providers you already use. They stay in your instance and never travel anywhere.",
     "build_title": "Build your agents",
     "build_body": "Give them knowledge, memory and skills, share them with your team and export them to the tools you already work in."
-  },
-  "stats": {
-    "providers": "Providers",
-    "agents": "Agents",
-    "private": "Private"
   },
   "overview": {
     "eyebrow": "Your team's AI infrastructure",
@@ -66,6 +67,14 @@
       "knowledge": "Knowledge",
       "connections": "Models & connections",
       "workflows": "Workflows"
+    },
+    "panel": {
+      "members": "Members",
+      "resources": "Resources",
+      "owner": "Owner",
+      "editor": "Editor",
+      "viewer": "Viewer",
+      "note": "Rubén can use María's connection without seeing or exporting her API key."
     }
   },
   "install": {
@@ -85,5 +94,10 @@
     "components": "In either mode you can install the full application, the backend only, or the frontend only.",
     "copy": "Copy",
     "copied": "Copied!"
+  },
+  "close": {
+    "title": "Set up your first work group this afternoon",
+    "body": "A free account on the managed hub, or one command if you would rather run your own server.",
+    "repo": "View the repository"
   }
 }

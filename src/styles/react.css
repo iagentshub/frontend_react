@@ -471,12 +471,14 @@
 }
 
 .public-footer-language {
-  padding: var(--s-1) var(--s-3);
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
   border: 1px solid var(--public-border);
-  border-radius: 6px;
-  color: var(--public-text-secondary);
+  border-radius: 7px;
   background: var(--public-surface-elevated);
-  font: 700 var(--public-text-label) / 1 var(--public-font);
+  font: 500 var(--public-text-label) / 1 var(--public-font-mono);
   letter-spacing: 0.06em;
   cursor: pointer;
   transition:
@@ -484,9 +486,19 @@
     background-color 150ms ease;
 }
 
-.public-footer-language:hover {
+.public-footer-language span {
+  padding: 4px 9px;
+  border-radius: 5px;
+  color: var(--public-text-tertiary);
+}
+
+.public-footer-language span.is-active {
   color: var(--public-text);
-  background: #1c1d1f;
+  background: var(--public-border);
+}
+
+.public-footer-language:hover {
+  border-color: var(--public-border-strong);
 }
 
 .public-code-block-label {

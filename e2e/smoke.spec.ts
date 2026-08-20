@@ -27,7 +27,7 @@ test("la landing carga y enlaza con Flutter bajo /app", async ({ page }) => {
   });
   await page.goto("/");
   await expect(page.getByRole("heading", { level: 1 })).toContainText(
-    "Toda tu IA en un solo lugar",
+    "Tu equipo y sus agentes, en el mismo espacio",
   );
   await expect(
     page.getByRole("heading", {

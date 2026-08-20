@@ -67,13 +67,15 @@ test("la instalación permite elegir Linux, macOS y Windows", async ({ page }) =
   await expect(command).toContainText("install.sh");
 });
 
-test("el bento representa visualmente cada funcionalidad", async ({ page }) => {
+test("la rejilla de capacidades lista las seis funcionalidades", async ({ page }) => {
   await page.goto("/", { waitUntil: "networkidle" });
 
   const cards = page.locator(".landing-feature-card");
-  const visuals = page.locator(".landing-feature-visual");
   await expect(cards).toHaveCount(6);
-  await expect(visuals).toHaveCount(6);
+  // Los visuales decorativos se retiraron: eran seis dibujos abstractos que
+  // había que descifrar antes de leer el título. La tarjeta es icono, título
+  // y texto, y nada más.
+  await expect(page.locator(".landing-feature-visual")).toHaveCount(0);
 
   for (const feature of [
     "groups",
@@ -85,8 +87,25 @@ test("el bento representa visualmente cada funcionalidad", async ({ page }) => {
   ]) {
     const card = page.locator(`.landing-feature-card[data-feature="${feature}"]`);
     await expect(card).toBeVisible();
-    await expect(card.locator(".landing-feature-visual")).toHaveAttribute("aria-hidden", "true");
+    await expect(card.locator(".landing-feature-icon svg")).toBeVisible();
+    await expect(card.locator("h3")).not.toBeEmpty();
   }
+});
+
+test("la cinta de proveedores enseña los siete y no se apoya en el movimiento", async ({
+  page,
+}) => {
+  await page.goto("/", { waitUntil: "networkidle" });
+
+  // El riel va duplicado para que el bucle no salte, así que el nombre
+  // accesible es una lista aparte: un lector de pantalla no debe oír catorce.
+  await expect(page.locator(".landing-providers .sr-only")).toHaveText(
+    "Claude, OpenAI, Gemini, Grok, Qwen, NVIDIA, Ollama",
+  );
+  await expect(page.locator(".landing-providers-run")).toHaveCount(2);
+  await expect(page.locator(".landing-providers-run").first().locator(".landing-provider")).toHaveCount(
+    7,
+  );
 });
 
 test("acerca de representa visualmente sus funcionalidades", async ({ page }) => {
