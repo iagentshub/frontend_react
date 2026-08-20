@@ -1,7 +1,12 @@
 import { describe, expect, it } from "vitest";
 import es from "../../../assets/locales/es/legal.json";
 import en from "../../../assets/locales/en/legal.json";
-import { hasPlaceholders, LEGAL_DOCUMENTS, type LegalDocument } from "./legal-model";
+import {
+  findPlaceholders,
+  hasPlaceholders,
+  LEGAL_DOCUMENTS,
+  type LegalDocument,
+} from "./legal-model";
 
 const LOCALES = { es, en } as const;
 const DOCUMENTS = Object.keys(LEGAL_DOCUMENTS) as LegalDocument[];
@@ -16,6 +21,17 @@ describe("aviso de borrador", () => {
   // datos, que es justo lo contrario de lo que se busca.
   it("desaparece cuando no queda ningún corchete", () => {
     expect(hasPlaceholders(["Titular: iAgents Hub SL", "NIF: B12345678"])).toBe(false);
+  });
+
+  it("enumera los huecos sin repetirlos", () => {
+    expect(
+      findPlaceholders([
+        "Titular: [RAZÓN SOCIAL]",
+        "Escribe a [EMAIL DE PRIVACIDAD]",
+        "Responde [EMAIL DE PRIVACIDAD] en [PLAZO]",
+      ]),
+    ).toEqual(["[RAZÓN SOCIAL]", "[EMAIL DE PRIVACIDAD]", "[PLAZO]"]);
+    expect(findPlaceholders(["Titular: iAgents Hub SL"])).toEqual([]);
   });
 });
 

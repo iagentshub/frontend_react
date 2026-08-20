@@ -240,7 +240,6 @@ body.docs-page {
   display: flex;
   flex-direction: column;
   gap: 7px;
-  min-height: 120px;
   padding: var(--s-3);
   border: 1px solid var(--public-border);
   border-radius: var(--public-radius-card);
@@ -251,6 +250,10 @@ body.docs-page {
   transition:
     border-color var(--public-duration-fast) var(--public-ease-standard),
     background-color var(--public-duration-fast) var(--public-ease-standard);
+}
+
+.docs-resource-grid a {
+  min-height: 120px;
 }
 
 .docs-quick-grid a:hover,
@@ -374,6 +377,14 @@ body.docs-page {
 
 .docs-accounts {
   margin-bottom: var(--s-3);
+}
+
+/* El tope va sobre el propio párrafo, no sobre la fila: «ch» se resuelve con
+   la fuente del elemento donde se declara, y la fila es de 16px mientras que
+   el texto es de 13px. Puesto arriba, 76ch dejaban 103 caracteres. */
+.docs-account p,
+.docs-step p {
+  max-width: 66ch;
 }
 
 .docs-account,

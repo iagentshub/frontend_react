@@ -6,7 +6,12 @@ import { PublicHeader } from "@/components/public-header";
 import { PublicIcon } from "@/components/public-icons";
 import { PublicShell, Reveal } from "@/components/public-motion";
 import { usePublicNavigation } from "@/i18n/public-paths";
-import { hasPlaceholders, LEGAL_DOCUMENTS, type LegalDocument } from "./legal-model";
+import {
+  findPlaceholders,
+  hasPlaceholders,
+  LEGAL_DOCUMENTS,
+  type LegalDocument,
+} from "./legal-model";
 import { useBodyClass } from "./use-body-class";
 import "@/styles/routes/legal/legal.css";
 
@@ -54,6 +59,19 @@ export function LegalPage({ document }: { document: LegalDocument }) {
         <PublicHeader variant="legal" path={path} />
 
         <main className="legal-main">
+          <nav className="legal-index" aria-label={t("legal.index_label")}>
+            <span className="legal-index-label">{t("legal.index_label")}</span>
+            <ol>
+              {/* Los títulos ya vienen numerados desde el locale: numerar
+                otra vez aquí los enseñaría dos veces. */}
+              {sections.map((section) => (
+                <li key={section}>
+                  <a href={`#${section}`}>{t(key(`sections.${section}.title`))}</a>
+                </li>
+              ))}
+            </ol>
+          </nav>
+
           <article className="legal-doc">
             <Reveal offset={12}>
               <h1 className="legal-title">
@@ -68,9 +86,15 @@ export function LegalPage({ document }: { document: LegalDocument }) {
               </p>
 
               {hasPlaceholders(everyString) && (
-                <p className="legal-draft" role="note">
-                  {t("legal.draft_notice")}
-                </p>
+                <aside className="legal-draft" role="note">
+                  <strong>{t("legal.draft_title")}</strong>
+                  <p>{t("legal.draft_gaps")}</p>
+                  <ul>
+                    {findPlaceholders(everyString).map((gap) => (
+                      <li key={gap}>{gap}</li>
+                    ))}
+                  </ul>
+                </aside>
               )}
 
               <p className="legal-intro">{t(key("intro"))}</p>
@@ -79,7 +103,7 @@ export function LegalPage({ document }: { document: LegalDocument }) {
             {sections.map((section) => {
               const items = itemsOf(section);
               return (
-                <section className="legal-section" key={section}>
+                <section className="legal-section" id={section} key={section}>
                   <Reveal offset={12}>
                     <h2 className="legal-section-title">{t(key(`sections.${section}.title`))}</h2>
 

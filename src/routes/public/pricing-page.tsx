@@ -223,11 +223,11 @@ export function PricingPage() {
               <div className={`pr-card${card.featured ? " pr-card--featured" : ""}`} key={card.id}>
                 {card.featured && <span className="pr-card-badge">{t("pricing.recommended")}</span>}
 
-                <div className="pr-card-head">
-                  <div className="pr-plan-name">{t(`pricing.${card.nameKey}`)}</div>
+                <div className="pr-plan-name">{t(`pricing.${card.nameKey}`)}</div>
 
-                  <div className="pr-plan-target">{t(`pricing.${card.targetKey}`)}</div>
+                <div className="pr-plan-target">{t(`pricing.${card.targetKey}`)}</div>
 
+                <div className="pr-price-cell">
                   {card.monthly ? (
                     <>
                       <div className="pr-price-wrap pr-price-monthly" hidden={annual}>
@@ -252,8 +252,12 @@ export function PricingPage() {
                     </div>
                   )}
 
-                  {card.seatsKey && <div className="pr-seats">{t(`pricing.${card.seatsKey}`)}</div>}
                 </div>
+
+                {/* Siempre presente aunque el plan no tenga licencias: si la
+                  fila desaparece en unas tarjetas y en otras no, la rejilla
+                  deja de cuadrar en horizontal. */}
+                <div className="pr-seats">{card.seatsKey ? t(`pricing.${card.seatsKey}`) : ""}</div>
 
                 <p className="pr-service-desc">{t(`pricing.${card.descKey}`)}</p>
 

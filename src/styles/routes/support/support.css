@@ -121,6 +121,59 @@ body.support-page {
   line-height: 1.65;
 }
 
+/* La primera acción de una página de soporte no debe estar a dos pantallas
+   de scroll: son las mismas de las tarjetas, adelantadas. */
+.support-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-3);
+  margin-top: var(--s-6);
+}
+
+.support-hero-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  padding: 10px 18px;
+  border: 1px solid var(--public-border);
+  border-radius: var(--public-radius-control);
+  color: var(--public-text);
+  background: var(--public-surface-elevated);
+  font-size: var(--public-text-small);
+  font-weight: 550;
+  text-decoration: none;
+  transition:
+    border-color var(--public-duration-fast) ease,
+    background-color var(--public-duration-fast) ease;
+}
+
+.support-hero-action:hover {
+  border-color: var(--public-border-strong);
+}
+
+.support-hero-action--primary {
+  border-color: transparent;
+  color: var(--public-canvas);
+  background: var(--public-coral);
+}
+
+.support-hero-action--primary:hover {
+  background: #ff7474;
+}
+
+.support-triage-priority {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s-3);
+  margin: var(--s-3) 0 0;
+  padding-top: var(--s-3);
+  border-top: 1px solid var(--public-border);
+  color: var(--public-text-secondary);
+  font-size: var(--public-text-small);
+}
+
 .support-triage {
   padding: clamp(28px, 4vw, 40px);
   border: 1px solid var(--public-border);
@@ -201,6 +254,7 @@ body.support-page {
 }
 
 .support-channel-grid {
+  margin-bottom: 112px;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 12px;
@@ -211,7 +265,6 @@ body.support-page {
 }
 
 .support-channel-card {
-  min-height: 272px;
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -241,8 +294,7 @@ body.support-page {
   background: var(--public-surface-elevated);
 }
 
-.support-channel-icon svg,
-.support-notice svg {
+.support-channel-icon svg {
   width: 20px;
   height: 20px;
   fill: none;
@@ -271,7 +323,6 @@ body.support-page {
 }
 
 .support-channel-action {
-  margin-top: auto;
   display: inline-flex;
   align-items: center;
   justify-content: space-between;
@@ -288,38 +339,6 @@ body.support-page {
 
 .support-channel-action:hover span {
   transform: translateX(3px);
-}
-
-.support-notice {
-  margin: var(--s-4) 0 112px;
-  padding: var(--s-3);
-  display: flex;
-  align-items: flex-start;
-  gap: 14px;
-  border: 1px solid var(--public-border);
-  border-left: 3px solid var(--public-coral);
-  border-radius: var(--public-radius-control);
-  color: var(--public-text-secondary);
-  background: var(--public-surface);
-}
-
-.support-notice > svg {
-  flex: 0 0 auto;
-  color: var(--public-coral);
-}
-
-.support-notice strong {
-  display: block;
-  margin-bottom: 4px;
-  color: var(--public-text);
-  font-size: 0.875rem;
-  font-weight: 550;
-}
-
-.support-notice p {
-  margin: 0;
-  font-size: var(--public-text-small);
-  line-height: 1.6;
 }
 
 .support-faq {
@@ -415,10 +434,6 @@ body.support-page {
 
   .support-section-title {
     font-size: 2.25rem;
-  }
-
-  .support-notice {
-    margin-bottom: 80px;
   }
 
   .support-faq p {

@@ -2235,3 +2235,51 @@ body.pricing-page {
     transition-duration: 0.01ms;
   }
 }
+
+/* ── Alineación de las cinco columnas ──
+   Comparar en horizontal es el único trabajo de una tabla de precios, y no se
+   podía: la descripción de cada plan ocupa una, dos o tres líneas, así que
+   «Lo que gestionamos por ti» arrancaba a una altura distinta en cada
+   tarjeta. Con subgrid las siete filas quedan clavadas. */
+.pr-grid {
+  grid-template-rows: auto auto auto auto auto 1fr auto;
+}
+
+.pr-card {
+  display: grid;
+  grid-template-rows: subgrid;
+  grid-row: span 7;
+}
+
+.pr-plan-target {
+  min-height: 0;
+}
+
+.pr-seats:empty {
+  display: block;
+}
+
+/* La cifra y su unidad dejan de ir en la misma línea: «desde 4,50 €» con
+   «/ licencia / mes» al lado rompía en tres renglones a 220px de ancho. */
+.pr-price-wrap {
+  display: block;
+  min-height: 0;
+}
+
+.pr-price-period {
+  display: block;
+  margin-top: 3px;
+  font-family: var(--public-font-mono);
+}
+
+.pr-price-from {
+  display: block;
+  font-size: 12px;
+}
+
+@media (max-width: 1000px) {
+  .pr-card {
+    display: flex;
+    grid-row: auto;
+  }
+}

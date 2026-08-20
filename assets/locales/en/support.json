@@ -14,7 +14,8 @@
     "evidence_body": "Version, environment, reproduction steps, and the exact error message.",
     "channel_title": "Choose the channel",
     "channel_body": "Docs for questions, GitHub for public bugs, and email for private information.",
-    "note": "Never share API keys, tokens, passwords, or personal information."
+    "note": "Never share API keys, tokens, passwords, or personal information.",
+    "priority": "Security and lost access take priority."
   },
   "header": {
     "login": "Sign in",
@@ -31,10 +32,6 @@
     "github_title": "Technical issues",
     "github_body": "If you found a reproducible bug in the project, open a public issue on GitHub.",
     "github_action": "Open an issue"
-  },
-  "before": {
-    "title": "Before contacting us",
-    "body": "Include the version or environment, steps to reproduce, and the error message. Never publish API keys, passwords, or personal data."
   },
   "faq": {
     "title": "Frequently asked questions",

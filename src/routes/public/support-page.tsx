@@ -35,6 +35,18 @@ export function SupportPage() {
               <h1>{t("support.page.heading")}</h1>
 
               <p>{t("support.page.subtitle")}</p>
+
+              <div className="support-hero-actions">
+                <a
+                  className="support-hero-action support-hero-action--primary"
+                  href="mailto:hola@iagentshub.com?subject=Soporte%20iAgents%20Hub"
+                >
+                  {t("support.channels.email_action")}
+                </a>
+                <Link className="support-hero-action" to={publicLink("/docs")}>
+                  {t("support.channels.docs_action")}
+                </Link>
+              </div>
             </Reveal>
             <Reveal className="support-triage" delay={0.1} offset={16}>
               <span className="support-triage-eyebrow">{t("support.triage.eyebrow")}</span>
@@ -51,6 +63,8 @@ export function SupportPage() {
                 ))}
               </ol>
               <p className="support-triage-note">{t("support.triage.note")}</p>
+
+              <p className="support-triage-priority">{t("support.triage.priority")}</p>
             </Reveal>
           </section>
 
@@ -86,15 +100,6 @@ export function SupportPage() {
               />
             </Stagger>
           </section>
-
-          <aside className="support-notice">
-            <SupportIcon kind="shield" />
-
-            <div>
-              <strong>{t("support.before.title")}</strong>
-              <p>{t("support.before.body")}</p>
-            </div>
-          </aside>
 
           <section aria-labelledby="support-faq-title">
             <h2 className="support-section-title" id="support-faq-title">
@@ -169,7 +174,7 @@ function SupportCard({
   );
 }
 
-function SupportIcon({ kind }: { kind: "docs" | "email" | "github" | "shield" }) {
+function SupportIcon({ kind }: { kind: "docs" | "email" | "github" }) {
   if (kind === "docs")
     return (
       <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -183,16 +188,9 @@ function SupportIcon({ kind }: { kind: "docs" | "email" | "github" | "shield" })
         <path d="m4 7 8 6 8-6" />
       </svg>
     );
-  if (kind === "github")
-    return (
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M12 1.8a10.2 10.2 0 0 0-3.2 19.9c.5.1.7-.2.7-.5v-1.8c-2.8.6-3.4-1.2-3.4-1.2-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 0 1.6 1.1 1.6 1.1.9 1.6 2.4 1.1 3 .9.1-.7.4-1.1.7-1.4-2.3-.3-4.7-1.1-4.7-5a3.9 3.9 0 0 1 1.1-2.8c-.1-.3-.5-1.3.1-2.8 0 0 .8-.3 2.8 1.1a9.7 9.7 0 0 1 5.1 0c2-1.4 2.8-1.1 2.8-1.1.6 1.5.2 2.5.1 2.8a3.9 3.9 0 0 1 1.1 2.8c0 3.9-2.4 4.7-4.7 5 .4.3.7 1 .7 1.9v2.5c0 .3.2.6.7.5A10.2 10.2 0 0 0 12 1.8z" />
-      </svg>
-    );
   return (
     <svg viewBox="0 0 24 24" aria-hidden="true">
-      <path d="M12 2 4 6v6c0 5 3.4 8.8 8 10 4.6-1.2 8-5 8-10V6l-8-4z" />
-      <path d="m8.5 12 2.2 2.2 4.8-5" />
+      <path d="M12 1.8a10.2 10.2 0 0 0-3.2 19.9c.5.1.7-.2.7-.5v-1.8c-2.8.6-3.4-1.2-3.4-1.2-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 0 1.6 1.1 1.6 1.1.9 1.6 2.4 1.1 3 .9.1-.7.4-1.1.7-1.4-2.3-.3-4.7-1.1-4.7-5a3.9 3.9 0 0 1 1.1-2.8c-.1-.3-.5-1.3.1-2.8 0 0 .8-.3 2.8 1.1a9.7 9.7 0 0 1 5.1 0c2-1.4 2.8-1.1 2.8-1.1.6 1.5.2 2.5.1 2.8a3.9 3.9 0 0 1 1.1 2.8c0 3.9-2.4 4.7-4.7 5 .4.3.7 1 .7 1.9v2.5c0 .3.2.6.7.5A10.2 10.2 0 0 0 12 1.8z" />
     </svg>
   );
 }

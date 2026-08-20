@@ -59,3 +59,14 @@ export const LEGAL_DOCUMENTS: Record<
 export function hasPlaceholders(values: readonly string[]): boolean {
   return values.some((value) => /\[[^\]]+\]/.test(value));
 }
+
+/**
+ * El aviso genérico decía que faltaban datos pero no cuáles, así que había que
+ * leerse el documento entero para encontrarlos. Devuelve los huecos, sin
+ * repetir y en el orden en que aparecen.
+ */
+export function findPlaceholders(values: readonly string[]): string[] {
+  const found = new Set<string>();
+  for (const value of values) for (const match of value.matchAll(/\[[^\]]+\]/g)) found.add(match[0]);
+  return [...found];
+}

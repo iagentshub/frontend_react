@@ -20,9 +20,16 @@ test("la página de soporte ofrece documentación, contacto e incidencias", asyn
   await expect(page).toHaveURL(/\/support$/);
   await expect(page.getByRole("heading", { level: 1, name: "¿Cómo podemos ayudarte?" })).toBeVisible();
   await expect(page.locator(".support-channel-card")).toHaveCount(3);
-  await expect(page.getByRole("link", { name: /Consultar documentación/ })).toHaveAttribute("href", "/docs");
-  await expect(page.getByRole("link", { name: /Escribir a soporte/ })).toHaveAttribute("href", /mailto:hola@iagentshub\.com/);
+  // El hero repite «Consultar documentación» y «Escribir a soporte» para
+  // adelantar la primera acción, así que las dos primeras comprobaciones se
+  // acotan a las tarjetas, que es lo que este test vigila.
+  const canales = page.locator(".support-channel-grid");
+  await expect(canales.getByRole("link", { name: /Consultar documentación/ })).toHaveAttribute("href", "/docs");
+  await expect(canales.getByRole("link", { name: /Escribir a soporte/ })).toHaveAttribute("href", /mailto:hola@iagentshub\.com/);
   await expect(page.getByRole("link", { name: /Abrir una incidencia/ })).toHaveAttribute("href", "https://github.com/iagentshub/iAgents/issues");
+
+  // Y el hero las ofrece antes de que haya que bajar a buscarlas.
+  await expect(page.locator(".support-hero-actions a")).toHaveCount(2);
 
   await page.getByText("No puedo acceder a mi cuenta").click();
   await expect(page.getByText(/Utiliza «¿Olvidaste tu contraseña\?»/)).toBeVisible();
