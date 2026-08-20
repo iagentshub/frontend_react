@@ -457,6 +457,18 @@
   color: var(--public-text);
 }
 
+.public-footer-bottom a {
+  color: var(--public-text-secondary);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--public-border-strong);
+}
+
+.public-footer-bottom a:hover {
+  color: var(--public-text);
+  text-decoration-color: currentColor;
+}
+
 .public-footer-bottom {
   max-width: var(--public-container);
   margin: 0 auto;
@@ -489,7 +501,7 @@
 .public-footer-language span {
   padding: 4px 9px;
   border-radius: 5px;
-  color: var(--public-text-tertiary);
+  color: var(--public-text-secondary);
 }
 
 .public-footer-language span.is-active {
