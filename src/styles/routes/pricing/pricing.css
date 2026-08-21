@@ -315,6 +315,16 @@ html body.pricing-page {
   line-height: 1.3;
 }
 
+/* Mismo tratamiento que el aviso de IVA de la calculadora (.pm-vat-note): es
+   una salvedad del precio, no una parte de él. */
+.pr-price-vat {
+  display: block;
+  margin-top: 4px;
+  font-size: 11px;
+  color: var(--ink-3);
+  line-height: 1.3;
+}
+
 .pr-annual-note {
   font-size: 11px;
   color: var(--success);
@@ -1946,6 +1956,7 @@ body.pricing-page {
 
 .pr-plan-target,
 .pr-price-period,
+.pr-price-vat,
 .pr-service-desc,
 .pr-service-list li,
 .pr-extra-desc,

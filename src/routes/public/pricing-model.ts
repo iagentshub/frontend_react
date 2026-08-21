@@ -141,3 +141,95 @@ export function totals(n: number, selfHosted: boolean, annual: boolean): Totals 
     saving: monthlyTotal * 12 - annualTotal,
   };
 }
+
+/**
+ * Las cinco tarjetas de la página de precios.
+ *
+ * Vivían dentro de pricing-page.tsx, y sus importes son cadenas escritas a
+ * mano: la tercera copia del precio, después de billing_pricing.py (lo que se
+ * cobra) y de la aritmética de este mismo fichero (lo que calcula el
+ * simulador). Aquí las alcanza published-prices.test.ts, que comprueba que
+ * digan lo mismo que la fórmula.
+ */
+export const CARDS: Array<{
+  id: "free" | "starter" | "dev" | "biz" | "ent";
+  nameKey: string;
+  targetKey: string;
+  seatsKey?: string;
+  descKey: string;
+  features: string[];
+  supportKey: string;
+  supportHi: boolean;
+  monthly?: string;
+  annual?: string;
+  perMonthKey?: string;
+  perYearKey?: string;
+  from?: boolean;
+  /** Plan destacado. Cinco columnas idénticas no orientan a nadie. */
+  featured?: boolean;
+}> = [
+  {
+    id: "free",
+    nameKey: "plan_free",
+    targetKey: "target_free",
+    descKey: "service_desc_free",
+    features: ["svc_managed", "svc_updates"],
+    supportKey: "svc_community",
+    supportHi: false,
+  },
+  {
+    id: "starter",
+    nameKey: "plan_starter",
+    targetKey: "target_starter",
+    seatsKey: "seats_starter",
+    descKey: "service_desc_starter",
+    features: ["svc_prev_anon", "svc_groups", "svc_training_basic"],
+    supportKey: "svc_community",
+    supportHi: false,
+  },
+  {
+    id: "dev",
+    nameKey: "plan_dev",
+    targetKey: "target_dev",
+    seatsKey: "seats_dev",
+    descKey: "service_desc_dev",
+    features: ["svc_prev_starter", "svc_backups", "svc_training_mid"],
+    supportKey: "svc_support_direct",
+    supportHi: true,
+    monthly: "€9",
+    annual: "€90",
+    perMonthKey: "per_month",
+    perYearKey: "per_year",
+    featured: true,
+  },
+  {
+    id: "biz",
+    nameKey: "plan_biz",
+    targetKey: "target_biz",
+    seatsKey: "seats_biz",
+    descKey: "service_desc_biz",
+    features: ["svc_prev_dev", "svc_admin_panel", "svc_onboarding", "svc_discounts_training"],
+    supportKey: "svc_support_direct",
+    supportHi: true,
+    monthly: "€6",
+    annual: "€60",
+    perMonthKey: "per_lic_month",
+    perYearKey: "per_lic_year",
+    from: true,
+  },
+  {
+    id: "ent",
+    nameKey: "plan_ent",
+    targetKey: "target_ent",
+    seatsKey: "seats_ent",
+    descKey: "service_desc_ent",
+    features: ["svc_prev_biz", "svc_discounts_training"],
+    supportKey: "svc_support_direct",
+    supportHi: true,
+    monthly: "€4,50",
+    annual: "€45",
+    perMonthKey: "per_lic_month",
+    perYearKey: "per_lic_year",
+    from: true,
+  },
+];

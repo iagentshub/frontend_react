@@ -66,4 +66,15 @@ describe("PricingPage", () => {
     expect(within(contactDialog).getByLabelText("Nombre")).toBeInTheDocument();
     expect(within(contactDialog).getByRole("button", { name: "Cerrar" })).toBeInTheDocument();
   });
+  it("avisa de que los precios anunciados no llevan IVA, salvo en los gratuitos", async () => {
+    // El checkout suma el IVA del país del comprador encima del precio de la
+    // tarjeta: sin el aviso, el importe cobrado es una sorpresa.
+    renderPage();
+
+    const avisos = screen.getAllByText("+ IVA según tu país");
+    expect(avisos.length).toBeGreaterThan(0);
+
+    await i18n.changeLanguage("en");
+    expect(screen.getAllByText("+ VAT depending on your country").length).toBe(avisos.length);
+  });
 });
