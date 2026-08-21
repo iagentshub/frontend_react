@@ -11,6 +11,7 @@ export function PublicFooter({
 }) {
   const { t, i18n } = useTranslation();
   const { language, publicLink, switchLanguage } = usePublicNavigation(i18n, path);
+  const languageOption = language === "es" ? "EN" : "ES";
 
   return (
     <footer className="public-footer">
@@ -53,7 +54,7 @@ export function PublicFooter({
         <span>
           {t("common.footer.rights")} ·{" "}
           <a
-            href="https://github.com/iagentshub/iAgents/blob/main/LICENSE"
+            href="https://github.com/iagentshub/frontend_react/blob/main/LICENSE"
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -68,8 +69,7 @@ export function PublicFooter({
           onClick={() => void switchLanguage()}
           aria-label={t("common.footer.change_language")}
         >
-          <span className={language === "es" ? "is-active" : undefined}>ES</span>
-          <span className={language === "en" ? "is-active" : undefined}>EN</span>
+          {languageOption}
         </button>
       </div>
     </footer>

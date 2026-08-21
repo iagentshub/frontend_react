@@ -73,6 +73,7 @@ export function PublicHeader({
   const session = useQuery({ ...sessionQuery, enabled: usesSessionAction });
   const { language, publicLink, switchLanguage } = usePublicNavigation(i18n, path);
   const authenticated = Boolean(session.data?.username);
+  const languageOption = language === "es" ? "EN" : "ES";
 
   return (
     <header className={`public-header ${variant}-header`}>
@@ -89,7 +90,7 @@ export function PublicHeader({
 
       {variant === "landing" ? (
         <>
-          <a className="btn btn-ghost btn-sm" href={appPath("/login")}>
+          <a className="btn btn-ghost btn-sm public-header-login" href={appPath("/login")}>
             {t("about.header.login")}
           </a>
           <a className="btn btn-primary btn-sm" href={appPath("/register")}>
@@ -98,7 +99,10 @@ export function PublicHeader({
         </>
       ) : variant === "pr" ? (
         <>
-          <a href={appPath("/login")} className="pr-header-link">
+          <a
+            href={appPath("/login")}
+            className="btn btn-ghost btn-sm public-header-login"
+          >
             {t("pricing.nav_login")}
           </a>
           <a href={appPath("/register")} className="pr-header-cta">
@@ -113,12 +117,12 @@ export function PublicHeader({
             onClick={() => void switchLanguage()}
             aria-label={t("common.footer.change_language")}
           >
-            {language.toUpperCase()}
+            {languageOption}
           </button>
 
           <a
             href={appPath(authenticated ? "/dashboard" : "/login")}
-            className={`public-header-action ${variant}-header-action`}
+            className="btn btn-ghost btn-sm public-header-login"
           >
             {authenticated ? t("common.navigation.dashboard") : t("about.header.login")}
           </a>

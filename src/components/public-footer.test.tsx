@@ -23,7 +23,11 @@ describe("PublicFooter", () => {
 
     expect(screen.getByRole("contentinfo")).toBeInTheDocument();
     expect(screen.getByText(/licencia MIT/)).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Cambiar idioma" })).toHaveTextContent("ES");
+    expect(screen.getByRole("link", { name: /licencia MIT/ })).toHaveAttribute(
+      "href",
+      "https://github.com/iagentshub/frontend_react/blob/main/LICENSE",
+    );
+    expect(screen.getByRole("button", { name: "Cambiar idioma" })).toHaveTextContent("EN");
     expect(screen.getByRole("link", { name: "Precios" })).toHaveAttribute("href", "/pricing/");
   });
 
@@ -40,6 +44,6 @@ describe("PublicFooter", () => {
 
     expect(screen.getByRole("navigation", { name: "Product" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Documentation" })).toHaveAttribute("href", "/en/docs");
-    expect(screen.getByRole("button", { name: "Change language" })).toHaveTextContent("EN");
+    expect(screen.getByRole("button", { name: "Change language" })).toHaveTextContent("ES");
   });
 });

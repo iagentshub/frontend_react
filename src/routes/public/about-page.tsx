@@ -181,7 +181,7 @@ export function AboutPage() {
                 <p className="about-closing-body">{t("about.license.body")}</p>
                 {/* Afirmar la licencia sin enlazarla obliga a fiarse. */}
                 <a
-                  href="https://github.com/iagentshub/iAgents/blob/main/LICENSE"
+                  href="https://github.com/iagentshub/frontend_react/blob/main/LICENSE"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="about-github-btn"

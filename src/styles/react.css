@@ -380,6 +380,20 @@
   background: #b94044;
 }
 
+.public-header > .public-header-login {
+  flex: 0 0 auto;
+  color: var(--ink);
+  background: var(--surface-2);
+  border-color: var(--line-strong);
+  text-decoration: none;
+}
+
+.public-header > .public-header-login:hover {
+  color: var(--ink);
+  background: var(--surface-3);
+  border-color: var(--line-strong);
+}
+
 .public-footer {
   margin-top: 0;
   border-top: 1px solid var(--public-border);
@@ -498,15 +512,9 @@
     background-color 150ms ease;
 }
 
-.public-footer-language span {
-  padding: 4px 9px;
-  border-radius: 5px;
+.public-footer-language {
+  padding: 7px 11px;
   color: var(--public-text-secondary);
-}
-
-.public-footer-language span.is-active {
-  color: var(--public-text);
-  background: var(--public-border);
 }
 
 .public-footer-language:hover {

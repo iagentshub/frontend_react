@@ -38,7 +38,7 @@ describe("PublicHeader", () => {
     const { container } = renderHeader();
     expect(container.querySelector("header")).toHaveClass("about-header");
     expect(container.querySelector(".about-logo")).not.toBeNull();
-    expect(container.querySelector(".about-header-action")).not.toBeNull();
+    expect(container.querySelector(".public-header-login")).not.toBeNull();
   });
 
   it("no repite junto al logo la pagina que ya marca la navegacion", () => {
@@ -75,11 +75,17 @@ describe("PublicHeader", () => {
   it("conserva las acciones específicas de landing y pricing", () => {
     const landing = renderHeader({ variant: "landing", path: "/" });
     expect(landing.container.querySelector(".landing-header")).not.toBeNull();
+    expect(landing.container.querySelector('[href="/app/login"]')).toHaveClass(
+      "public-header-login",
+    );
     expect(landing.container.querySelector('[href="/app/register"]')).not.toBeNull();
     landing.unmount();
 
     const pricing = renderHeader({ variant: "pr", path: "/pricing/" });
     expect(pricing.container.querySelector(".pr-header")).not.toBeNull();
+    expect(pricing.container.querySelector('[href="/app/login"]')).toHaveClass(
+      "public-header-login",
+    );
     expect(pricing.container.querySelector(".pr-header-cta")).not.toBeNull();
   });
 
@@ -97,8 +103,10 @@ describe("PublicHeader", () => {
   it("cambia de idioma desde una pagina interior", async () => {
     renderHeader();
 
-    await userEvent.click(screen.getByRole("button", { name: "Cambiar idioma" }));
+    const languageButton = screen.getByRole("button", { name: "Cambiar idioma" });
+    expect(languageButton).toHaveTextContent("EN");
+    await userEvent.click(languageButton);
 
-    expect(await screen.findByRole("button", { name: "Change language" })).toHaveTextContent("EN");
+    expect(await screen.findByRole("button", { name: "Change language" })).toHaveTextContent("ES");
   });
 });
