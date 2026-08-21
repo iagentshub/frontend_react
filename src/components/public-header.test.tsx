@@ -3,7 +3,7 @@ import { cleanup, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import type { ComponentProps } from "react";
 import { MemoryRouter } from "react-router-dom";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import i18n from "@/i18n";
 import { PublicHeader } from "./public-header";
 
@@ -30,6 +30,7 @@ function renderHeader({
 
 afterEach(async () => {
   cleanup();
+  vi.unstubAllGlobals();
   await i18n.changeLanguage("es");
 });
 
@@ -108,5 +109,25 @@ describe("PublicHeader", () => {
     await userEvent.click(languageButton);
 
     expect(await screen.findByRole("button", { name: "Change language" })).toHaveTextContent("ES");
+  });
+
+  it("no consulta una sesión protegida desde páginas públicas", () => {
+    const fetchMock = vi.fn<typeof fetch>();
+    vi.stubGlobal("fetch", fetchMock);
+
+    for (const [variant, path] of [
+      ["landing", "/"],
+      ["about", "/about"],
+      ["docs", "/docs"],
+      ["pr", "/pricing/"],
+      ["support", "/support"],
+      ["legal", "/privacy"],
+    ] as const) {
+      const rendered = renderHeader({ variant, path });
+      expect(rendered.container.querySelector('[href="/app/login"]')).not.toBeNull();
+      rendered.unmount();
+    }
+
+    expect(fetchMock).not.toHaveBeenCalled();
   });
 });

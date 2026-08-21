@@ -1,8 +1,6 @@
-import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { Link, useLocation } from "react-router-dom";
 import { appPath } from "@/app/app-paths";
-import { sessionQuery } from "@/api/public-queries";
 import { usePublicNavigation, type PublicBasePath } from "@/i18n/public-paths";
 
 type PublicHeaderVariant = "about" | "docs" | "landing" | "legal" | "pr" | "support";
@@ -69,10 +67,8 @@ export function PublicHeader({
   billingEnabled?: boolean;
 }) {
   const { t, i18n } = useTranslation();
-  const usesSessionAction = variant !== "landing" && variant !== "pr";
-  const session = useQuery({ ...sessionQuery, enabled: usesSessionAction });
+  const hasInteriorActions = variant !== "landing" && variant !== "pr";
   const { language, publicLink, switchLanguage } = usePublicNavigation(i18n, path);
-  const authenticated = Boolean(session.data?.username);
   const languageOption = language === "es" ? "EN" : "ES";
 
   return (
@@ -85,7 +81,7 @@ export function PublicHeader({
       <PublicNavigation billingEnabled={billingEnabled} className={`${variant}-nav`} />
 
       <div
-        className={`${usesSessionAction ? "public-header-spacer " : ""}${variant}-header-spacer`}
+        className={`${hasInteriorActions ? "public-header-spacer " : ""}${variant}-header-spacer`}
       />
 
       {variant === "landing" ? (
@@ -121,10 +117,10 @@ export function PublicHeader({
           </button>
 
           <a
-            href={appPath(authenticated ? "/dashboard" : "/login")}
+            href={appPath("/login")}
             className="btn btn-ghost btn-sm public-header-login"
           >
-            {authenticated ? t("common.navigation.dashboard") : t("about.header.login")}
+            {t("about.header.login")}
           </a>
         </>
       )}

@@ -2,7 +2,6 @@ import { QueryClient } from "@tanstack/react-query";
 import { ApiError } from "./client";
 
 export const queryKeys = {
-  session: ["session"] as const,
   platform: ["platform", "public"] as const,
 };
 
