@@ -22,11 +22,15 @@ export function usePublicNavigation(i18n: I18n, currentPath: PublicBasePath) {
   const navigate = useNavigate();
   const language: SupportedLanguage = i18n.resolvedLanguage === "en" ? "en" : "es";
   const publicLink = (path: PublicBasePath) => localizedPublicPath(path, language);
-  const switchLanguage = async () => {
-    const nextLanguage: SupportedLanguage = language === "es" ? "en" : "es";
+  const selectLanguage = async (nextLanguage: SupportedLanguage) => {
+    if (nextLanguage === language) return;
     await i18n.changeLanguage(nextLanguage);
     void navigate(localizedPublicPath(currentPath, nextLanguage));
   };
+  const switchLanguage = async () => {
+    const nextLanguage: SupportedLanguage = language === "es" ? "en" : "es";
+    await selectLanguage(nextLanguage);
+  };
 
-  return { language, publicLink, switchLanguage };
+  return { language, publicLink, selectLanguage, switchLanguage };
 }

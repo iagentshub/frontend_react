@@ -1,6 +1,8 @@
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link, useLocation } from "react-router-dom";
 import { appPath } from "@/app/app-paths";
+import type { SupportedLanguage } from "@/i18n";
 import { usePublicNavigation, type PublicBasePath } from "@/i18n/public-paths";
 
 type PublicHeaderVariant = "about" | "docs" | "landing" | "legal" | "pr" | "support";
@@ -12,6 +14,86 @@ const publicNavigation = [
   ["/pricing/", "pricing"],
   ["/support", "support"],
 ] as const satisfies ReadonlyArray<readonly [PublicBasePath, string]>;
+
+const languageNames: Record<SupportedLanguage, string> = {
+  es: "Español",
+  en: "English",
+};
+
+function LanguageSelector({
+  language,
+  onSelect,
+  label,
+}: {
+  language: SupportedLanguage;
+  onSelect: (language: SupportedLanguage) => Promise<void>;
+  label: string;
+}) {
+  const [open, setOpen] = useState(false);
+  const rootRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+
+    const closeOnOutsideClick = (event: PointerEvent) => {
+      if (!rootRef.current?.contains(event.target as Node)) setOpen(false);
+    };
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setOpen(false);
+    };
+
+    document.addEventListener("pointerdown", closeOnOutsideClick);
+    document.addEventListener("keydown", closeOnEscape);
+    return () => {
+      document.removeEventListener("pointerdown", closeOnOutsideClick);
+      document.removeEventListener("keydown", closeOnEscape);
+    };
+  }, [open]);
+
+  const chooseLanguage = async (nextLanguage: SupportedLanguage) => {
+    setOpen(false);
+    await onSelect(nextLanguage);
+  };
+
+  return (
+    <div className="public-language-selector" ref={rootRef}>
+      <button
+        className="public-language-trigger"
+        type="button"
+        aria-label={label}
+        aria-haspopup="menu"
+        aria-expanded={open}
+        onClick={() => setOpen((current) => !current)}
+      >
+        <svg className="public-language-globe" viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="12" r="9" />
+          <path d="M3 12h18M12 3c2.4 2.5 3.6 5.5 3.6 9S14.4 18.5 12 21M12 3C9.6 5.5 8.4 8.5 8.4 12s1.2 6.5 3.6 9" />
+        </svg>
+        <span>{language.toUpperCase()}</span>
+        <svg className="public-language-chevron" viewBox="0 0 12 12" aria-hidden="true">
+          <path d="m2.5 4.5 3.5 3 3.5-3" />
+        </svg>
+      </button>
+
+      {open ? (
+        <div className="public-language-menu" role="menu" aria-label={label}>
+          {(["es", "en"] as const).map((option) => (
+            <button
+              key={option}
+              className="public-language-option"
+              type="button"
+              role="menuitemradio"
+              aria-checked={language === option}
+              onClick={() => void chooseLanguage(option)}
+            >
+              {languageNames[option]}
+            </button>
+          ))}
+        </div>
+      ) : null}
+    </div>
+  );
+}
 
 function comparablePath(path: string): string {
   const withoutLanguage = path.replace(/^\/en(?=\/)/, "");
@@ -68,8 +150,7 @@ export function PublicHeader({
 }) {
   const { t, i18n } = useTranslation();
   const hasInteriorActions = variant !== "landing" && variant !== "pr";
-  const { language, publicLink, switchLanguage } = usePublicNavigation(i18n, path);
-  const languageOption = language === "es" ? "EN" : "ES";
+  const { language, publicLink, selectLanguage } = usePublicNavigation(i18n, path);
 
   return (
     <header className={`public-header ${variant}-header`}>
@@ -86,6 +167,11 @@ export function PublicHeader({
 
       {variant === "landing" ? (
         <>
+          <LanguageSelector
+            language={language}
+            onSelect={selectLanguage}
+            label={t("common.footer.change_language")}
+          />
           <a className="btn btn-ghost btn-sm public-header-login" href={appPath("/login")}>
             {t("about.header.login")}
           </a>
@@ -95,10 +181,12 @@ export function PublicHeader({
         </>
       ) : variant === "pr" ? (
         <>
-          <a
-            href={appPath("/login")}
-            className="btn btn-ghost btn-sm public-header-login"
-          >
+          <LanguageSelector
+            language={language}
+            onSelect={selectLanguage}
+            label={t("common.footer.change_language")}
+          />
+          <a href={appPath("/login")} className="btn btn-ghost btn-sm public-header-login">
             {t("pricing.nav_login")}
           </a>
           <a href={appPath("/register")} className="pr-header-cta">
@@ -107,19 +195,13 @@ export function PublicHeader({
         </>
       ) : (
         <>
-          <button
-            className={`public-header-lang ${variant}-header-lang`}
-            type="button"
-            onClick={() => void switchLanguage()}
-            aria-label={t("common.footer.change_language")}
-          >
-            {languageOption}
-          </button>
+          <LanguageSelector
+            language={language}
+            onSelect={selectLanguage}
+            label={t("common.footer.change_language")}
+          />
 
-          <a
-            href={appPath("/login")}
-            className="btn btn-ghost btn-sm public-header-login"
-          >
+          <a href={appPath("/login")} className="btn btn-ghost btn-sm public-header-login">
             {t("about.header.login")}
           </a>
         </>

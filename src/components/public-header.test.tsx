@@ -105,10 +105,32 @@ describe("PublicHeader", () => {
     renderHeader();
 
     const languageButton = screen.getByRole("button", { name: "Cambiar idioma" });
-    expect(languageButton).toHaveTextContent("EN");
+    expect(languageButton).toHaveTextContent("ES");
     await userEvent.click(languageButton);
+    expect(screen.getByRole("menuitemradio", { name: "Español" })).toHaveAttribute(
+      "aria-checked",
+      "true",
+    );
+    await userEvent.click(screen.getByRole("menuitemradio", { name: "English" }));
 
-    expect(await screen.findByRole("button", { name: "Change language" })).toHaveTextContent("ES");
+    expect(await screen.findByRole("button", { name: "Change language" })).toHaveTextContent("EN");
+  });
+
+  it("muestra el selector de idioma en todas las variantes de cabecera", () => {
+    for (const [variant, path] of [
+      ["landing", "/"],
+      ["about", "/about"],
+      ["docs", "/docs"],
+      ["pr", "/pricing/"],
+      ["support", "/support"],
+      ["legal", "/privacy"],
+    ] as const) {
+      const rendered = renderHeader({ variant, path });
+      expect(
+        within(rendered.container).getByRole("button", { name: "Cambiar idioma" }),
+      ).toBeInTheDocument();
+      rendered.unmount();
+    }
   });
 
   it("no consulta una sesión protegida desde páginas públicas", () => {

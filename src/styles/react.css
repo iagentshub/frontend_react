@@ -394,6 +394,103 @@
   border-color: var(--line-strong);
 }
 
+.public-language-selector {
+  position: relative;
+  z-index: 2;
+  flex: 0 0 auto;
+}
+
+.public-language-trigger {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 34px;
+  padding: 7px 8px;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  color: var(--public-text);
+  background: transparent;
+  font: 500 var(--public-text-small) / 1 var(--public-font);
+  cursor: pointer;
+  transition:
+    color var(--public-duration-fast) ease,
+    background-color var(--public-duration-fast) ease,
+    border-color var(--public-duration-fast) ease;
+}
+
+.public-language-trigger:hover,
+.public-language-trigger[aria-expanded="true"] {
+  border-color: var(--public-border);
+  background: var(--public-surface-elevated);
+}
+
+.public-language-trigger:focus-visible,
+.public-language-option:focus-visible {
+  outline: 2px solid var(--public-coral);
+  outline-offset: 2px;
+}
+
+.public-language-globe {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: var(--public-text-secondary);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.public-language-chevron {
+  width: 12px;
+  height: 12px;
+  fill: none;
+  stroke: var(--public-text-secondary);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: transform var(--public-duration-fast) ease;
+}
+
+.public-language-trigger[aria-expanded="true"] .public-language-chevron {
+  transform: rotate(180deg);
+}
+
+.public-language-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  display: grid;
+  width: 170px;
+  padding: 6px;
+  border: 1px solid var(--public-border);
+  border-radius: 8px;
+  background: #111213;
+  box-shadow: 0 14px 36px rgb(0 0 0 / 45%);
+}
+
+.public-language-option {
+  appearance: none;
+  width: 100%;
+  padding: 11px 14px;
+  border: 0;
+  border-radius: 5px;
+  color: var(--public-text);
+  background: transparent;
+  font: 600 0.9rem / 1.2 var(--public-font);
+  letter-spacing: 0.01em;
+  text-align: left;
+  cursor: pointer;
+}
+
+.public-language-option:hover {
+  background: var(--public-surface-elevated);
+}
+
+.public-language-option[aria-checked="true"] {
+  color: var(--public-coral);
+}
+
 .public-footer {
   margin-top: 0;
   border-top: 1px solid var(--public-border);
